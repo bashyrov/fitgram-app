@@ -1,0 +1,70 @@
+{
+  "sourceLanguage" : "pl",
+  "version" : "1.0",
+  "strings" : {
+    "Anuluj" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Anuluj" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Скасувати" } }
+      }
+    },
+    "Dodaj posiłek" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add meal" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj posiłek" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати прийом їжі" } }
+      }
+    },
+    "Ładowanie" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Loading" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Ładowanie" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Завантаження" } }
+      }
+    },
+    "Mam już konto" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "I already have an account" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mam już konto" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "У мене вже є акаунт" } }
+      }
+    },
+    "Mealgram" : {
+      "shouldTranslate" : false,
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } }
+      }
+    },
+    "Pomiń" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Skip" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pomiń" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Пропустити" } }
+      }
+    },
+    "Twój spokojny tracker kalorii." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your calm calorie tracker." } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Twój spokojny tracker kalorii." } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Твій спокійний трекер калорій." } }
+      }
+    },
+    "Wyłączony" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Disabled" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wyłączony" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Вимкнено" } }
+      }
+    },
+    "Zacznij" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Get started" } },
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zacznij" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Почати" } }
+      }
+    }
+  }
+}
