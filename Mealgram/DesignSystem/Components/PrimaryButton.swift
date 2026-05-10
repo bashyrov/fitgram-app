@@ -36,26 +36,12 @@ struct PrimaryButton: View {
             .contentShape(RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
             .opacity(effectiveEnabled ? 1 : 0.55)
         }
-        .buttonStyle(.pressable)
+        .buttonStyle(PressableButtonStyle())
         .disabled(!effectiveEnabled || isLoading)
         .accessibilityAddTraits(.isButton)
     }
 
     private var effectiveEnabled: Bool { isEnabled && environmentEnabled }
-}
-
-/// Subtle "press" interaction: the button gently scales down on tap with a
-/// soft spring, matching the rest of the rounded UI.
-private struct PressableButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(Tokens.Motion.quick, value: configuration.isPressed)
-    }
-}
-
-extension ButtonStyle where Self == PressableButtonStyle {
-    static var pressable: PressableButtonStyle { PressableButtonStyle() }
 }
 
 #Preview("Primary") {

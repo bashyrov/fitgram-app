@@ -32,7 +32,7 @@ struct SecondaryButton: View {
             .contentShape(RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
             .opacity(environmentEnabled ? 1 : 0.55)
         }
-        .buttonStyle(.pressable)
+        .buttonStyle(PressableButtonStyle())
         .accessibilityAddTraits(.isButton)
     }
 }

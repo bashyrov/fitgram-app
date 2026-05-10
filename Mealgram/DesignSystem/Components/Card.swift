@@ -6,7 +6,7 @@ import SwiftUI
 struct Card<Content: View>: View {
     var padding: CGFloat = Tokens.Space.lg
     var background: Color = Tokens.Palette.surface
-    var elevation: Tokens.Shadow.Style = Tokens.Shadow.card
+    var elevation: Tokens.ShadowStyle = Tokens.Shadow.card
     @ViewBuilder var content: () -> Content
 
     var body: some View {
