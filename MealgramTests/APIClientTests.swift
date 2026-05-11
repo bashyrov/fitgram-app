@@ -26,10 +26,11 @@ final class APIClientTests: XCTestCase {
 
     func testSuccessfulGETDecodesResponse() async throws {
         let payload = Data(#"{"message":"hi"}"#.utf8)
+        let fallbackURL = Self.baseURL
         MockURLProtocol.handler = { request in
             XCTAssertEqual(request.httpMethod, "GET")
             XCTAssertEqual(request.url?.path, "/api/v1/hello")
-            return MockURLProtocol.makeResponse(url: request.url ?? Self.baseURL, status: 200, body: payload)
+            return MockURLProtocol.makeResponse(url: request.url ?? fallbackURL, status: 200, body: payload)
         }
 
         let client = URLSessionAPIClient(
@@ -52,11 +53,12 @@ final class APIClientTests: XCTestCase {
             session: AuthCredentials.fixture(userID: "u-1", provider: .apple)
         )
 
+        let fallbackURL = Self.baseURL
         MockURLProtocol.handler = { request in
             let auth = request.value(forHTTPHeaderField: "Authorization")
             XCTAssertEqual(auth, "Bearer access-token-u-1")
             return MockURLProtocol.makeResponse(
-                url: request.url ?? Self.baseURL, status: 200, body: Data("{}".utf8)
+                url: request.url ?? fallbackURL, status: 200, body: Data("{}".utf8)
             )
         }
 
