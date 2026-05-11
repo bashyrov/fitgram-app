@@ -38,13 +38,15 @@ final class WorkerFoodDetectorTests: XCTestCase {
             imageData: imageData,
             suggestedMealType: .lunch
         )
-        let raw = String(decoding: body, as: UTF8.self)
-        XCTAssertTrue(raw.contains("--boundary-x\r\n"))
-        XCTAssertTrue(raw.contains("name=\"image\"; filename=\"meal.jpg\""))
-        XCTAssertTrue(raw.contains("Content-Type: image/jpeg"))
-        XCTAssertTrue(raw.contains("name=\"meal_type_hint\""))
-        XCTAssertTrue(raw.contains("lunch"))
-        XCTAssertTrue(raw.hasSuffix("--boundary-x--\r\n"))
+        // Search the body for text fragments without decoding the whole
+        // payload — image bytes aren't valid UTF-8 so a full decode is
+        // lossy. Looking up Data ranges is binary-safe.
+        XCTAssertTrue(body.contains(asciiBytes: "--boundary-x\r\n"))
+        XCTAssertTrue(body.contains(asciiBytes: "name=\"image\"; filename=\"meal.jpg\""))
+        XCTAssertTrue(body.contains(asciiBytes: "Content-Type: image/jpeg"))
+        XCTAssertTrue(body.contains(asciiBytes: "name=\"meal_type_hint\""))
+        XCTAssertTrue(body.contains(asciiBytes: "lunch\r\n"))
+        XCTAssertTrue(body.suffix(16).contains(asciiBytes: "--boundary-x--\r\n"))
     }
 
     func testMultipartBodyOmitsHintWhenNil() {
@@ -53,8 +55,7 @@ final class WorkerFoodDetectorTests: XCTestCase {
             imageData: Data([0xFF]),
             suggestedMealType: nil
         )
-        let raw = String(decoding: body, as: UTF8.self)
-        XCTAssertFalse(raw.contains("meal_type_hint"))
+        XCTAssertFalse(body.contains(asciiBytes: "meal_type_hint"))
     }
 
     // MARK: - End-to-end via MockURLProtocol
@@ -138,5 +139,14 @@ final class WorkerFoodDetectorTests: XCTestCase {
             // expected
             XCTAssertEqual(MockURLProtocol.capturedRequests.count, 0)
         }
+    }
+}
+
+extension Data {
+    /// Binary-safe substring search — needed because the multipart body
+    /// mixes ASCII headers with arbitrary image bytes that aren't valid
+    /// UTF-8 (so a full String decode is lossy).
+    fileprivate func contains(asciiBytes string: String) -> Bool {
+        range(of: Data(string.utf8)) != nil
     }
 }
