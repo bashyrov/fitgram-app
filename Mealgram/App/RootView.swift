@@ -7,12 +7,14 @@ struct RootView: View {
     @Environment(AuthSession.self) private var session
     let authService: AuthService
     let userRepository: UserRepository
+    let mealSaver: any MealSaving
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
 
-    init(authService: AuthService, userRepository: UserRepository) {
+    init(authService: AuthService, userRepository: UserRepository, mealSaver: any MealSaving) {
         self.authService = authService
         self.userRepository = userRepository
+        self.mealSaver = mealSaver
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -28,7 +30,7 @@ struct RootView: View {
                 onboardingScene(for: authUser)
                     .transition(.opacity)
             case .main(let authUser):
-                AuthenticatedPlaceholder(user: authUser) {
+                AuthenticatedPlaceholder(user: authUser, mealSaver: mealSaver) {
                     Task { await authService.signOut() }
                 }
                 .transition(.opacity)
@@ -101,10 +103,14 @@ struct RootView: View {
 }
 
 /// Placeholder shown right after onboarding. Replaced with `TabView` in
-/// Milestone 1.7 (Today screen).
+/// Milestone 1.7 (Today screen). Until then exposes the scan flow so the
+/// camera path can be exercised end-to-end.
 private struct AuthenticatedPlaceholder: View {
     let user: AuthUser
+    let mealSaver: any MealSaving
     let onSignOut: () -> Void
+
+    @State private var isScanPresented = false
 
     var body: some View {
         ZStack {
@@ -113,10 +119,10 @@ private struct AuthenticatedPlaceholder: View {
             VStack(spacing: Tokens.Space.xl) {
                 Spacer()
                 EmptyState(
-                    symbol: "checkmark.seal.fill",
-                    title: "Wszystko gotowe!",
-                    message: "Twój profil został zapisany. Główny ekran wkrótce.",
-                    action: nil
+                    symbol: "fork.knife",
+                    title: "Twój dziennik czeka",
+                    message: "Stuknij, żeby zeskanować pierwszy posiłek. Reszta tabów wkrótce.",
+                    action: .init(title: "Zeskanuj posiłek", perform: { isScanPresented = true })
                 )
                 Spacer()
                 SecondaryButton(title: "Wyloguj", systemImage: "rectangle.portrait.and.arrow.right") {
@@ -125,6 +131,9 @@ private struct AuthenticatedPlaceholder: View {
                 .padding(.horizontal, Tokens.Space.screenPadding)
                 .padding(.bottom, Tokens.Space.xl)
             }
+        }
+        .fullScreenCover(isPresented: $isScanPresented) {
+            ScanRootView(mealSaver: mealSaver, onDismiss: { isScanPresented = false })
         }
     }
 }
