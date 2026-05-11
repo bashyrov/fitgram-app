@@ -1,0 +1,20 @@
+name = "mealgram-worker"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# Configure once: `wrangler kv namespace create scan-cache`
+# Then paste the IDs below.
+# [[kv_namespaces]]
+# binding = "SCAN_CACHE"
+# id = ""
+# preview_id = ""
+
+[vars]
+# Non-secret toggles. Use `wrangler secret put NAME` for the rest:
+#   SUPABASE_JWT_SECRET, GEMINI_API_KEY, UPSTASH_REDIS_URL, UPSTASH_REDIS_TOKEN
+GEMINI_VISION_MODEL = "gemini-2.5-flash"
+GEMINI_PREMIUM_MODEL = "gemini-2.5-pro"
+CACHE_TTL_SECONDS = "604800"  # 7 days
+LOG_LEVEL = "info"
