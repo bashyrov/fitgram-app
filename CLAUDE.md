@@ -4,21 +4,27 @@
 iOS-only AI calorie tracker for the Polish market. Three ways to log a meal: photo scan, recipe input, quick database. AI coach "Ola" with memory. Trial-then-paid via RevenueCat.
 
 ## Current Status
-Phase 1 mid-sprint. Done & merged on `develop`:
+Phase 1 nearly complete (only credential-blocked milestones remain). Merged on `develop`:
 - M1.1 Auth (Apple Sign In real, Google/Email stubs, Keychain, TokenStore)
 - M1.2 SwiftData schema v1 + PersistenceController
 - M1.3 Networking (APIClient, retry, JWT interceptor)
 - M1.4 Onboarding (7 steps + AppRouter)
 - M1.5 Camera capture + mock detector + scan-result UI
+- M1.7 Today screen (streak header, calorie ring, macro bars, AI insight, meal timeline)
+- M1.8 Profile (data export JSON, edit goals, preferences, privacy/terms, delete account)
+- M1.9 Streaks (current/longest/freeze, registerLog on save, gap reset)
+- M1.11 partial: SWIFT_EMIT_LOC_STRINGS enabled (full PL/EN/UK translation is M4.11)
+- M1.12 Testing baseline: 56 unit tests + 3 UI tests with accessibility ids
 
-32 unit tests green, swiftlint --strict clean, swift-format clean.
+56 unit tests green, swiftlint --strict clean, swift-format clean.
 
 Blocked / awaiting from user:
-- Supabase project URL + anon key (needed by Email magic link + Account Deletion server-side wipe)
-- Google OAuth Client ID (needed by Google Sign In)
-- Cloudflare Worker base URL + Gemini API key (for Milestone 1.6 real food scan)
-- Physical iPhone (for AppleSignIn live, real camera capture, StoreKit sandbox)
-- RevenueCat API key + product setup (Milestone 1.10 paywall)
+- Supabase project URL + anon key (Email magic link + account-deletion server wipe)
+- Google OAuth Client ID + URL scheme (Google Sign In SDK)
+- Cloudflare Worker base URL + Gemini API key (Milestone 1.6 real food scan)
+- Physical iPhone (Apple Sign In live, real camera capture, StoreKit sandbox)
+- RevenueCat API key + product IDs (Milestone 1.10 paywall)
+- Apple Team ID + App Store Connect (Milestone 1.13 fastlane / TestFlight)
 
 ## Tech Stack (always reference)
 - Swift 5.10, strict concurrency, SwiftUI iOS 17+, SwiftData, TCA for complex flows
