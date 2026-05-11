@@ -117,6 +117,7 @@ final class ScanState {
 
 /// Small protocol so `ScanState` can be tested with an in-memory saver
 /// without spinning up a SwiftData container at every test.
-protocol MealSaving: Sendable {
+@MainActor
+protocol MealSaving {
     func save(meal: MealEntry) throws
 }

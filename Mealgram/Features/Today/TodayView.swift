@@ -1,0 +1,127 @@
+import SwiftUI
+
+/// Main "Today" screen — what the user sees after sign-in once
+/// onboarding is done. Plays the role the master prompt assigns to the
+/// Today tab.
+struct TodayView: View {
+    let userRemoteID: String
+    @Bindable var state: TodayState
+    let onOpenProfile: () -> Void
+    let onOpenScanner: () -> Void
+
+    var body: some View {
+        ZStack {
+            Tokens.Palette.background.ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: Tokens.Space.lg) {
+                    StreakHeader(
+                        greeting: state.greeting,
+                        displayName: state.user?.displayName,
+                        streakLength: state.streak?.currentLength ?? 0,
+                        onTapProfile: onOpenProfile
+                    )
+                    .padding(.top, Tokens.Space.md)
+
+                    CalorieProgressCard(
+                        consumed: state.totals.calories,
+                        goal: state.calorieGoal,
+                        progress: state.calorieProgress
+                    )
+
+                    MacroDistributionCard(
+                        protein: state.totals.protein,
+                        carbs: state.totals.carbs,
+                        fat: state.totals.fat,
+                        proteinGoal: state.user?.proteinGoalGrams ?? 120,
+                        carbsGoal: state.user?.carbsGoalGrams ?? 240,
+                        fatGoal: state.user?.fatGoalGrams ?? 70
+                    )
+
+                    AIInsightCard(
+                        consumed: state.totals.calories,
+                        goal: state.calorieGoal,
+                        proteinGrams: state.totals.protein,
+                        proteinGoal: state.user?.proteinGoalGrams ?? 120
+                    )
+
+                    mealsSection
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, Tokens.Space.xxxl)
+            }
+            .refreshable {
+                await state.refresh(for: userRemoteID)
+            }
+        }
+        .task {
+            await state.refresh(for: userRemoteID)
+        }
+    }
+
+    @ViewBuilder
+    private var mealsSection: some View {
+        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+            HStack {
+                Text("Dziś")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Spacer()
+                Text("\(state.meals.count) posiłków")
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+            }
+
+            if state.meals.isEmpty {
+                EmptyMealsCallout(onTap: onOpenScanner)
+            } else {
+                LazyVStack(spacing: Tokens.Space.sm) {
+                    ForEach(state.meals) { meal in
+                        MealTimelineRow(meal: meal)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct EmptyMealsCallout: View {
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: Tokens.Space.md) {
+                ZStack {
+                    Circle()
+                        .fill(Tokens.Palette.primarySoft)
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "camera.fill")
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Brak posiłków dzisiaj")
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text("Stuknij, żeby zeskanować pierwszy.")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            }
+            .padding(Tokens.Space.lg)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .strokeBorder(
+                        Tokens.Palette.separator,
+                        style: StrokeStyle(lineWidth: 1, dash: [4, 4])
+                    )
+            )
+        }
+        .buttonStyle(PressableButtonStyle())
+    }
+}
