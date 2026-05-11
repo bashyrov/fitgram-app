@@ -3,6 +3,9 @@ disabled_rules:
   - todo
   # swift-format always emits trailing commas; we let it own that style.
   - trailing_comma
+  # Misfires on URLProtocol overrides — Swift requires `class func` to
+  # override a parent `class func`, even inside a `final class`.
+  - static_over_final_class
 
 opt_in_rules:
   - closure_end_indentation
@@ -25,7 +28,6 @@ opt_in_rules:
   - modifier_order
   - operator_usage_whitespace
   - overridden_super_call
-  - pattern_matching_keywords
   - prefer_self_type_over_type_of_self
   - prefer_zero_over_explicit_init
   - redundant_nil_coalescing
