@@ -7,6 +7,7 @@ import SwiftUI
 struct MainTabView: View {
     let authUser: AuthUser
     let mealSaver: any MealSaving
+    let exportService: DataExportService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
     let todayState: TodayState
@@ -44,6 +45,7 @@ struct MainTabView: View {
             ProfileView(
                 user: todayState.user,
                 streak: todayState.streak,
+                exportService: exportService,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount
             )

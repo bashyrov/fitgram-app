@@ -11,6 +11,7 @@ struct MealgramApp: App {
     private let streakService: StreakService
     private let todayState: TodayState
     private let accountDeletionService: AccountDeletionService
+    private let exportService: DataExportService
 
     init() {
         let session = AuthSession()
@@ -33,6 +34,7 @@ struct MealgramApp: App {
             authService: authService,
             persistence: persistence
         )
+        self.exportService = DataExportService(container: persistence.container)
     }
 
     var body: some Scene {
@@ -43,7 +45,8 @@ struct MealgramApp: App {
                 mealSaver: mealSaver,
                 todayState: todayState,
                 streakService: streakService,
-                accountDeletionService: accountDeletionService
+                accountDeletionService: accountDeletionService,
+                exportService: exportService
             )
             .environment(session)
             .modelContainer(persistenceController.container)

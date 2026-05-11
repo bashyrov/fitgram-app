@@ -1,13 +1,20 @@
 import SwiftUI
 
-/// Minimal profile / settings screen. Milestone 1.8 in the master prompt
-/// covers full data export + privacy URLs — this is enough to surface the
-/// sign-out path and basic info while we keep building.
+/// Profile + settings hub. App-Store guideline 5.1.1(v) requires in-app
+/// data export and deletion to be reachable from this screen.
 struct ProfileView: View {
     let user: User?
     let streak: Streak?
+    let exportService: DataExportService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
+
+    @State private var sharedFile: SharedFile?
+    @State private var isPreparingExport = false
+    @State private var isEditingGoals = false
+    @State private var isEditingPreferences = false
+    @State private var deleteConfirmation = false
+    @State private var exportError: String?
 
     var body: some View {
         NavigationStack {
@@ -17,17 +24,11 @@ struct ProfileView: View {
                     VStack(spacing: Tokens.Space.lg) {
                         identityCard
                         statsRow
-                        goalsCard
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text("Konto")
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                signOutButton
-                                Divider().background(Tokens.Palette.separator)
-                                deleteButton
-                            }
-                        }
+                        goalsSection
+                        preferencesSection
+                        dataSection
+                        legalSection
+                        accountSection
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
@@ -35,8 +36,37 @@ struct ProfileView: View {
             }
             .navigationTitle(Text("Profil"))
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $isEditingGoals) {
+                if let user {
+                    EditGoalsView(user: user) { isEditingGoals = false }
+                }
+            }
+            .sheet(isPresented: $isEditingPreferences) {
+                if let user {
+                    PreferencesView(user: user) { isEditingPreferences = false }
+                }
+            }
+            .sheet(item: $sharedFile) { file in
+                ShareSheet(activityItems: [file.url])
+            }
+            .alert("Usunąć konto?", isPresented: $deleteConfirmation) {
+                Button("Anuluj", role: .cancel) {}
+                Button("Usuń", role: .destructive, action: onDeleteAccount)
+            } message: {
+                Text("Operacja usuwa wszystkie Twoje dane lokalne i serwerowe. Nie można cofnąć.")
+            }
+            .alert(
+                "Eksport nieudany",
+                isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })
+            ) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(exportError ?? "")
+            }
         }
     }
+
+    // MARK: - Sections
 
     private var identityCard: some View {
         Card(elevation: Tokens.Shadow.float) {
@@ -86,18 +116,85 @@ struct ProfileView: View {
         }
     }
 
-    private var goalsCard: some View {
+    private var goalsSection: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Dzienne cele")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+                sectionHeader("Cele dzienne")
                 goalRow(label: "Kalorie", value: "\(user?.dailyCalorieGoalKcal ?? 2100) kcal")
                 goalRow(label: "Białko", value: "\(user?.proteinGoalGrams ?? 120) g")
                 goalRow(label: "Węgle", value: "\(user?.carbsGoalGrams ?? 240) g")
                 goalRow(label: "Tłuszcz", value: "\(user?.fatGoalGrams ?? 70) g")
+                actionRow(symbol: "slider.horizontal.3", title: "Edytuj cele", role: nil) {
+                    isEditingGoals = true
+                }
+                .disabled(user == nil)
             }
         }
+    }
+
+    private var preferencesSection: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                sectionHeader("Preferencje")
+                actionRow(symbol: "bell", title: "Przypomnienia, język, jednostki", role: nil) {
+                    isEditingPreferences = true
+                }
+                .disabled(user == nil)
+            }
+        }
+    }
+
+    private var dataSection: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                sectionHeader("Twoje dane")
+                actionRow(
+                    symbol: "square.and.arrow.up",
+                    title: isPreparingExport ? "Przygotowujemy…" : "Pobierz eksport JSON",
+                    role: nil
+                ) {
+                    Task { await runExport() }
+                }
+                .disabled(isPreparingExport || user == nil)
+            }
+        }
+    }
+
+    private var legalSection: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                sectionHeader("Prawo")
+                Link(destination: URL(string: "https://mealgram.pl/privacy") ?? URL(filePath: "/")) {
+                    legalRow(symbol: "lock.shield", title: "Polityka prywatności")
+                }
+                Link(destination: URL(string: "https://mealgram.pl/terms") ?? URL(filePath: "/")) {
+                    legalRow(symbol: "doc.text", title: "Regulamin")
+                }
+            }
+        }
+    }
+
+    private var accountSection: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                sectionHeader("Konto")
+                actionRow(
+                    symbol: "rectangle.portrait.and.arrow.right", title: "Wyloguj", role: .destructive,
+                    action: onSignOut)
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "trash", title: "Usuń konto", role: .destructive) {
+                    deleteConfirmation = true
+                }
+            }
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func sectionHeader(_ text: LocalizedStringKey) -> some View {
+        Text(text)
+            .font(Tokens.Font.headline)
+            .foregroundStyle(Tokens.Palette.ink)
     }
 
     private func goalRow(label: LocalizedStringKey, value: LocalizedStringKey) -> some View {
@@ -112,35 +209,40 @@ struct ProfileView: View {
         }
     }
 
-    private var signOutButton: some View {
-        Button(role: .destructive, action: onSignOut) {
-            HStack {
-                Image(systemName: "rectangle.portrait.and.arrow.right")
-                Text("Wyloguj")
+    private func actionRow(
+        symbol: String,
+        title: LocalizedStringKey,
+        role: ButtonRole?,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(role: role, action: action) {
+            HStack(spacing: Tokens.Space.md) {
+                Image(systemName: symbol)
+                    .frame(width: 22)
+                    .foregroundStyle(role == .destructive ? Tokens.Palette.error : Tokens.Palette.primary)
+                Text(title)
+                    .font(Tokens.Font.body)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
-            .foregroundStyle(Tokens.Palette.ink)
-            .font(Tokens.Font.body)
+            .foregroundStyle(role == .destructive ? Tokens.Palette.error : Tokens.Palette.ink)
         }
     }
 
-    private var deleteButton: some View {
-        Button(role: .destructive, action: onDeleteAccount) {
-            HStack {
-                Image(systemName: "trash")
-                Text("Usuń konto")
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            .foregroundStyle(Tokens.Palette.error)
-            .font(Tokens.Font.body)
+    private func legalRow(symbol: String, title: LocalizedStringKey) -> some View {
+        HStack(spacing: Tokens.Space.md) {
+            Image(systemName: symbol)
+                .frame(width: 22)
+                .foregroundStyle(Tokens.Palette.primary)
+            Text(title)
+                .font(Tokens.Font.body)
+                .foregroundStyle(Tokens.Palette.ink)
+            Spacer()
+            Image(systemName: "arrow.up.right")
+                .foregroundStyle(Tokens.Palette.inkSubtle)
         }
     }
-
-    // MARK: - Helpers
 
     private var displayName: String {
         if let name = user?.displayName, !name.isEmpty { return name }
@@ -156,5 +258,17 @@ struct ProfileView: View {
     private var initial: String {
         if let first = displayName.first { return String(first).uppercased() }
         return "M"
+    }
+
+    private func runExport() async {
+        guard let user, !isPreparingExport else { return }
+        isPreparingExport = true
+        defer { isPreparingExport = false }
+        do {
+            let url = try exportService.export(for: user.remoteID)
+            sharedFile = SharedFile(url: url)
+        } catch {
+            exportError = error.localizedDescription
+        }
     }
 }

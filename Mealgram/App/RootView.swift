@@ -11,6 +11,7 @@ struct RootView: View {
     let todayState: TodayState
     let streakService: StreakService
     let accountDeletionService: AccountDeletionService
+    let exportService: DataExportService
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -21,7 +22,8 @@ struct RootView: View {
         mealSaver: any MealSaving,
         todayState: TodayState,
         streakService: StreakService,
-        accountDeletionService: AccountDeletionService
+        accountDeletionService: AccountDeletionService,
+        exportService: DataExportService
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -29,6 +31,7 @@ struct RootView: View {
         self.todayState = todayState
         self.streakService = streakService
         self.accountDeletionService = accountDeletionService
+        self.exportService = exportService
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -51,6 +54,7 @@ struct RootView: View {
                         streakService: streakService,
                         userRemoteID: authUser.id
                     ),
+                    exportService: exportService,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
                     todayState: todayState
