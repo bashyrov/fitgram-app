@@ -1,6 +1,8 @@
 disabled_rules:
   - trailing_whitespace
   - todo
+  # swift-format always emits trailing commas; we let it own that style.
+  - trailing_comma
 
 opt_in_rules:
   - closure_end_indentation
