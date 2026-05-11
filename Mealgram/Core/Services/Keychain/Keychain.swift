@@ -100,8 +100,7 @@ struct Keychain: Sendable {
 
 extension Keychain {
     func setString(_ string: String, for account: String) throws {
-        guard let data = string.data(using: .utf8) else { throw Failure.dataCorruption }
-        try set(data, for: account)
+        try set(Data(string.utf8), for: account)
     }
 
     func string(for account: String) throws -> String? {
