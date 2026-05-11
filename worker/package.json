@@ -1,0 +1,23 @@
+{
+  "name": "mealgram-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker: AI proxy + auth + cache for Mealgram iOS",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240419.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0",
+    "wrangler": "^3.59.0"
+  },
+  "dependencies": {
+    "jose": "^5.2.4"
+  }
+}

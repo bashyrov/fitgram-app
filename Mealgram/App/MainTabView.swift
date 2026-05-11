@@ -63,6 +63,7 @@ struct MainTabView: View {
         }
         .fullScreenCover(isPresented: $isScanPresented) {
             ScanRootView(
+                detector: FoodDetectorFactory.make(),
                 mealSaver: mealSaver,
                 onDismiss: {
                     isScanPresented = false
