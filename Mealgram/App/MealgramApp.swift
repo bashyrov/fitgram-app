@@ -7,6 +7,7 @@ struct MealgramApp: App {
     private let authService: AuthService
     private let persistenceController: PersistenceController
     private let userRepository: UserRepository
+    private let mealSaver: any MealSaving
 
     init() {
         let session = AuthSession()
@@ -20,14 +21,19 @@ struct MealgramApp: App {
         self.authService = AuthService(providers: providers, session: session)
         self.persistenceController = persistence
         self.userRepository = UserRepository(container: persistence.container)
+        self.mealSaver = SwiftDataMealSaver(container: persistence.container)
     }
 
     var body: some Scene {
         WindowGroup {
-            RootView(authService: authService, userRepository: userRepository)
-                .environment(session)
-                .modelContainer(persistenceController.container)
-                .tint(Tokens.Palette.primary)
+            RootView(
+                authService: authService,
+                userRepository: userRepository,
+                mealSaver: mealSaver
+            )
+            .environment(session)
+            .modelContainer(persistenceController.container)
+            .tint(Tokens.Palette.primary)
         }
     }
 }
