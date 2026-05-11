@@ -80,6 +80,11 @@ targets:
         NSUserTrackingUsageDescription: "Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi."
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: public.app-category.healthcare-fitness
+    entitlements:
+      path: Mealgram/Supporting/Mealgram.entitlements
+      properties:
+        com.apple.developer.applesignin:
+          - Default
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios
@@ -92,6 +97,7 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_FILE: Mealgram/Supporting/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Mealgram/Supporting/Mealgram.entitlements
 
   MealgramTests:
     type: bundle.unit-test
