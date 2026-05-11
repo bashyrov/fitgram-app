@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Top-level navigation shell for authenticated users. Three tabs — Today,
-/// Add (raises the full-screen scanner), Profile. Stripped-down for
-/// Phase 1; the Add tab will house the Quick Database + Recipe pickers in
-/// Phase 2.
+/// Add (raises an action sheet with the available capture modes), Profile.
+/// Stripped-down for Phase 1; the Add menu will grow Quick Database +
+/// Recipe pickers in Phase 2.
 struct MainTabView: View {
     let authUser: AuthUser
     let mealSaver: any MealSaving
@@ -12,7 +12,9 @@ struct MainTabView: View {
     let onDeleteAccount: () -> Void
     let todayState: TodayState
 
+    @State private var addOptionsVisible = false
     @State private var isScanPresented = false
+    @State private var isBarcodePresented = false
     @State private var selectedTab: Tab = .today
 
     enum Tab: Hashable {
@@ -34,8 +36,9 @@ struct MainTabView: View {
             }
             .tag(Tab.today)
 
-            // Visible "Add" tab is the affordance; selecting it just opens
-            // the modal scanner so we never present an empty scene.
+            // Virtual tab — selecting it raises the add-options dialog and
+            // bounces selection back to Today so the user never lands on an
+            // empty scene.
             Color.clear
                 .tabItem {
                     Label("Dodaj", systemImage: "plus.circle.fill")
@@ -57,9 +60,22 @@ struct MainTabView: View {
         .tint(Tokens.Palette.primary)
         .onChange(of: selectedTab) { _, newValue in
             if newValue == .add {
-                isScanPresented = true
+                addOptionsVisible = true
                 selectedTab = .today
             }
+        }
+        .confirmationDialog(
+            "Jak chcesz dodać?",
+            isPresented: $addOptionsVisible,
+            titleVisibility: .visible
+        ) {
+            Button("📸 Zdjęcie posiłku") {
+                isScanPresented = true
+            }
+            Button("📦 Kod kreskowy") {
+                isBarcodePresented = true
+            }
+            Button("Anuluj", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $isScanPresented) {
             ScanRootView(
@@ -67,6 +83,14 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isScanPresented = false
+                    Task { await todayState.refresh(for: authUser.id) }
+                })
+        }
+        .fullScreenCover(isPresented: $isBarcodePresented) {
+            BarcodeRootView(
+                mealSaver: mealSaver,
+                onDismiss: {
+                    isBarcodePresented = false
                     Task { await todayState.refresh(for: authUser.id) }
                 })
         }
