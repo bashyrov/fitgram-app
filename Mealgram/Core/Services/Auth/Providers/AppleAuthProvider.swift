@@ -11,7 +11,7 @@ import OSLog
 final class AppleAuthProvider: NSObject, AuthProvider {
     let kind: AuthProviderKind = .apple
 
-    private var currentContinuation: CheckedContinuation<AuthCredentials, Error>?
+    private var currentContinuation: CheckedContinuation<AuthCredentials, any Error>?
 
     func signIn() async throws -> AuthCredentials {
         try await withCheckedThrowingContinuation { continuation in

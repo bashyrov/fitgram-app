@@ -11,10 +11,16 @@ import OSLog
 final class AccountDeletionService {
     private let authService: AuthService
     private let tokenStore: TokenStore
+    private let persistence: PersistenceController?
 
-    init(authService: AuthService, tokenStore: TokenStore = TokenStore()) {
+    init(
+        authService: AuthService,
+        tokenStore: TokenStore = TokenStore(),
+        persistence: PersistenceController? = nil
+    ) {
         self.authService = authService
         self.tokenStore = tokenStore
+        self.persistence = persistence
     }
 
     /// Permanently deletes the user's account. Idempotent — re-running on an
@@ -39,10 +45,8 @@ final class AccountDeletionService {
         // TODO(Milestone 1.6): call Edge Function once Supabase client lands.
     }
 
-    /// Local cleanup: SwiftData is added in Milestone 1.2 so this is currently
-    /// just the keychain. The SwiftData purge slot is here ready to be filled.
     private func clearLocalStores() throws {
         try tokenStore.clear()
-        // TODO(Milestone 1.2): also drop the SwiftData container once it exists.
+        try persistence?.wipeAllData()
     }
 }

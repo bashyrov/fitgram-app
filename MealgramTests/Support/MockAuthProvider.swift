@@ -6,11 +6,11 @@ import Foundation
 /// without touching real Apple/Google/Supabase APIs.
 final class MockAuthProvider: AuthProvider, @unchecked Sendable {
     let kind: AuthProviderKind
-    var result: Result<AuthCredentials, Error>
+    var result: Result<AuthCredentials, any Error>
     private(set) var signInCallCount = 0
     private(set) var signOutCallCount = 0
 
-    init(kind: AuthProviderKind, result: Result<AuthCredentials, Error>) {
+    init(kind: AuthProviderKind, result: Result<AuthCredentials, any Error>) {
         self.kind = kind
         self.result = result
     }
