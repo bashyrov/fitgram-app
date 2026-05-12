@@ -1,3 +1,4 @@
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -15,6 +16,8 @@ struct MealgramApp: App {
     private let todayState: TodayState
     private let accountDeletionService: AccountDeletionService
     private let exportService: DataExportService
+    private let foodCatalog: any FoodCatalog
+    private let foodSeeder: FoodSeeder
 
     init() {
         let session = AuthSession()
@@ -41,6 +44,16 @@ struct MealgramApp: App {
             persistence: persistence
         )
         self.exportService = DataExportService(container: persistence.container)
+        self.foodCatalog = FoodCatalogService(container: persistence.container)
+        let seeder = FoodSeeder(container: persistence.container)
+        self.foodSeeder = seeder
+        do {
+            try seeder.seedIfNeeded()
+        } catch {
+            // Non-fatal — Quick Database tab will show empty state until
+            // we manage to seed.
+            Logger.persistence.error("Food seeding failed: \(String(describing: error))")
+        }
     }
 
     var body: some Scene {
@@ -55,6 +68,7 @@ struct MealgramApp: App {
                 exportService: exportService,
                 achievementService: achievementService,
                 calibrationService: calibrationService,
+                foodCatalog: foodCatalog,
                 unlockBus: unlockBus
             )
             .environment(session)
