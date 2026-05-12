@@ -36,6 +36,15 @@ struct TodayView: View {
                     )
                     .padding(.top, Tokens.Space.md)
 
+                    if state.canUseFreeze, let streak = state.streak {
+                        StreakFreezeCard(
+                            streakLength: streak.currentLength,
+                            freezesAvailable: streak.freezesAvailable
+                        ) {
+                            Task { await state.consumeFreeze(for: userRemoteID) }
+                        }
+                    }
+
                     CalorieProgressCard(
                         consumed: state.totals.calories,
                         goal: state.calorieGoal,
