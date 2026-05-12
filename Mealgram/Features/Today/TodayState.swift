@@ -3,6 +3,7 @@ import OSLog
 import Observation
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 /// Aggregates today's meal entries + the user's daily target. Refreshes via
 /// `refresh()` after sign-in or after a meal save. Pure read model — no
@@ -88,6 +89,7 @@ final class TodayState {
             self.upcomingEvent = culturalEvents.upcoming(from: now())
             self.coachInsights = coachService?.insights(for: userRemoteID) ?? []
             self.loadError = nil
+            publishWidgetSnapshot()
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
             self.loadError = String(describing: error)
@@ -106,6 +108,19 @@ final class TodayState {
         guard calorieGoal > 0 else { return 0 }
         return min(1.0, totals.calories / Double(calorieGoal))
     }
+    private func publishWidgetSnapshot() {
+        let lastMealName = meals.first?.items.first?.name ?? ""
+        let snapshot = WidgetSnapshot(
+            streakLength: streak?.currentLength ?? 0,
+            calorieGoalKcal: calorieGoal,
+            caloriesConsumedKcal: Int(totals.calories),
+            lastMealName: lastMealName,
+            updatedAt: now()
+        )
+        WidgetSnapshotStore.shared.write(snapshot)
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
     var greeting: LocalizedStringKey {
         let hour = calendar.component(.hour, from: now())
         switch hour {

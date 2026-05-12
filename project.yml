@@ -50,6 +50,11 @@ targets:
       - path: Mealgram
         excludes:
           - "Resources/Mock/**"
+      - path: Shared
+    dependencies:
+      - target: MealgramWidget
+        embed: true
+        codeSign: true
     resources:
       - path: Mealgram/Resources/Assets.xcassets
       - path: Mealgram/Resources/Seeds
@@ -107,6 +112,32 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_FILE: Mealgram/Supporting/Info.plist
         CODE_SIGN_ENTITLEMENTS: Mealgram/Supporting/Mealgram.entitlements
+
+  MealgramWidget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: MealgramWidget
+      - path: Shared
+    info:
+      path: MealgramWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Mealgram
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.widget
+        PRODUCT_NAME: MealgramWidget
+        SWIFT_VERSION: "5.10"
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: MealgramWidget/Info.plist
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
 
   MealgramTests:
     type: bundle.unit-test
