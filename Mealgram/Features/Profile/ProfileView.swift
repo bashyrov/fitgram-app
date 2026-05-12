@@ -6,6 +6,7 @@ struct ProfileView: View {
     let user: User?
     let streak: Streak?
     let exportService: DataExportService
+    let achievementService: AchievementService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
 
@@ -15,6 +16,7 @@ struct ProfileView: View {
     @State private var isEditingPreferences = false
     @State private var deleteConfirmation = false
     @State private var exportError: String?
+    @State private var earnedAchievements: [Achievement] = []
 
     var body: some View {
         NavigationStack {
@@ -24,6 +26,7 @@ struct ProfileView: View {
                     VStack(spacing: Tokens.Space.lg) {
                         identityCard
                         statsRow
+                        AchievementsSection(earned: earnedAchievements)
                         goalsSection
                         preferencesSection
                         dataSection
@@ -33,6 +36,7 @@ struct ProfileView: View {
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
                 }
+                .task(id: user?.remoteID) { await loadAchievements() }
             }
             .navigationTitle(Text("Profil"))
             .navigationBarTitleDisplayMode(.inline)
@@ -270,5 +274,13 @@ struct ProfileView: View {
         } catch {
             exportError = error.localizedDescription
         }
+    }
+
+    private func loadAchievements() async {
+        guard let user else {
+            earnedAchievements = []
+            return
+        }
+        earnedAchievements = (try? achievementService.earned(forUser: user.remoteID)) ?? []
     }
 }
