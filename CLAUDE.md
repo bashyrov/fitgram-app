@@ -4,19 +4,22 @@
 iOS-only AI calorie tracker for the Polish market. Three ways to log a meal: photo scan, recipe input, quick database. AI coach "Ola" with memory. Trial-then-paid via RevenueCat.
 
 ## Current Status
-Phase 1 nearly complete (only credential-blocked milestones remain). Merged on `develop`:
+Phase 1 + selected Phase 2 milestones merged. Done & merged on `develop`:
 - M1.1 Auth (Apple Sign In real, Google/Email stubs, Keychain, TokenStore)
 - M1.2 SwiftData schema v1 + PersistenceController
 - M1.3 Networking (APIClient, retry, JWT interceptor)
 - M1.4 Onboarding (7 steps + AppRouter)
 - M1.5 Camera capture + mock detector + scan-result UI
+- M1.6 code-complete: Cloudflare Worker (TypeScript) + iOS WorkerFoodDetector; awaiting Cloudflare/Gemini secrets to deploy
 - M1.7 Today screen (streak header, calorie ring, macro bars, AI insight, meal timeline)
 - M1.8 Profile (data export JSON, edit goals, preferences, privacy/terms, delete account)
 - M1.9 Streaks (current/longest/freeze, registerLog on save, gap reset)
 - M1.11 partial: SWIFT_EMIT_LOC_STRINGS enabled (full PL/EN/UK translation is M4.11)
-- M1.12 Testing baseline: 56 unit tests + 3 UI tests with accessibility ids
+- M1.12 Testing baseline
+- M2.4 Barcode scanner (AVCaptureMetadataOutput + Open Food Facts lookup)
+- M2.8 Achievements (engine + service + unlock banner + Profile grid)
 
-56 unit tests green, swiftlint --strict clean, swift-format clean.
+81 unit tests + 3 UI tests, swiftlint --strict clean, swift-format clean.
 
 Blocked / awaiting from user:
 - Supabase project URL + anon key (Email magic link + account-deletion server wipe)
