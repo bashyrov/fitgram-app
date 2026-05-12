@@ -155,8 +155,19 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Profile streak calendar: month grid with logged days highlighted
   in primary, today stroked in accent. Prev/next month nav. New
   "Historia serii" row in preferences.
+- Achievement unlock system notification: NotificationCoordinator gains
+  notifyAchievement(_:) and fires alongside the in-app banner so
+  backgrounded users still notice.
+- Recipe importer reads prepTime + cookTime ISO-8601 durations from
+  JSON-LD (PT30M / PT1H15M) — falls back to totalTime for cookTime.
+- Haptics: Core/Utilities/Haptics enum wraps UIFeedbackGenerator.
+  Fires on meal save, badge unlock, delete (warning), undo (light),
+  freeze use, coach thumbs.
+- Avatar picker: confirmationDialog gates camera vs library;
+  CameraImagePicker is a UIImagePickerController wrapper with front-
+  facing default + allowsEditing crop.
 
-291 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+297 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
