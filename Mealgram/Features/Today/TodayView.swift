@@ -8,6 +8,7 @@ struct TodayView: View {
     @Bindable var state: TodayState
     let onOpenProfile: () -> Void
     let onOpenScanner: () -> Void
+    var onCookSuggested: ((Recipe) -> Void)?
 
     var body: some View {
         ZStack {
@@ -43,6 +44,12 @@ struct TodayView: View {
                         proteinGrams: state.totals.protein,
                         proteinGoal: state.user?.proteinGoalGrams ?? 120
                     )
+
+                    if let suggested = state.suggestedRecipe, let onCookSuggested {
+                        SuggestedRecipeCard(recipe: suggested) {
+                            onCookSuggested(suggested)
+                        }
+                    }
 
                     mealsSection
                 }

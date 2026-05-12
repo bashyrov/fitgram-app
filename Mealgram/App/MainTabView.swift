@@ -37,7 +37,8 @@ struct MainTabView: View {
                 userRemoteID: authUser.id,
                 state: todayState,
                 onOpenProfile: { selectedTab = .profile },
-                onOpenScanner: { isScanPresented = true }
+                onOpenScanner: { isScanPresented = true },
+                onCookSuggested: { recipe in cookSuggested(recipe) }
             )
             .tabItem {
                 Label("Dziś", systemImage: "sun.max.fill")
@@ -166,5 +167,15 @@ struct MainTabView: View {
             await todayState.refresh(for: authUser.id)
             await progressState.refresh(for: authUser.id)
         }
+    }
+
+    /// One-tap cook from the Today suggestion card. Saves through the same
+    /// MealSaving pipeline as every other entry path, then refreshes the
+    /// dashboards.
+    private func cookSuggested(_ recipe: Recipe) {
+        let entry = recipeRepository.cook(recipe)
+        try? mealSaver.save(meal: entry)
+        try? recipeRepository.save(recipe)
+        refreshAfterSave()
     }
 }
