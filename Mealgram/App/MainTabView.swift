@@ -14,6 +14,7 @@ struct MainTabView: View {
     let weightService: WeightService
     let heatmapService: ActivityHeatmapService
     let challengeService: ChallengeService
+    let statsService: ProfileStatsService
     let friendService: any FriendService
     let coachService: CoachService
     let unlockBus: AchievementUnlockBus
@@ -50,6 +51,7 @@ struct MainTabView: View {
         weightService: WeightService,
         heatmapService: ActivityHeatmapService,
         challengeService: ChallengeService,
+        statsService: ProfileStatsService,
         friendService: any FriendService,
         coachService: CoachService,
         unlockBus: AchievementUnlockBus,
@@ -69,6 +71,7 @@ struct MainTabView: View {
         self.weightService = weightService
         self.heatmapService = heatmapService
         self.challengeService = challengeService
+        self.statsService = statsService
         self.friendService = friendService
         self.coachService = coachService
         self.unlockBus = unlockBus
@@ -154,6 +157,7 @@ struct MainTabView: View {
                 weightService: weightService,
                 heatmapService: heatmapService,
                 challengeService: challengeService,
+                statsService: statsService,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount
             )

@@ -11,6 +11,7 @@ struct ProfileView: View {
     let weightService: WeightService
     let heatmapService: ActivityHeatmapService
     let challengeService: ChallengeService
+    let statsService: ProfileStatsService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
 
@@ -26,6 +27,7 @@ struct ProfileView: View {
     @State private var heatmapSnapshot: ActivityHeatmap.Snapshot?
     @State private var isChallengesPresented = false
     @State private var challengeProgress: [ChallengeProgress] = []
+    @State private var statsSummary: ProfileStatsService.Summary?
 
     var body: some View {
         NavigationStack {
@@ -35,6 +37,9 @@ struct ProfileView: View {
                     VStack(spacing: Tokens.Space.lg) {
                         identityCard
                         statsRow
+                        if let statsSummary {
+                            ProfileStatsCard(summary: statsSummary)
+                        }
                         if let heatmapSnapshot {
                             ActivityHeatmapCard(snapshot: heatmapSnapshot)
                         }
@@ -52,6 +57,9 @@ struct ProfileView: View {
                     await loadAchievements()
                     heatmapSnapshot = heatmapService.snapshot()
                     refreshChallenges()
+                    if let remoteID = user?.remoteID {
+                        statsSummary = statsService.summary(for: remoteID)
+                    }
                 }
             }
             .navigationTitle(Text("Profil"))
