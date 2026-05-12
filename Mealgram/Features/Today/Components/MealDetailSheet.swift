@@ -1,5 +1,7 @@
 import SwiftUI
 
+// swiftlint:disable type_body_length
+
 /// Inspect-and-edit sheet for a saved meal. Lets the user nudge the
 /// portion multiplier or delete the meal outright. Item-level edits live
 /// in the scan flow and stay there — this surface is intentionally light.
@@ -334,8 +336,21 @@ struct MealDetailSheet: View {
     private func delete() {
         let snapshot = MealEntrySnapshot.capture(from: meal)
         do {
+            let filenameToCleanup = meal.photoFilename
             try repository.delete(meal)
             Haptics.warning()
+            // Fire the photo deletion after the 5s undo window closes
+            // so a Cofnij tap can still restore with the original JPEG.
+            if let filename = filenameToCleanup, let photoStore {
+                Task {
+                    try? await Task.sleep(nanoseconds: 6_000_000_000)
+                    // Undo banner may have restored a meal that still
+                    // points at this filename; skip the delete if so.
+                    if repository.photoIsOrphaned(filename: filename) {
+                        photoStore.delete(filename: filename)
+                    }
+                }
+            }
             onDeleted?(snapshot)
             onChanged()
             onDismiss()
@@ -375,3 +390,4 @@ struct MealDetailSheet: View {
         return formatter
     }()
 }
+// swiftlint:enable type_body_length

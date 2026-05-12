@@ -144,6 +144,26 @@ final class MealRepositoryTests: XCTestCase {
         XCTAssertEqual(stored?.notes, "Po treningu, dużo wody.")
     }
 
+    // MARK: - Photo orphan check
+
+    func testPhotoIsOrphanedTrueWhenNoMealReferencesFilename() {
+        XCTAssertTrue(repository.photoIsOrphaned(filename: "ghost.jpg"))
+    }
+
+    func testPhotoIsOrphanedFalseWhenAMealHasIt() throws {
+        let meal = MealEntry(
+            consumedAt: Date(),
+            mealType: .lunch,
+            source: .photoScan,
+            photoFilename: "owned.jpg",
+            items: [FoodItem(name: "x", quantityGrams: 100, caloriesKcal: 100)]
+        )
+        let context = ModelContext(controller.container)
+        context.insert(meal)
+        try context.save()
+        XCTAssertFalse(repository.photoIsOrphaned(filename: "owned.jpg"))
+    }
+
     func testUpdateNotesStoresNilForEmptyWhitespace() throws {
         let meal = try seedMeal()
         try repository.updateNotes(meal, notes: "first pass")

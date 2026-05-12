@@ -55,6 +55,19 @@ final class MealRepository {
         return copy
     }
 
+    /// Returns true when no MealEntry references the given photo
+    /// filename. The MealDetailSheet's deferred-cleanup path uses this
+    /// just before deleting the file — protects against the undo
+    /// banner restoring a meal whose photo would otherwise vanish.
+    func photoIsOrphaned(filename: String) -> Bool {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.photoFilename == filename }
+        )
+        let count = (try? context.fetchCount(descriptor)) ?? 0
+        return count == 0
+    }
+
     /// Cross-context-safe delete — refetches by id in a fresh context before
     /// calling `context.delete`. See RecipeRepository.delete for the same
     /// pattern + reasoning.
