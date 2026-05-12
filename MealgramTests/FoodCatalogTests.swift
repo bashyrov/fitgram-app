@@ -24,8 +24,32 @@ final class FoodCatalogTests: XCTestCase {
         let seeder = FoodSeeder(container: controller.container)
         let bundle = try seeder.load()
         XCTAssertEqual(bundle.schemaVersion, "1.0.0")
-        XCTAssertGreaterThan(bundle.items.count, 20)
+        XCTAssertGreaterThan(bundle.items.count, 60)
         XCTAssertTrue(bundle.items.contains(where: { $0.name == "Schabowy z kotleta" }))
+    }
+
+    func testSeederCoversAllProductCategories() throws {
+        let seeder = FoodSeeder(container: controller.container)
+        let bundle = try seeder.load()
+        let representedCategories = Set(bundle.items.map(\.category))
+        // The "Inne" (.general) bucket is intentionally empty in the seed —
+        // anything user-imported lives there. Every other category has at
+        // least one canonical row.
+        let expected: Set<String> = [
+            "homemade", "fast_food", "bakery", "beverage", "dairy",
+            "meat", "seafood", "produce", "grain", "snack", "sweets",
+        ]
+        XCTAssertTrue(
+            expected.isSubset(of: representedCategories),
+            "Missing categories: \(expected.subtracting(representedCategories))"
+        )
+    }
+
+    func testSeederHasNoDuplicateIDs() throws {
+        let seeder = FoodSeeder(container: controller.container)
+        let bundle = try seeder.load()
+        let ids = bundle.items.map(\.id)
+        XCTAssertEqual(Set(ids).count, ids.count, "Duplicate id detected in seed JSON")
     }
 
     func testSeederPopulatesEmptyStore() throws {
