@@ -9,6 +9,7 @@ struct ProfileView: View {
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let weightService: WeightService
+    let heatmapService: ActivityHeatmapService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
 
@@ -21,6 +22,7 @@ struct ProfileView: View {
     @State private var deleteConfirmation = false
     @State private var exportError: String?
     @State private var earnedAchievements: [Achievement] = []
+    @State private var heatmapSnapshot: ActivityHeatmap.Snapshot?
 
     var body: some View {
         NavigationStack {
@@ -30,6 +32,9 @@ struct ProfileView: View {
                     VStack(spacing: Tokens.Space.lg) {
                         identityCard
                         statsRow
+                        if let heatmapSnapshot {
+                            ActivityHeatmapCard(snapshot: heatmapSnapshot)
+                        }
                         AchievementsSection(earned: earnedAchievements)
                         goalsSection
                         preferencesSection
@@ -40,7 +45,10 @@ struct ProfileView: View {
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
                 }
-                .task(id: user?.remoteID) { await loadAchievements() }
+                .task(id: user?.remoteID) {
+                    await loadAchievements()
+                    heatmapSnapshot = heatmapService.snapshot()
+                }
             }
             .navigationTitle(Text("Profil"))
             .navigationBarTitleDisplayMode(.inline)
