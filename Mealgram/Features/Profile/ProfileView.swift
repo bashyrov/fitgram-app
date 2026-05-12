@@ -9,6 +9,9 @@ struct ProfileView: View {
     let streak: Streak?
     let exportService: DataExportService
     let csvExportService: MealCSVExportService
+    let mealSearchService: MealSearchService
+    let mealRepository: MealRepository
+    let photoStore: MealPhotoStore?
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let weightService: WeightService
@@ -32,6 +35,8 @@ struct ProfileView: View {
     @State private var challengeProgress: [ChallengeProgress] = []
     @State private var statsSummary: ProfileStatsService.Summary?
     @State private var isShareStreakPresented = false
+    @State private var isSearchPresented = false
+    @State private var searchSelectedMeal: MealEntry?
 
     var body: some View {
         NavigationStack {
@@ -116,6 +121,25 @@ struct ProfileView: View {
                     longestLength: streak?.longestLength ?? 0,
                     displayName: user?.displayName,
                     onDismiss: { isShareStreakPresented = false }
+                )
+            }
+            .sheet(isPresented: $isSearchPresented) {
+                MealSearchSheet(
+                    service: mealSearchService,
+                    onSelect: { meal in
+                        isSearchPresented = false
+                        searchSelectedMeal = meal
+                    },
+                    onDismiss: { isSearchPresented = false }
+                )
+            }
+            .sheet(item: $searchSelectedMeal) { meal in
+                MealDetailSheet(
+                    meal: meal,
+                    repository: mealRepository,
+                    photoStore: photoStore,
+                    onDismiss: { searchSelectedMeal = nil },
+                    onChanged: {}
                 )
             }
             .alert("Usunąć konto?", isPresented: $deleteConfirmation) {
@@ -269,6 +293,10 @@ struct ProfileView: View {
                 Divider().background(Tokens.Palette.separator)
                 actionRow(symbol: "tablecells", title: "Eksport CSV (Excel)", role: nil) {
                     runCSVExport()
+                }
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "magnifyingglass", title: "Szukaj w historii", role: nil) {
+                    isSearchPresented = true
                 }
             }
         }

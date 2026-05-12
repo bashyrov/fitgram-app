@@ -13,6 +13,7 @@ struct RootView: View {
     let accountDeletionService: AccountDeletionService
     let exportService: DataExportService
     let csvExportService: MealCSVExportService
+    let mealSearchService: MealSearchService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
@@ -41,6 +42,7 @@ struct RootView: View {
         accountDeletionService: AccountDeletionService,
         exportService: DataExportService,
         csvExportService: MealCSVExportService,
+        mealSearchService: MealSearchService,
         achievementService: AchievementService,
         calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
@@ -65,6 +67,7 @@ struct RootView: View {
         self.accountDeletionService = accountDeletionService
         self.exportService = exportService
         self.csvExportService = csvExportService
+        self.mealSearchService = mealSearchService
         self.achievementService = achievementService
         self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
@@ -108,6 +111,7 @@ struct RootView: View {
                     ),
                     exportService: exportService,
                     csvExportService: csvExportService,
+                    mealSearchService: mealSearchService,
                     achievementService: achievementService,
                     calibrationService: calibrationService,
                     foodCatalog: foodCatalog,
