@@ -22,6 +22,7 @@ final class ProgressState {
     }
 
     private(set) var lastSevenDays: [DayTotal] = []
+    private(set) var lastThirtyDays: [DayTotal] = []
     private(set) var goalKcal: Int = 2100
     private(set) var isLoading = false
 
@@ -52,19 +53,28 @@ final class ProgressState {
             }
 
             let today = calendar.startOfDay(for: now())
-            guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: today) else {
+            guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: today),
+                let monthAgo = calendar.date(byAdding: .day, value: -29, to: today)
+            else {
                 lastSevenDays = []
+                lastThirtyDays = []
                 return
             }
             let descriptor = FetchDescriptor<MealEntry>(
-                predicate: #Predicate { $0.consumedAt >= weekAgo },
+                predicate: #Predicate { $0.consumedAt >= monthAgo },
                 sortBy: [SortDescriptor(\MealEntry.consumedAt)]
             )
             let entries = try context.fetch(descriptor)
             lastSevenDays = Self.bucket(
-                entries: entries,
+                entries: entries.filter { $0.consumedAt >= weekAgo },
                 weekStart: weekAgo,
                 today: today,
+                calendar: calendar
+            )
+            lastThirtyDays = Self.bucketRange(
+                entries: entries,
+                rangeStart: monthAgo,
+                days: 30,
                 calendar: calendar
             )
         } catch {
@@ -109,5 +119,42 @@ final class ProgressState {
 
     var totalKcalThisWeek: Double {
         lastSevenDays.reduce(0) { $0 + $1.calories }
+    }
+
+    /// Public for tests — generic bucketing for arbitrary windows.
+    static func bucketRange(
+        entries: [MealEntry],
+        rangeStart: Date,
+        days: Int,
+        calendar: Calendar
+    ) -> [DayTotal] {
+        let grouped = Dictionary(grouping: entries) { calendar.startOfDay(for: $0.consumedAt) }
+        return (0..<days).compactMap { offset -> DayTotal? in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: rangeStart) else {
+                return nil
+            }
+            let dayEntries = grouped[day] ?? []
+            return DayTotal(
+                date: day,
+                calories: dayEntries.reduce(0) { $0 + $1.totalCaloriesKcal },
+                protein: dayEntries.reduce(0) { $0 + $1.totalProteinGrams },
+                carbs: dayEntries.reduce(0) { $0 + $1.totalCarbsGrams },
+                fat: dayEntries.reduce(0) { $0 + $1.totalFatGrams },
+                mealCount: dayEntries.count
+            )
+        }
+    }
+
+    /// 7-day rolling mean over `lastThirtyDays`. Zeros days where the user
+    /// didn't log so the line dips honestly rather than skipping ahead.
+    var thirtyDayMovingAverage: [(Date, Double)] {
+        let window = 7
+        guard lastThirtyDays.count >= window else { return [] }
+        return lastThirtyDays.enumerated().map { index, day in
+            let start = max(0, index - window + 1)
+            let slice = lastThirtyDays[start...index]
+            let avg = slice.reduce(0) { $0 + $1.calories } / Double(slice.count)
+            return (day.date, avg)
+        }
     }
 }
