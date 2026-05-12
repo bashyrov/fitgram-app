@@ -20,13 +20,23 @@ struct AchievementEngine {
         var fatGoalGrams: Int?
         /// `true` once the user has logged at least one weight entry.
         var hasLoggedWeight: Bool
+        /// Total recipe.cookCount sum across the library.
+        var totalRecipeCooks: Int
+        /// Total WeightEntry rows on file.
+        var totalWeightEntries: Int
+        /// How many achievement rows already on file. Used by the meta
+        /// `achievements.ten` predicate without re-counting.
+        var totalAchievementsEarned: Int
 
         static let empty = Inputs(
             proteinGoalGrams: nil, carbsGoalGrams: nil, fatGoalGrams: nil,
-            hasLoggedWeight: false
+            hasLoggedWeight: false,
+            totalRecipeCooks: 0, totalWeightEntries: 0,
+            totalAchievementsEarned: 0
         )
     }
 
+    // swiftlint:disable function_body_length
     func evaluate(
         meals: [MealEntry],
         streak: Streak?,
@@ -54,6 +64,7 @@ struct AchievementEngine {
         if let streak {
             consider("streak.7") { streak.longestLength >= 7 }
             consider("streak.30") { streak.longestLength >= 30 }
+            consider("streak.50") { streak.longestLength >= 50 }
             consider("streak.100") { streak.longestLength >= 100 }
         }
 
@@ -89,10 +100,31 @@ struct AchievementEngine {
             let days = Set(meals.map { calendar.startOfDay(for: $0.consumedAt) }).sorted()
             return Self.longestConsecutiveRun(days: days, calendar: calendar) >= 7
         }
+        consider("protein.week") {
+            guard let proteinGoal = inputs.proteinGoalGrams, proteinGoal > 0 else { return false }
+            let threshold = Double(proteinGoal) * 0.9
+            let hitDays = Set(
+                dayBuckets.compactMap { day, entries -> Date? in
+                    let total = entries.reduce(0) { $0 + $1.totalProteinGrams }
+                    return total >= threshold ? day : nil
+                }
+            ).sorted()
+            return Self.longestConsecutiveRun(days: hitDays, calendar: calendar) >= 7
+        }
+        consider("recipes.ten") { inputs.totalRecipeCooks >= 10 }
+        consider("weight.ten") { inputs.totalWeightEntries >= 10 }
+        consider("tag.first") { meals.contains { !$0.tags.isEmpty } }
+        // The meta achievement fires when the user is *about* to cross
+        // their 10th badge — already-earned set includes everything that
+        // unlocked in this very call, so we add the pending count.
+        consider("achievements.ten") {
+            inputs.totalAchievementsEarned + unlocked.count >= 10
+        }
 
         _ = now  // future-dated predicates can reach for this without an API churn
         return unlocked
     }
+    // swiftlint:enable function_body_length
 
     private static func within(_ value: Double, of target: Double, tolerance: Double) -> Bool {
         guard target > 0 else { return false }

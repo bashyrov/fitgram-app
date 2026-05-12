@@ -51,11 +51,17 @@ final class AchievementService {
         )
         let weightCount = (try? context.fetchCount(weightDescriptor)) ?? 0
 
+        let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
+        let totalCooks = recipes.reduce(0) { $0 + $1.cookCount }
+
         let inputs = AchievementEngine.Inputs(
             proteinGoalGrams: user?.proteinGoalGrams,
             carbsGoalGrams: user?.carbsGoalGrams,
             fatGoalGrams: user?.fatGoalGrams,
-            hasLoggedWeight: weightCount > 0
+            hasLoggedWeight: weightCount > 0,
+            totalRecipeCooks: totalCooks,
+            totalWeightEntries: weightCount,
+            totalAchievementsEarned: already.count
         )
 
         let unlockedIDs = engine.evaluate(

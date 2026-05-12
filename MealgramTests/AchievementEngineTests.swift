@@ -157,7 +157,9 @@ final class AchievementEngineTests: XCTestCase {
             alreadyEarned: [],
             inputs: .init(
                 proteinGoalGrams: nil, carbsGoalGrams: nil,
-                fatGoalGrams: nil, hasLoggedWeight: true
+                fatGoalGrams: nil, hasLoggedWeight: true,
+                totalRecipeCooks: 0, totalWeightEntries: 0,
+                totalAchievementsEarned: 0
             )
         )
         XCTAssertTrue(unlocks.contains("weight.tracked"))
@@ -183,7 +185,9 @@ final class AchievementEngineTests: XCTestCase {
             meals: dayMeals, streak: nil, alreadyEarned: [],
             inputs: .init(
                 proteinGoalGrams: 100, carbsGoalGrams: 200, fatGoalGrams: 60,
-                hasLoggedWeight: false
+                hasLoggedWeight: false,
+                totalRecipeCooks: 0, totalWeightEntries: 0,
+                totalAchievementsEarned: 0
             )
         )
         XCTAssertTrue(unlocks.contains("macros.balanced"))
@@ -215,5 +219,97 @@ final class AchievementEngineTests: XCTestCase {
         }
         let unlocks = engine.evaluate(meals: meals, streak: nil, alreadyEarned: [])
         XCTAssertFalse(unlocks.contains("week.consistent"))
+    }
+
+    // MARK: - New v2 badges
+
+    private func makeStreak(longest: Int) -> Streak {
+        Streak(userRemoteID: "u-1", currentLength: longest, longestLength: longest)
+    }
+
+    func testStreak50UnlocksAtFifty() {
+        let unlocks = engine.evaluate(
+            meals: [],
+            streak: makeStreak(longest: 50),
+            alreadyEarned: []
+        )
+        XCTAssertTrue(unlocks.contains("streak.50"))
+        XCTAssertFalse(unlocks.contains("streak.100"))
+    }
+
+    func testProteinWeekRequiresSevenConsecutiveProteinHits() {
+        // Seven days in a row with 100 g protein (goal 100).
+        let meals = (1...7).map { day in
+            meal(
+                at: "2026-05-\(String(format: "%02d", day))T08:00:00Z",
+                items: [
+                    FoodItem(
+                        name: "x", quantityGrams: 100,
+                        caloriesKcal: 200, proteinGrams: 100
+                    )
+                ]
+            )
+        }
+        let unlocks = engine.evaluate(
+            meals: meals, streak: nil, alreadyEarned: [],
+            inputs: .init(
+                proteinGoalGrams: 100,
+                carbsGoalGrams: nil, fatGoalGrams: nil,
+                hasLoggedWeight: false,
+                totalRecipeCooks: 0, totalWeightEntries: 0,
+                totalAchievementsEarned: 0
+            )
+        )
+        XCTAssertTrue(unlocks.contains("protein.week"))
+    }
+
+    func testRecipesTenUnlocksAtTen() {
+        let unlocks = engine.evaluate(
+            meals: [], streak: nil, alreadyEarned: [],
+            inputs: .init(
+                proteinGoalGrams: nil, carbsGoalGrams: nil,
+                fatGoalGrams: nil, hasLoggedWeight: false,
+                totalRecipeCooks: 10, totalWeightEntries: 0,
+                totalAchievementsEarned: 0
+            )
+        )
+        XCTAssertTrue(unlocks.contains("recipes.ten"))
+    }
+
+    func testWeightTenUnlocksAtTen() {
+        let unlocks = engine.evaluate(
+            meals: [], streak: nil, alreadyEarned: [],
+            inputs: .init(
+                proteinGoalGrams: nil, carbsGoalGrams: nil,
+                fatGoalGrams: nil, hasLoggedWeight: true,
+                totalRecipeCooks: 0, totalWeightEntries: 10,
+                totalAchievementsEarned: 0
+            )
+        )
+        XCTAssertTrue(unlocks.contains("weight.ten"))
+    }
+
+    func testTagFirstUnlocksWhenAnyMealHasTags() {
+        let taggedMeal = meal(at: "2026-05-12T12:00:00Z")
+        taggedMeal.tags = ["restaurant"]
+        let unlocks = engine.evaluate(meals: [taggedMeal], streak: nil, alreadyEarned: [])
+        XCTAssertTrue(unlocks.contains("tag.first"))
+    }
+
+    func testAchievementsTenAccountsForPendingUnlocks() {
+        // Already have 9 earned; the meal triggers meal.first + scan.first
+        // → after this call we'll be at 11. The meta badge should fire.
+        let unlocks = engine.evaluate(
+            meals: [meal(at: "2026-05-12T12:00:00Z", source: .photoScan)],
+            streak: nil,
+            alreadyEarned: Set((0..<9).map { "filler.\($0)" }),
+            inputs: .init(
+                proteinGoalGrams: nil, carbsGoalGrams: nil,
+                fatGoalGrams: nil, hasLoggedWeight: false,
+                totalRecipeCooks: 0, totalWeightEntries: 0,
+                totalAchievementsEarned: 9
+            )
+        )
+        XCTAssertTrue(unlocks.contains("achievements.ten"))
     }
 }
