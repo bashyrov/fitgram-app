@@ -19,6 +19,7 @@ struct MealgramApp: App {
     private let exportService: DataExportService
     private let csvExportService: MealCSVExportService
     private let mealSearchService: MealSearchService
+    private let streakCalendarService: StreakCalendarService
     private let foodCatalog: any FoodCatalog
     private let foodSeeder: FoodSeeder
     private let recipeRepository: RecipeRepository
@@ -60,6 +61,7 @@ struct MealgramApp: App {
         self.exportService = DataExportService(container: persistence.container)
         self.csvExportService = MealCSVExportService(container: persistence.container)
         self.mealSearchService = MealSearchService(container: persistence.container)
+        self.streakCalendarService = StreakCalendarService(container: persistence.container)
         self.foodCatalog = FoodCatalogService(container: persistence.container)
         let recipeRepository = RecipeRepository(container: persistence.container)
         self.recipeRepository = recipeRepository
@@ -124,6 +126,7 @@ struct MealgramApp: App {
                 exportService: exportService,
                 csvExportService: csvExportService,
                 mealSearchService: mealSearchService,
+                streakCalendarService: streakCalendarService,
                 achievementService: achievementService,
                 calibrationService: calibrationService,
                 foodCatalog: foodCatalog,
