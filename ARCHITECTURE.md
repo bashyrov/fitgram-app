@@ -65,6 +65,48 @@
 **Alternatives considered:** Bold neo-brutalist (high recall, but adds stress), dark-first (loses warmth).  
 **Consequences:** All charts/progress must work in low-saturation palette; need extra care for WCAG AA contrast.
 
+### 2026-05-12: MealSaving as the single side-effect spine
+**Context:** Multiple feature paths (photo scan, barcode, voice, quick DB) save meals; downstream consumers (streak counter, achievements, calibration sample count, Today refresh) need to react to every save.  
+**Decision:** `MealSaving` protocol stays minimal (`func save(meal:) throws` on `@MainActor`). `SwiftDataMealSaver` is the leaf; `ChainedMealSaver` (private to `RootView`) decorates it with streak / achievement / calibration / unlock-bus side effects in one place. Feature code only ever sees `any MealSaving`.  
+**Rationale:** Keeps side effects testable (each service has its own unit-level coverage), eliminates the temptation to scatter `try? streakService.registerLog(...)` calls across the codebase, and gives us one obvious place to add post-save behaviours (e.g. Realtime sync to Supabase later).  
+**Alternatives considered:** NotificationCenter post-save events (loses static typing), TCA `Effect` (heavy for what's currently a sync save), AccountDeletionService-style separate orchestrator (more files, no real benefit).  
+**Consequences:** ChainedMealSaver fields grow with each new side effect, but that's a deliberate, code-reviewable single source of truth.
+
+### 2026-05-12: Calibration applies only to AI-derived entries
+**Context:** User-tunable `Calibration.portionAdjustmentFactor` is meant to compensate for the AI's portion bias. Barcode lookups and quick-database picks have user-confirmed portion values; voice entries are placeholders.  
+**Decision:** `ChainedMealSaver` checks `meal.source == .photoScan` before scaling; only photo-scanned entries are calibrated, and only those bump the sample count on the Calibration row.  
+**Rationale:** Silently multiplying a user-typed 200 g barcode portion would make the running totals untrustworthy; the calibration UI explicitly frames the slider as "if AI is usually off" so it should only affect AI.  
+**Consequences:** Future entry types that go through AI (multi-item OCR, voice→Claude parsing) need to opt in by setting `source = .photoScan` or by widening the conditional.
+
+### 2026-05-12: Quick Database backed by bundled JSON until Supabase lands
+**Context:** Master prompt's M2.5 puts the catalog in Postgres with FTS; that's blocked on Supabase credentials.  
+**Decision:** Ship a `FoodCatalog` protocol with two implementations — `FoodCatalogService` (SwiftData-backed, seeded from `polish_food_seed.json`) now, a Postgres-backed implementation later. UI talks to the protocol only.  
+**Rationale:** Unblocks the Quick Database UX without waiting on Supabase, gives us a known-good local dataset for tests, and the protocol seam makes the swap mechanical.  
+**Consequences:** The JSON is the single source of truth for the seed catalog; updating it requires a build (no OTA refresh) until M2.5 lands.
+
 ## API Contracts
 
-_Filled in during Milestone 1.6 (Worker integration)._
+### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)
+
+**Request:** `multipart/form-data`
+- `image`: JPEG/PNG, 1–6 MB
+- `meal_type_hint` *(optional)*: `breakfast` | `lunch` | `dinner` | `snack`
+- `premium` *(optional)*: `"true"` switches Gemini Flash → Pro
+
+**Headers:** `Authorization: Bearer <supabase-jwt>` (HS256, verified server-side)
+
+**Response 200:** `application/json` (snake_case → decoded into camelCase by `JSONDecoder.mealgram`)
+```json
+{
+  "items": [{ "name": "...", "quantity_grams": 180, "calories_kcal": 420,
+              "protein_grams": 32, "carbs_grams": 18, "fat_grams": 22,
+              "confidence": 0.92 }],
+  "suggested_meal_type": "lunch",
+  "confidence": 0.89,
+  "raw_ai_notes": null,
+  "from_cache": false
+}
+```
+Idempotent by SHA-256 of the raw image bytes; cached 7 days in KV / Upstash.
+
+**Errors:** `401` missing/bad JWT · `413` image too large · `415` non-multipart · `502` Gemini upstream failure.

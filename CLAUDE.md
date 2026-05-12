@@ -4,8 +4,8 @@
 iOS-only AI calorie tracker for the Polish market. Three ways to log a meal: photo scan, recipe input, quick database. AI coach "Ola" with memory. Trial-then-paid via RevenueCat.
 
 ## Current Status
-Phase 1 + selected Phase 2 milestones merged. Done & merged on `develop`:
-- M1.1 Auth (Apple Sign In real, Google/Email stubs, Keychain, TokenStore)
+Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
+- M1.1 Auth (Apple real; Google/Email stubs; Keychain; TokenStore)
 - M1.2 SwiftData schema v1 + PersistenceController
 - M1.3 Networking (APIClient, retry, JWT interceptor)
 - M1.4 Onboarding (7 steps + AppRouter)
@@ -14,12 +14,20 @@ Phase 1 + selected Phase 2 milestones merged. Done & merged on `develop`:
 - M1.7 Today screen (streak header, calorie ring, macro bars, AI insight, meal timeline)
 - M1.8 Profile (data export JSON, edit goals, preferences, privacy/terms, delete account)
 - M1.9 Streaks (current/longest/freeze, registerLog on save, gap reset)
-- M1.11 partial: SWIFT_EMIT_LOC_STRINGS enabled (full PL/EN/UK translation is M4.11)
+- M1.11 partial: SWIFT_EMIT_LOC_STRINGS enabled (full PL/EN/UK in M4.11)
 - M1.12 Testing baseline
+- M2.1 partial: CalibrationService + UI; factor auto-applied on photoScan save
+- M2.2 partial: per-item edit + manual add in ScanResultView
+- M2.3 partial: voice input (Polish SFSpeechRecognizer + confirm sheet); AI parsing TBD on Worker
 - M2.4 Barcode scanner (AVCaptureMetadataOutput + Open Food Facts lookup)
+- M2.6 Quick Database UI (search + category chips + portion sheet)
+- M2.7 Polish food seed (43 dishes, idempotent FoodSeeder)
 - M2.8 Achievements (engine + service + unlock banner + Profile grid)
 
-81 unit tests + 3 UI tests, swiftlint --strict clean, swift-format clean.
+100 unit tests + 3 UI tests, swiftlint --strict clean, swift-format clean.
+
+Four meal-entry paths now reachable from "+Dodaj":
+📸 photo scan • 📦 barcode • 🔎 Szybka baza • 🎙 voice.
 
 Blocked / awaiting from user:
 - Supabase project URL + anon key (Email magic link + account-deletion server wipe)
