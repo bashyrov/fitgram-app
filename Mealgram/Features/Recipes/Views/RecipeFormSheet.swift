@@ -279,6 +279,11 @@ struct RecipeDraft: Equatable {
     let proteinPerServing: Double?
     let carbsPerServing: Double?
     let fatPerServing: Double?
+    /// Minutes parsed from `prepTime` (ISO-8601 duration on schema.org).
+    /// Imported flow only; the manual-entry form doesn't expose times yet.
+    var prepMinutes: Int?
+    /// Minutes parsed from `cookTime`.
+    var cookMinutes: Int?
 }
 
 extension RecipeFormSheet.Mode {

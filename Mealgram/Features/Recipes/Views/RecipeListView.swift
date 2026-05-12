@@ -247,6 +247,8 @@ struct RecipeListView: View {
             recipe.proteinPerServing = draft.proteinPerServing
             recipe.carbsPerServing = draft.carbsPerServing
             recipe.fatPerServing = draft.fatPerServing
+            recipe.prepMinutes = draft.prepMinutes
+            recipe.cookMinutes = draft.cookMinutes
             try? repository.create(recipe)
         case .editing(let recipe):
             recipe.title = draft.title

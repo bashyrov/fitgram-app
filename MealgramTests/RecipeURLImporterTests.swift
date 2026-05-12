@@ -175,6 +175,51 @@ final class RecipeURLImporterTests: XCTestCase {
         }
     }
 
+    // MARK: - ISO-8601 duration parsing
+
+    func testParseISO8601MinutesHandlesCommonShapes() {
+        XCTAssertEqual(RecipeURLImporter.parseISO8601Minutes("PT30M"), 30)
+        XCTAssertEqual(RecipeURLImporter.parseISO8601Minutes("PT1H"), 60)
+        XCTAssertEqual(RecipeURLImporter.parseISO8601Minutes("PT1H15M"), 75)
+        XCTAssertEqual(RecipeURLImporter.parseISO8601Minutes("PT2H"), 120)
+    }
+
+    func testParseISO8601MinutesRejectsInvalid() {
+        XCTAssertNil(RecipeURLImporter.parseISO8601Minutes(""))
+        XCTAssertNil(RecipeURLImporter.parseISO8601Minutes("30 minutes"))
+        XCTAssertNil(RecipeURLImporter.parseISO8601Minutes(nil))
+    }
+
+    func testParsePopulatesPrepAndCookTimes() throws {
+        let json = """
+            {
+              "@type": "Recipe",
+              "name": "Sample",
+              "prepTime": "PT15M",
+              "cookTime": "PT45M",
+              "recipeIngredient": ["a"]
+            }
+            """
+        let draft = try RecipeURLImporter().parse(html: Self.fixtureHTML(jsonLD: json), sourceURL: nil)
+        XCTAssertEqual(draft.prepMinutes, 15)
+        XCTAssertEqual(draft.cookMinutes, 45)
+    }
+
+    func testCookTimeFallsBackToTotalTimeWhenMissing() throws {
+        let json = """
+            {
+              "@type": "Recipe",
+              "name": "Sample",
+              "prepTime": "PT10M",
+              "totalTime": "PT1H30M",
+              "recipeIngredient": ["a"]
+            }
+            """
+        let draft = try RecipeURLImporter().parse(html: Self.fixtureHTML(jsonLD: json), sourceURL: nil)
+        XCTAssertEqual(draft.prepMinutes, 10)
+        XCTAssertEqual(draft.cookMinutes, 90)
+    }
+
     func testImportRejectsInvalidURL() async {
         let importer = RecipeURLImporter()
         do {
