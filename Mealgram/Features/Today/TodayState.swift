@@ -115,4 +115,26 @@ final class TodayState {
         default: return "Hej"
         }
     }
+
+    /// True when the user can use a freeze today: there's a streak to
+    /// protect, freezes left, and nothing has been logged today yet.
+    var canUseFreeze: Bool {
+        guard let streak, streak.currentLength > 0, streak.freezesAvailable > 0 else { return false }
+        let dayStart = calendar.startOfDay(for: now())
+        if let last = streak.lastLoggedDate, calendar.startOfDay(for: last) >= dayStart {
+            return false
+        }
+        return totals.calories == 0
+    }
+
+    /// Consumes one freeze and refreshes. Returns true if a freeze was
+    /// successfully consumed.
+    @discardableResult
+    func consumeFreeze(for userRemoteID: String) async -> Bool {
+        let consumed = (try? streakService.consumeFreeze(for: userRemoteID)) ?? false
+        if consumed {
+            await refresh(for: userRemoteID)
+        }
+        return consumed
+    }
 }

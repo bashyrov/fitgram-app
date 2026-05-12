@@ -115,4 +115,92 @@ final class TodayStateTests: XCTestCase {
             XCTAssertTrue(mirror.contains(expected), "Hour \(hour) expected to include \(expected), got \(mirror)")
         }
     }
+
+    // MARK: - Streak freeze
+
+    func testCanUseFreezeRequiresStreakAndFreezeAndNothingLoggedToday() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+
+        // Seed a streak with freezes available but lastLoggedDate = yesterday.
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: yesterday,
+            freezesAvailable: 2
+        )
+        context.insert(streak)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        XCTAssertTrue(state.canUseFreeze)
+    }
+
+    func testCanUseFreezeIsFalseAfterLoggingToday() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let today = Self.date("2026-05-12T08:00:00Z")
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: today,
+            freezesAvailable: 2
+        )
+        context.insert(streak)
+        context.insert(
+            MealEntry(
+                consumedAt: today, mealType: .breakfast, source: .quickDatabase,
+                items: [FoodItem(name: "x", quantityGrams: 100, caloriesKcal: 200)]
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        XCTAssertFalse(state.canUseFreeze)
+    }
+
+    func testCanUseFreezeIsFalseWithoutFreezesAvailable() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: yesterday,
+            freezesAvailable: 0
+        )
+        context.insert(streak)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        XCTAssertFalse(state.canUseFreeze)
+    }
+
+    func testConsumeFreezeDecrementsAvailableCount() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: yesterday,
+            freezesAvailable: 2
+        )
+        context.insert(streak)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        let consumed = await state.consumeFreeze(for: "u-frz")
+        XCTAssertTrue(consumed)
+        XCTAssertEqual(state.streak?.freezesAvailable, 1)
+    }
 }
