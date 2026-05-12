@@ -12,6 +12,7 @@ struct MainTabView: View {
     let recipeRepository: RecipeRepository
     let mealRepository: MealRepository
     let weightService: WeightService
+    let heatmapService: ActivityHeatmapService
     let friendService: any FriendService
     let coachService: CoachService
     let unlockBus: AchievementUnlockBus
@@ -42,6 +43,7 @@ struct MainTabView: View {
         recipeRepository: RecipeRepository,
         mealRepository: MealRepository,
         weightService: WeightService,
+        heatmapService: ActivityHeatmapService,
         friendService: any FriendService,
         coachService: CoachService,
         unlockBus: AchievementUnlockBus,
@@ -59,6 +61,7 @@ struct MainTabView: View {
         self.recipeRepository = recipeRepository
         self.mealRepository = mealRepository
         self.weightService = weightService
+        self.heatmapService = heatmapService
         self.friendService = friendService
         self.coachService = coachService
         self.unlockBus = unlockBus
@@ -137,6 +140,7 @@ struct MainTabView: View {
                 achievementService: achievementService,
                 calibrationService: calibrationService,
                 weightService: weightService,
+                heatmapService: heatmapService,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount
             )
