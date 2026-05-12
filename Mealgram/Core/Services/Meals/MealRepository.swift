@@ -14,6 +14,46 @@ final class MealRepository {
         self.container = container
     }
 
+    /// Duplicates a meal as a fresh entry consumed at `now`. New UUIDs
+    /// everywhere; original is untouched. Useful for "I ate the same
+    /// thing again" — one tap instead of recreating each FoodItem.
+    @discardableResult
+    func duplicate(_ source: MealEntry, at now: Date = Date()) throws -> MealEntry {
+        let context = ModelContext(container)
+        let sourceID = source.id
+        // Refetch in this context so we see the latest tags/portion the
+        // user just wrote — the `source` parameter may be a stale snapshot
+        // bound to a previous context. Standard cross-context pattern.
+        let attached = try context.fetch(
+            FetchDescriptor<MealEntry>(predicate: #Predicate { $0.id == sourceID })
+        ).first ?? source
+        let copy = MealEntry(
+            consumedAt: now,
+            mealType: attached.mealType,
+            source: attached.source,
+            notes: attached.notes,
+            // Skip photoFilename — copies shouldn't share the photo file.
+            portionMultiplier: attached.portionMultiplier,
+            tags: attached.tags,
+            items: attached.items.map { item in
+                FoodItem(
+                    name: item.name,
+                    quantityGrams: item.quantityGrams,
+                    caloriesKcal: item.caloriesKcal,
+                    proteinGrams: item.proteinGrams,
+                    carbsGrams: item.carbsGrams,
+                    fatGrams: item.fatGrams,
+                    fiberGrams: item.fiberGrams,
+                    catalogFoodID: item.catalogFoodID,
+                    confidence: item.confidence
+                )
+            }
+        )
+        context.insert(copy)
+        try context.save()
+        return copy
+    }
+
     /// Cross-context-safe delete — refetches by id in a fresh context before
     /// calling `context.delete`. See RecipeRepository.delete for the same
     /// pattern + reasoning.

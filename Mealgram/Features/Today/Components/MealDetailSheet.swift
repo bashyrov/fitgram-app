@@ -56,6 +56,23 @@ struct MealDetailSheet: View {
                         PrimaryButton(title: "Zapisz zmiany", systemImage: "checkmark") {
                             save()
                         }
+                        Button {
+                            duplicate()
+                        } label: {
+                            HStack(spacing: Tokens.Space.sm) {
+                                Image(systemName: "doc.on.doc")
+                                Text("Duplikuj na dziś")
+                            }
+                            .font(Tokens.Font.bodyEmphasized)
+                            .foregroundStyle(Tokens.Palette.primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, Tokens.Space.md)
+                            .background(
+                                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                                    .fill(Tokens.Palette.primarySoft)
+                            )
+                        }
+                        .buttonStyle(.plain)
                         Button(role: .destructive) {
                             isConfirmingDelete = true
                         } label: {
@@ -274,6 +291,17 @@ struct MealDetailSheet: View {
             onDismiss()
         } catch {
             errorMessage = String(localized: "Nie udało się zapisać. Spróbuj ponownie.")
+        }
+    }
+
+    private func duplicate() {
+        do {
+            try repository.duplicate(meal)
+            Haptics.success()
+            onChanged()
+            onDismiss()
+        } catch {
+            errorMessage = String(localized: "Nie udało się zduplikować. Spróbuj ponownie.")
         }
     }
 

@@ -99,6 +99,34 @@ final class MealRepositoryTests: XCTestCase {
         XCTAssertEqual(stored?.tags, ["restaurant", "post-workout"])
     }
 
+    // MARK: - Duplicate
+
+    func testDuplicateProducesFreshEntryWithCopiedItems() throws {
+        let meal = try seedMeal(kcal: 420, portion: 1.25)
+        let original = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        try repository.updateTags(meal, tags: ["restaurant"])
+
+        let copy = try repository.duplicate(meal)
+
+        let all = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>())
+        XCTAssertEqual(all.count, 2)
+        XCTAssertNotEqual(copy.id, original?.id)
+        XCTAssertEqual(copy.portionMultiplier, 1.25)
+        XCTAssertEqual(copy.items.count, 1)
+        XCTAssertNotEqual(copy.items.first?.id, original?.items.first?.id)
+        XCTAssertEqual(copy.tags, ["restaurant"])
+        XCTAssertNil(copy.photoFilename)
+    }
+
+    func testDuplicateUsesProvidedDate() throws {
+        let meal = try seedMeal()
+        let target = Date(timeIntervalSince1970: 1_700_000_000)
+        let copy = try repository.duplicate(meal, at: target)
+        XCTAssertEqual(copy.consumedAt, target)
+    }
+
     func testUpdateTagsOnMissingMealThrows() throws {
         let ghost = MealEntry(mealType: .snack, source: .manual)
         XCTAssertThrowsError(try repository.updateTags(ghost, tags: ["x"])) { error in
