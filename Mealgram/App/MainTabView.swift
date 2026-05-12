@@ -256,6 +256,7 @@ struct MainTabView: View {
         .fullScreenCover(isPresented: $isVoicePresented) {
             VoiceRootView(
                 mealSaver: mealSaver,
+                parser: VoiceMealParser(catalog: (try? foodCatalog.all()) ?? []),
                 onDismiss: {
                     isVoicePresented = false
                     refreshAfterSave()

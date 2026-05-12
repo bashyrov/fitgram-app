@@ -19,10 +19,16 @@ final class VoiceFlowState {
 
     private let session: VoiceCaptureSession
     private let mealSaver: any MealSaving
+    private let parser: VoiceMealParser
 
-    init(session: VoiceCaptureSession, mealSaver: any MealSaving) {
+    init(
+        session: VoiceCaptureSession,
+        mealSaver: any MealSaving,
+        parser: VoiceMealParser = VoiceMealParser()
+    ) {
         self.session = session
         self.mealSaver = mealSaver
+        self.parser = parser
     }
 
     func start() async {
@@ -72,17 +78,11 @@ final class VoiceFlowState {
     }
 
     func commit(transcript: String) throws {
-        // Without AI parsing the transcript is a free-form name. The user
-        // can refine grams + macros via the standard editor in the next
-        // pass; for now we save a 1-item placeholder.
-        let item = FoodItem(
-            name: transcript.trimmingCharacters(in: .whitespacesAndNewlines),
-            quantityGrams: 100,
-            caloriesKcal: 0,
-            proteinGrams: 0,
-            carbsGrams: 0,
-            fatGrams: 0
-        )
+        // Run the regex parser first — handles "owsianka 250g 400 kcal"
+        // and similar. If a Food catalog is wired in, the matched row
+        // contributes real per-100g macros. Falls back to a 100g
+        // placeholder for transcripts the regexes can't extract.
+        let item = parser.parse(transcript)
         let suggested = Self.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date()))
         let entry = MealEntry(mealType: suggested, source: .voice, items: [item])
         try mealSaver.save(meal: entry)

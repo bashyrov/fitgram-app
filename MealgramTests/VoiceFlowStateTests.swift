@@ -23,6 +23,9 @@ final class VoiceFlowStateTests: XCTestCase {
         let saved = try XCTUnwrap(saver.saved)
         XCTAssertEqual(saved.source, .voice)
         XCTAssertEqual(saved.items.count, 1)
-        XCTAssertEqual(saved.items.first?.name, "zjadłam ovsiankę z malinami")
+        // VoiceMealParser capitalises the residual name when no catalog
+        // match exists. The full transcript is preserved; only casing
+        // differs.
+        XCTAssertEqual(saved.items.first?.name, "Zjadłam Ovsiankę Z Malinami")
     }
 }
