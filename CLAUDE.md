@@ -112,8 +112,12 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Coach feedback thumbs: optional Bool? on CoachInsightLog (lightweight
   migration). "Pomocne?" row on WeeklyDebriefView collapses to a
   thank-you after thumbs-up or thumbs-down.
+- Meal photo persistence: MealPhotoStore writes JPEG to
+  Documents/MealPhotos/ under fresh UUID filenames. ScanState.commit
+  persists imageData → sets MealEntry.photoFilename. MealDetailSheet
+  shows a 200pt photo header when filename resolves.
 
-229 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+235 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
