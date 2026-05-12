@@ -10,7 +10,9 @@ struct OnboardingView: View {
         ZStack {
             Tokens.Palette.background.ignoresSafeArea()
             VStack(spacing: Tokens.Space.lg) {
-                header
+                if flow.currentStep != .celebration {
+                    header
+                }
                 stepBody
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -61,6 +63,11 @@ struct OnboardingView: View {
                 NotificationStepView { flow.advance() }
             case .paywall:
                 PaywallStepView { flow.advance() }
+            case .celebration:
+                CelebrationStepView(
+                    displayName: flow.displayName,
+                    onContinue: { Task { await flow.complete() } }
+                )
             }
         }
         .transition(.opacity)

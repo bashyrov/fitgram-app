@@ -39,6 +39,7 @@ final class OnboardingFlowTests: XCTestCase {
             .calibration,
             .notifications,
             .paywall,
+            .celebration,
         ] {
             flow.advance()
             XCTAssertEqual(flow.currentStep, expected)
@@ -52,10 +53,21 @@ final class OnboardingFlowTests: XCTestCase {
             outcome = result
             expectation.fulfill()
         }
-        flow.jump(to: .paywall)
+        flow.jump(to: .celebration)
         flow.advance()
         await fulfillment(of: [expectation], timeout: 2)
         XCTAssertEqual(outcome, .completed)
+    }
+
+    func testPaywallAdvancesToCelebration() {
+        let flow = makeFlow()
+        flow.jump(to: .paywall)
+        flow.advance()
+        XCTAssertEqual(flow.currentStep, .celebration)
+    }
+
+    func testProgressTotalExcludesCelebrationCoda() {
+        XCTAssertEqual(OnboardingFlow.Step.welcome.progressTotal, OnboardingFlow.Step.allCases.count - 1)
     }
 
     func testGoBackHonorsBounds() {

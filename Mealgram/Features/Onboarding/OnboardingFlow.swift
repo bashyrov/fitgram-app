@@ -16,11 +16,15 @@ final class OnboardingFlow {
         case calibration
         case notifications
         case paywall
+        case celebration
 
         var id: Int { rawValue }
 
         var progressIndex: Int { rawValue }
-        var progressTotal: Int { Step.allCases.count }
+        /// Total *visible* steps for the progress bar — the celebration
+        /// is a coda, not a step the user has to "complete", so we exclude
+        /// it from the denominator.
+        var progressTotal: Int { Step.allCases.count - 1 }
     }
 
     enum CompletionOutcome: Equatable {
@@ -36,6 +40,10 @@ final class OnboardingFlow {
     private let authUser: AuthUser
     private let userRepository: UserRepository
     private let onFinished: @MainActor (CompletionOutcome) -> Void
+
+    /// Surface name for the celebration step ("Witaj, X!"). Sourced from
+    /// the AuthUser the flow was initialised with.
+    var displayName: String? { authUser.displayName }
 
     init(
         authUser: AuthUser,
