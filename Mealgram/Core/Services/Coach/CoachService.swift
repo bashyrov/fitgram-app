@@ -13,6 +13,7 @@ final class CoachService {
     private let generator: any CoachInsightGenerator
     private let calendar: Calendar
     private let now: () -> Date
+    private let logStore: CoachInsightLogStore?
 
     init(
         container: ModelContainer,
@@ -20,6 +21,7 @@ final class CoachService {
         weightService: WeightService,
         culturalEvents: CulturalEventService = CulturalEventService(),
         generator: any CoachInsightGenerator = RuleBasedCoach(),
+        logStore: CoachInsightLogStore? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
@@ -28,6 +30,7 @@ final class CoachService {
         self.weightService = weightService
         self.culturalEvents = culturalEvents
         self.generator = generator
+        self.logStore = logStore
         self.calendar = calendar
         self.now = now
     }
@@ -43,7 +46,27 @@ final class CoachService {
 
     func weeklyDebrief(for userRemoteID: String) -> WeeklyDebrief {
         let context = buildContext(for: userRemoteID)
-        return WeeklyDebrief.from(context: context, generator: generator, now: now())
+        let debrief = WeeklyDebrief.from(context: context, generator: generator, now: now())
+        logStore?.record(debrief, for: userRemoteID)
+        return debrief
+    }
+
+    func history(for userRemoteID: String, limit: Int = 12) -> [CoachInsightLog] {
+        logStore?.recent(for: userRemoteID, limit: limit) ?? []
+    }
+
+    func decode(log: CoachInsightLog) -> [CoachInsight] {
+        guard let logStore else { return [] }
+        return logStore.decodeInsights(log.insightsJSON).compactMap { stored in
+            guard let tone = CoachInsight.Tone(rawValue: stored.tone) else { return nil }
+            return CoachInsight(
+                tone: tone,
+                headline: stored.headline,
+                body: stored.body,
+                actionTitle: stored.actionTitle,
+                actionKind: stored.actionKind.flatMap { CoachInsight.ActionKind(rawValue: $0) }
+            )
+        }
     }
 
     // MARK: - Context assembly
