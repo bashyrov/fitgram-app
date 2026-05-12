@@ -48,8 +48,38 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   CoachContext snapshot. AIInsightCard renders headline insight with
   optional CTA chip wired through to scanner/quickDB/recipes/weight
   tab. Claude-backed generator slots in behind same protocol.
+- M3.1 expansion: Weekly Debrief sheet "Co u Ciebie" — stats grid
+  (avg kcal / calorie days hit / protein days hit / days logged /
+  current streak) + full insight list. Headline ladder Cudowny →
+  Solidny → Mieszany → łapać rytm based on calorie days in window.
+  Entry shortcut card on Today between insight + meals.
+- Meal edit/delete: MealRepository (delete + updatePortion via cross-
+  context id-refetch). MealDetailSheet raised by tapping any timeline
+  row. Portion slider + destructive confirm. Refresh fans out to
+  TodayState + ProgressState via existing pipeline.
+- M2.10 expansion: 30-day calorie chart on Tydzień tab — bars per day
+  + 7-day moving average line + goal RuleMark. ProgressState now
+  reads 30 days in a single query and reuses the slice for the 7-day
+  bucket.
+- Profile activity heatmap: 90-day GitHub-style contribution grid
+  driven by daily calorie totals (4 intensity tiers). Mon-first
+  weekday rows, sage palette.
+- M4.3 partial: Weekly Challenges — 6 catalog challenges (logged days,
+  protein days, calorie band, breakfast days, distinct foods, recipe
+  cooks). Auto-rolling per ISO week (Mon start). Pure ChallengeEvaluator
+  + ChallengeService glue. Profile entry "Wyzwania tygodnia (N
+  ukończone)" raises sheet with per-challenge progress bars.
+- M2.9 Local notifications: NotificationService over UNUserNotification-
+  Center + pure NotificationPlanner + UserDefaults-backed Preferences-
+  Store + Coordinator (reschedules at launch + after every meal save
+  via ChainedMealSaver). Three channels (morning/streak-risk/evening),
+  morning + streak-risk silenced once user logs today.
+- Achievements grown 8 → 14: recipe.first / voice.first / quickdb.first
+  / weight.tracked / macros.balanced (±10 % on all 3 goals one day) /
+  week.consistent (7 days in a row, beats streak.* for early users).
+  Engine Inputs struct carries macro goals + weight flag.
 
-158 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+188 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
