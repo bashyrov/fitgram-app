@@ -202,7 +202,7 @@ struct ScanResultView: View {
                     .padding(.vertical, Tokens.Space.sm)
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("scan.results.addItem")
+                .accessibilityIdentifier(A11yID.Scan.addItem)
             }
         }
     }

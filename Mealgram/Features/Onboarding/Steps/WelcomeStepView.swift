@@ -36,6 +36,7 @@ struct WelcomeStepView: View {
 
                 PrimaryButton(title: "Zacznijmy", systemImage: "arrow.right", action: onContinue)
                     .padding(.horizontal, Tokens.Space.screenPadding)
+                    .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
             }
             .padding(.vertical, Tokens.Space.xl)
         }
