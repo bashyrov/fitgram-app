@@ -21,10 +21,86 @@
 ## Key Patterns
 
 - **MV** for read-mostly screens (Today, Profile, Progress).
-- **TCA** for flows with side effects + dependent state (Camera, Coach, Recipe parsing).
+- **TCA** was intended for Camera / Coach / Recipe parsing; in practice the
+  scope of each turned out small enough that `@Observable` state machines
+  + injected services match the same shape with less ceremony. TCA stays
+  in the toolbox if a flow grows beyond what MV + services handles cleanly.
 - **Repository** between SwiftData and feature modules.
 - **Protocol-oriented services** for dependency injection and testability.
-- **Coordinators** only when navigation cannot be expressed as `NavigationStack` + path.
+  Every external surface (HealthKit, food catalog, barcode lookup, meal
+  save) is fronted by a protocol so tests can swap an in-memory stub.
+- **`MealSaving` as the side-effect spine** — every meal-entry path
+  (photo, barcode, quick-db, voice, recipe) writes through this protocol;
+  `ChainedMealSaver` in `RootView.swift` is the single place where
+  streak / achievement / calibration side-effects fan out.
+- **Coordinators** — `AppRouter` is the only navigation coordinator;
+  every other surface uses `NavigationStack` + `sheet` / `fullScreenCover`.
+
+## Module map
+
+```
+Mealgram/
+├── App/                     composition root + routing
+│   ├── MealgramApp.swift    @main, builds every service + state
+│   ├── AppRouter.swift      AuthSession.phase → launching|anonymous|onboarding|main
+│   ├── RootView.swift       routes by AppRouter.phase + hosts ChainedMealSaver
+│   └── MainTabView.swift    Today/Add/Progress/Profile + 5 entry sheets
+├── Core/
+│   ├── Models/              @Model SwiftData rows (User, MealEntry, FoodItem,
+│   │                        Food, Recipe, RecipeIngredient, Calibration,
+│   │                        Streak, Achievement, WeightEntry)
+│   ├── Persistence/         MealgramSchemaV1 + PersistenceController
+│   ├── Networking/          APIClient + Endpoint + interceptors + RetryPolicy
+│   ├── Services/
+│   │   ├── Auth/            AuthService + AppleAuthProvider + stubs
+│   │   ├── Achievements/    AchievementEngine + Service + UnlockBus
+│   │   ├── Calibration/     CalibrationService
+│   │   ├── HealthKit/       HealthKitService (read-only body mass)
+│   │   ├── FoodCatalog/     FoodCatalogService + FoodSeeder + bundled JSON
+│   │   ├── CulturalEvents/  Polish event calendar + Easter algorithm
+│   │   ├── Keychain/        Keychain + TokenStore
+│   │   ├── UserRepository · StreakService · DataExportService
+│   │   ├── AccountDeletionService · AvatarStore · WeightService
+│   └── Utilities/           Logger+, DebugBypass
+├── DesignSystem/
+│   ├── Tokens/              Palette, Font, Space, Radius, Motion, Shadow
+│   ├── Components/          PrimaryButton, SecondaryButton, Card, EmptyState
+│   ├── PressableButtonStyle.swift
+│   └── AccessibilityIdentifiers.swift  central A11yID catalog
+├── Features/                one folder per product surface
+│   ├── Auth · Onboarding · Today · Camera · Barcode · QuickDatabase
+│   ├── Voice · Recipes · Progress · Profile · Calibration · Weight
+│   └── Achievements
+├── Resources/               Assets.xcassets, Localizable.xcstrings, Seeds
+└── Supporting/              Info.plist, Mealgram.entitlements, PrivacyInfo
+```
+
+## Save-path topology
+
+Every `MealEntry` save flows through the same chain so behaviours stay
+in one place:
+
+```
+Feature view (ScanState, BarcodeFlowState, QuickDatabaseRootView, …)
+        │ try mealSaver.save(meal:)
+        ▼
+ChainedMealSaver (RootView.swift, @MainActor, private)
+  │  1. If meal.source == .photoScan AND calibration.factor != 1.0
+  │     → meal.portionMultiplier *= factor (M2.1)
+  │  2. try underlying.save(meal:)            (real persistence)
+  │  3. If source == .photoScan: calibrationService.recordSample()
+  │  4. streakService.registerLog(userRemoteID)
+  │  5. unlocks = achievementService.evaluate(userRemoteID)
+  │  6. unlockBus.push(unlocks)               (overlay banner)
+        ▼
+SwiftDataMealSaver
+        │ context.insert(meal); context.save()
+        ▼
+SwiftData store  (M1.2 schema v1.0)
+```
+
+`MainTabView.refreshAfterSave()` then re-pulls `TodayState` and
+`ProgressState` so dashboards reflect the new entry.
 
 ## Service Architecture
 
