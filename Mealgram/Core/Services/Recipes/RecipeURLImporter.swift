@@ -125,7 +125,9 @@ struct RecipeURLImporter {
             caloriesPerServing: nutrition.flatMap { parseNumber($0["calories"]) },
             proteinPerServing: nutrition.flatMap { parseNumber($0["proteinContent"]) },
             carbsPerServing: nutrition.flatMap { parseNumber($0["carbohydrateContent"]) },
-            fatPerServing: nutrition.flatMap { parseNumber($0["fatContent"]) }
+            fatPerServing: nutrition.flatMap { parseNumber($0["fatContent"]) },
+            prepMinutes: parseISO8601Minutes(node["prepTime"]),
+            cookMinutes: parseISO8601Minutes(node["cookTime"]) ?? parseISO8601Minutes(node["totalTime"])
         )
     }
 
@@ -168,6 +170,28 @@ struct RecipeURLImporter {
             return parseServings(first)
         }
         return 2
+    }
+
+    /// Parses an ISO-8601 duration (`PT30M`, `PT1H15M`, `PT2H`) into a
+    /// minute count. Public for tests.
+    static func parseISO8601Minutes(_ value: Any?) -> Int? {
+        guard let string = value as? String,
+            !string.isEmpty,
+            string.hasPrefix("PT") || string.hasPrefix("P")
+        else { return nil }
+        let body = string.replacingOccurrences(of: "PT", with: "").replacingOccurrences(of: "P", with: "")
+        var minutes = 0
+        let hoursMatch = body.range(of: #"(\d+)H"#, options: .regularExpression)
+        let minutesMatch = body.range(of: #"(\d+)M"#, options: .regularExpression)
+        if let hoursMatch {
+            let hoursString = body[hoursMatch].dropLast()
+            minutes += (Int(hoursString) ?? 0) * 60
+        }
+        if let minutesMatch {
+            let minutesString = body[minutesMatch].dropLast()
+            minutes += Int(minutesString) ?? 0
+        }
+        return minutes > 0 ? minutes : nil
     }
 
     private static func parseNumber(_ value: Any?) -> Double? {
