@@ -20,6 +20,7 @@ struct MainTabView: View {
     @State private var isScanPresented = false
     @State private var isBarcodePresented = false
     @State private var isQuickDBPresented = false
+    @State private var isVoicePresented = false
     @State private var selectedTab: Tab = .today
 
     enum Tab: Hashable {
@@ -95,6 +96,9 @@ struct MainTabView: View {
             Button("🔎 Szybka baza") {
                 isQuickDBPresented = true
             }
+            Button("🎙 Powiedz na głos") {
+                isVoicePresented = true
+            }
             Button("Anuluj", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $isScanPresented) {
@@ -120,6 +124,15 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isQuickDBPresented = false
+                    Task { await todayState.refresh(for: authUser.id) }
+                }
+            )
+        }
+        .fullScreenCover(isPresented: $isVoicePresented) {
+            VoiceRootView(
+                mealSaver: mealSaver,
+                onDismiss: {
+                    isVoicePresented = false
                     Task { await todayState.refresh(for: authUser.id) }
                 }
             )
