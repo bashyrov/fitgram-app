@@ -2,6 +2,48 @@
   "sourceLanguage" : "pl",
   "version" : "1.0",
   "strings" : {
+    "📦 Kod kreskowy" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "📦 Kod kreskowy" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "📦 Barcode" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "📦 Штрихкод" } }
+      }
+    },
+    "📖 Mój przepis" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "📖 Mój przepis" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "📖 My recipe" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "📖 Мій рецепт" } }
+      }
+    },
+    "📸 Zdjęcie posiłku" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "📸 Zdjęcie posiłku" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "📸 Photo of meal" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "📸 Фото страви" } }
+      }
+    },
+    "🎙 Powiedz na głos" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "🎙 Powiedz na głos" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "🎙 Say out loud" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "🎙 Скажіть уголос" } }
+      }
+    },
+    "🔎 Szybka baza" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "🔎 Szybka baza" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "🔎 Quick database" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "🔎 Швидка база" } }
+      }
+    },
+    "Aktywność 90 dni" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Aktywność 90 dni" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "90-day activity" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Активність 90 днів" } }
+      }
+    },
     "Anuluj" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
@@ -9,11 +51,130 @@
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Скасувати" } }
       }
     },
+    "Brawo!" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Brawo!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Well done!" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Молодець!" } }
+      }
+    },
+    "Cele dzienne" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Cele dzienne" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Daily goals" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Денні цілі" } }
+      }
+    },
+    "Co u Ciebie" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Co u Ciebie" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "How are you doing" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Як у тебе справи" } }
+      }
+    },
+    "Cofnij" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Cofnij" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Undo" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Скасувати" } }
+      }
+    },
+    "Cześć" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Cześć" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hi" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Привіт" } }
+      }
+    },
+    "Dobry wieczór" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dobry wieczór" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Good evening" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Доброго вечора" } }
+      }
+    },
+    "Dodaj" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати" } }
+      }
+    },
     "Dodaj posiłek" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Add meal" } },
         "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj posiłek" } },
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати прийом їжі" } }
+      }
+    },
+    "Dodaj znajomego" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj znajomego" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add friend" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати друга" } }
+      }
+    },
+    "Dziś" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dziś" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Today" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Сьогодні" } }
+      }
+    },
+    "Dzień dobry" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dzień dobry" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Good morning" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Доброго ранку" } }
+      }
+    },
+    "Edytuj" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Edytuj" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Редагувати" } }
+      }
+    },
+    "Eksport CSV (Excel)" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Eksport CSV (Excel)" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CSV export (Excel)" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Експорт CSV (Excel)" } }
+      }
+    },
+    "Hej" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Hej" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hey" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Гей" } }
+      }
+    },
+    "Historia Oli" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Historia Oli" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Ola's history" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Історія Olі" } }
+      }
+    },
+    "Importuj przepis" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Importuj przepis" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import recipe" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Імпортувати рецепт" } }
+      }
+    },
+    "Importuj z URL" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Importuj z URL" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import from URL" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Імпортувати з URL" } }
+      }
+    },
+    "Jak chcesz dodać?" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Jak chcesz dodać?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "How would you like to add?" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Як ви хочете додати?" } }
       }
     },
     "Ładowanie" : {
@@ -38,11 +199,123 @@
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } }
       }
     },
+    "Mój kod" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mój kod" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "My code" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Мій код" } }
+      }
+    },
+    "Nie" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Nie" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ні" } }
+      }
+    },
+    "Pobierz eksport JSON" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pobierz eksport JSON" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Download JSON export" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Завантажити експорт JSON" } }
+      }
+    },
+    "Pokaż mój kod" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pokaż mój kod" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show my code" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Показати мій код" } }
+      }
+    },
     "Pomiń" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Skip" } },
         "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pomiń" } },
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Пропустити" } }
+      }
+    },
+    "Pomocne?" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pomocne?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Helpful?" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Корисно?" } }
+      }
+    },
+    "Posiłek" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Posiłek" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Meal" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Страва" } }
+      }
+    },
+    "Posiłek usunięty" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Posiłek usunięty" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Meal deleted" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Страву видалено" } }
+      }
+    },
+    "Preferencje" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Preferencje" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Preferences" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Налаштування" } }
+      }
+    },
+    "Profil" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Profil" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Profile" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Профіль" } }
+      }
+    },
+    "Razem" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Razem" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Total" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Всього" } }
+      }
+    },
+    "Seria zagrożona" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Seria zagrożona" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Streak at risk" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Серія під загрозою" } }
+      }
+    },
+    "Szukaj w historii" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Szukaj w historii" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search history" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Пошук в історії" } }
+      }
+    },
+    "Tablica wyników" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Tablica wyników" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Leaderboard" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Рейтинг" } }
+      }
+    },
+    "Tak" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Tak" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Yes" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Так" } }
+      }
+    },
+    "Tydzień" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Tydzień" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Week" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Тиждень" } }
+      }
+    },
+    "Twoje dane" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Twoje dane" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your data" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ваші дані" } }
       }
     },
     "Twój spokojny tracker kalorii." : {
@@ -52,6 +325,48 @@
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Твій спокійний трекер калорій." } }
       }
     },
+    "Udostępnij serię" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Udostępnij serię" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Share streak" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Поділитися серією" } }
+      }
+    },
+    "Ukryj na dziś" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Ukryj na dziś" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hide for today" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Сховати сьогодні" } }
+      }
+    },
+    "Usuń" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Usuń" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Видалити" } }
+      }
+    },
+    "Witaj w Mealgram!" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Witaj w Mealgram!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Welcome to Mealgram!" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ласкаво просимо в Mealgram!" } }
+      }
+    },
+    "Wpisz ręcznie" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wpisz ręcznie" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enter manually" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ввести вручну" } }
+      }
+    },
+    "Wróć" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wróć" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Back" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Назад" } }
+      }
+    },
     "Wyłączony" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Disabled" } },
@@ -59,11 +374,46 @@
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Вимкнено" } }
       }
     },
+    "Wyzwania tygodnia" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wyzwania tygodnia" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Weekly challenges" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Виклики тижня" } }
+      }
+    },
     "Zacznij" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Get started" } },
         "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zacznij" } },
         "uk" : { "stringUnit" : { "state" : "translated", "value" : "Почати" } }
+      }
+    },
+    "Zaczynamy" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zaczynamy" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Let's start" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Поїхали" } }
+      }
+    },
+    "Zamknij" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zamknij" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Закрити" } }
+      }
+    },
+    "Zapisz" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zapisz" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Save" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Зберегти" } }
+      }
+    },
+    "Znajomi" : {
+      "localizations" : {
+        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Znajomi" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Friends" } },
+        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Друзі" } }
       }
     }
   }
