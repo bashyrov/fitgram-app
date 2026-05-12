@@ -11,6 +11,9 @@ struct RecipeListView: View {
 
     @State private var formMode: FormPresentation?
     @State private var detailRecipe: Recipe?
+    @State private var isImportPresented = false
+
+    private let importer = RecipeURLImporter()
 
     private enum FormPresentation: Identifiable {
         case adding
@@ -49,8 +52,17 @@ struct RecipeListView: View {
                             Image(systemName: "arrow.up.arrow.down")
                         }
                         .accessibilityLabel(Text("Sortuj"))
-                        Button {
-                            formMode = .adding
+                        Menu {
+                            Button {
+                                formMode = .adding
+                            } label: {
+                                Label("Wpisz ręcznie", systemImage: "square.and.pencil")
+                            }
+                            Button {
+                                isImportPresented = true
+                            } label: {
+                                Label("Importuj z URL", systemImage: "link")
+                            }
                         } label: {
                             Image(systemName: "plus")
                         }
@@ -68,6 +80,17 @@ struct RecipeListView: View {
                     onCommit: { draft in handle(draft: draft, mode: mode) },
                     onDismiss: { formMode = nil },
                     estimator: estimator
+                )
+            }
+            .sheet(isPresented: $isImportPresented) {
+                RecipeImportSheet(
+                    importer: importer,
+                    onImported: { draft in
+                        isImportPresented = false
+                        handle(draft: draft, mode: .adding)
+                        Task { await state.refresh() }
+                    },
+                    onDismiss: { isImportPresented = false }
                 )
             }
             .sheet(item: $detailRecipe) { recipe in
