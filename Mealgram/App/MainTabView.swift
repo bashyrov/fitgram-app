@@ -90,7 +90,8 @@ struct MainTabView: View {
                 state: todayState,
                 onOpenProfile: { selectedTab = .profile },
                 onOpenScanner: { isScanPresented = true },
-                onCookSuggested: { recipe in cookSuggested(recipe) }
+                onCookSuggested: { recipe in cookSuggested(recipe) },
+                onCoachAction: { kind in handleCoachAction(kind) }
             )
             .tabItem {
                 Label("Dziś", systemImage: "sun.max.fill")
@@ -230,6 +231,15 @@ struct MainTabView: View {
         Task {
             await todayState.refresh(for: authUser.id)
             await progressState.refresh(for: authUser.id)
+        }
+    }
+
+    private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
+        switch kind {
+        case .openScanner: isScanPresented = true
+        case .openQuickDB: isQuickDBPresented = true
+        case .openRecipes: isRecipesPresented = true
+        case .openWeightLog: selectedTab = .profile
         }
     }
 

@@ -9,6 +9,17 @@ struct TodayView: View {
     let onOpenProfile: () -> Void
     let onOpenScanner: () -> Void
     var onCookSuggested: ((Recipe) -> Void)?
+    var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
+
+    private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
+        if let onCoachAction {
+            onCoachAction(kind)
+            return
+        }
+        // Fall back to the scanner — every action variant ultimately
+        // expects something log-able.
+        onOpenScanner()
+    }
 
     var body: some View {
         ZStack {
@@ -38,12 +49,11 @@ struct TodayView: View {
                         fatGoal: state.user?.fatGoalGrams ?? 70
                     )
 
-                    AIInsightCard(
-                        consumed: state.totals.calories,
-                        goal: state.calorieGoal,
-                        proteinGrams: state.totals.protein,
-                        proteinGoal: state.user?.proteinGoalGrams ?? 120
-                    )
+                    if let insight = state.coachInsights.first {
+                        AIInsightCard(insight: insight) { kind in
+                            handleCoachAction(kind)
+                        }
+                    }
 
                     if let upcoming = state.upcomingEvent {
                         CulturalEventBanner(upcoming: upcoming)
