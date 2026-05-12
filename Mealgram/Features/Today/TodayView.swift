@@ -42,6 +42,7 @@ struct TodayView: View {
                             streakLength: streak.currentLength,
                             freezesAvailable: streak.freezesAvailable
                         ) {
+                            Haptics.success()
                             Task { await state.consumeFreeze(for: userRemoteID) }
                         }
                     }

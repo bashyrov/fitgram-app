@@ -225,12 +225,14 @@ private struct ChainedMealSaver: MealSaving {
             }
         }
         try underlying.save(meal: meal)
+        Haptics.success()
         if meal.source == .photoScan {
             try? calibrationService.recordSample(forUser: userRemoteID)
         }
         try? streakService.registerLog(for: userRemoteID)
         if let unlocks = try? achievementService.evaluate(forUser: userRemoteID), !unlocks.isEmpty {
             unlockBus.push(unlocks)
+            Haptics.medium()
             Task {
                 for unlock in unlocks {
                     await notificationCoordinator.notifyAchievement(unlock)
