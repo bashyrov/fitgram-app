@@ -12,6 +12,8 @@ struct RootView: View {
     let streakService: StreakService
     let accountDeletionService: AccountDeletionService
     let exportService: DataExportService
+    let achievementService: AchievementService
+    let unlockBus: AchievementUnlockBus
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -23,7 +25,9 @@ struct RootView: View {
         todayState: TodayState,
         streakService: StreakService,
         accountDeletionService: AccountDeletionService,
-        exportService: DataExportService
+        exportService: DataExportService,
+        achievementService: AchievementService,
+        unlockBus: AchievementUnlockBus
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -32,6 +36,8 @@ struct RootView: View {
         self.streakService = streakService
         self.accountDeletionService = accountDeletionService
         self.exportService = exportService
+        self.achievementService = achievementService
+        self.unlockBus = unlockBus
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -52,9 +58,13 @@ struct RootView: View {
                     mealSaver: ChainedMealSaver(
                         underlying: mealSaver,
                         streakService: streakService,
+                        achievementService: achievementService,
+                        unlockBus: unlockBus,
                         userRemoteID: authUser.id
                     ),
                     exportService: exportService,
+                    achievementService: achievementService,
+                    unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
                     todayState: todayState
@@ -123,16 +133,21 @@ struct RootView: View {
     }
 }
 
-/// Wraps a `MealSaving` with a streak side-effect. Lets us keep
-/// SwiftDataMealSaver pure while still bumping the streak counter inside
-/// the same save action.
+/// Wraps a `MealSaving` with the streak + achievement side-effects. Keeps
+/// `SwiftDataMealSaver` pure while still letting one save propagate the
+/// streak counter and any newly-unlocked achievement banners.
 private struct ChainedMealSaver: MealSaving {
     let underlying: any MealSaving
     let streakService: StreakService
+    let achievementService: AchievementService
+    let unlockBus: AchievementUnlockBus
     let userRemoteID: String
 
     func save(meal: MealEntry) throws {
         try underlying.save(meal: meal)
         try? streakService.registerLog(for: userRemoteID)
+        if let unlocks = try? achievementService.evaluate(forUser: userRemoteID), !unlocks.isEmpty {
+            unlockBus.push(unlocks)
+        }
     }
 }

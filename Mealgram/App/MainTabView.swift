@@ -8,6 +8,8 @@ struct MainTabView: View {
     let authUser: AuthUser
     let mealSaver: any MealSaving
     let exportService: DataExportService
+    let achievementService: AchievementService
+    let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
     let todayState: TodayState
@@ -49,6 +51,7 @@ struct MainTabView: View {
                 user: todayState.user,
                 streak: todayState.streak,
                 exportService: exportService,
+                achievementService: achievementService,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount
             )
@@ -58,6 +61,16 @@ struct MainTabView: View {
             .tag(Tab.profile)
         }
         .tint(Tokens.Palette.primary)
+        .overlay(alignment: .top) {
+            if let current = unlockBus.current {
+                AchievementUnlockBanner(definition: current) {
+                    unlockBus.consume()
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .padding(.top, Tokens.Space.lg)
+            }
+        }
+        .animation(Tokens.Motion.gentle, value: unlockBus.queue.count)
         .onChange(of: selectedTab) { _, newValue in
             if newValue == .add {
                 addOptionsVisible = true

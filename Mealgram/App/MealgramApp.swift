@@ -4,11 +4,13 @@ import SwiftUI
 @main
 struct MealgramApp: App {
     @State private var session: AuthSession
+    @State private var unlockBus: AchievementUnlockBus
     private let authService: AuthService
     private let persistenceController: PersistenceController
     private let userRepository: UserRepository
     private let mealSaver: any MealSaving
     private let streakService: StreakService
+    private let achievementService: AchievementService
     private let todayState: TodayState
     private let accountDeletionService: AccountDeletionService
     private let exportService: DataExportService
@@ -22,6 +24,7 @@ struct MealgramApp: App {
         ]
         let persistence = PersistenceController.shared
         self._session = State(initialValue: session)
+        self._unlockBus = State(initialValue: AchievementUnlockBus())
         let authService = AuthService(providers: providers, session: session)
         self.authService = authService
         self.persistenceController = persistence
@@ -29,6 +32,7 @@ struct MealgramApp: App {
         self.mealSaver = SwiftDataMealSaver(container: persistence.container)
         let streakService = StreakService(container: persistence.container)
         self.streakService = streakService
+        self.achievementService = AchievementService(container: persistence.container)
         self.todayState = TodayState(container: persistence.container, streakService: streakService)
         self.accountDeletionService = AccountDeletionService(
             authService: authService,
@@ -46,7 +50,9 @@ struct MealgramApp: App {
                 todayState: todayState,
                 streakService: streakService,
                 accountDeletionService: accountDeletionService,
-                exportService: exportService
+                exportService: exportService,
+                achievementService: achievementService,
+                unlockBus: unlockBus
             )
             .environment(session)
             .modelContainer(persistenceController.container)
