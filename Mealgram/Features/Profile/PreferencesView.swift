@@ -10,6 +10,7 @@ struct PreferencesView: View {
 
     @Environment(\.modelContext) private var modelContext
     @AppStorage("preferences.morningReminderEnabled") private var morningEnabled = true
+    @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
     @AppStorage("preferences.eveningReminderEnabled") private var eveningEnabled = true
     @AppStorage("preferences.usesMetric") private var usesMetric = true
 
@@ -49,6 +50,7 @@ struct PreferencesView: View {
                                     .font(Tokens.Font.headline)
                                     .foregroundStyle(Tokens.Palette.ink)
                                 Toggle("Poranny budzik 8:00", isOn: $morningEnabled)
+                                Toggle("Seria zagrożona 20:30", isOn: $streakRiskEnabled)
                                 Toggle("Wieczorne podsumowanie 21:00", isOn: $eveningEnabled)
                             }
                         }

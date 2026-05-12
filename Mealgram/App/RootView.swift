@@ -19,6 +19,7 @@ struct RootView: View {
     let recipeRepository: RecipeRepository
     let weightService: WeightService
     let friendService: any FriendService
+    let notificationCoordinator: NotificationCoordinator
     let unlockBus: AchievementUnlockBus
 
     @State private var router: AppRouter
@@ -39,6 +40,7 @@ struct RootView: View {
         recipeRepository: RecipeRepository,
         weightService: WeightService,
         friendService: any FriendService,
+        notificationCoordinator: NotificationCoordinator,
         unlockBus: AchievementUnlockBus
     ) {
         self.authService = authService
@@ -55,6 +57,7 @@ struct RootView: View {
         self.recipeRepository = recipeRepository
         self.weightService = weightService
         self.friendService = friendService
+        self.notificationCoordinator = notificationCoordinator
         self.unlockBus = unlockBus
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
@@ -78,6 +81,7 @@ struct RootView: View {
                         streakService: streakService,
                         achievementService: achievementService,
                         calibrationService: calibrationService,
+                        notificationCoordinator: notificationCoordinator,
                         unlockBus: unlockBus,
                         userRemoteID: authUser.id
                     ),
@@ -95,6 +99,9 @@ struct RootView: View {
                     progressState: progressState
                 )
                 .transition(.opacity)
+                .task(id: authUser.id) {
+                    await notificationCoordinator.rescheduleAll(for: authUser.id)
+                }
             }
         }
         .animation(Tokens.Motion.gentle, value: phaseKey)
@@ -167,6 +174,7 @@ private struct ChainedMealSaver: MealSaving {
     let streakService: StreakService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
+    let notificationCoordinator: NotificationCoordinator
     let unlockBus: AchievementUnlockBus
     let userRemoteID: String
 
@@ -188,5 +196,6 @@ private struct ChainedMealSaver: MealSaving {
         if let unlocks = try? achievementService.evaluate(forUser: userRemoteID), !unlocks.isEmpty {
             unlockBus.push(unlocks)
         }
+        Task { await notificationCoordinator.rescheduleAll(for: userRemoteID) }
     }
 }
