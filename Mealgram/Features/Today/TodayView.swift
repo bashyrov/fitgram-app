@@ -12,6 +12,7 @@ struct TodayView: View {
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
     var onOpenWeeklyDebrief: (() -> Void)?
     var onSelectMeal: ((MealEntry) -> Void)?
+    var onDismissInsight: ((CoachInsight) -> Void)?
 
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
@@ -61,9 +62,13 @@ struct TodayView: View {
                     )
 
                     if let insight = state.coachInsights.first {
-                        AIInsightCard(insight: insight) { kind in
-                            handleCoachAction(kind)
-                        }
+                        AIInsightCard(
+                            insight: insight,
+                            onAction: { kind in handleCoachAction(kind) },
+                            onDismiss: onDismissInsight.map { handler in
+                                { handler(insight) }
+                            }
+                        )
                     }
 
                     if let onOpenWeeklyDebrief {
