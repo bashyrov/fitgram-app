@@ -62,6 +62,19 @@ struct TodayView: View {
                         fatGoal: state.user?.fatGoalGrams ?? 70
                     )
 
+                    WaterCard(
+                        totalMilliliters: state.waterTotalMl,
+                        goalMilliliters: WaterService.defaultDailyGoalMilliliters,
+                        onAddGlass: {
+                            Haptics.light()
+                            Task { await state.logWaterGlass(for: userRemoteID) }
+                        },
+                        onUndo: {
+                            Haptics.warning()
+                            Task { await state.undoLastWater(for: userRemoteID) }
+                        }
+                    )
+
                     if let insight = state.coachInsights.first {
                         AIInsightCard(
                             insight: insight,

@@ -25,6 +25,7 @@ final class TodayState {
     private(set) var suggestedRecipe: Recipe?
     private(set) var upcomingEvent: CulturalEventService.Upcoming?
     private(set) var coachInsights: [CoachInsight] = []
+    private(set) var waterTotalMl: Int = 0
     private(set) var isLoading = false
     private(set) var loadError: String?
 
@@ -33,6 +34,7 @@ final class TodayState {
     private let recipeRepository: RecipeRepository?
     private let culturalEvents: CulturalEventService
     private let coachService: CoachService?
+    private let waterService: WaterService?
     private let calendar: Calendar
     private let now: () -> Date
 
@@ -42,6 +44,7 @@ final class TodayState {
         recipeRepository: RecipeRepository? = nil,
         culturalEvents: CulturalEventService = CulturalEventService(),
         coachService: CoachService? = nil,
+        waterService: WaterService? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
@@ -50,6 +53,7 @@ final class TodayState {
         self.recipeRepository = recipeRepository
         self.culturalEvents = culturalEvents
         self.coachService = coachService
+        self.waterService = waterService
         self.calendar = calendar
         self.now = now
     }
@@ -88,6 +92,7 @@ final class TodayState {
                 .first { $0.cookCount > 0 }
             self.upcomingEvent = culturalEvents.upcoming(from: now())
             self.coachInsights = coachService?.insights(for: userRemoteID) ?? []
+            self.waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
             self.loadError = nil
             publishWidgetSnapshot()
         } catch {
@@ -108,6 +113,29 @@ final class TodayState {
         guard calorieGoal > 0 else { return 0 }
         return min(1.0, totals.calories / Double(calorieGoal))
     }
+    @discardableResult
+    func logWaterGlass(for userRemoteID: String) async -> Bool {
+        guard let waterService else { return false }
+        let logged =
+            (try? waterService.log(
+                forUser: userRemoteID, milliliters: WaterService.glassMilliliters
+            )) != nil
+        if logged {
+            waterTotalMl = waterService.totalToday(for: userRemoteID)
+        }
+        return logged
+    }
+
+    @discardableResult
+    func undoLastWater(for userRemoteID: String) async -> Bool {
+        guard let waterService else { return false }
+        let undone = (try? waterService.undoLast(for: userRemoteID)) != nil
+        if undone {
+            waterTotalMl = waterService.totalToday(for: userRemoteID)
+        }
+        return undone
+    }
+
     private func publishWidgetSnapshot() {
         let lastMealName = meals.first?.items.first?.name ?? ""
         let snapshot = WidgetSnapshot(
