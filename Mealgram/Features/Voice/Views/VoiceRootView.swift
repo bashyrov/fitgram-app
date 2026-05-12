@@ -10,10 +10,11 @@ struct VoiceRootView: View {
     init(
         session: VoiceCaptureSession = VoiceCaptureSession(),
         mealSaver: any MealSaving,
+        parser: VoiceMealParser = VoiceMealParser(),
         onDismiss: @escaping () -> Void
     ) {
         self._state = State(
-            initialValue: VoiceFlowState(session: session, mealSaver: mealSaver)
+            initialValue: VoiceFlowState(session: session, mealSaver: mealSaver, parser: parser)
         )
         self.onDismiss = onDismiss
     }
