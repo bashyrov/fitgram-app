@@ -1,5 +1,7 @@
 import SwiftUI
 
+// swiftlint:disable type_body_length
+
 /// Profile + settings hub. App-Store guideline 5.1.1(v) requires in-app
 /// data export and deletion to be reachable from this screen.
 struct ProfileView: View {
@@ -28,6 +30,7 @@ struct ProfileView: View {
     @State private var isChallengesPresented = false
     @State private var challengeProgress: [ChallengeProgress] = []
     @State private var statsSummary: ProfileStatsService.Summary?
+    @State private var isShareStreakPresented = false
 
     var body: some View {
         NavigationStack {
@@ -104,6 +107,14 @@ struct ProfileView: View {
                 ChallengesView(
                     progress: challengeProgress,
                     onDismiss: { isChallengesPresented = false }
+                )
+            }
+            .sheet(isPresented: $isShareStreakPresented) {
+                StreakSharePreviewSheet(
+                    streakLength: streak?.currentLength ?? 0,
+                    longestLength: streak?.longestLength ?? 0,
+                    displayName: user?.displayName,
+                    onDismiss: { isShareStreakPresented = false }
                 )
             }
             .alert("Usunąć konto?", isPresented: $deleteConfirmation) {
@@ -217,6 +228,12 @@ struct ProfileView: View {
                     isChallengesPresented = true
                 }
                 .disabled(user == nil)
+                if (streak?.currentLength ?? 0) > 0 {
+                    Divider().background(Tokens.Palette.separator)
+                    actionRow(symbol: "square.and.arrow.up", title: "Udostępnij serię", role: nil) {
+                        isShareStreakPresented = true
+                    }
+                }
             }
         }
     }
@@ -372,3 +389,4 @@ struct ProfileView: View {
         earnedAchievements = (try? achievementService.earned(forUser: user.remoteID)) ?? []
     }
 }
+// swiftlint:enable type_body_length
