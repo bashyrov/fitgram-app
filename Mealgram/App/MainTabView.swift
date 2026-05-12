@@ -1,5 +1,7 @@
 import SwiftUI
 
+// swiftlint:disable type_body_length
+
 /// Top-level navigation shell for authenticated users. Four tabs:
 /// Today / Add (action sheet) / Progress / Profile.
 struct MainTabView: View {
@@ -118,7 +120,11 @@ struct MainTabView: View {
                 onCookSuggested: { recipe in cookSuggested(recipe) },
                 onCoachAction: { kind in handleCoachAction(kind) },
                 onOpenWeeklyDebrief: { presentWeeklyDebrief() },
-                onSelectMeal: { meal in selectedMeal = meal }
+                onSelectMeal: { meal in selectedMeal = meal },
+                onDismissInsight: { insight in
+                    coachService.dismiss(insight: insight)
+                    Task { await todayState.refresh(for: authUser.id) }
+                }
             )
             .tabItem {
                 Label("Dziś", systemImage: "sun.max.fill")
@@ -377,3 +383,4 @@ struct MainTabView: View {
         refreshAfterSave()
     }
 }
+// swiftlint:enable type_body_length

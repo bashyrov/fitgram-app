@@ -75,7 +75,8 @@ struct MealgramApp: App {
             container: persistence.container,
             streakService: streakService,
             weightService: weightService,
-            logStore: CoachInsightLogStore(container: persistence.container)
+            logStore: CoachInsightLogStore(container: persistence.container),
+            dismissalStore: CoachDismissalStore()
         )
         self.coachService = coachService
         self.todayState = TodayState(

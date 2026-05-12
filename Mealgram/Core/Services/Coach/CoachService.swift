@@ -14,6 +14,7 @@ final class CoachService {
     private let calendar: Calendar
     private let now: () -> Date
     private let logStore: CoachInsightLogStore?
+    private let dismissalStore: CoachDismissalStore?
 
     init(
         container: ModelContainer,
@@ -22,6 +23,7 @@ final class CoachService {
         culturalEvents: CulturalEventService = CulturalEventService(),
         generator: any CoachInsightGenerator = RuleBasedCoach(),
         logStore: CoachInsightLogStore? = nil,
+        dismissalStore: CoachDismissalStore? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
@@ -31,13 +33,20 @@ final class CoachService {
         self.culturalEvents = culturalEvents
         self.generator = generator
         self.logStore = logStore
+        self.dismissalStore = dismissalStore
         self.calendar = calendar
         self.now = now
     }
 
     func insights(for userRemoteID: String) -> [CoachInsight] {
         let context = buildContext(for: userRemoteID)
-        return generator.generate(for: context)
+        let allInsights = generator.generate(for: context)
+        guard let dismissalStore else { return allInsights }
+        return allInsights.filter { !dismissalStore.isDismissed(headline: $0.headline) }
+    }
+
+    func dismiss(insight: CoachInsight) {
+        dismissalStore?.dismiss(headline: insight.headline)
     }
 
     func headline(for userRemoteID: String) -> CoachInsight? {

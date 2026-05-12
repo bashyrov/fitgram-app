@@ -6,6 +6,7 @@ import SwiftUI
 struct AIInsightCard: View {
     let insight: CoachInsight
     var onAction: ((CoachInsight.ActionKind) -> Void)?
+    var onDismiss: (() -> Void)?
 
     var body: some View {
         Card(background: background, elevation: Tokens.Shadow.card) {
@@ -46,6 +47,15 @@ struct AIInsightCard: View {
                     }
                 }
                 Spacer(minLength: 0)
+            }
+        }
+        .contextMenu {
+            if let onDismiss {
+                Button {
+                    onDismiss()
+                } label: {
+                    Label("Ukryj na dziś", systemImage: "eye.slash")
+                }
             }
         }
     }
