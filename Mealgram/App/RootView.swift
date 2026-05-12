@@ -17,6 +17,7 @@ struct RootView: View {
     let foodCatalog: any FoodCatalog
     let progressState: ProgressState
     let recipeRepository: RecipeRepository
+    let mealRepository: MealRepository
     let weightService: WeightService
     let friendService: any FriendService
     let coachService: CoachService
@@ -39,6 +40,7 @@ struct RootView: View {
         foodCatalog: any FoodCatalog,
         progressState: ProgressState,
         recipeRepository: RecipeRepository,
+        mealRepository: MealRepository,
         weightService: WeightService,
         friendService: any FriendService,
         coachService: CoachService,
@@ -57,6 +59,7 @@ struct RootView: View {
         self.foodCatalog = foodCatalog
         self.progressState = progressState
         self.recipeRepository = recipeRepository
+        self.mealRepository = mealRepository
         self.weightService = weightService
         self.friendService = friendService
         self.coachService = coachService
@@ -93,6 +96,7 @@ struct RootView: View {
                     calibrationService: calibrationService,
                     foodCatalog: foodCatalog,
                     recipeRepository: recipeRepository,
+                    mealRepository: mealRepository,
                     weightService: weightService,
                     friendService: friendService,
                     coachService: coachService,

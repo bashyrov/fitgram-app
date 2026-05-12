@@ -11,6 +11,7 @@ struct TodayView: View {
     var onCookSuggested: ((Recipe) -> Void)?
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
     var onOpenWeeklyDebrief: (() -> Void)?
+    var onSelectMeal: ((MealEntry) -> Void)?
 
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
@@ -102,7 +103,12 @@ struct TodayView: View {
             } else {
                 LazyVStack(spacing: Tokens.Space.sm) {
                     ForEach(state.meals) { meal in
-                        MealTimelineRow(meal: meal)
+                        Button {
+                            onSelectMeal?(meal)
+                        } label: {
+                            MealTimelineRow(meal: meal)
+                        }
+                        .buttonStyle(PressableButtonStyle())
                     }
                 }
             }
