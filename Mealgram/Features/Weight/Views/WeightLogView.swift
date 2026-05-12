@@ -6,9 +6,12 @@ struct WeightLogView: View {
     let userRemoteID: String
     let initialWeight: Double?
     @Bindable var state: WeightLogState
+    let healthImporter: HealthImporter?
     let onDismiss: () -> Void
 
     @State private var isAddingPresented = false
+    @State private var importStatus: String?
+    @State private var isImporting = false
 
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -28,6 +31,9 @@ struct WeightLogView: View {
                             chartCard
                         } else {
                             emptyCard
+                        }
+                        if healthImporter != nil {
+                            healthImportCard
                         }
                         entriesCard
                     }
@@ -135,6 +141,43 @@ struct WeightLogView: View {
         }
     }
 
+    private var healthImportCard: some View {
+        Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.card) {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                HStack(spacing: Tokens.Space.md) {
+                    Image(systemName: "heart.text.square.fill")
+                        .foregroundStyle(Tokens.Palette.accent)
+                    Text("Apple Health")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                }
+                Text("Pobierz wpisy wagi zapisane w Apple Health. Importujemy tylko nowe wpisy.")
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                if let importStatus {
+                    Text(importStatus)
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
+                Button {
+                    Task { await runHealthImport() }
+                } label: {
+                    HStack(spacing: Tokens.Space.sm) {
+                        if isImporting {
+                            ProgressView().tint(Tokens.Palette.primary)
+                        } else {
+                            Image(systemName: "arrow.down.circle.fill")
+                        }
+                        Text(isImporting ? "Importuję…" : "Importuj z Apple Health")
+                    }
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.primary)
+                }
+                .disabled(isImporting)
+            }
+        }
+    }
+
     private var emptyCard: some View {
         Card {
             VStack(spacing: Tokens.Space.md) {
@@ -214,5 +257,26 @@ struct WeightLogView: View {
     private func deltaColor(_ value: Double) -> Color {
         if abs(value) < 0.05 { return Tokens.Palette.inkMuted }
         return value > 0 ? Tokens.Palette.warning : Tokens.Palette.success
+    }
+
+    private func runHealthImport() async {
+        guard let importer = healthImporter, !isImporting else { return }
+        isImporting = true
+        defer { isImporting = false }
+        let result = await importer.runImport(for: userRemoteID)
+        importStatus = Self.statusMessage(for: result)
+        if case .imported = result {
+            await state.refresh(for: userRemoteID)
+        }
+    }
+
+    private static func statusMessage(for result: HealthImporter.ImportResult) -> String {
+        switch result {
+        case .unavailable: return "Apple Health niedostępne na tym urządzeniu."
+        case .denied: return "Brak zgody na dostęp do wagi z Apple Health."
+        case .imported(let count): return "Zaimportowano \(count) wpisów."
+        case .noNewSamples: return "Brak nowych wpisów."
+        case .failed(let reason): return "Nie udało się zaimportować: \(reason)"
+        }
     }
 }

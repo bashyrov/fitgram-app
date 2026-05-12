@@ -79,10 +79,10 @@ struct CulturalEventService {
         return components.date.map { calendar.startOfDay(for: $0) }
     }
 
+    // swiftlint:disable identifier_name
     /// Anonymous Gregorian algorithm (a.k.a. Meeus/Jones/Butcher). Valid
     /// for Gregorian dates 1583+. Single-letter variables match the
     /// canonical formula in literature; lint exception is local.
-    // swiftlint:disable identifier_name
     func easterSunday(year: Int) -> Date? {
         let a = year % 19
         let b = year / 100
