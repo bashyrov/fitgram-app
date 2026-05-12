@@ -49,16 +49,24 @@ struct MealTimelineRow: View {
     }
 
     private var subtitle: String {
+        var parts: [String] = []
         if meal.items.count > 1 {
-            return String(localized: "i \(meal.items.count - 1) więcej")
+            parts.append(String(localized: "i \(meal.items.count - 1) więcej"))
+        } else {
+            parts.append(
+                String(
+                    format: "%.0f g · %.0f g B · %.0f g W · %.0f g T",
+                    meal.items.reduce(0) { $0 + $1.quantityGrams },
+                    meal.totalProteinGrams,
+                    meal.totalCarbsGrams,
+                    meal.totalFatGrams
+                )
+            )
         }
-        return String(
-            format: "%.0f g · %.0f g B · %.0f g W · %.0f g T",
-            meal.items.reduce(0) { $0 + $1.quantityGrams },
-            meal.totalProteinGrams,
-            meal.totalCarbsGrams,
-            meal.totalFatGrams
-        )
+        if !meal.tags.isEmpty {
+            parts.append("#" + meal.tags.joined(separator: " #"))
+        }
+        return parts.joined(separator: " · ")
     }
 
     private var mealTypeLabel: LocalizedStringKey {

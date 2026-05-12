@@ -74,4 +74,21 @@ final class MealSearchServiceTests: XCTestCase {
         let results = try MealSearchService(container: controller.container).search(query: "kasza")
         XCTAssertTrue(results.isEmpty)
     }
+
+    func testSearchMatchesByTag() throws {
+        let context = ModelContext(controller.container)
+        let meal = MealEntry(
+            mealType: .lunch, source: .quickDatabase,
+            tags: ["restaurant", "weekday"],
+            items: [FoodItem(name: "Burger", quantityGrams: 250, caloriesKcal: 700)]
+        )
+        context.insert(meal)
+        try context.save()
+
+        let service = MealSearchService(container: controller.container)
+        let restaurant = try service.search(query: "restaurant")
+        XCTAssertEqual(restaurant.count, 1)
+        let week = try service.search(query: "weekday")
+        XCTAssertEqual(week.count, 1)
+    }
 }

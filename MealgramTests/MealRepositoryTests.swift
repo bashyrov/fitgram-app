@@ -86,4 +86,23 @@ final class MealRepositoryTests: XCTestCase {
             XCTAssertEqual(error as? MealRepositoryError, .notFound)
         }
     }
+
+    // MARK: - Tags
+
+    func testUpdateTagsPersistsLowerCasedDedupedList() throws {
+        let meal = try seedMeal()
+
+        try repository.updateTags(meal, tags: ["Restaurant", "post-workout", "restaurant", "  "])
+
+        let context = ModelContext(controller.container)
+        let stored = try context.fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.tags, ["restaurant", "post-workout"])
+    }
+
+    func testUpdateTagsOnMissingMealThrows() throws {
+        let ghost = MealEntry(mealType: .snack, source: .manual)
+        XCTAssertThrowsError(try repository.updateTags(ghost, tags: ["x"])) { error in
+            XCTAssertEqual(error as? MealRepositoryError, .notFound)
+        }
+    }
 }

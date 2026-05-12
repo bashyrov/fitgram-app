@@ -16,6 +16,11 @@ final class MealEntry {
 
     var notes: String?
     var photoFilename: String?
+    /// Free-form tags the user attaches (post-workout, restaurant,
+    /// homemade, ...). Stored as a String array — SwiftData handles
+    /// the encoding. Empty default keeps existing rows valid after the
+    /// lightweight migration.
+    var tags: [String] = []
     /// User-applied portion multiplier (1.0 = original detection). Stored
     /// separately so we can show the AI's raw output vs. the user's edit.
     var portionMultiplier: Double
@@ -34,6 +39,7 @@ final class MealEntry {
         notes: String? = nil,
         photoFilename: String? = nil,
         portionMultiplier: Double = 1.0,
+        tags: [String] = [],
         items: [FoodItem] = []
     ) {
         let now = Date()
@@ -44,6 +50,7 @@ final class MealEntry {
         self.notes = notes
         self.photoFilename = photoFilename
         self.portionMultiplier = portionMultiplier
+        self.tags = tags
         self.items = items
         self.createdAt = now
         self.updatedAt = now

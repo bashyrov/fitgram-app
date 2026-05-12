@@ -25,10 +25,13 @@ final class MealSearchService {
             sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
         )
         let all = try context.fetch(descriptor)
+        let loweredQuery = trimmed.lowercased()
         let matches = all.filter { entry in
-            entry.items.contains { item in
+            let nameHit = entry.items.contains { item in
                 item.name.localizedCaseInsensitiveContains(trimmed)
             }
+            let tagHit = entry.tags.contains { $0.contains(loweredQuery) }
+            return nameHit || tagHit
         }
         return Array(matches.prefix(limit))
     }

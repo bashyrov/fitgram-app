@@ -31,6 +31,30 @@ final class MealRepository {
         try context.save()
     }
 
+    /// Updates the tags on an existing meal. Same refetch pattern. Tags
+    /// are trimmed + lower-cased + deduped before saving so the user can
+    /// type "Restaurant" and "restaurant" without ending up with two
+    /// entries.
+    func updateTags(_ meal: MealEntry, tags: [String]) throws {
+        let context = ModelContext(container)
+        let mealID = meal.id
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.id == mealID }
+        )
+        guard let attached = try context.fetch(descriptor).first else {
+            throw MealRepositoryError.notFound
+        }
+        var seen: Set<String> = []
+        attached.tags = tags.compactMap { raw in
+            let cleaned = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            guard !cleaned.isEmpty, !seen.contains(cleaned) else { return nil }
+            seen.insert(cleaned)
+            return cleaned
+        }
+        attached.updatedAt = Date()
+        try context.save()
+    }
+
     /// Updates the portion multiplier on an existing meal. Same refetch
     /// pattern to dodge cross-context surprises.
     func updatePortion(_ meal: MealEntry, multiplier: Double) throws {
