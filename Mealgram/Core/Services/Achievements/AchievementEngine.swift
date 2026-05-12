@@ -11,10 +11,27 @@ struct AchievementEngine {
         self.calendar = calendar
     }
 
+    /// Extra context the catalog needs beyond the meal log + streak. Each
+    /// field is optional so non-meal predicates can be skipped when the
+    /// data isn't available yet (tests, first launch).
+    struct Inputs: Sendable {
+        var proteinGoalGrams: Int?
+        var carbsGoalGrams: Int?
+        var fatGoalGrams: Int?
+        /// `true` once the user has logged at least one weight entry.
+        var hasLoggedWeight: Bool
+
+        static let empty = Inputs(
+            proteinGoalGrams: nil, carbsGoalGrams: nil, fatGoalGrams: nil,
+            hasLoggedWeight: false
+        )
+    }
+
     func evaluate(
         meals: [MealEntry],
         streak: Streak?,
         alreadyEarned: Set<String>,
+        inputs: Inputs = .empty,
         now: Date = Date()
     ) -> [String] {
         var unlocked: [String] = []
@@ -28,6 +45,10 @@ struct AchievementEngine {
         consider("meal.first") { !meals.isEmpty }
         consider("scan.first") { meals.contains(where: { $0.source == .photoScan }) }
         consider("barcode.first") { meals.contains(where: { $0.source == .barcode }) }
+        consider("recipe.first") { meals.contains(where: { $0.source == .recipe }) }
+        consider("voice.first") { meals.contains(where: { $0.source == .voice }) }
+        consider("quickdb.first") { meals.contains(where: { $0.source == .quickDatabase }) }
+        consider("weight.tracked") { inputs.hasLoggedWeight }
 
         // Streak milestones — use longest length so backfills count.
         if let streak {
@@ -49,9 +70,50 @@ struct AchievementEngine {
                 return kinds.contains(.breakfast) && kinds.contains(.lunch) && kinds.contains(.dinner)
             }
         }
+        consider("macros.balanced") {
+            guard let proteinGoal = inputs.proteinGoalGrams,
+                let carbsGoal = inputs.carbsGoalGrams,
+                let fatGoal = inputs.fatGoalGrams,
+                proteinGoal > 0, carbsGoal > 0, fatGoal > 0
+            else { return false }
+            return dayBuckets.values.contains { entries in
+                let protein = entries.reduce(0) { $0 + $1.totalProteinGrams }
+                let carbs = entries.reduce(0) { $0 + $1.totalCarbsGrams }
+                let fat = entries.reduce(0) { $0 + $1.totalFatGrams }
+                return Self.within(protein, of: Double(proteinGoal), tolerance: 0.10)
+                    && Self.within(carbs, of: Double(carbsGoal), tolerance: 0.10)
+                    && Self.within(fat, of: Double(fatGoal), tolerance: 0.10)
+            }
+        }
+        consider("week.consistent") {
+            let days = Set(meals.map { calendar.startOfDay(for: $0.consumedAt) }).sorted()
+            return Self.longestConsecutiveRun(days: days, calendar: calendar) >= 7
+        }
 
         _ = now  // future-dated predicates can reach for this without an API churn
         return unlocked
+    }
+
+    private static func within(_ value: Double, of target: Double, tolerance: Double) -> Bool {
+        guard target > 0 else { return false }
+        let ratio = abs(value - target) / target
+        return ratio <= tolerance
+    }
+
+    private static func longestConsecutiveRun(days: [Date], calendar: Calendar) -> Int {
+        guard !days.isEmpty else { return 0 }
+        var best = 1
+        var current = 1
+        for index in 1..<days.count {
+            let gap = calendar.dateComponents([.day], from: days[index - 1], to: days[index]).day ?? 0
+            if gap == 1 {
+                current += 1
+                best = max(best, current)
+            } else if gap > 1 {
+                current = 1
+            }
+        }
+        return best
     }
 
     static func groupByDay(_ meals: [MealEntry], calendar: Calendar) -> [Date: [MealEntry]] {

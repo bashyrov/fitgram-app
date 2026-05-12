@@ -41,7 +41,27 @@ final class AchievementService {
         )
         let streak = try context.fetch(streakDescriptor).first
 
-        let unlockedIDs = engine.evaluate(meals: meals, streak: streak, alreadyEarned: earnedIDs)
+        let userDescriptor = FetchDescriptor<User>(
+            predicate: #Predicate { $0.remoteID == userRemoteID }
+        )
+        let user = try context.fetch(userDescriptor).first
+
+        let weightDescriptor = FetchDescriptor<WeightEntry>(
+            predicate: #Predicate { $0.userRemoteID == userRemoteID }
+        )
+        let weightCount = (try? context.fetchCount(weightDescriptor)) ?? 0
+
+        let inputs = AchievementEngine.Inputs(
+            proteinGoalGrams: user?.proteinGoalGrams,
+            carbsGoalGrams: user?.carbsGoalGrams,
+            fatGoalGrams: user?.fatGoalGrams,
+            hasLoggedWeight: weightCount > 0
+        )
+
+        let unlockedIDs = engine.evaluate(
+            meals: meals, streak: streak,
+            alreadyEarned: earnedIDs, inputs: inputs
+        )
         guard !unlockedIDs.isEmpty else { return [] }
 
         var unlocked: [AchievementDefinition] = []
