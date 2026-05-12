@@ -73,6 +73,48 @@ enum AchievementCatalog {
             symbol: "sparkles",
             order: 30
         ),
+        .init(
+            id: "recipe.first",
+            title: "Domowy obiad",
+            summary: "Ugotowałaś przepis z biblioteki.",
+            symbol: "book.fill",
+            order: 3
+        ),
+        .init(
+            id: "voice.first",
+            title: "Powiedz mi",
+            summary: "Pierwszy posiłek dodany głosem.",
+            symbol: "mic.fill",
+            order: 4
+        ),
+        .init(
+            id: "quickdb.first",
+            title: "Z bazy",
+            summary: "Pierwszy wpis ze Szybkiej bazy.",
+            symbol: "tablecells.fill",
+            order: 5
+        ),
+        .init(
+            id: "weight.tracked",
+            title: "Krok na wagę",
+            summary: "Pierwszy raz zapisałaś wagę.",
+            symbol: "scalemass.fill",
+            order: 40
+        ),
+        .init(
+            id: "macros.balanced",
+            title: "Idealna proporcja",
+            summary: "Białko, węgle i tłuszcze w celach (±10 %) jednego dnia.",
+            symbol: "circle.grid.cross.fill",
+            order: 41
+        ),
+        .init(
+            id: "week.consistent",
+            title: "Tydzień bez przerw",
+            summary: "Siedem kolejnych dni z co najmniej jednym wpisem.",
+            symbol: "calendar.badge.checkmark",
+            order: 42
+        ),
     ]
 
     static func definition(for id: String) -> AchievementDefinition? {

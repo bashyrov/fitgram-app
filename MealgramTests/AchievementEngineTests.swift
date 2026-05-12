@@ -118,4 +118,102 @@ final class AchievementEngineTests: XCTestCase {
         )
         XCTAssertTrue(unlocks.isEmpty)
     }
+
+    // MARK: - New sources
+
+    func testRecipeFirstUnlocks() {
+        let unlocks = engine.evaluate(
+            meals: [meal(at: "2026-05-12T12:00:00Z", source: .recipe)],
+            streak: nil,
+            alreadyEarned: []
+        )
+        XCTAssertTrue(unlocks.contains("recipe.first"))
+    }
+
+    func testVoiceFirstUnlocks() {
+        let unlocks = engine.evaluate(
+            meals: [meal(at: "2026-05-12T12:00:00Z", source: .voice)],
+            streak: nil,
+            alreadyEarned: []
+        )
+        XCTAssertTrue(unlocks.contains("voice.first"))
+    }
+
+    func testQuickDBFirstUnlocks() {
+        let unlocks = engine.evaluate(
+            meals: [meal(at: "2026-05-12T12:00:00Z", source: .quickDatabase)],
+            streak: nil,
+            alreadyEarned: []
+        )
+        XCTAssertTrue(unlocks.contains("quickdb.first"))
+    }
+
+    // MARK: - Weight + macros + consistency
+
+    func testWeightTrackedUnlocksOnFirstLog() {
+        let unlocks = engine.evaluate(
+            meals: [],
+            streak: nil,
+            alreadyEarned: [],
+            inputs: .init(
+                proteinGoalGrams: nil, carbsGoalGrams: nil,
+                fatGoalGrams: nil, hasLoggedWeight: true
+            )
+        )
+        XCTAssertTrue(unlocks.contains("weight.tracked"))
+    }
+
+    func testMacrosBalancedRequiresAllThreeWithinTenPercent() {
+        let dayMeals: [MealEntry] = [
+            meal(
+                at: "2026-05-12T12:00:00Z",
+                items: [
+                    FoodItem(
+                        name: "Balanced",
+                        quantityGrams: 500,
+                        caloriesKcal: 1800,
+                        proteinGrams: 100,
+                        carbsGrams: 200,
+                        fatGrams: 60
+                    )
+                ]
+            )
+        ]
+        let unlocks = engine.evaluate(
+            meals: dayMeals, streak: nil, alreadyEarned: [],
+            inputs: .init(
+                proteinGoalGrams: 100, carbsGoalGrams: 200, fatGoalGrams: 60,
+                hasLoggedWeight: false
+            )
+        )
+        XCTAssertTrue(unlocks.contains("macros.balanced"))
+    }
+
+    func testMacrosBalancedDoesNotFireWithoutGoals() {
+        let unlocks = engine.evaluate(
+            meals: [meal(at: "2026-05-12T12:00:00Z")],
+            streak: nil, alreadyEarned: [],
+            inputs: .empty
+        )
+        XCTAssertFalse(unlocks.contains("macros.balanced"))
+    }
+
+    func testWeekConsistentRequiresSevenInARow() {
+        // 8 consecutive days — should unlock.
+        let dates = (0...7).map { offset in
+            "2026-05-\(String(format: "%02d", 1 + offset))T08:00:00Z"
+        }
+        let meals = dates.map { meal(at: $0) }
+        let unlocks = engine.evaluate(meals: meals, streak: nil, alreadyEarned: [])
+        XCTAssertTrue(unlocks.contains("week.consistent"))
+    }
+
+    func testWeekConsistentDoesNotFireWithGap() {
+        // Days 1-3 + day 5-7 — longest run is 3.
+        let meals = ["01", "02", "03", "05", "06", "07"].map {
+            meal(at: "2026-05-\($0)T08:00:00Z")
+        }
+        let unlocks = engine.evaluate(meals: meals, streak: nil, alreadyEarned: [])
+        XCTAssertFalse(unlocks.contains("week.consistent"))
+    }
 }
