@@ -22,12 +22,14 @@ final class TodayState {
     private(set) var user: User?
     private(set) var streak: Streak?
     private(set) var suggestedRecipe: Recipe?
+    private(set) var upcomingEvent: CulturalEventService.Upcoming?
     private(set) var isLoading = false
     private(set) var loadError: String?
 
     private let container: ModelContainer
     private let streakService: StreakService
     private let recipeRepository: RecipeRepository?
+    private let culturalEvents: CulturalEventService
     private let calendar: Calendar
     private let now: () -> Date
 
@@ -35,12 +37,14 @@ final class TodayState {
         container: ModelContainer,
         streakService: StreakService,
         recipeRepository: RecipeRepository? = nil,
+        culturalEvents: CulturalEventService = CulturalEventService(),
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
         self.container = container
         self.streakService = streakService
         self.recipeRepository = recipeRepository
+        self.culturalEvents = culturalEvents
         self.calendar = calendar
         self.now = now
     }
@@ -77,6 +81,7 @@ final class TodayState {
             self.streak = try streakService.currentStreak(for: userRemoteID)
             self.suggestedRecipe = (try? recipeRepository?.all(sortedByCookCount: true))?
                 .first { $0.cookCount > 0 }
+            self.upcomingEvent = culturalEvents.upcoming(from: now())
             self.loadError = nil
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
