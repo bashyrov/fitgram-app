@@ -7,6 +7,8 @@ import Observation
 final class QuickDatabaseState {
     private(set) var foods: [Food] = []
     private(set) var availableCategories: [FoodCategory] = []
+    private(set) var recentPicks: [Food] = []
+    private(set) var popularPicks: [Food] = []
     var selectedCategory: FoodCategory?
     var query: String = ""
     private(set) var isLoading = false
@@ -23,9 +25,24 @@ final class QuickDatabaseState {
         do {
             availableCategories = try catalog.categories()
             foods = try filteredFoods()
+            recentPicks = (try? catalog.recent(limit: 8)) ?? []
+            popularPicks = (try? catalog.popular(limit: 8)) ?? []
         } catch {
             Logger.persistence.error("QuickDB refresh failed: \(String(describing: error))")
         }
+    }
+
+    /// Returns true when the user hasn't typed a query or picked a
+    /// category — the moment the "Ostatnie" + "Częste" carousels make
+    /// sense to display at the top of the list.
+    var shouldShowSuggestions: Bool {
+        query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && selectedCategory == nil
+            && (!recentPicks.isEmpty || !popularPicks.isEmpty)
+    }
+
+    func recordPick(_ food: Food) {
+        try? catalog.recordPick(food)
     }
 
     /// Convenience for the search field's `.onChange`.
