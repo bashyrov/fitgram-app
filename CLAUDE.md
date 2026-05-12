@@ -29,8 +29,9 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - M3.5 light: suggested-recipe card on Today with one-tap cook
 - M4.7: Polish cultural-event banner (Wigilia/Tłusty Czwartek/Wielkanoc/…)
 - Weight tracking: WeightEntry + trend chart in Profile
+- Apple Health: read-only body-mass import (entitlement activates with Team ID)
 
-120 unit tests + 3 UI tests, swiftlint --strict clean, swift-format clean.
+125 unit tests + 3 UI tests, swiftlint --strict clean, swift-format clean.
 
 Four tabs: Dziś • Dodaj • Tydzień • Profil.
 Five meal-entry paths from "+Dodaj": 📸 photo • 📦 barcode • 🔎 Szybka baza • 🎙 voice • 📖 recipe.
