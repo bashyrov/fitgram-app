@@ -130,11 +130,16 @@ struct MainTabView: View {
                 }
                 .tag(Tab.progress)
 
-            FriendsRootView(state: friendsState)
-                .tabItem {
-                    Label("Znajomi", systemImage: "person.2.fill")
-                }
-                .tag(Tab.friends)
+            FriendsRootView(
+                state: friendsState,
+                yourStreak: todayState.streak?.currentLength ?? 0,
+                yourDisplayName: todayState.user?.displayName ?? "Ty",
+                yourID: authUser.id
+            )
+            .tabItem {
+                Label("Znajomi", systemImage: "person.2.fill")
+            }
+            .tag(Tab.friends)
 
             ProfileView(
                 user: todayState.user,
