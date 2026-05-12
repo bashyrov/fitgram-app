@@ -102,14 +102,18 @@ struct ProfileView: View {
     private var identityCard: some View {
         Card(elevation: Tokens.Shadow.float) {
             HStack(spacing: Tokens.Space.lg) {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
-                    .frame(width: 56, height: 56)
-                    .overlay(
-                        Text(initial)
-                            .font(Tokens.Font.title2)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    )
+                if let user {
+                    AvatarPicker(user: user, store: AvatarStore(), size: 56)
+                } else {
+                    Circle()
+                        .fill(Tokens.Palette.primarySoft)
+                        .frame(width: 56, height: 56)
+                        .overlay(
+                            Text(initial)
+                                .font(Tokens.Font.title2)
+                                .foregroundStyle(Tokens.Palette.primary)
+                        )
+                }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(displayName)
                         .font(Tokens.Font.title3)
