@@ -23,13 +23,25 @@ struct MainTabView: View {
     @State private var isQuickDBPresented = false
     @State private var isVoicePresented = false
     @State private var isRecipesPresented = false
-    @State private var selectedTab: Tab = .today
+    @State private var selectedTab: Tab = Self.initialTab()
 
     enum Tab: Hashable {
         case today
         case add
         case progress
         case profile
+    }
+
+    private static func initialTab() -> Tab {
+        #if DEBUG
+        switch DebugBypass.initialTab {
+        case "progress": return .progress
+        case "profile": return .profile
+        default: return .today
+        }
+        #else
+        return .today
+        #endif
     }
 
     var body: some View {

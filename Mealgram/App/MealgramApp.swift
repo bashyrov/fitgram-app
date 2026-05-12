@@ -65,6 +65,17 @@ struct MealgramApp: App {
             // we manage to seed.
             Logger.persistence.error("Food seeding failed: \(String(describing: error))")
         }
+
+        #if DEBUG
+        if DebugBypass.bypassAuth {
+            do {
+                try DebugBypass.seed(container: persistence.container)
+                session.update(phase: .authenticated(DebugBypass.fakeAuthUser))
+            } catch {
+                Logger.persistence.error("DebugBypass seeding failed: \(String(describing: error))")
+            }
+        }
+        #endif
     }
 
     var body: some Scene {
