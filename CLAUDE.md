@@ -30,10 +30,18 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - M4.7: Polish cultural-event banner (Wigilia/Tłusty Czwartek/Wielkanoc/…)
 - Weight tracking: WeightEntry + trend chart in Profile
 - Apple Health: read-only body-mass import (entitlement activates with Team ID)
+- M4.1 + M4.2 partial: Friends scaffold — domain types, @MainActor
+  FriendService protocol, InMemoryFriendService (seeded Kasia/Michał/Ola
+  + pending Nina), FriendsState, full UI (incoming card, feed,
+  reactions, search + QR placeholder, unfriend), 5th "Znajomi" tab.
+  Real backend swaps in via composition root when Supabase URL+anon key
+  arrive.
 
-125 unit tests + 3 UI tests, swiftlint --strict clean, swift-format clean.
+138 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
+clean, swift-format clean.
 
-Four tabs: Dziś • Dodaj • Tydzień • Profil.
+Five tabs: Dziś • Dodaj • Tydzień • Znajomi • Profil.
 Five meal-entry paths from "+Dodaj": 📸 photo • 📦 barcode • 🔎 Szybka baza • 🎙 voice • 📖 recipe.
 
 Blocked / awaiting from user:
