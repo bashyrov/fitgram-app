@@ -136,6 +136,34 @@ final class CoachInsightLogStoreTests: XCTestCase {
         XCTAssertEqual(store.recent(for: "u-x", limit: 3).count, 3)
     }
 
+    func testRecordFeedbackPersistsHelpfulFlag() {
+        let now = Self.date("2026-05-12T12:00:00Z")
+        let store = CoachInsightLogStore(
+            container: controller.container,
+            calendar: Self.utcCalendar(),
+            now: { now }
+        )
+        store.record(makeDebrief(headline: "X"), for: "u-x")
+        XCTAssertNil(store.feedback(for: "u-x"))
+
+        store.recordFeedback(helpful: true, for: "u-x")
+        XCTAssertEqual(store.feedback(for: "u-x"), true)
+
+        store.recordFeedback(helpful: false, for: "u-x")
+        XCTAssertEqual(store.feedback(for: "u-x"), false)
+    }
+
+    func testRecordFeedbackWithoutLogIsNoOp() {
+        let now = Self.date("2026-05-12T12:00:00Z")
+        let store = CoachInsightLogStore(
+            container: controller.container,
+            calendar: Self.utcCalendar(),
+            now: { now }
+        )
+        store.recordFeedback(helpful: true, for: "u-x")
+        XCTAssertNil(store.feedback(for: "u-x"))
+    }
+
     func testDecodeInsightsRoundTrip() {
         let now = Self.date("2026-05-12T12:00:00Z")
         let store = CoachInsightLogStore(
