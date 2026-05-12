@@ -116,8 +116,18 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   Documents/MealPhotos/ under fresh UUID filenames. ScanState.commit
   persists imageData → sets MealEntry.photoFilename. MealDetailSheet
   shows a 200pt photo header when filename resolves.
+- Streak share card: 1080×1920 portrait card rendered via ImageRenderer,
+  ShareLink hands the PNG to UIActivityViewController. "Udostępnij
+  serię" row in Profile (visible only when streak.currentLength > 0).
+- Voice meal parser: pure-function PL regex parser extracts grams +
+  kcal from common phrasings ("schabowy 200 gram 400 kcal"), matches
+  residual name against Food catalog for real per-100g macros. Wired
+  into VoiceFlowState.commit. No LLM needed.
+- Coach insight dismissal: long-press the insight card →
+  "Ukryj na dziś" → CoachDismissalStore (UserDefaults, day-scoped)
+  filters that headline out of insights(for:) until midnight rollover.
 
-235 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+253 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
