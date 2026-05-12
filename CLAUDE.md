@@ -87,8 +87,23 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Streak freeze UI: warm snowflake card on Today appears when
   currentLength > 0, freezesAvailable > 0, nothing logged today.
   One tap consumes a freeze via StreakService and refreshes.
+- Coach insight history: new @Model CoachInsightLog (added to
+  MealgramSchemaV1.models). CoachInsightLogStore idempotent on
+  (user, weekStart) — same-week debriefs update existing row.
+  WeeklyDebriefView clock toolbar raises CoachHistoryView with
+  expandable per-week cards.
+- Meal undo banner: MealEntrySnapshot value type captures meal +
+  items before delete. Five-second snackbar at bottom of MainTabView
+  with "Cofnij" pill; restoration rebuilds fresh @Model and goes
+  through normal MealSaving pipeline.
+- Polish food seed grew 43 → 78 entries: Placki, Pierogi z mięsem,
+  Barszcz, Sernik, Szarlotka, Skyr, Migdały, Awokado + many more.
+  Seeder test now asserts ≥ 60 entries + every category populated +
+  no duplicate IDs.
+- Recipe sort menu: .recent / .nameAsc / .cookedCount (count desc +
+  name asc tiebreak). Toolbar Menu picker bound to state.sort.
 
-201 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+215 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
