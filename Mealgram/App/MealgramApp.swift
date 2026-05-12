@@ -89,7 +89,8 @@ struct MealgramApp: App {
             container: persistence.container,
             streakService: streakService,
             recipeRepository: recipeRepository,
-            coachService: coachService
+            coachService: coachService,
+            waterService: WaterService(container: persistence.container)
         )
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
