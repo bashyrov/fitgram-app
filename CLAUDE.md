@@ -102,8 +102,18 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   no duplicate IDs.
 - Recipe sort menu: .recent / .nameAsc / .cookedCount (count desc +
   name asc tiebreak). Toolbar Menu picker bound to state.sort.
+- Recipe nutrition estimator: pure-function service matches ingredient
+  lines against the Food catalog (exact name → shared-token fallback,
+  ≥ 4-char tokens). Estimate value carries per-serving macros + matched
+  count + unmatched names. "Oszacuj" chip in RecipeFormSheet populates
+  the form draft.
+- Profile lifetime stats card: 2x2 grid of total meals/recipes/weight
+  entries/achievements + "Z nami od …" month-year footer.
+- Coach feedback thumbs: optional Bool? on CoachInsightLog (lightweight
+  migration). "Pomocne?" row on WeeklyDebriefView collapses to a
+  thank-you after thumbs-up or thumbs-down.
 
-215 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+229 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
