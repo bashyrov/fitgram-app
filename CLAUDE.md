@@ -132,8 +132,20 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Friend QR code: CIFilter.qrCodeGenerator-based QRCodeRenderer
   encodes `mealgram://friend/<id>`. "Pokaż mój kod" sheet from
   AddFriendSheet shows the QR + textual id with copy-to-clipboard.
+- Onboarding celebration: new .celebration step after paywall —
+  spring-in badge + pure-SwiftUI confetti (36 pieces over a
+  TimelineView). Hides the progress header for full-bleed feel.
+- Global meal search: MealSearchService scans all MealEntry rows by
+  FoodItem.name. "Szukaj w historii" sheet groups results by day.
+- Recipe URL importer: pure-Swift JSON-LD parser handles single
+  object / array / @graph wrappers + three instruction shapes.
+  "Importuj z URL" entry in the recipe library "+" menu.
+- M4.11 / M1.11 progress: Localizable.xcstrings expanded 9 → 56
+  entries with PL/EN/UK for tabs, greetings, common buttons,
+  add-options menu, profile sections, coach copy, celebration,
+  friends QR. CFBundleLocalizations now lists all three.
 
-262 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+278 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
