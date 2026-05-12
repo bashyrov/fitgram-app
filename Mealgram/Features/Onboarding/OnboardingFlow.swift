@@ -45,6 +45,37 @@ final class OnboardingFlow {
     /// the AuthUser the flow was initialised with.
     var displayName: String? { authUser.displayName }
 
+    /// Preview of the computed goal — surfaced on CalibrationStepView so
+    /// the user sees the number before committing.
+    var computedGoals: GoalCalculator.Output? {
+        guard let input = goalCalculatorInput else { return nil }
+        return GoalCalculator.calculate(from: input)
+    }
+
+    private var goalCalculatorInput: GoalCalculator.Input? {
+        guard let height = profile.heightCm,
+            let weight = profile.weightKg,
+            let birth = profile.birthDate
+        else { return nil }
+        let age = Calendar.current.dateComponents([.year], from: birth, to: Date()).year ?? 0
+        return GoalCalculator.Input(
+            heightCm: height,
+            weightKg: weight,
+            age: age,
+            biologicalSex: profile.biologicalSex,
+            activityLevel: profile.activityLevel,
+            goal: profile.goal
+        )
+    }
+
+    private func applyComputedGoals() {
+        guard let output = computedGoals else { return }
+        profile.dailyCalorieGoalKcal = output.dailyCalorieGoalKcal
+        profile.proteinGoalGrams = output.proteinGoalGrams
+        profile.carbsGoalGrams = output.carbsGoalGrams
+        profile.fatGoalGrams = output.fatGoalGrams
+    }
+
     init(
         authUser: AuthUser,
         userRepository: UserRepository,
@@ -84,6 +115,10 @@ final class OnboardingFlow {
         guard !isSubmitting else { return }
         isSubmitting = true
         defer { isSubmitting = false }
+        // Apply the Mifflin-St Jeor calculation right before persisting
+        // so the user lands on Today with real numbers instead of the
+        // 2100 / 120 / 240 / 70 defaults.
+        applyComputedGoals()
         do {
             let user = try userRepository.ensureUser(for: authUser)
             try userRepository.completeOnboarding(user, profile: profile)

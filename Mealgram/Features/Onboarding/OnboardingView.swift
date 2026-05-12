@@ -58,7 +58,10 @@ struct OnboardingView: View {
             case .firstScan:
                 FirstScanStepView { flow.advance() }
             case .calibration:
-                CalibrationStepView(profile: $flow.profile) { flow.advance() }
+                CalibrationStepView(
+                    profile: $flow.profile,
+                    computedGoals: flow.computedGoals
+                ) { flow.advance() }
             case .notifications:
                 NotificationStepView { flow.advance() }
             case .paywall:

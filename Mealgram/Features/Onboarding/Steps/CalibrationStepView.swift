@@ -5,6 +5,7 @@ import SwiftUI
 /// Phase 2.
 struct CalibrationStepView: View {
     @Binding var profile: OnboardingProfile
+    var computedGoals: GoalCalculator.Output?
     let onContinue: () -> Void
 
     @State private var reference: ReferenceObjectKind = .creditCard
@@ -23,6 +24,9 @@ struct CalibrationStepView: View {
             onPrimary: onContinue,
             content: {
                 VStack(spacing: Tokens.Space.md) {
+                    if let computedGoals {
+                        goalPreview(computedGoals)
+                    }
                     OnboardingChoiceCard(
                         symbol: "creditcard.fill",
                         title: "Karta płatnicza",
@@ -47,5 +51,23 @@ struct CalibrationStepView: View {
                 }
             }
         )
+    }
+
+    private func goalPreview(_ goals: GoalCalculator.Output) -> some View {
+        Card(background: Tokens.Palette.primarySoft) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Twój cel dzienny")
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.primary)
+                Text("\(goals.dailyCalorieGoalKcal) kcal")
+                    .font(Tokens.Font.title2)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(
+                    "Białko \(goals.proteinGoalGrams) g · Węgle \(goals.carbsGoalGrams) g · Tłuszcz \(goals.fatGoalGrams) g"
+                )
+                .font(Tokens.Font.caption)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+            }
+        }
     }
 }
