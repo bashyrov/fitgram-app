@@ -65,6 +65,7 @@ struct RootView: View {
                         underlying: mealSaver,
                         streakService: streakService,
                         achievementService: achievementService,
+                        calibrationService: calibrationService,
                         unlockBus: unlockBus,
                         userRemoteID: authUser.id
                     ),
@@ -141,18 +142,32 @@ struct RootView: View {
     }
 }
 
-/// Wraps a `MealSaving` with the streak + achievement side-effects. Keeps
-/// `SwiftDataMealSaver` pure while still letting one save propagate the
-/// streak counter and any newly-unlocked achievement banners.
+/// Wraps a `MealSaving` with the streak + achievement + calibration
+/// side-effects. Keeps `SwiftDataMealSaver` pure while still letting one
+/// save propagate the streak counter, any newly-unlocked achievement
+/// banners, and the user's manual calibration factor.
 private struct ChainedMealSaver: MealSaving {
     let underlying: any MealSaving
     let streakService: StreakService
     let achievementService: AchievementService
+    let calibrationService: CalibrationService
     let unlockBus: AchievementUnlockBus
     let userRemoteID: String
 
     func save(meal: MealEntry) throws {
+        // Apply the user-set calibration factor only to AI-derived
+        // estimates — barcode + quick-database + voice entries are
+        // user-controlled and shouldn't be silently scaled.
+        if meal.source == .photoScan,
+            let calibration = try? calibrationService.current(forUser: userRemoteID),
+            calibration.portionAdjustmentFactor != 1
+        {
+            meal.portionMultiplier *= calibration.portionAdjustmentFactor
+        }
         try underlying.save(meal: meal)
+        if meal.source == .photoScan {
+            try? calibrationService.recordSample(forUser: userRemoteID)
+        }
         try? streakService.registerLog(for: userRemoteID)
         if let unlocks = try? achievementService.evaluate(forUser: userRemoteID), !unlocks.isEmpty {
             unlockBus.push(unlocks)
