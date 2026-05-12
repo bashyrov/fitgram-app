@@ -126,8 +126,14 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Coach insight dismissal: long-press the insight card →
   "Ukryj na dziś" → CoachDismissalStore (UserDefaults, day-scoped)
   filters that headline out of insights(for:) until midnight rollover.
+- MealCSV export: Excel-friendly CSV (Polish headers, RFC 4180
+  quoting, one row per FoodItem). "Eksport CSV (Excel)" row added in
+  Profile data section alongside the existing JSON action.
+- Friend QR code: CIFilter.qrCodeGenerator-based QRCodeRenderer
+  encodes `mealgram://friend/<id>`. "Pokaż mój kod" sheet from
+  AddFriendSheet shows the QR + textual id with copy-to-clipboard.
 
-253 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+262 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
