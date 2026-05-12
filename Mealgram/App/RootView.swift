@@ -20,6 +20,7 @@ struct RootView: View {
     let mealRepository: MealRepository
     let weightService: WeightService
     let heatmapService: ActivityHeatmapService
+    let challengeService: ChallengeService
     let friendService: any FriendService
     let coachService: CoachService
     let notificationCoordinator: NotificationCoordinator
@@ -44,6 +45,7 @@ struct RootView: View {
         mealRepository: MealRepository,
         weightService: WeightService,
         heatmapService: ActivityHeatmapService,
+        challengeService: ChallengeService,
         friendService: any FriendService,
         coachService: CoachService,
         notificationCoordinator: NotificationCoordinator,
@@ -64,6 +66,7 @@ struct RootView: View {
         self.mealRepository = mealRepository
         self.weightService = weightService
         self.heatmapService = heatmapService
+        self.challengeService = challengeService
         self.friendService = friendService
         self.coachService = coachService
         self.notificationCoordinator = notificationCoordinator
@@ -102,6 +105,7 @@ struct RootView: View {
                     mealRepository: mealRepository,
                     weightService: weightService,
                     heatmapService: heatmapService,
+                    challengeService: challengeService,
                     friendService: friendService,
                     coachService: coachService,
                     unlockBus: unlockBus,
