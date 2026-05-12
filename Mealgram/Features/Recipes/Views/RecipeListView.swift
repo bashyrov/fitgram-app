@@ -42,6 +42,16 @@ struct RecipeListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: Tokens.Space.sm) {
+                        Button {
+                            state.favoritesOnly.toggle()
+                            Haptics.selection()
+                        } label: {
+                            Image(systemName: state.favoritesOnly ? "heart.fill" : "heart")
+                                .foregroundStyle(
+                                    state.favoritesOnly ? Tokens.Palette.warning : Tokens.Palette.inkMuted
+                                )
+                        }
+                        .accessibilityLabel(Text("Filtr ulubionych"))
                         Menu {
                             Picker("Sortuj", selection: $state.sort) {
                                 ForEach(RecipeListState.Sort.allCases, id: \.self) { sort in
@@ -165,6 +175,7 @@ struct RecipeListView: View {
         }
     }
 
+    // swiftlint:disable function_body_length
     private func row(_ recipe: Recipe) -> some View {
         Button {
             detailRecipe = recipe
@@ -192,6 +203,10 @@ struct RecipeListView: View {
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
+                if recipe.isFavorite {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(Tokens.Palette.warning)
+                }
             }
             .padding(Tokens.Space.md)
             .background(
@@ -206,6 +221,14 @@ struct RecipeListView: View {
         .buttonStyle(.plain)
         .contextMenu {
             Button {
+                toggleFavorite(recipe)
+            } label: {
+                Label(
+                    recipe.isFavorite ? "Usuń z ulubionych" : "Dodaj do ulubionych",
+                    systemImage: recipe.isFavorite ? "heart.slash" : "heart.fill"
+                )
+            }
+            Button {
                 detailRecipe = nil
                 formMode = .editing(recipe)
             } label: {
@@ -217,6 +240,14 @@ struct RecipeListView: View {
                 Label("Usuń", systemImage: "trash")
             }
         }
+    }
+
+    // swiftlint:enable function_body_length
+
+    private func toggleFavorite(_ recipe: Recipe) {
+        recipe.isFavorite.toggle()
+        try? repository.save(recipe)
+        Haptics.light()
     }
 
     private func subtitle(for recipe: Recipe) -> String {
