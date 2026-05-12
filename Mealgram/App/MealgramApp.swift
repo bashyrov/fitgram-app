@@ -24,6 +24,7 @@ struct MealgramApp: App {
     private let weightService: WeightService
     private let heatmapService: ActivityHeatmapService
     private let challengeService: ChallengeService
+    private let statsService: ProfileStatsService
     private let friendService: any FriendService
     private let coachService: CoachService
     private let notificationCoordinator: NotificationCoordinator
@@ -60,6 +61,7 @@ struct MealgramApp: App {
         self.mealRepository = MealRepository(container: persistence.container)
         self.heatmapService = ActivityHeatmapService(container: persistence.container)
         self.challengeService = ChallengeService(container: persistence.container)
+        self.statsService = ProfileStatsService(container: persistence.container)
         let weightService = WeightService(container: persistence.container)
         self.weightService = weightService
         self.friendService = InMemoryFriendService()
@@ -122,6 +124,7 @@ struct MealgramApp: App {
                 weightService: weightService,
                 heatmapService: heatmapService,
                 challengeService: challengeService,
+                statsService: statsService,
                 friendService: friendService,
                 coachService: coachService,
                 notificationCoordinator: notificationCoordinator,
