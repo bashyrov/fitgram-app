@@ -33,6 +33,8 @@ struct MainTabView: View {
     @State private var isCoachHistoryPresented = false
     @State private var coachHistory: [CoachInsightLog] = []
     @State private var selectedMeal: MealEntry?
+    @State private var undoSnapshot: MealEntrySnapshot?
+    @State private var undoDismissTask: Task<Void, Never>?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
 
@@ -170,7 +172,19 @@ struct MainTabView: View {
                 .padding(.top, Tokens.Space.lg)
             }
         }
+        .overlay(alignment: .bottom) {
+            if let snapshot = undoSnapshot {
+                MealUndoBanner(
+                    snapshot: snapshot,
+                    onUndo: { performUndo(snapshot) },
+                    onDismiss: { dismissUndo() }
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .padding(.bottom, Tokens.Space.xxxl)
+            }
+        }
         .animation(Tokens.Motion.gentle, value: unlockBus.queue.count)
+        .animation(Tokens.Motion.gentle, value: undoSnapshot?.id)
         .onChange(of: selectedTab) { _, newValue in
             if newValue == .add {
                 addOptionsVisible = true
@@ -256,7 +270,8 @@ struct MainTabView: View {
                 meal: meal,
                 repository: mealRepository,
                 onDismiss: { selectedMeal = nil },
-                onChanged: { refreshAfterSave() }
+                onChanged: { refreshAfterSave() },
+                onDeleted: { snapshot in queueUndo(snapshot) }
             )
         }
         .sheet(isPresented: $isWeeklyDebriefPresented) {
@@ -284,6 +299,30 @@ struct MainTabView: View {
     private func presentCoachHistory() {
         coachHistory = coachService.history(for: authUser.id)
         isCoachHistoryPresented = true
+    }
+
+    private func queueUndo(_ snapshot: MealEntrySnapshot) {
+        undoDismissTask?.cancel()
+        undoSnapshot = snapshot
+        undoDismissTask = Task { [snapshotID = snapshot.id] in
+            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            guard !Task.isCancelled else { return }
+            if undoSnapshot?.id == snapshotID {
+                undoSnapshot = nil
+            }
+        }
+    }
+
+    private func dismissUndo() {
+        undoDismissTask?.cancel()
+        undoSnapshot = nil
+    }
+
+    private func performUndo(_ snapshot: MealEntrySnapshot) {
+        undoDismissTask?.cancel()
+        try? mealSaver.save(meal: snapshot.makeEntry())
+        undoSnapshot = nil
+        refreshAfterSave()
     }
 
     private func presentWeeklyDebrief() {

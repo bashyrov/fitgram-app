@@ -8,6 +8,7 @@ struct MealDetailSheet: View {
     let repository: MealRepository
     let onDismiss: () -> Void
     let onChanged: () -> Void
+    var onDeleted: ((MealEntrySnapshot) -> Void)?
 
     @State private var portion: Double
     @State private var isConfirmingDelete = false
@@ -17,12 +18,14 @@ struct MealDetailSheet: View {
         meal: MealEntry,
         repository: MealRepository,
         onDismiss: @escaping () -> Void,
-        onChanged: @escaping () -> Void
+        onChanged: @escaping () -> Void,
+        onDeleted: ((MealEntrySnapshot) -> Void)? = nil
     ) {
         self.meal = meal
         self.repository = repository
         self.onDismiss = onDismiss
         self.onChanged = onChanged
+        self.onDeleted = onDeleted
         self._portion = State(initialValue: meal.portionMultiplier)
     }
 
@@ -180,8 +183,10 @@ struct MealDetailSheet: View {
     }
 
     private func delete() {
+        let snapshot = MealEntrySnapshot.capture(from: meal)
         do {
             try repository.delete(meal)
+            onDeleted?(snapshot)
             onChanged()
             onDismiss()
         } catch {
