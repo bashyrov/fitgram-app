@@ -10,6 +10,7 @@ struct ProfileView: View {
     let calibrationService: CalibrationService
     let weightService: WeightService
     let heatmapService: ActivityHeatmapService
+    let challengeService: ChallengeService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
 
@@ -23,6 +24,8 @@ struct ProfileView: View {
     @State private var exportError: String?
     @State private var earnedAchievements: [Achievement] = []
     @State private var heatmapSnapshot: ActivityHeatmap.Snapshot?
+    @State private var isChallengesPresented = false
+    @State private var challengeProgress: [ChallengeProgress] = []
 
     var body: some View {
         NavigationStack {
@@ -48,6 +51,7 @@ struct ProfileView: View {
                 .task(id: user?.remoteID) {
                     await loadAchievements()
                     heatmapSnapshot = heatmapService.snapshot()
+                    refreshChallenges()
                 }
             }
             .navigationTitle(Text("Profil"))
@@ -87,6 +91,12 @@ struct ProfileView: View {
             }
             .sheet(item: $sharedFile) { file in
                 ShareSheet(activityItems: [file.url])
+            }
+            .sheet(isPresented: $isChallengesPresented) {
+                ChallengesView(
+                    progress: challengeProgress,
+                    onDismiss: { isChallengesPresented = false }
+                )
             }
             .alert("Usunąć konto?", isPresented: $deleteConfirmation) {
                 Button("Anuluj", role: .cancel) {}
@@ -193,8 +203,29 @@ struct ProfileView: View {
                     isWeightLogPresented = true
                 }
                 .disabled(user == nil)
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "flag.checkered", title: challengeRowTitle, role: nil) {
+                    refreshChallenges()
+                    isChallengesPresented = true
+                }
+                .disabled(user == nil)
             }
         }
+    }
+
+    private var challengeRowTitle: LocalizedStringKey {
+        let completed = challengeProgress.filter(\.isCompleted).count
+        if completed > 0 {
+            return "Wyzwania tygodnia (\(completed) ukończone)"
+        }
+        return "Wyzwania tygodnia"
+    }
+
+    private func refreshChallenges() {
+        challengeProgress = challengeService.currentProgress(
+            calorieGoal: user?.dailyCalorieGoalKcal ?? 2100,
+            proteinGoal: user?.proteinGoalGrams ?? 120
+        )
     }
 
     private var dataSection: some View {
