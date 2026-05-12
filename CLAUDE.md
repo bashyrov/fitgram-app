@@ -166,8 +166,25 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Avatar picker: confirmationDialog gates camera vs library;
   CameraImagePicker is a UIImagePickerController wrapper with front-
   facing default + allowsEditing crop.
+- Meal duplicate: "Duplikuj na dziś" copies a past meal as a fresh
+  entry consumed at now. Refetches by id for cross-context safety;
+  skips photoFilename so copies don't share JPEGs.
+- Recipe favorites: isFavorite on Recipe + heart filter toolbar
+  toggle + context-menu entry + small heart.fill on the row.
+- MealEntry notes UI: TextEditor "Notatka" between tags + items in
+  the detail sheet, persisted via MealRepository.updateNotes (trims +
+  nil-on-empty).
+- Recipe shopping list export: cart toolbar button on detail view
+  raises ShareLink with plain-text "• ingredient" list including the
+  current servings count.
+- Recipe portion scaling: macro pills now multiply by the servings
+  slider in real time; header switches between "Wartości / porcję"
+  and "Wartości łącznie" with a × chip.
+- Photo cleanup: MealRepository.photoIsOrphaned check + deferred 6s
+  Task post-delete deletes the JPEG file once the undo window has
+  passed, but only if no surviving meal references it.
 
-297 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+305 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
