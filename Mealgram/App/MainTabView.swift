@@ -9,6 +9,7 @@ struct MainTabView: View {
     let mealSaver: any MealSaving
     let exportService: DataExportService
     let achievementService: AchievementService
+    let calibrationService: CalibrationService
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -52,6 +53,7 @@ struct MainTabView: View {
                 streak: todayState.streak,
                 exportService: exportService,
                 achievementService: achievementService,
+                calibrationService: calibrationService,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount
             )
