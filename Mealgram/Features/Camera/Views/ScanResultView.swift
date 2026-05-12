@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Detected items + portion adjustment + save. Items can be removed
-/// individually; the portion slider scales totals globally. Manual edits
-/// to individual quantities ship in Milestone 2.2 (multi-item refinement).
+/// Detected items + portion adjustment + save. Items can be tapped to
+/// edit, swiped to delete, or added manually via the footer. The portion
+/// slider scales totals globally.
 struct ScanResultView: View {
     let initialResult: ScanResult
     let imageData: Data?
@@ -12,6 +12,7 @@ struct ScanResultView: View {
 
     @State private var result: ScanResult
     @State private var portion: Double = 1.0
+    @State private var editorMode: FoodItemEditorSheet.Mode?
 
     init(
         result: ScanResult,
@@ -43,6 +44,24 @@ struct ScanResultView: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
                 footer
+            }
+        }
+        .sheet(item: $editorMode) { mode in
+            FoodItemEditorSheet(
+                mode: mode,
+                onCommit: { item in apply(edited: item, mode: mode) },
+                onDismiss: { editorMode = nil }
+            )
+        }
+    }
+
+    private func apply(edited item: ScanResult.DetectedItem, mode: FoodItemEditorSheet.Mode) {
+        switch mode {
+        case .adding:
+            result.items.append(item)
+        case .editing(let original):
+            if let index = result.items.firstIndex(where: { $0.id == original.id }) {
+                result.items[index] = item
             }
         }
     }
@@ -154,7 +173,14 @@ struct ScanResultView: View {
                 }
                 ForEach(result.items) { item in
                     itemRow(item)
-                        .swipeActions(edge: .trailing) {
+                        .contentShape(Rectangle())
+                        .onTapGesture { editorMode = .editing(item) }
+                        .contextMenu {
+                            Button {
+                                editorMode = .editing(item)
+                            } label: {
+                                Label("Edytuj", systemImage: "pencil")
+                            }
                             Button(role: .destructive) {
                                 result.items.removeAll(where: { $0.id == item.id })
                             } label: {
@@ -162,6 +188,21 @@ struct ScanResultView: View {
                             }
                         }
                 }
+                Button {
+                    editorMode = .adding
+                } label: {
+                    HStack(spacing: Tokens.Space.sm) {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundStyle(Tokens.Palette.primary)
+                        Text("Dodaj składnik ręcznie")
+                            .font(Tokens.Font.bodyEmphasized)
+                            .foregroundStyle(Tokens.Palette.primary)
+                        Spacer(minLength: 0)
+                    }
+                    .padding(.vertical, Tokens.Space.sm)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("scan.results.addItem")
             }
         }
     }
@@ -180,9 +221,14 @@ struct ScanResultView: View {
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
             Spacer()
-            Text("\(Int(item.caloriesKcal * portion)) kcal")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("\(Int(item.caloriesKcal * portion)) kcal")
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            }
         }
     }
 
