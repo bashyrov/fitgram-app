@@ -231,6 +231,11 @@ private struct ChainedMealSaver: MealSaving {
         try? streakService.registerLog(for: userRemoteID)
         if let unlocks = try? achievementService.evaluate(forUser: userRemoteID), !unlocks.isEmpty {
             unlockBus.push(unlocks)
+            Task {
+                for unlock in unlocks {
+                    await notificationCoordinator.notifyAchievement(unlock)
+                }
+            }
         }
         Task { await notificationCoordinator.rescheduleAll(for: userRemoteID) }
     }

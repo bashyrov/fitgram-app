@@ -26,6 +26,16 @@ final class NotificationCoordinator {
         self.now = now
     }
 
+    /// Fires a one-off achievement-unlock alert so the user notices even
+    /// when the app is backgrounded between the meal save and them
+    /// returning. Idempotent at the scheduler level — repeats with the
+    /// same title/body produce separate notifications (each unlock is
+    /// genuinely distinct).
+    func notifyAchievement(_ definition: AchievementDefinition) async {
+        let title = String(localized: "Nowa odznaka: \(definition.title)")
+        await scheduler.notifyAchievement(title: title, body: definition.summary)
+    }
+
     func rescheduleAll(for userRemoteID: String) async {
         let plan = NotificationPlanner.plan(
             .init(
