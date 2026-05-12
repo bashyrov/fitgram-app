@@ -10,6 +10,7 @@ struct MainTabView: View {
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
     let recipeRepository: RecipeRepository
+    let weightService: WeightService
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -66,6 +67,7 @@ struct MainTabView: View {
                 exportService: exportService,
                 achievementService: achievementService,
                 calibrationService: calibrationService,
+                weightService: weightService,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount
             )

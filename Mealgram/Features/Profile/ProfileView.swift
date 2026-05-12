@@ -8,6 +8,7 @@ struct ProfileView: View {
     let exportService: DataExportService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
+    let weightService: WeightService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
 
@@ -16,6 +17,7 @@ struct ProfileView: View {
     @State private var isEditingGoals = false
     @State private var isEditingPreferences = false
     @State private var isCalibrating = false
+    @State private var isWeightLogPresented = false
     @State private var deleteConfirmation = false
     @State private var exportError: String?
     @State private var earnedAchievements: [Achievement] = []
@@ -58,6 +60,16 @@ struct ProfileView: View {
                         userRemoteID: user.remoteID,
                         service: calibrationService,
                         onDismiss: { isCalibrating = false }
+                    )
+                }
+            }
+            .sheet(isPresented: $isWeightLogPresented) {
+                if let user {
+                    WeightLogView(
+                        userRemoteID: user.remoteID,
+                        initialWeight: user.weightKg,
+                        state: WeightLogState(service: weightService),
+                        onDismiss: { isWeightLogPresented = false }
                     )
                 }
             }
@@ -158,6 +170,11 @@ struct ProfileView: View {
                 Divider().background(Tokens.Palette.separator)
                 actionRow(symbol: "wand.and.stars", title: "Kalibracja AI", role: nil) {
                     isCalibrating = true
+                }
+                .disabled(user == nil)
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "scalemass.fill", title: "Waga i trend", role: nil) {
+                    isWeightLogPresented = true
                 }
                 .disabled(user == nil)
             }

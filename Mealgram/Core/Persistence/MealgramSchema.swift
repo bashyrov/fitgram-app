@@ -19,6 +19,7 @@ enum MealgramSchemaV1: VersionedSchema {
             Calibration.self,
             Streak.self,
             Achievement.self,
+            WeightEntry.self,
         ]
     }
 }

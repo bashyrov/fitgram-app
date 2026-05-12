@@ -20,6 +20,7 @@ struct MealgramApp: App {
     private let foodCatalog: any FoodCatalog
     private let foodSeeder: FoodSeeder
     private let recipeRepository: RecipeRepository
+    private let weightService: WeightService
 
     init() {
         let session = AuthSession()
@@ -49,6 +50,7 @@ struct MealgramApp: App {
         self.foodCatalog = FoodCatalogService(container: persistence.container)
         let recipeRepository = RecipeRepository(container: persistence.container)
         self.recipeRepository = recipeRepository
+        self.weightService = WeightService(container: persistence.container)
         self.todayState = TodayState(
             container: persistence.container,
             streakService: streakService,
@@ -80,6 +82,7 @@ struct MealgramApp: App {
                 foodCatalog: foodCatalog,
                 progressState: progressState,
                 recipeRepository: recipeRepository,
+                weightService: weightService,
                 unlockBus: unlockBus
             )
             .environment(session)
