@@ -18,6 +18,7 @@ struct RootView: View {
     let progressState: ProgressState
     let recipeRepository: RecipeRepository
     let mealRepository: MealRepository
+    let photoStore: MealPhotoStore?
     let weightService: WeightService
     let heatmapService: ActivityHeatmapService
     let challengeService: ChallengeService
@@ -44,6 +45,7 @@ struct RootView: View {
         progressState: ProgressState,
         recipeRepository: RecipeRepository,
         mealRepository: MealRepository,
+        photoStore: MealPhotoStore?,
         weightService: WeightService,
         heatmapService: ActivityHeatmapService,
         challengeService: ChallengeService,
@@ -66,6 +68,7 @@ struct RootView: View {
         self.progressState = progressState
         self.recipeRepository = recipeRepository
         self.mealRepository = mealRepository
+        self.photoStore = photoStore
         self.weightService = weightService
         self.heatmapService = heatmapService
         self.challengeService = challengeService
@@ -106,6 +109,7 @@ struct RootView: View {
                     foodCatalog: foodCatalog,
                     recipeRepository: recipeRepository,
                     mealRepository: mealRepository,
+                    photoStore: photoStore,
                     weightService: weightService,
                     heatmapService: heatmapService,
                     challengeService: challengeService,

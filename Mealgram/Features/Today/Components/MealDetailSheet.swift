@@ -6,6 +6,7 @@ import SwiftUI
 struct MealDetailSheet: View {
     let meal: MealEntry
     let repository: MealRepository
+    let photoStore: MealPhotoStore?
     let onDismiss: () -> Void
     let onChanged: () -> Void
     var onDeleted: ((MealEntrySnapshot) -> Void)?
@@ -17,12 +18,14 @@ struct MealDetailSheet: View {
     init(
         meal: MealEntry,
         repository: MealRepository,
+        photoStore: MealPhotoStore? = nil,
         onDismiss: @escaping () -> Void,
         onChanged: @escaping () -> Void,
         onDeleted: ((MealEntrySnapshot) -> Void)? = nil
     ) {
         self.meal = meal
         self.repository = repository
+        self.photoStore = photoStore
         self.onDismiss = onDismiss
         self.onChanged = onChanged
         self.onDeleted = onDeleted
@@ -35,6 +38,9 @@ struct MealDetailSheet: View {
                 Tokens.Palette.background.ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: Tokens.Space.lg) {
+                        if let photo = mealPhoto {
+                            photoHeader(photo)
+                        }
                         summaryCard
                         portionCard
                         itemsCard
@@ -85,6 +91,21 @@ struct MealDetailSheet: View {
     }
 
     // MARK: - Sections
+
+    private var mealPhoto: UIImage? {
+        guard let filename = meal.photoFilename, let photoStore else { return nil }
+        return photoStore.image(forFilename: filename)
+    }
+
+    private func photoHeader(_ image: UIImage) -> some View {
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .frame(maxWidth: .infinity)
+            .frame(height: 200)
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous))
+    }
 
     private var summaryCard: some View {
         Card(elevation: Tokens.Shadow.float) {

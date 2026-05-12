@@ -21,6 +21,7 @@ struct MealgramApp: App {
     private let foodSeeder: FoodSeeder
     private let recipeRepository: RecipeRepository
     private let mealRepository: MealRepository
+    private let photoStore: MealPhotoStore?
     private let weightService: WeightService
     private let heatmapService: ActivityHeatmapService
     private let challengeService: ChallengeService
@@ -59,6 +60,7 @@ struct MealgramApp: App {
         let recipeRepository = RecipeRepository(container: persistence.container)
         self.recipeRepository = recipeRepository
         self.mealRepository = MealRepository(container: persistence.container)
+        self.photoStore = try? MealPhotoStore()
         self.heatmapService = ActivityHeatmapService(container: persistence.container)
         self.challengeService = ChallengeService(container: persistence.container)
         self.statsService = ProfileStatsService(container: persistence.container)
@@ -121,6 +123,7 @@ struct MealgramApp: App {
                 progressState: progressState,
                 recipeRepository: recipeRepository,
                 mealRepository: mealRepository,
+                photoStore: photoStore,
                 weightService: weightService,
                 heatmapService: heatmapService,
                 challengeService: challengeService,
