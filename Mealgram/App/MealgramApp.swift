@@ -40,7 +40,6 @@ struct MealgramApp: App {
         self.streakService = streakService
         self.achievementService = AchievementService(container: persistence.container)
         self.calibrationService = CalibrationService(container: persistence.container)
-        self.todayState = TodayState(container: persistence.container, streakService: streakService)
         self.progressState = ProgressState(container: persistence.container)
         self.accountDeletionService = AccountDeletionService(
             authService: authService,
@@ -48,7 +47,13 @@ struct MealgramApp: App {
         )
         self.exportService = DataExportService(container: persistence.container)
         self.foodCatalog = FoodCatalogService(container: persistence.container)
-        self.recipeRepository = RecipeRepository(container: persistence.container)
+        let recipeRepository = RecipeRepository(container: persistence.container)
+        self.recipeRepository = recipeRepository
+        self.todayState = TodayState(
+            container: persistence.container,
+            streakService: streakService,
+            recipeRepository: recipeRepository
+        )
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
         do {

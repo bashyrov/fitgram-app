@@ -21,22 +21,26 @@ final class TodayState {
     private(set) var meals: [MealEntry] = []
     private(set) var user: User?
     private(set) var streak: Streak?
+    private(set) var suggestedRecipe: Recipe?
     private(set) var isLoading = false
     private(set) var loadError: String?
 
     private let container: ModelContainer
     private let streakService: StreakService
+    private let recipeRepository: RecipeRepository?
     private let calendar: Calendar
     private let now: () -> Date
 
     init(
         container: ModelContainer,
         streakService: StreakService,
+        recipeRepository: RecipeRepository? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
         self.container = container
         self.streakService = streakService
+        self.recipeRepository = recipeRepository
         self.calendar = calendar
         self.now = now
     }
@@ -71,6 +75,8 @@ final class TodayState {
                 acc.fat += entry.totalFatGrams
             }
             self.streak = try streakService.currentStreak(for: userRemoteID)
+            self.suggestedRecipe = (try? recipeRepository?.all(sortedByCookCount: true))?
+                .first { $0.cookCount > 0 }
             self.loadError = nil
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
