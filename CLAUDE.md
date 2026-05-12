@@ -78,8 +78,17 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   / weight.tracked / macros.balanced (±10 % on all 3 goals one day) /
   week.consistent (7 days in a row, beats streak.* for early users).
   Engine Inputs struct carries macro goals + weight flag.
+- Friends Leaderboard: trophy button on Znajomi raises a ranked sheet
+  with medal top-3 + user's row highlighted regardless of rank.
+  Standard Competition Ranking; ties share rank; name-asc tiebreaker.
+- Quick DB recents: Food model gained pickCount + lastPickedAt. Two
+  horizontal carousels ("Ostatnie" + "Częste") above the all-foods
+  list when no query/category active. recordPick fires alongside save.
+- Streak freeze UI: warm snowflake card on Today appears when
+  currentLength > 0, freezesAvailable > 0, nothing logged today.
+  One tap consumes a freeze via StreakService and refreshes.
 
-188 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+201 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
