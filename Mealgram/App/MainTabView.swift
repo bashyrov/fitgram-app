@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Top-level navigation shell for authenticated users. Three tabs — Today,
-/// Add (raises an action sheet with the available capture modes), Profile.
-/// Stripped-down for Phase 1; the Add menu will grow Quick Database +
-/// Recipe pickers in Phase 2.
+/// Top-level navigation shell for authenticated users. Four tabs:
+/// Today / Add (action sheet) / Progress / Profile.
 struct MainTabView: View {
     let authUser: AuthUser
     let mealSaver: any MealSaving
@@ -15,6 +13,7 @@ struct MainTabView: View {
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
     let todayState: TodayState
+    let progressState: ProgressState
 
     @State private var addOptionsVisible = false
     @State private var isScanPresented = false
@@ -26,6 +25,7 @@ struct MainTabView: View {
     enum Tab: Hashable {
         case today
         case add
+        case progress
         case profile
     }
 
@@ -50,6 +50,12 @@ struct MainTabView: View {
                     Label("Dodaj", systemImage: "plus.circle.fill")
                 }
                 .tag(Tab.add)
+
+            WeekProgressView(userRemoteID: authUser.id, state: progressState)
+                .tabItem {
+                    Label("Tydzień", systemImage: "chart.bar.fill")
+                }
+                .tag(Tab.progress)
 
             ProfileView(
                 user: todayState.user,
@@ -107,7 +113,7 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isScanPresented = false
-                    Task { await todayState.refresh(for: authUser.id) }
+                    refreshAfterSave()
                 })
         }
         .fullScreenCover(isPresented: $isBarcodePresented) {
@@ -115,7 +121,7 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isBarcodePresented = false
-                    Task { await todayState.refresh(for: authUser.id) }
+                    refreshAfterSave()
                 })
         }
         .sheet(isPresented: $isQuickDBPresented) {
@@ -124,7 +130,7 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isQuickDBPresented = false
-                    Task { await todayState.refresh(for: authUser.id) }
+                    refreshAfterSave()
                 }
             )
         }
@@ -133,9 +139,16 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isVoicePresented = false
-                    Task { await todayState.refresh(for: authUser.id) }
+                    refreshAfterSave()
                 }
             )
+        }
+    }
+
+    private func refreshAfterSave() {
+        Task {
+            await todayState.refresh(for: authUser.id)
+            await progressState.refresh(for: authUser.id)
         }
     }
 }
