@@ -2,8 +2,9 @@ import PhotosUI
 import SwiftData
 import SwiftUI
 
-/// Circle avatar + tap-to-change via PhotosPicker. Shows the current
-/// avatar (if any), or the user's initial as a fallback.
+/// Circle avatar + tap-to-change. Shows the current avatar (if any),
+/// or the user's initial as a fallback. Tapping raises a small action
+/// sheet so the user can pick between the camera and the photo library.
 struct AvatarPicker: View {
     let user: User
     let store: AvatarStore
@@ -12,16 +13,45 @@ struct AvatarPicker: View {
     @Environment(\.modelContext) private var modelContext
     @State private var pickerItem: PhotosPickerItem?
     @State private var displayedImage: UIImage?
+    @State private var isActionSheetPresented = false
+    @State private var isCameraPresented = false
+    @State private var isPhotoPickerPresented = false
 
     var body: some View {
-        PhotosPicker(selection: $pickerItem, matching: .images, photoLibrary: .shared()) {
+        Button {
+            isActionSheetPresented = true
+        } label: {
             content
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Zmień zdjęcie profilowe"))
+        .confirmationDialog(
+            "Zmień zdjęcie profilowe",
+            isPresented: $isActionSheetPresented,
+            titleVisibility: .visible
+        ) {
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                Button("Zrób zdjęcie") {
+                    isCameraPresented = true
+                }
+            }
+            Button("Wybierz z biblioteki") {
+                isPhotoPickerPresented = true
+            }
+            Button("Anuluj", role: .cancel) {}
+        }
+        .photosPicker(isPresented: $isPhotoPickerPresented, selection: $pickerItem, matching: .images)
+        .fullScreenCover(isPresented: $isCameraPresented) {
+            CameraImagePicker(
+                onPicked: { image in apply(image: image) },
+                onDismiss: { isCameraPresented = false }
+            )
+            .ignoresSafeArea()
         }
         .onAppear(perform: loadCurrent)
         .onChange(of: pickerItem) { _, newValue in
             Task { await handlePicked(item: newValue) }
         }
-        .accessibilityLabel(Text("Zmień zdjęcie profilowe"))
     }
 
     @ViewBuilder
@@ -63,14 +93,22 @@ struct AvatarPicker: View {
                 let data = try await item.loadTransferable(type: Data.self),
                 let image = UIImage(data: data)
             else { return }
+            apply(image: image)
+        } catch {
+            // Soft-fail.
+        }
+        pickerItem = nil
+    }
+
+    private func apply(image: UIImage) {
+        do {
             let filename = try store.save(image, previous: user.avatarFilename)
             user.avatarFilename = filename
             user.updatedAt = Date()
             try? modelContext.save()
             displayedImage = image
         } catch {
-            // Soft-fail: no toast for now; cap at log.
+            // Soft-fail.
         }
-        pickerItem = nil
     }
 }
