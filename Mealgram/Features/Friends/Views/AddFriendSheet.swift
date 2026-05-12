@@ -7,6 +7,8 @@ struct AddFriendSheet: View {
     @Bindable var state: FriendsState
     let onDismiss: () -> Void
 
+    @State private var isMyCodePresented = false
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -16,6 +18,7 @@ struct AddFriendSheet: View {
                         searchField
                         if state.searchResults.isEmpty {
                             emptyHint
+                            myCodeButton
                         } else {
                             VStack(spacing: Tokens.Space.sm) {
                                 ForEach(state.searchResults) { profile in
@@ -35,7 +38,41 @@ struct AddFriendSheet: View {
                     Button("Zamknij", action: onDismiss)
                 }
             }
+            .sheet(isPresented: $isMyCodePresented) {
+                MyCodeSheet(
+                    userID: state.userRemoteID,
+                    displayName: nil,
+                    onDismiss: { isMyCodePresented = false }
+                )
+            }
         }
+    }
+
+    private var myCodeButton: some View {
+        Button {
+            isMyCodePresented = true
+        } label: {
+            HStack(spacing: Tokens.Space.md) {
+                Image(systemName: "qrcode")
+                    .foregroundStyle(Tokens.Palette.primary)
+                Text("Pokaż mój kod")
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.primary)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            }
+            .padding(Tokens.Space.md)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                    .stroke(Tokens.Palette.primarySoft, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     private var searchField: some View {
