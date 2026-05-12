@@ -115,6 +115,48 @@ enum AchievementCatalog {
             symbol: "calendar.badge.checkmark",
             order: 42
         ),
+        .init(
+            id: "streak.50",
+            title: "Pół setki",
+            summary: "Pięćdziesiąt dni rytmu.",
+            symbol: "flame.fill",
+            order: 13
+        ),
+        .init(
+            id: "protein.week",
+            title: "Białkowy tydzień",
+            summary: "Siedem dni z rzędu w celu białka.",
+            symbol: "bolt.heart.fill",
+            order: 21
+        ),
+        .init(
+            id: "recipes.ten",
+            title: "Domowy szef kuchni",
+            summary: "Dziesięć ugotowanych przepisów łącznie.",
+            symbol: "fork.knife.circle.fill",
+            order: 6
+        ),
+        .init(
+            id: "weight.ten",
+            title: "Konsekwentna waga",
+            summary: "Dziesięć zapisów wagi.",
+            symbol: "scalemass.fill",
+            order: 43
+        ),
+        .init(
+            id: "tag.first",
+            title: "Pierwszy tag",
+            summary: "Dodałaś pierwszy tag do posiłku.",
+            symbol: "tag.fill",
+            order: 7
+        ),
+        .init(
+            id: "achievements.ten",
+            title: "Zbieracz odznak",
+            summary: "Zdobyłaś dziesięć odznak.",
+            symbol: "star.fill",
+            order: 99
+        ),
     ]
 
     static func definition(for id: String) -> AchievementDefinition? {
