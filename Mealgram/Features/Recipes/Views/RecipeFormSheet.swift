@@ -12,6 +12,8 @@ struct RecipeFormSheet: View {
     let mode: Mode
     let onCommit: (RecipeDraft) -> Void
     let onDismiss: () -> Void
+    var estimator: RecipeNutritionEstimator?
+    @State private var estimateNote: String?
 
     @State private var title: String
     @State private var summary: String
@@ -26,11 +28,13 @@ struct RecipeFormSheet: View {
     init(
         mode: Mode,
         onCommit: @escaping (RecipeDraft) -> Void,
-        onDismiss: @escaping () -> Void
+        onDismiss: @escaping () -> Void,
+        estimator: RecipeNutritionEstimator? = nil
     ) {
         self.mode = mode
         self.onCommit = onCommit
         self.onDismiss = onDismiss
+        self.estimator = estimator
         switch mode {
         case .adding:
             self._title = State(initialValue: "")
@@ -111,9 +115,33 @@ struct RecipeFormSheet: View {
                         }
                         Card {
                             VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text("Wartości / porcję (opcjonalnie)")
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
+                                HStack {
+                                    Text("Wartości / porcję (opcjonalnie)")
+                                        .font(Tokens.Font.headline)
+                                        .foregroundStyle(Tokens.Palette.ink)
+                                    Spacer()
+                                    if estimator != nil {
+                                        Button {
+                                            runEstimate()
+                                        } label: {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "wand.and.stars")
+                                                    .font(.system(size: 13, weight: .semibold))
+                                                Text("Oszacuj")
+                                                    .font(Tokens.Font.footnote.bold())
+                                            }
+                                            .foregroundStyle(Tokens.Palette.primary)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .disabled(splitLines(ingredientsText).isEmpty)
+                                    }
+                                }
+                                if let note = estimateNote {
+                                    Text(note)
+                                        .font(Tokens.Font.caption)
+                                        .foregroundStyle(Tokens.Palette.inkMuted)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
                                 field(
                                     label: "Kalorie", placeholder: "350", text: $caloriesPerServingText,
                                     keyboard: .decimalPad)
@@ -188,6 +216,31 @@ struct RecipeFormSheet: View {
                     RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
                         .fill(Tokens.Palette.surfaceMuted)
                 )
+        }
+    }
+
+    private func runEstimate() {
+        guard let estimator else { return }
+        let lines = splitLines(ingredientsText)
+        let ingredients = lines.map {
+            RecipeNutritionEstimator.Ingredient(name: $0, quantityGrams: nil)
+        }
+        let servings = max(1, Int(servingsText) ?? 1)
+        let estimate = estimator.estimate(ingredients: ingredients, servings: servings)
+        caloriesPerServingText = Self.format(estimate.perServingCalories)
+        proteinPerServingText = Self.format(estimate.perServingProtein)
+        carbsPerServingText = Self.format(estimate.perServingCarbs)
+        fatPerServingText = Self.format(estimate.perServingFat)
+        if estimate.unmatched.isEmpty {
+            estimateNote = String(
+                localized:
+                    "Wartości przeliczone z \(estimate.matched) składników. Dostosuj według potrzeb."
+            )
+        } else {
+            estimateNote = String(
+                localized:
+                    "Wartości z \(estimate.matched) składników. Nie znaleziono w bazie: \(estimate.unmatched.joined(separator: ", "))."
+            )
         }
     }
 

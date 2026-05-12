@@ -7,6 +7,7 @@ struct RecipeListView: View {
     let repository: RecipeRepository
     let mealSaver: any MealSaving
     let onDismiss: () -> Void
+    var estimator: RecipeNutritionEstimator?
 
     @State private var formMode: FormPresentation?
     @State private var detailRecipe: Recipe?
@@ -65,7 +66,8 @@ struct RecipeListView: View {
                 RecipeFormSheet(
                     mode: presentation(for: mode),
                     onCommit: { draft in handle(draft: draft, mode: mode) },
-                    onDismiss: { formMode = nil }
+                    onDismiss: { formMode = nil },
+                    estimator: estimator
                 )
             }
             .sheet(item: $detailRecipe) { recipe in
