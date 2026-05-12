@@ -7,6 +7,10 @@ struct WeeklyDebriefView: View {
     let onDismiss: () -> Void
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
     var onOpenHistory: (() -> Void)?
+    var existingFeedback: Bool?
+    var onFeedback: ((Bool) -> Void)?
+
+    @State private var localFeedback: Bool?
 
     var body: some View {
         NavigationStack {
@@ -17,6 +21,9 @@ struct WeeklyDebriefView: View {
                         header
                         statsGrid
                         insightsSection
+                        if onFeedback != nil {
+                            feedbackRow
+                        }
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
@@ -120,6 +127,59 @@ struct WeeklyDebriefView: View {
             RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
                 .fill(Tokens.Palette.primarySoft.opacity(0.5))
         )
+    }
+
+    // MARK: - Feedback
+
+    private var resolvedFeedback: Bool? { localFeedback ?? existingFeedback }
+
+    @ViewBuilder
+    private var feedbackRow: some View {
+        if let value = resolvedFeedback {
+            Card(background: Tokens.Palette.primarySoft.opacity(0.5)) {
+                HStack(spacing: Tokens.Space.md) {
+                    Image(systemName: value ? "hand.thumbsup.fill" : "hand.thumbsdown.fill")
+                        .foregroundStyle(Tokens.Palette.primary)
+                    Text(value ? "Dzięki za feedback!" : "Zanotowane — postaramy się bardziej dopasować.")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer(minLength: 0)
+                }
+            }
+        } else {
+            Card {
+                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                    Text("Pomocne?")
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    HStack(spacing: Tokens.Space.md) {
+                        feedbackButton(value: true, symbol: "hand.thumbsup", label: "Tak")
+                        feedbackButton(value: false, symbol: "hand.thumbsdown", label: "Nie")
+                    }
+                }
+            }
+        }
+    }
+
+    private func feedbackButton(value: Bool, symbol: String, label: LocalizedStringKey) -> some View {
+        Button {
+            localFeedback = value
+            onFeedback?(value)
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: symbol)
+                    .font(.system(size: 15, weight: .semibold))
+                Text(label)
+                    .font(Tokens.Font.footnote.bold())
+            }
+            .foregroundStyle(Tokens.Palette.primary)
+            .padding(.horizontal, Tokens.Space.md)
+            .padding(.vertical, Tokens.Space.sm)
+            .background(
+                Capsule().fill(Tokens.Palette.primarySoft)
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Insights section

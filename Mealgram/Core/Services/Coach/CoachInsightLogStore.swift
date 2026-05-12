@@ -90,6 +90,38 @@ final class CoachInsightLogStore {
         }
     }
 
+    /// Records the user's thumbs up/down for the current week. Idempotent
+    /// — flipping the bit just overwrites; nil means "not yet asked".
+    func recordFeedback(helpful: Bool, for userRemoteID: String) {
+        let weekStart = currentWeekStart()
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<CoachInsightLog>(
+            predicate: #Predicate {
+                $0.userRemoteID == userRemoteID && $0.weekStartAt == weekStart
+            }
+        )
+        do {
+            guard let log = try context.fetch(descriptor).first else { return }
+            log.helpful = helpful
+            try context.save()
+        } catch {
+            Logger.persistence.error("CoachInsightLog feedback save failed: \(String(describing: error))")
+        }
+    }
+
+    /// Returns the helpful flag for the current week, or nil if not asked
+    /// yet.
+    func feedback(for userRemoteID: String) -> Bool? {
+        let weekStart = currentWeekStart()
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<CoachInsightLog>(
+            predicate: #Predicate {
+                $0.userRemoteID == userRemoteID && $0.weekStartAt == weekStart
+            }
+        )
+        return (try? context.fetch(descriptor).first)?.helpful
+    }
+
     func recent(for userRemoteID: String, limit: Int = 12) -> [CoachInsightLog] {
         let context = ModelContext(container)
         var descriptor = FetchDescriptor<CoachInsightLog>(

@@ -21,6 +21,10 @@ final class CoachInsightLog {
     var insightsJSON: String
     /// JSON-encoded `[StoredStat]`.
     var statsJSON: String
+    /// User feedback on the week — nil = not asked, true = thumbs up,
+    /// false = thumbs down. Added in a lightweight migration (optional
+    /// column = no schema version bump needed).
+    var helpful: Bool?
 
     init(
         id: UUID = UUID(),

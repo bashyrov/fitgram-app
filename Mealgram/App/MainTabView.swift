@@ -288,7 +288,11 @@ struct MainTabView: View {
                         isWeeklyDebriefPresented = false
                         handleCoachAction(kind)
                     },
-                    onOpenHistory: { presentCoachHistory() }
+                    onOpenHistory: { presentCoachHistory() },
+                    existingFeedback: coachService.feedback(for: authUser.id),
+                    onFeedback: { value in
+                        coachService.recordFeedback(helpful: value, for: authUser.id)
+                    }
                 )
             }
         }

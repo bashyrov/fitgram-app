@@ -55,6 +55,14 @@ final class CoachService {
         logStore?.recent(for: userRemoteID, limit: limit) ?? []
     }
 
+    func recordFeedback(helpful: Bool, for userRemoteID: String) {
+        logStore?.recordFeedback(helpful: helpful, for: userRemoteID)
+    }
+
+    func feedback(for userRemoteID: String) -> Bool? {
+        logStore?.feedback(for: userRemoteID)
+    }
+
     func decode(log: CoachInsightLog) -> [CoachInsight] {
         guard let logStore else { return [] }
         return logStore.decodeInsights(log.insightsJSON).compactMap { stored in
