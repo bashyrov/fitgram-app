@@ -6,6 +6,7 @@ struct WeeklyDebriefView: View {
     let debrief: WeeklyDebrief
     let onDismiss: () -> Void
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
+    var onOpenHistory: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -24,6 +25,16 @@ struct WeeklyDebriefView: View {
             .navigationTitle(Text("Co u Ciebie"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                if let onOpenHistory {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            onOpenHistory()
+                        } label: {
+                            Image(systemName: "clock.arrow.circlepath")
+                        }
+                        .accessibilityLabel(Text("Historia"))
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Zamknij", action: onDismiss)
                 }

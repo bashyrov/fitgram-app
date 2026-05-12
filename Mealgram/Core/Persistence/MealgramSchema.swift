@@ -20,6 +20,7 @@ enum MealgramSchemaV1: VersionedSchema {
             Streak.self,
             Achievement.self,
             WeightEntry.self,
+            CoachInsightLog.self,
         ]
     }
 }

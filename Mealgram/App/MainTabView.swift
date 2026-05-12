@@ -30,6 +30,8 @@ struct MainTabView: View {
     @State private var isRecipesPresented = false
     @State private var isWeeklyDebriefPresented = false
     @State private var weeklyDebrief: WeeklyDebrief?
+    @State private var isCoachHistoryPresented = false
+    @State private var coachHistory: [CoachInsightLog] = []
     @State private var selectedMeal: MealEntry?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
@@ -265,10 +267,23 @@ struct MainTabView: View {
                     onCoachAction: { kind in
                         isWeeklyDebriefPresented = false
                         handleCoachAction(kind)
-                    }
+                    },
+                    onOpenHistory: { presentCoachHistory() }
                 )
             }
         }
+        .sheet(isPresented: $isCoachHistoryPresented) {
+            CoachHistoryView(
+                logs: coachHistory,
+                decode: { coachService.decode(log: $0) },
+                onDismiss: { isCoachHistoryPresented = false }
+            )
+        }
+    }
+
+    private func presentCoachHistory() {
+        coachHistory = coachService.history(for: authUser.id)
+        isCoachHistoryPresented = true
     }
 
     private func presentWeeklyDebrief() {

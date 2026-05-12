@@ -70,7 +70,8 @@ struct MealgramApp: App {
         let coachService = CoachService(
             container: persistence.container,
             streakService: streakService,
-            weightService: weightService
+            weightService: weightService,
+            logStore: CoachInsightLogStore(container: persistence.container)
         )
         self.coachService = coachService
         self.todayState = TodayState(
