@@ -7,6 +7,10 @@ struct FriendsRootView: View {
     @Bindable var state: FriendsState
 
     @State private var isAddPresented = false
+    @State private var isLeaderboardPresented = false
+    var yourStreak: Int = 0
+    var yourDisplayName: String = ""
+    var yourID: String = ""
 
     var body: some View {
         NavigationStack {
@@ -28,6 +32,14 @@ struct FriendsRootView: View {
             .navigationTitle(Text("Znajomi"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        isLeaderboardPresented = true
+                    } label: {
+                        Image(systemName: "trophy.fill")
+                    }
+                    .accessibilityLabel(Text("Tablica wyników"))
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         isAddPresented = true
@@ -40,6 +52,17 @@ struct FriendsRootView: View {
             .task { await state.refresh() }
             .sheet(isPresented: $isAddPresented) {
                 AddFriendSheet(state: state) { isAddPresented = false }
+            }
+            .sheet(isPresented: $isLeaderboardPresented) {
+                LeaderboardView(
+                    entries: Leaderboard.from(
+                        friends: state.friends,
+                        you: yourID.isEmpty
+                            ? nil
+                            : .init(id: yourID, displayName: yourDisplayName, streak: yourStreak)
+                    ),
+                    onDismiss: { isLeaderboardPresented = false }
+                )
             }
         }
     }
