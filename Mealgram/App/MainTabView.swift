@@ -262,7 +262,8 @@ struct MainTabView: View {
                 onDismiss: {
                     isRecipesPresented = false
                     refreshAfterSave()
-                }
+                },
+                estimator: makeRecipeEstimator()
             )
         }
         .sheet(item: $selectedMeal) { meal in
@@ -294,6 +295,12 @@ struct MainTabView: View {
                 onDismiss: { isCoachHistoryPresented = false }
             )
         }
+    }
+
+    private func makeRecipeEstimator() -> RecipeNutritionEstimator? {
+        let foods = (try? foodCatalog.all()) ?? []
+        guard !foods.isEmpty else { return nil }
+        return RecipeNutritionEstimator(catalog: foods)
     }
 
     private func presentCoachHistory() {
