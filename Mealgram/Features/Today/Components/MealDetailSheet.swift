@@ -16,6 +16,7 @@ struct MealDetailSheet: View {
     @State private var errorMessage: String?
     @State private var tags: [String]
     @State private var newTag: String = ""
+    @State private var notes: String
 
     init(
         meal: MealEntry,
@@ -33,6 +34,7 @@ struct MealDetailSheet: View {
         self.onDeleted = onDeleted
         self._portion = State(initialValue: meal.portionMultiplier)
         self._tags = State(initialValue: meal.tags)
+        self._notes = State(initialValue: meal.notes ?? "")
     }
 
     var body: some View {
@@ -47,6 +49,7 @@ struct MealDetailSheet: View {
                         summaryCard
                         portionCard
                         tagsCard
+                        notesCard
                         itemsCard
                         if let errorMessage {
                             Text(errorMessage)
@@ -236,6 +239,28 @@ struct MealDetailSheet: View {
         newTag = ""
     }
 
+    private var notesCard: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                Text("Notatka")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                TextEditor(text: $notes)
+                    .font(Tokens.Font.body)
+                    .scrollContentBackground(.hidden)
+                    .frame(minHeight: 88)
+                    .padding(Tokens.Space.sm)
+                    .background(
+                        RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                            .fill(Tokens.Palette.surfaceMuted)
+                    )
+                Text("Co poszło dobrze, co warto zmienić? Zostanie w historii posiłku.")
+                    .font(Tokens.Font.caption)
+                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            }
+        }
+    }
+
     private var itemsCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
@@ -287,6 +312,7 @@ struct MealDetailSheet: View {
         do {
             try repository.updatePortion(meal, multiplier: portion)
             try repository.updateTags(meal, tags: tags)
+            try repository.updateNotes(meal, notes: notes)
             onChanged()
             onDismiss()
         } catch {

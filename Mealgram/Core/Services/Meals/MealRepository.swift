@@ -72,6 +72,23 @@ final class MealRepository {
         try context.save()
     }
 
+    /// Updates the free-text notes on an existing meal. Empty / whitespace
+    /// stored as nil so we don't accumulate ghost-empty rows.
+    func updateNotes(_ meal: MealEntry, notes: String) throws {
+        let context = ModelContext(container)
+        let mealID = meal.id
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.id == mealID }
+        )
+        guard let attached = try context.fetch(descriptor).first else {
+            throw MealRepositoryError.notFound
+        }
+        let cleaned = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        attached.notes = cleaned.isEmpty ? nil : cleaned
+        attached.updatedAt = Date()
+        try context.save()
+    }
+
     /// Updates the tags on an existing meal. Same refetch pattern. Tags
     /// are trimmed + lower-cased + deduped before saving so the user can
     /// type "Restaurant" and "restaurant" without ending up with two

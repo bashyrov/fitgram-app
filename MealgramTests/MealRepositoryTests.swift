@@ -133,4 +133,23 @@ final class MealRepositoryTests: XCTestCase {
             XCTAssertEqual(error as? MealRepositoryError, .notFound)
         }
     }
+
+    // MARK: - Notes
+
+    func testUpdateNotesPersistsTrimmedText() throws {
+        let meal = try seedMeal()
+        try repository.updateNotes(meal, notes: "   Po treningu, dużo wody.  ")
+        let stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.notes, "Po treningu, dużo wody.")
+    }
+
+    func testUpdateNotesStoresNilForEmptyWhitespace() throws {
+        let meal = try seedMeal()
+        try repository.updateNotes(meal, notes: "first pass")
+        try repository.updateNotes(meal, notes: "    \n  ")
+        let stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertNil(stored?.notes)
+    }
 }
