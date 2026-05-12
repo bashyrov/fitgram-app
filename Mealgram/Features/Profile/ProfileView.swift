@@ -7,6 +7,7 @@ struct ProfileView: View {
     let streak: Streak?
     let exportService: DataExportService
     let achievementService: AchievementService
+    let calibrationService: CalibrationService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
 
@@ -14,6 +15,7 @@ struct ProfileView: View {
     @State private var isPreparingExport = false
     @State private var isEditingGoals = false
     @State private var isEditingPreferences = false
+    @State private var isCalibrating = false
     @State private var deleteConfirmation = false
     @State private var exportError: String?
     @State private var earnedAchievements: [Achievement] = []
@@ -48,6 +50,15 @@ struct ProfileView: View {
             .sheet(isPresented: $isEditingPreferences) {
                 if let user {
                     PreferencesView(user: user) { isEditingPreferences = false }
+                }
+            }
+            .sheet(isPresented: $isCalibrating) {
+                if let user {
+                    CalibrationView(
+                        userRemoteID: user.remoteID,
+                        service: calibrationService,
+                        onDismiss: { isCalibrating = false }
+                    )
                 }
             }
             .sheet(item: $sharedFile) { file in
@@ -142,6 +153,11 @@ struct ProfileView: View {
                 sectionHeader("Preferencje")
                 actionRow(symbol: "bell", title: "Przypomnienia, język, jednostki", role: nil) {
                     isEditingPreferences = true
+                }
+                .disabled(user == nil)
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "wand.and.stars", title: "Kalibracja AI", role: nil) {
+                    isCalibrating = true
                 }
                 .disabled(user == nil)
             }
