@@ -183,10 +183,22 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
 - Photo cleanup: MealRepository.photoIsOrphaned check + deferred 6s
   Task post-delete deletes the JPEG file once the undo window has
   passed, but only if no surviving meal references it.
+- Polish food seed grown 78 → 104 with pizza pepperoni, kebab, sushi
+  (California/Philadelphia), pad thai, ramen, gyros, chłodnik,
+  granola, ciecierzyca/soczewica, tofu, and more.
+- App Shortcuts (iOS 16+ AppIntents): "Dodaj posiłek", "Pokaż dziś",
+  "Tygodniowe podsumowanie" — discoverable from Siri / Spotlight /
+  Shortcuts app. Intents post NotificationCenter messages; MainTabView
+  observes and routes.
+- WidgetKit Home Screen widget: small + medium families showing streak
+  + calories remaining + last-meal name. Snapshot via shared
+  UserDefaults (suiteName: group.app.mealgram.shared, falls back to
+  standard without entitlement). TodayState publishes on every refresh
+  + reloadAllTimelines.
 
 305 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
-clean, swift-format clean.
+clean, swift-format clean. App + MealgramWidget appex both build.
 
 Five tabs: Dziś • Dodaj • Tydzień • Znajomi • Profil.
 Five meal-entry paths from "+Dodaj": 📸 photo • 📦 barcode • 🔎 Szybka baza • 🎙 voice • 📖 recipe.
