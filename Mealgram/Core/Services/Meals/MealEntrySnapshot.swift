@@ -24,6 +24,7 @@ struct MealEntrySnapshot: Equatable, Sendable, Identifiable {
     let notes: String?
     let photoFilename: String?
     let portionMultiplier: Double
+    let tags: [String]
     let items: [Item]
 }
 
@@ -40,6 +41,7 @@ extension MealEntrySnapshot {
             notes: meal.notes,
             photoFilename: meal.photoFilename,
             portionMultiplier: meal.portionMultiplier,
+            tags: meal.tags,
             items: meal.items.map { item in
                 Item(
                     name: item.name,
@@ -66,6 +68,7 @@ extension MealEntrySnapshot {
             notes: notes,
             photoFilename: photoFilename,
             portionMultiplier: portionMultiplier,
+            tags: tags,
             items: items.map {
                 FoodItem(
                     name: $0.name,

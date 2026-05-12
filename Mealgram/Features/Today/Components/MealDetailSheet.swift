@@ -14,6 +14,8 @@ struct MealDetailSheet: View {
     @State private var portion: Double
     @State private var isConfirmingDelete = false
     @State private var errorMessage: String?
+    @State private var tags: [String]
+    @State private var newTag: String = ""
 
     init(
         meal: MealEntry,
@@ -30,6 +32,7 @@ struct MealDetailSheet: View {
         self.onChanged = onChanged
         self.onDeleted = onDeleted
         self._portion = State(initialValue: meal.portionMultiplier)
+        self._tags = State(initialValue: meal.tags)
     }
 
     var body: some View {
@@ -43,6 +46,7 @@ struct MealDetailSheet: View {
                         }
                         summaryCard
                         portionCard
+                        tagsCard
                         itemsCard
                         if let errorMessage {
                             Text(errorMessage)
@@ -146,6 +150,75 @@ struct MealDetailSheet: View {
         }
     }
 
+    private var tagsCard: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                Text("Tagi")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                if tags.isEmpty {
+                    Text("Dodaj tagi typu: restauracja, treningowy, domowe.")
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                } else {
+                    FlowLayout {
+                        ForEach(tags, id: \.self) { tag in
+                            tagChip(tag)
+                        }
+                    }
+                }
+                HStack(spacing: Tokens.Space.sm) {
+                    TextField("nowy tag", text: $newTag)
+                        .textInputAutocapitalization(.never)
+                        .submitLabel(.done)
+                        .onSubmit { commitNewTag() }
+                        .padding(Tokens.Space.sm)
+                        .background(
+                            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                                .fill(Tokens.Palette.surfaceMuted)
+                        )
+                    Button {
+                        commitNewTag()
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 36, height: 36)
+                            .background(Circle().fill(Tokens.Palette.primary))
+                    }
+                    .disabled(newTag.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .opacity(newTag.trimmingCharacters(in: .whitespaces).isEmpty ? 0.5 : 1)
+                }
+            }
+        }
+    }
+
+    private func tagChip(_ tag: String) -> some View {
+        HStack(spacing: 4) {
+            Text(tag)
+                .font(Tokens.Font.caption)
+                .foregroundStyle(Tokens.Palette.primary)
+            Button {
+                tags.removeAll { $0 == tag }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(Tokens.Palette.primary.opacity(0.7))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, Tokens.Space.sm)
+        .padding(.vertical, 4)
+        .background(Capsule().fill(Tokens.Palette.primarySoft))
+    }
+
+    private func commitNewTag() {
+        let cleaned = newTag.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !cleaned.isEmpty, !tags.contains(cleaned) else { return }
+        tags.append(cleaned)
+        newTag = ""
+    }
+
     private var itemsCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
@@ -196,6 +269,7 @@ struct MealDetailSheet: View {
     private func save() {
         do {
             try repository.updatePortion(meal, multiplier: portion)
+            try repository.updateTags(meal, tags: tags)
             onChanged()
             onDismiss()
         } catch {
