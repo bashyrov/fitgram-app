@@ -69,6 +69,10 @@ struct ProfileView: View {
                         userRemoteID: user.remoteID,
                         initialWeight: user.weightKg,
                         state: WeightLogState(service: weightService),
+                        healthImporter: HealthImporter(
+                            health: HealthKitService(),
+                            weightService: weightService
+                        ),
                         onDismiss: { isWeightLogPresented = false }
                     )
                 }
