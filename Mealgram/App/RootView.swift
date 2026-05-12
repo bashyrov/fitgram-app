@@ -15,6 +15,7 @@ struct RootView: View {
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
+    let progressState: ProgressState
     let unlockBus: AchievementUnlockBus
 
     @State private var router: AppRouter
@@ -31,6 +32,7 @@ struct RootView: View {
         achievementService: AchievementService,
         calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
+        progressState: ProgressState,
         unlockBus: AchievementUnlockBus
     ) {
         self.authService = authService
@@ -43,6 +45,7 @@ struct RootView: View {
         self.achievementService = achievementService
         self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
+        self.progressState = progressState
         self.unlockBus = unlockBus
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
@@ -76,7 +79,8 @@ struct RootView: View {
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
-                    todayState: todayState
+                    todayState: todayState,
+                    progressState: progressState
                 )
                 .transition(.opacity)
             }
@@ -158,11 +162,11 @@ private struct ChainedMealSaver: MealSaving {
         // Apply the user-set calibration factor only to AI-derived
         // estimates — barcode + quick-database + voice entries are
         // user-controlled and shouldn't be silently scaled.
-        if meal.source == .photoScan,
-            let calibration = try? calibrationService.current(forUser: userRemoteID),
-            calibration.portionAdjustmentFactor != 1
-        {
-            meal.portionMultiplier *= calibration.portionAdjustmentFactor
+        if meal.source == .photoScan {
+            let calibration = try? calibrationService.current(forUser: userRemoteID)
+            if let factor = calibration?.portionAdjustmentFactor, factor != 1 {
+                meal.portionMultiplier *= factor
+            }
         }
         try underlying.save(meal: meal)
         if meal.source == .photoScan {

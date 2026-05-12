@@ -14,6 +14,7 @@ struct MealgramApp: App {
     private let achievementService: AchievementService
     private let calibrationService: CalibrationService
     private let todayState: TodayState
+    private let progressState: ProgressState
     private let accountDeletionService: AccountDeletionService
     private let exportService: DataExportService
     private let foodCatalog: any FoodCatalog
@@ -39,6 +40,7 @@ struct MealgramApp: App {
         self.achievementService = AchievementService(container: persistence.container)
         self.calibrationService = CalibrationService(container: persistence.container)
         self.todayState = TodayState(container: persistence.container, streakService: streakService)
+        self.progressState = ProgressState(container: persistence.container)
         self.accountDeletionService = AccountDeletionService(
             authService: authService,
             persistence: persistence
@@ -69,6 +71,7 @@ struct MealgramApp: App {
                 achievementService: achievementService,
                 calibrationService: calibrationService,
                 foodCatalog: foodCatalog,
+                progressState: progressState,
                 unlockBus: unlockBus
             )
             .environment(session)
