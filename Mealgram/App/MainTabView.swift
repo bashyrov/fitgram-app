@@ -218,6 +218,19 @@ struct MainTabView: View {
                 selectedTab = .today
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.logMeal)) { _ in
+            selectedTab = .today
+            addOptionsVisible = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.showToday)) { _ in
+            selectedTab = .today
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(for: AppShortcutAction.showWeeklyDebrief)
+        ) { _ in
+            selectedTab = .today
+            presentWeeklyDebrief()
+        }
         .confirmationDialog(
             "Jak chcesz dodać?",
             isPresented: $addOptionsVisible,
