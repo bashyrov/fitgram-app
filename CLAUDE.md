@@ -144,8 +144,19 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   entries with PL/EN/UK for tabs, greetings, common buttons,
   add-options menu, profile sections, coach copy, celebration,
   friends QR. CFBundleLocalizations now lists all three.
+- MealEntry tags: free-form `tags: [String]` on the model (lightweight
+  migration default-empty). MealRepository.updateTags trims + lowers
+  + dedups. MealDetailSheet has a chip strip with the new FlowLayout
+  + add/remove UI. MealSearchService matches by tag too.
+- Achievements grown 14 → 21: streak.50, protein.week (7 days in a
+  row hitting protein goal), recipes.ten, weight.ten, tag.first, the
+  meta achievements.ten that fires alongside the 10th badge. Engine
+  Inputs got 3 new counters for the totals.
+- Profile streak calendar: month grid with logged days highlighted
+  in primary, today stroked in accent. Prev/next month nav. New
+  "Historia serii" row in preferences.
 
-278 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+291 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
