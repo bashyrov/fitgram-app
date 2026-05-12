@@ -108,4 +108,45 @@ final class FoodCatalogTests: XCTestCase {
         await state.selectCategory(nil)
         XCTAssertEqual(state.foods.count, initialCount)
     }
+
+    func testRecordPickIncrementsCounterAndStampsTime() throws {
+        try FoodSeeder(container: controller.container).seedIfNeeded()
+        let catalog = FoodCatalogService(container: controller.container)
+        let food = try XCTUnwrap(catalog.all().first)
+
+        try catalog.recordPick(food)
+        try catalog.recordPick(food)
+
+        let refreshed = try XCTUnwrap(catalog.all().first { $0.id == food.id })
+        XCTAssertEqual(refreshed.pickCount, 2)
+        XCTAssertNotNil(refreshed.lastPickedAt)
+    }
+
+    func testRecentIsSortedByLastPickedDescending() async throws {
+        try FoodSeeder(container: controller.container).seedIfNeeded()
+        let catalog = FoodCatalogService(container: controller.container)
+        let foods = try catalog.all()
+        guard foods.count >= 2 else { return XCTFail("need at least 2 foods seeded") }
+
+        try catalog.recordPick(foods[0])
+        try await Task.sleep(nanoseconds: 5_000_000)
+        try catalog.recordPick(foods[1])
+
+        let recent = try catalog.recent(limit: 2)
+        XCTAssertEqual(recent.first?.id, foods[1].id)
+        XCTAssertEqual(recent.last?.id, foods[0].id)
+    }
+
+    func testPopularSortsByPickCount() throws {
+        try FoodSeeder(container: controller.container).seedIfNeeded()
+        let catalog = FoodCatalogService(container: controller.container)
+        let foods = try catalog.all()
+        guard foods.count >= 2 else { return XCTFail("need at least 2 foods seeded") }
+        for _ in 0..<3 { try catalog.recordPick(foods[0]) }
+        try catalog.recordPick(foods[1])
+
+        let popular = try catalog.popular(limit: 2)
+        XCTAssertEqual(popular.first?.id, foods[0].id)
+        XCTAssertEqual(popular.last?.id, foods[1].id)
+    }
 }

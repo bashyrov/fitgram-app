@@ -31,7 +31,7 @@ struct QuickDatabaseRootView: View {
             .sheet(item: $pickedFood) { food in
                 FoodDetailSheet(
                     food: food,
-                    onSave: { commit(item: $0, suggestedMealType: Self.suggestedMealType()) },
+                    onSave: { commit(food: food, item: $0, suggestedMealType: Self.suggestedMealType()) },
                     onDismiss: { pickedFood = nil }
                 )
             }
@@ -129,7 +129,10 @@ struct QuickDatabaseRootView: View {
             }
         } else {
             ScrollView {
-                LazyVStack(spacing: Tokens.Space.sm) {
+                LazyVStack(spacing: Tokens.Space.sm, pinnedViews: []) {
+                    if state.shouldShowSuggestions {
+                        suggestionsSection
+                    }
                     ForEach(state.foods) { food in
                         foodRow(food)
                     }
@@ -138,6 +141,60 @@ struct QuickDatabaseRootView: View {
                 .padding(.bottom, Tokens.Space.xxxl)
             }
         }
+    }
+
+    @ViewBuilder
+    private var suggestionsSection: some View {
+        if !state.recentPicks.isEmpty {
+            suggestionGroup(title: "Ostatnie", foods: state.recentPicks)
+        }
+        if !state.popularPicks.isEmpty {
+            suggestionGroup(title: "Częste", foods: state.popularPicks)
+        }
+        Text("Wszystkie")
+            .font(Tokens.Font.headline)
+            .foregroundStyle(Tokens.Palette.ink)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, Tokens.Space.md)
+    }
+
+    private func suggestionGroup(title: LocalizedStringKey, foods: [Food]) -> some View {
+        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+            Text(title)
+                .font(Tokens.Font.headline)
+                .foregroundStyle(Tokens.Palette.ink)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: Tokens.Space.sm) {
+                    ForEach(foods) { food in
+                        suggestionChip(food)
+                    }
+                }
+            }
+        }
+    }
+
+    private func suggestionChip(_ food: Food) -> some View {
+        Button {
+            pickedFood = food
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(food.name)
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                Text("\(Int(food.caloriesKcalPer100g)) kcal / 100g")
+                    .font(Tokens.Font.caption)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+            }
+            .padding(.vertical, Tokens.Space.sm)
+            .padding(.horizontal, Tokens.Space.md)
+            .frame(maxWidth: 220, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                    .fill(Tokens.Palette.primarySoft)
+            )
+        }
+        .buttonStyle(PressableButtonStyle())
     }
 
     private func foodRow(_ food: Food) -> some View {
@@ -209,13 +266,14 @@ struct QuickDatabaseRootView: View {
 
     // MARK: - Save
 
-    private func commit(item: FoodItem, suggestedMealType: MealType) {
+    private func commit(food: Food, item: FoodItem, suggestedMealType: MealType) {
         let entry = MealEntry(
             mealType: suggestedMealType,
             source: .quickDatabase,
             items: [item]
         )
         try? mealSaver.save(meal: entry)
+        state.recordPick(food)
         onDismiss()
     }
 

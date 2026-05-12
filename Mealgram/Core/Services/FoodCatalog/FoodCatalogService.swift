@@ -10,6 +10,13 @@ protocol FoodCatalog {
     func all() throws -> [Food]
     func search(_ query: String) throws -> [Food]
     func byCategory(_ category: FoodCategory) throws -> [Food]
+    /// Most-recently-picked foods, newest first.
+    func recent(limit: Int) throws -> [Food]
+    /// Foods sorted by pickCount desc.
+    func popular(limit: Int) throws -> [Food]
+    /// Increments pickCount + stamps lastPickedAt. Called after the user
+    /// commits a Quick DB entry to their meal log.
+    func recordPick(_ food: Food) throws
 }
 
 @MainActor
@@ -52,6 +59,36 @@ final class FoodCatalogService: FoodCatalog {
                 predicate: #Predicate { $0.categoryRaw == rawValue },
                 sortBy: [SortDescriptor(\Food.name)]
             ))
+    }
+
+    func recent(limit: Int) throws -> [Food] {
+        let context = ModelContext(container)
+        var descriptor = FetchDescriptor<Food>(
+            predicate: #Predicate { $0.lastPickedAt != nil },
+            sortBy: [SortDescriptor(\Food.lastPickedAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = limit
+        return try context.fetch(descriptor)
+    }
+
+    func popular(limit: Int) throws -> [Food] {
+        let context = ModelContext(container)
+        var descriptor = FetchDescriptor<Food>(
+            predicate: #Predicate { $0.pickCount > 0 },
+            sortBy: [SortDescriptor(\Food.pickCount, order: .reverse)]
+        )
+        descriptor.fetchLimit = limit
+        return try context.fetch(descriptor)
+    }
+
+    func recordPick(_ food: Food) throws {
+        let context = ModelContext(container)
+        let foodID = food.id
+        let descriptor = FetchDescriptor<Food>(predicate: #Predicate { $0.id == foodID })
+        guard let attached = try context.fetch(descriptor).first else { return }
+        attached.pickCount += 1
+        attached.lastPickedAt = Date()
+        try context.save()
     }
 }
 

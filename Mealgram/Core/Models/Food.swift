@@ -34,6 +34,15 @@ final class Food {
     var verified: Bool
     var createdAt: Date
 
+    /// How many times the local user has picked this row from Quick DB.
+    /// Drives the "Częste" carousel — defaults to 0 for newly-seeded rows
+    /// and lightweight-migrates cleanly because SwiftData fills new
+    /// non-optional `Int` columns with their default.
+    var pickCount: Int = 0
+    /// Most recent pick. Nil until the user has touched the row at least
+    /// once.
+    var lastPickedAt: Date?
+
     init(
         id: UUID = UUID(),
         remoteID: String? = nil,
