@@ -19,6 +19,7 @@ struct RootView: View {
     let recipeRepository: RecipeRepository
     let weightService: WeightService
     let friendService: any FriendService
+    let coachService: CoachService
     let notificationCoordinator: NotificationCoordinator
     let unlockBus: AchievementUnlockBus
 
@@ -40,6 +41,7 @@ struct RootView: View {
         recipeRepository: RecipeRepository,
         weightService: WeightService,
         friendService: any FriendService,
+        coachService: CoachService,
         notificationCoordinator: NotificationCoordinator,
         unlockBus: AchievementUnlockBus
     ) {
@@ -57,6 +59,7 @@ struct RootView: View {
         self.recipeRepository = recipeRepository
         self.weightService = weightService
         self.friendService = friendService
+        self.coachService = coachService
         self.notificationCoordinator = notificationCoordinator
         self.unlockBus = unlockBus
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
@@ -92,6 +95,7 @@ struct RootView: View {
                     recipeRepository: recipeRepository,
                     weightService: weightService,
                     friendService: friendService,
+                    coachService: coachService,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },

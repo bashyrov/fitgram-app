@@ -12,6 +12,7 @@ struct MainTabView: View {
     let recipeRepository: RecipeRepository
     let weightService: WeightService
     let friendService: any FriendService
+    let coachService: CoachService
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -24,6 +25,8 @@ struct MainTabView: View {
     @State private var isQuickDBPresented = false
     @State private var isVoicePresented = false
     @State private var isRecipesPresented = false
+    @State private var isWeeklyDebriefPresented = false
+    @State private var weeklyDebrief: WeeklyDebrief?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
 
@@ -37,6 +40,7 @@ struct MainTabView: View {
         recipeRepository: RecipeRepository,
         weightService: WeightService,
         friendService: any FriendService,
+        coachService: CoachService,
         unlockBus: AchievementUnlockBus,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
@@ -52,6 +56,7 @@ struct MainTabView: View {
         self.recipeRepository = recipeRepository
         self.weightService = weightService
         self.friendService = friendService
+        self.coachService = coachService
         self.unlockBus = unlockBus
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
@@ -91,7 +96,8 @@ struct MainTabView: View {
                 onOpenProfile: { selectedTab = .profile },
                 onOpenScanner: { isScanPresented = true },
                 onCookSuggested: { recipe in cookSuggested(recipe) },
-                onCoachAction: { kind in handleCoachAction(kind) }
+                onCoachAction: { kind in handleCoachAction(kind) },
+                onOpenWeeklyDebrief: { presentWeeklyDebrief() }
             )
             .tabItem {
                 Label("Dziś", systemImage: "sun.max.fill")
@@ -225,6 +231,23 @@ struct MainTabView: View {
                 }
             )
         }
+        .sheet(isPresented: $isWeeklyDebriefPresented) {
+            if let debrief = weeklyDebrief {
+                WeeklyDebriefView(
+                    debrief: debrief,
+                    onDismiss: { isWeeklyDebriefPresented = false },
+                    onCoachAction: { kind in
+                        isWeeklyDebriefPresented = false
+                        handleCoachAction(kind)
+                    }
+                )
+            }
+        }
+    }
+
+    private func presentWeeklyDebrief() {
+        weeklyDebrief = coachService.weeklyDebrief(for: authUser.id)
+        isWeeklyDebriefPresented = true
     }
 
     private func refreshAfterSave() {

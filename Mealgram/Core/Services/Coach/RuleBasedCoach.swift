@@ -21,9 +21,9 @@ struct RuleBasedCoach: CoachInsightGenerator {
         return insights
     }
 
-    private typealias Rule = @Sendable (CoachContext) -> CoachInsight?
+    private typealias Rule = (CoachContext) -> CoachInsight?
 
-    private static let rules: [Rule] = [
+    nonisolated(unsafe) private static let rules: [Rule] = [
         celebrateStreakMilestone,
         celebrateWeightProgress,
         warnStreakAtRisk,

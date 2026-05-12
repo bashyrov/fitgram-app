@@ -22,6 +22,7 @@ struct MealgramApp: App {
     private let recipeRepository: RecipeRepository
     private let weightService: WeightService
     private let friendService: any FriendService
+    private let coachService: CoachService
     private let notificationCoordinator: NotificationCoordinator
 
     // swiftlint:disable function_body_length
@@ -65,6 +66,7 @@ struct MealgramApp: App {
             streakService: streakService,
             weightService: weightService
         )
+        self.coachService = coachService
         self.todayState = TodayState(
             container: persistence.container,
             streakService: streakService,
@@ -111,6 +113,7 @@ struct MealgramApp: App {
                 recipeRepository: recipeRepository,
                 weightService: weightService,
                 friendService: friendService,
+                coachService: coachService,
                 notificationCoordinator: notificationCoordinator,
                 unlockBus: unlockBus
             )
