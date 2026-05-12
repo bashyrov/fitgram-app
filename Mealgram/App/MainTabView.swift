@@ -9,6 +9,7 @@ struct MainTabView: View {
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
+    let recipeRepository: RecipeRepository
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -20,6 +21,7 @@ struct MainTabView: View {
     @State private var isBarcodePresented = false
     @State private var isQuickDBPresented = false
     @State private var isVoicePresented = false
+    @State private var isRecipesPresented = false
     @State private var selectedTab: Tab = .today
 
     enum Tab: Hashable {
@@ -105,6 +107,9 @@ struct MainTabView: View {
             Button("🎙 Powiedz na głos") {
                 isVoicePresented = true
             }
+            Button("📖 Mój przepis") {
+                isRecipesPresented = true
+            }
             Button("Anuluj", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $isScanPresented) {
@@ -139,6 +144,17 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 onDismiss: {
                     isVoicePresented = false
+                    refreshAfterSave()
+                }
+            )
+        }
+        .sheet(isPresented: $isRecipesPresented) {
+            RecipeListView(
+                state: RecipeListState(repository: recipeRepository),
+                repository: recipeRepository,
+                mealSaver: mealSaver,
+                onDismiss: {
+                    isRecipesPresented = false
                     refreshAfterSave()
                 }
             )

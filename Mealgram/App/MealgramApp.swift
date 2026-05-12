@@ -19,6 +19,7 @@ struct MealgramApp: App {
     private let exportService: DataExportService
     private let foodCatalog: any FoodCatalog
     private let foodSeeder: FoodSeeder
+    private let recipeRepository: RecipeRepository
 
     init() {
         let session = AuthSession()
@@ -47,6 +48,7 @@ struct MealgramApp: App {
         )
         self.exportService = DataExportService(container: persistence.container)
         self.foodCatalog = FoodCatalogService(container: persistence.container)
+        self.recipeRepository = RecipeRepository(container: persistence.container)
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
         do {
@@ -72,6 +74,7 @@ struct MealgramApp: App {
                 calibrationService: calibrationService,
                 foodCatalog: foodCatalog,
                 progressState: progressState,
+                recipeRepository: recipeRepository,
                 unlockBus: unlockBus
             )
             .environment(session)
