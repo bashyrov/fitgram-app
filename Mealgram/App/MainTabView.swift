@@ -10,6 +10,7 @@ struct MainTabView: View {
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
     let recipeRepository: RecipeRepository
+    let mealRepository: MealRepository
     let weightService: WeightService
     let friendService: any FriendService
     let coachService: CoachService
@@ -27,6 +28,7 @@ struct MainTabView: View {
     @State private var isRecipesPresented = false
     @State private var isWeeklyDebriefPresented = false
     @State private var weeklyDebrief: WeeklyDebrief?
+    @State private var selectedMeal: MealEntry?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
 
@@ -38,6 +40,7 @@ struct MainTabView: View {
         calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
         recipeRepository: RecipeRepository,
+        mealRepository: MealRepository,
         weightService: WeightService,
         friendService: any FriendService,
         coachService: CoachService,
@@ -54,6 +57,7 @@ struct MainTabView: View {
         self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
         self.recipeRepository = recipeRepository
+        self.mealRepository = mealRepository
         self.weightService = weightService
         self.friendService = friendService
         self.coachService = coachService
@@ -97,7 +101,8 @@ struct MainTabView: View {
                 onOpenScanner: { isScanPresented = true },
                 onCookSuggested: { recipe in cookSuggested(recipe) },
                 onCoachAction: { kind in handleCoachAction(kind) },
-                onOpenWeeklyDebrief: { presentWeeklyDebrief() }
+                onOpenWeeklyDebrief: { presentWeeklyDebrief() },
+                onSelectMeal: { meal in selectedMeal = meal }
             )
             .tabItem {
                 Label("Dziś", systemImage: "sun.max.fill")
@@ -229,6 +234,14 @@ struct MainTabView: View {
                     isRecipesPresented = false
                     refreshAfterSave()
                 }
+            )
+        }
+        .sheet(item: $selectedMeal) { meal in
+            MealDetailSheet(
+                meal: meal,
+                repository: mealRepository,
+                onDismiss: { selectedMeal = nil },
+                onChanged: { refreshAfterSave() }
             )
         }
         .sheet(isPresented: $isWeeklyDebriefPresented) {

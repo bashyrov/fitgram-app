@@ -20,6 +20,7 @@ struct MealgramApp: App {
     private let foodCatalog: any FoodCatalog
     private let foodSeeder: FoodSeeder
     private let recipeRepository: RecipeRepository
+    private let mealRepository: MealRepository
     private let weightService: WeightService
     private let friendService: any FriendService
     private let coachService: CoachService
@@ -54,6 +55,7 @@ struct MealgramApp: App {
         self.foodCatalog = FoodCatalogService(container: persistence.container)
         let recipeRepository = RecipeRepository(container: persistence.container)
         self.recipeRepository = recipeRepository
+        self.mealRepository = MealRepository(container: persistence.container)
         let weightService = WeightService(container: persistence.container)
         self.weightService = weightService
         self.friendService = InMemoryFriendService()
@@ -111,6 +113,7 @@ struct MealgramApp: App {
                 foodCatalog: foodCatalog,
                 progressState: progressState,
                 recipeRepository: recipeRepository,
+                mealRepository: mealRepository,
                 weightService: weightService,
                 friendService: friendService,
                 coachService: coachService,
