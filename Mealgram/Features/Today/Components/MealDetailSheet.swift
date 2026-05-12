@@ -281,6 +281,7 @@ struct MealDetailSheet: View {
         let snapshot = MealEntrySnapshot.capture(from: meal)
         do {
             try repository.delete(meal)
+            Haptics.warning()
             onDeleted?(snapshot)
             onChanged()
             onDismiss()

@@ -163,6 +163,7 @@ struct WeeklyDebriefView: View {
 
     private func feedbackButton(value: Bool, symbol: String, label: LocalizedStringKey) -> some View {
         Button {
+            Haptics.selection()
             localFeedback = value
             onFeedback?(value)
         } label: {

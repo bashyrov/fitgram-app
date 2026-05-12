@@ -22,7 +22,10 @@ struct MealUndoBanner: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 0)
-            Button(action: onUndo) {
+            Button {
+                Haptics.light()
+                onUndo()
+            } label: {
                 Text("Cofnij")
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.primary)
