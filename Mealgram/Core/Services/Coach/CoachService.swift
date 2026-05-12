@@ -41,6 +41,11 @@ final class CoachService {
         insights(for: userRemoteID).first
     }
 
+    func weeklyDebrief(for userRemoteID: String) -> WeeklyDebrief {
+        let context = buildContext(for: userRemoteID)
+        return WeeklyDebrief.from(context: context, generator: generator, now: now())
+    }
+
     // MARK: - Context assembly
 
     private func buildContext(for userRemoteID: String) -> CoachContext {

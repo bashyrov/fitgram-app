@@ -10,6 +10,7 @@ struct TodayView: View {
     let onOpenScanner: () -> Void
     var onCookSuggested: ((Recipe) -> Void)?
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
+    var onOpenWeeklyDebrief: (() -> Void)?
 
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
@@ -53,6 +54,10 @@ struct TodayView: View {
                         AIInsightCard(insight: insight) { kind in
                             handleCoachAction(kind)
                         }
+                    }
+
+                    if let onOpenWeeklyDebrief {
+                        WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
                     }
 
                     if let upcoming = state.upcomingEvent {
