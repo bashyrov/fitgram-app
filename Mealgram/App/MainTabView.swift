@@ -8,6 +8,7 @@ struct MainTabView: View {
     let authUser: AuthUser
     let mealSaver: any MealSaving
     let exportService: DataExportService
+    let csvExportService: MealCSVExportService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
@@ -46,6 +47,7 @@ struct MainTabView: View {
         authUser: AuthUser,
         mealSaver: any MealSaving,
         exportService: DataExportService,
+        csvExportService: MealCSVExportService,
         achievementService: AchievementService,
         calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
@@ -67,6 +69,7 @@ struct MainTabView: View {
         self.authUser = authUser
         self.mealSaver = mealSaver
         self.exportService = exportService
+        self.csvExportService = csvExportService
         self.achievementService = achievementService
         self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
@@ -161,6 +164,7 @@ struct MainTabView: View {
                 user: todayState.user,
                 streak: todayState.streak,
                 exportService: exportService,
+                csvExportService: csvExportService,
                 achievementService: achievementService,
                 calibrationService: calibrationService,
                 weightService: weightService,

@@ -12,6 +12,7 @@ struct RootView: View {
     let streakService: StreakService
     let accountDeletionService: AccountDeletionService
     let exportService: DataExportService
+    let csvExportService: MealCSVExportService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
@@ -39,6 +40,7 @@ struct RootView: View {
         streakService: StreakService,
         accountDeletionService: AccountDeletionService,
         exportService: DataExportService,
+        csvExportService: MealCSVExportService,
         achievementService: AchievementService,
         calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
@@ -62,6 +64,7 @@ struct RootView: View {
         self.streakService = streakService
         self.accountDeletionService = accountDeletionService
         self.exportService = exportService
+        self.csvExportService = csvExportService
         self.achievementService = achievementService
         self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
@@ -104,6 +107,7 @@ struct RootView: View {
                         userRemoteID: authUser.id
                     ),
                     exportService: exportService,
+                    csvExportService: csvExportService,
                     achievementService: achievementService,
                     calibrationService: calibrationService,
                     foodCatalog: foodCatalog,

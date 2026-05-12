@@ -8,6 +8,7 @@ struct ProfileView: View {
     let user: User?
     let streak: Streak?
     let exportService: DataExportService
+    let csvExportService: MealCSVExportService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let weightService: WeightService
@@ -265,7 +266,20 @@ struct ProfileView: View {
                     Task { await runExport() }
                 }
                 .disabled(isPreparingExport || user == nil)
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "tablecells", title: "Eksport CSV (Excel)", role: nil) {
+                    runCSVExport()
+                }
             }
+        }
+    }
+
+    private func runCSVExport() {
+        do {
+            let url = try csvExportService.export()
+            sharedFile = SharedFile(url: url)
+        } catch {
+            exportError = String(describing: error)
         }
     }
 
