@@ -22,6 +22,7 @@ struct WeekProgressView: View {
                 VStack(spacing: Tokens.Space.lg) {
                     chartCard
                     statsRow
+                    monthlyChartCard
                     breakdownCard
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
@@ -114,6 +115,67 @@ struct WeekProgressView: View {
                     .foregroundStyle(Tokens.Palette.ink)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var monthlyChartCard: some View {
+        Card(elevation: Tokens.Shadow.card) {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                Text("Ostatnie 30 dni")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text("Słupki — dziennie. Linia — średnia 7 dni.")
+                    .font(Tokens.Font.caption)
+                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                if state.lastThirtyDays.allSatisfy({ $0.mealCount == 0 }) {
+                    Text("Niewystarczająco danych — zapisz kilka dni, żeby zobaczyć trend.")
+                        .font(Tokens.Font.body)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .padding(.vertical, Tokens.Space.lg)
+                } else {
+                    Chart {
+                        ForEach(state.lastThirtyDays) { day in
+                            BarMark(
+                                x: .value("Dzień", day.date, unit: .day),
+                                y: .value("kcal", day.calories)
+                            )
+                            .foregroundStyle(Tokens.Palette.primarySoft)
+                            .cornerRadius(2)
+                        }
+                        ForEach(state.thirtyDayMovingAverage, id: \.0) { entry in
+                            LineMark(
+                                x: .value("Dzień", entry.0, unit: .day),
+                                y: .value("Średnia 7d", entry.1)
+                            )
+                            .foregroundStyle(Tokens.Palette.primary)
+                            .interpolationMethod(.catmullRom)
+                            .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                        RuleMark(y: .value("Cel", state.goalKcal))
+                            .foregroundStyle(Tokens.Palette.inkSubtle)
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 4]))
+                    }
+                    .frame(height: 180)
+                    .chartXAxis {
+                        AxisMarks(values: .stride(by: .day, count: 5)) { _ in
+                            AxisValueLabel(
+                                format: .dateTime.day().month(.abbreviated).locale(Locale(identifier: "pl_PL"))
+                            )
+                            .font(Tokens.Font.caption2)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                            AxisGridLine().foregroundStyle(Tokens.Palette.separator)
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Tokens.Palette.separator)
+                            AxisValueLabel()
+                                .font(Tokens.Font.caption2)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                        }
+                    }
+                }
+            }
         }
     }
 

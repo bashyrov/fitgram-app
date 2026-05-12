@@ -115,4 +115,55 @@ final class ProgressStateTests: XCTestCase {
         XCTAssertEqual(bestDay.calories, 100, accuracy: 0.001)
         XCTAssertEqual(state.averageCalories, 100, accuracy: 0.001)
     }
+
+    func testBucketRangeFillsRequestedDays() {
+        let start = Self.date("2026-05-01T00:00:00Z")
+        let buckets = ProgressState.bucketRange(
+            entries: [],
+            rangeStart: start,
+            days: 30,
+            calendar: Self.utcCalendar
+        )
+        XCTAssertEqual(buckets.count, 30)
+        XCTAssertTrue(buckets.allSatisfy { $0.mealCount == 0 })
+    }
+
+    func testThirtyDayMovingAverageWindowsSeven() async throws {
+        let calendar = Self.utcCalendar
+        let now = Self.date("2026-05-30T00:00:00Z")
+        let user = User(remoteID: "u-mm")
+        user.dailyCalorieGoalKcal = 2000
+        context.insert(user)
+        // Five days of entries, all on 2026-05-26 → 2026-05-30, 500 kcal each.
+        for offset in 0...4 {
+            let date = calendar.date(byAdding: .day, value: -offset, to: now) ?? now
+            context.insert(
+                MealEntry(
+                    consumedAt: date,
+                    mealType: .lunch,
+                    source: .quickDatabase,
+                    items: [FoodItem(name: "X", quantityGrams: 100, caloriesKcal: 500)]
+                )
+            )
+        }
+        try context.save()
+
+        let state = ProgressState(
+            container: controller.container,
+            calendar: calendar,
+            now: { now }
+        )
+        await state.refresh(for: "u-mm")
+
+        XCTAssertEqual(state.lastThirtyDays.count, 30)
+        XCTAssertEqual(state.thirtyDayMovingAverage.count, 30)
+        // Day 25 (index 24 in newest-first numbering, but the array is
+        // chronological with index 0 = oldest) — first day with a meal
+        // logged is at index 25 (30-5=25). Earlier indices have 0 average.
+        XCTAssertEqual(state.thirtyDayMovingAverage[0].1, 0, accuracy: 0.001)
+        XCTAssertEqual(state.thirtyDayMovingAverage[24].1, 0, accuracy: 0.001)
+        // The most-recent point averages 7 days, only 5 of which had data.
+        let latest = try XCTUnwrap(state.thirtyDayMovingAverage.last?.1)
+        XCTAssertEqual(latest, (5 * 500.0) / 7.0, accuracy: 0.001)
+    }
 }
