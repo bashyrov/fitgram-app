@@ -1,7 +1,7 @@
 .PHONY: help generate build test lint format clean bootstrap open
 
 SCHEME    ?= Mealgram
-DESTINATION ?= platform=iOS Simulator,name=iPhone 16 Pro,OS=latest
+DESTINATION ?= platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED   ?= build/DerivedData
 
 help: ## Show this help

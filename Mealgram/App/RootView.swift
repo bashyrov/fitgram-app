@@ -18,6 +18,7 @@ struct RootView: View {
     let progressState: ProgressState
     let recipeRepository: RecipeRepository
     let weightService: WeightService
+    let friendService: any FriendService
     let unlockBus: AchievementUnlockBus
 
     @State private var router: AppRouter
@@ -37,6 +38,7 @@ struct RootView: View {
         progressState: ProgressState,
         recipeRepository: RecipeRepository,
         weightService: WeightService,
+        friendService: any FriendService,
         unlockBus: AchievementUnlockBus
     ) {
         self.authService = authService
@@ -52,6 +54,7 @@ struct RootView: View {
         self.progressState = progressState
         self.recipeRepository = recipeRepository
         self.weightService = weightService
+        self.friendService = friendService
         self.unlockBus = unlockBus
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
@@ -84,6 +87,7 @@ struct RootView: View {
                     foodCatalog: foodCatalog,
                     recipeRepository: recipeRepository,
                     weightService: weightService,
+                    friendService: friendService,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
