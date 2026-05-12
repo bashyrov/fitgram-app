@@ -12,6 +12,7 @@ final class User {
     var email: String?
     var displayName: String?
     var providerKindRaw: String
+    var avatarFilename: String?
 
     var createdAt: Date
     var updatedAt: Date
