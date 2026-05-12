@@ -43,12 +43,27 @@ struct RecipeDetailView: View {
                     Button("Zamknij", action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        onEdit()
-                    } label: {
-                        Image(systemName: "pencil")
+                    HStack(spacing: Tokens.Space.sm) {
+                        if !recipe.ingredients.isEmpty {
+                            ShareLink(
+                                item: shoppingListText,
+                                subject: Text("Lista zakupów — \(recipe.title)"),
+                                preview: SharePreview(
+                                    "Lista zakupów — \(recipe.title)",
+                                    icon: Image(systemName: "cart")
+                                )
+                            ) {
+                                Image(systemName: "cart")
+                            }
+                            .accessibilityLabel(Text("Lista zakupów"))
+                        }
+                        Button {
+                            onEdit()
+                        } label: {
+                            Image(systemName: "pencil")
+                        }
+                        .accessibilityLabel(Text("Edytuj"))
                     }
-                    .accessibilityLabel(Text("Edytuj"))
                 }
             }
         }
@@ -160,6 +175,21 @@ struct RecipeDetailView: View {
                 }
             }
         }
+    }
+
+    /// Plain-text shopping list built from the recipe's ingredients.
+    /// Header carries the recipe title + serving count so the recipient
+    /// (likely the user, sending themselves a list) has context.
+    var shoppingListText: String {
+        var lines: [String] = []
+        lines.append("Lista zakupów — \(recipe.title)")
+        let scaledServings = max(1, Int(servings.rounded()))
+        lines.append("(\(scaledServings) porcje)")
+        lines.append("")
+        for ingredient in recipe.ingredients {
+            lines.append("• \(ingredient.name)")
+        }
+        return lines.joined(separator: "\n")
     }
 
     private func macroPill(label: LocalizedStringKey, grams: Double, color: Color) -> some View {
