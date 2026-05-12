@@ -36,8 +36,20 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   reactions, search + QR placeholder, unfriend), 5th "Znajomi" tab.
   Real backend swaps in via composition root when Supabase URL+anon key
   arrive.
+- M2.9 Local notifications: NotificationService + pure-function
+  NotificationPlanner + UserDefaults-backed PreferencesStore +
+  NotificationCoordinator (reschedules at launch + on every meal save
+  via ChainedMealSaver). Three channels — morning 08:00, streak risk
+  20:30, evening summary 21:00. Profile toggle for each.
+- M3.1 partial: AI Coach "Ola" — rule-based generator with 8
+  prioritised rules (streak milestone, weight progress, streak-at-risk,
+  protein gap, calorie overshoot, light-evening, balanced week,
+  first-meal reminder). CoachService bundles SwiftData reads into a
+  CoachContext snapshot. AIInsightCard renders headline insight with
+  optional CTA chip wired through to scanner/quickDB/recipes/weight
+  tab. Claude-backed generator slots in behind same protocol.
 
-138 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
+158 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
 clean, swift-format clean.
 
