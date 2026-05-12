@@ -97,15 +97,42 @@ struct RecipeDetailView: View {
     private var nutritionCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Wartości / porcję")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+                HStack {
+                    Text(servingsLabel)
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    if servings != 1 {
+                        Text(String(format: "×%.1f", servings))
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.primary)
+                            .padding(.horizontal, Tokens.Space.sm)
+                            .padding(.vertical, 2)
+                            .background(Capsule().fill(Tokens.Palette.primarySoft))
+                    }
+                }
                 if (recipe.caloriesPerServing ?? 0) > 0 {
                     HStack(spacing: Tokens.Space.lg) {
-                        macroPill(label: "kcal", grams: recipe.caloriesPerServing ?? 0, color: Tokens.Palette.primary)
-                        macroPill(label: "B", grams: recipe.proteinPerServing ?? 0, color: Tokens.Palette.primary)
-                        macroPill(label: "W", grams: recipe.carbsPerServing ?? 0, color: Tokens.Palette.warning)
-                        macroPill(label: "T", grams: recipe.fatPerServing ?? 0, color: Tokens.Palette.accent)
+                        macroPill(
+                            label: "kcal",
+                            grams: (recipe.caloriesPerServing ?? 0) * servings,
+                            color: Tokens.Palette.primary
+                        )
+                        macroPill(
+                            label: "B",
+                            grams: (recipe.proteinPerServing ?? 0) * servings,
+                            color: Tokens.Palette.primary
+                        )
+                        macroPill(
+                            label: "W",
+                            grams: (recipe.carbsPerServing ?? 0) * servings,
+                            color: Tokens.Palette.warning
+                        )
+                        macroPill(
+                            label: "T",
+                            grams: (recipe.fatPerServing ?? 0) * servings,
+                            color: Tokens.Palette.accent
+                        )
                     }
                 } else {
                     Text("Brak danych — dodasz je przez Edytuj.")
@@ -114,6 +141,10 @@ struct RecipeDetailView: View {
                 }
             }
         }
+    }
+
+    private var servingsLabel: LocalizedStringKey {
+        servings == 1 ? "Wartości / porcję" : "Wartości łącznie"
     }
 
     private var servingsCard: some View {
