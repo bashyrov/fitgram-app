@@ -52,6 +52,7 @@ targets:
           - "Resources/Mock/**"
     resources:
       - path: Mealgram/Resources/Assets.xcassets
+      - path: Mealgram/Resources/Seeds
     info:
       path: Mealgram/Supporting/Info.plist
       properties:

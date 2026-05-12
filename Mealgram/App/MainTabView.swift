@@ -10,6 +10,7 @@ struct MainTabView: View {
     let exportService: DataExportService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
+    let foodCatalog: any FoodCatalog
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -18,6 +19,7 @@ struct MainTabView: View {
     @State private var addOptionsVisible = false
     @State private var isScanPresented = false
     @State private var isBarcodePresented = false
+    @State private var isQuickDBPresented = false
     @State private var selectedTab: Tab = .today
 
     enum Tab: Hashable {
@@ -90,6 +92,9 @@ struct MainTabView: View {
             Button("📦 Kod kreskowy") {
                 isBarcodePresented = true
             }
+            Button("🔎 Szybka baza") {
+                isQuickDBPresented = true
+            }
             Button("Anuluj", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $isScanPresented) {
@@ -108,6 +113,16 @@ struct MainTabView: View {
                     isBarcodePresented = false
                     Task { await todayState.refresh(for: authUser.id) }
                 })
+        }
+        .sheet(isPresented: $isQuickDBPresented) {
+            QuickDatabaseRootView(
+                state: QuickDatabaseState(catalog: foodCatalog),
+                mealSaver: mealSaver,
+                onDismiss: {
+                    isQuickDBPresented = false
+                    Task { await todayState.refresh(for: authUser.id) }
+                }
+            )
         }
     }
 }
