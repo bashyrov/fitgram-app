@@ -101,18 +101,23 @@ struct MainTabView: View {
             Button("📸 Zdjęcie posiłku") {
                 isScanPresented = true
             }
+            .accessibilityIdentifier(A11yID.Add.photoOption)
             Button("📦 Kod kreskowy") {
                 isBarcodePresented = true
             }
+            .accessibilityIdentifier(A11yID.Add.barcodeOption)
             Button("🔎 Szybka baza") {
                 isQuickDBPresented = true
             }
+            .accessibilityIdentifier(A11yID.Add.quickDBOption)
             Button("🎙 Powiedz na głos") {
                 isVoicePresented = true
             }
+            .accessibilityIdentifier(A11yID.Add.voiceOption)
             Button("📖 Mój przepis") {
                 isRecipesPresented = true
             }
+            .accessibilityIdentifier(A11yID.Add.recipeOption)
             Button("Anuluj", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $isScanPresented) {

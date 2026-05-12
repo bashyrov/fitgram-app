@@ -19,6 +19,7 @@ final class MealgramUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
+        // Identifiers must match A11yID.Auth.googleButton / errorBanner.
         let googleButton = app.buttons["auth.button.google"]
         XCTAssertTrue(googleButton.waitForExistence(timeout: 8))
         googleButton.tap()

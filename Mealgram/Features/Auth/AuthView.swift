@@ -84,7 +84,7 @@ struct AuthView: View {
             ) {
                 Task { await authService.signIn(with: .google) }
             }
-            .accessibilityIdentifier("auth.button.google")
+            .accessibilityIdentifier(A11yID.Auth.googleButton)
 
             SocialAuthButton(
                 title: "Kontynuuj e-mailem",
@@ -92,7 +92,7 @@ struct AuthView: View {
             ) {
                 Task { await authService.signIn(with: .email) }
             }
-            .accessibilityIdentifier("auth.button.email")
+            .accessibilityIdentifier(A11yID.Auth.emailButton)
         }
         .disabled(session.isWorking)
         .opacity(session.isWorking ? 0.6 : 1)
@@ -130,7 +130,7 @@ struct AuthView: View {
             .padding(.top, Tokens.Space.lg)
             .transition(.move(edge: .top).combined(with: .opacity))
             .onTapGesture { session.clearError() }
-            .accessibilityIdentifier("auth.error.banner")
+            .accessibilityIdentifier(A11yID.Auth.errorBanner)
         }
     }
 }
