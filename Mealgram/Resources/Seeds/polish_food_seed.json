@@ -91,6 +91,37 @@
     { "id": "snack.004", "name": "Wafle ryżowe", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 387, "protein_100g": 8, "carbs_100g": 82, "fat_100g": 3, "default_portion_g": 20 },
 
     { "id": "drink.006", "name": "Herbata zielona bez cukru", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 1, "protein_100g": 0, "carbs_100g": 0.2, "fat_100g": 0, "default_portion_g": 250 },
-    { "id": "drink.007", "name": "Woda z cytryną", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 2, "protein_100g": 0, "carbs_100g": 0.6, "fat_100g": 0, "default_portion_g": 300 }
+    { "id": "drink.007", "name": "Woda z cytryną", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 2, "protein_100g": 0, "carbs_100g": 0.6, "fat_100g": 0, "default_portion_g": 300 },
+    { "id": "drink.008", "name": "Smoothie owocowe", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 55, "protein_100g": 1, "carbs_100g": 13, "fat_100g": 0.3, "default_portion_g": 300 },
+    { "id": "drink.009", "name": "Cappuccino", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 35, "protein_100g": 2, "carbs_100g": 3, "fat_100g": 1.5, "default_portion_g": 200 },
+
+    { "id": "ff.011", "name": "Pizza pepperoni 30 cm", "category": "fast_food", "brand": "Domino's", "restaurant": "Domino's", "kcal_100g": 290, "protein_100g": 12, "carbs_100g": 33, "fat_100g": 12, "default_portion_g": 350 },
+    { "id": "ff.012", "name": "Kebab w bułce", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 215, "protein_100g": 13, "carbs_100g": 22, "fat_100g": 9, "default_portion_g": 350 },
+    { "id": "ff.013", "name": "Sushi California Roll (8 szt.)", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 170, "protein_100g": 6, "carbs_100g": 28, "fat_100g": 3.5, "default_portion_g": 220 },
+    { "id": "ff.014", "name": "Sushi Philadelphia Roll (8 szt.)", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 8, "carbs_100g": 26, "fat_100g": 7, "default_portion_g": 220 },
+    { "id": "ff.015", "name": "Pad Thai z kurczakiem", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 175, "protein_100g": 9, "carbs_100g": 22, "fat_100g": 6, "default_portion_g": 400 },
+    { "id": "ff.016", "name": "Ramen z kurczakiem", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 110, "protein_100g": 6, "carbs_100g": 14, "fat_100g": 3.5, "default_portion_g": 450 },
+    { "id": "ff.017", "name": "Gyros z mięsem", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 195, "protein_100g": 14, "carbs_100g": 17, "fat_100g": 9, "default_portion_g": 350 },
+
+    { "id": "trad.025", "name": "Zupa ogórkowa", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 48, "protein_100g": 2, "carbs_100g": 6, "fat_100g": 2, "default_portion_g": 300 },
+    { "id": "trad.026", "name": "Chłodnik", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 42, "protein_100g": 2.5, "carbs_100g": 5, "fat_100g": 1.5, "default_portion_g": 300 },
+    { "id": "trad.027", "name": "Frytki domowe pieczone", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 165, "protein_100g": 3, "carbs_100g": 30, "fat_100g": 4, "default_portion_g": 200 },
+    { "id": "trad.028", "name": "Jajecznica na maśle (3 jajka)", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 14, "carbs_100g": 2, "fat_100g": 16, "default_portion_g": 180 },
+    { "id": "trad.029", "name": "Kanapka z szynką i serem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 248, "protein_100g": 11, "carbs_100g": 30, "fat_100g": 9, "default_portion_g": 150 },
+
+    { "id": "produce.010", "name": "Borówki amerykańskie", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 57, "protein_100g": 0.7, "carbs_100g": 14, "fat_100g": 0.3, "default_portion_g": 100 },
+    { "id": "produce.011", "name": "Maliny", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 1.2, "carbs_100g": 12, "fat_100g": 0.7, "default_portion_g": 100 },
+    { "id": "produce.012", "name": "Pomarańcza", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 47, "protein_100g": 0.9, "carbs_100g": 12, "fat_100g": 0.1, "default_portion_g": 180 },
+    { "id": "produce.013", "name": "Kiwi", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 61, "protein_100g": 1.1, "carbs_100g": 15, "fat_100g": 0.5, "default_portion_g": 75 },
+
+    { "id": "snack.005", "name": "Granola", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 471, "protein_100g": 10, "carbs_100g": 64, "fat_100g": 20, "default_portion_g": 50 },
+    { "id": "snack.006", "name": "Masło orzechowe", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 588, "protein_100g": 25, "carbs_100g": 20, "fat_100g": 50, "default_portion_g": 20 },
+    { "id": "snack.007", "name": "Czekolada gorzka 70%", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 600, "protein_100g": 8, "carbs_100g": 46, "fat_100g": 42, "default_portion_g": 25 },
+    { "id": "snack.008", "name": "Baton Snickers", "category": "sweets", "brand": "Mars", "restaurant": null, "kcal_100g": 482, "protein_100g": 9, "carbs_100g": 60, "fat_100g": 23, "default_portion_g": 50 },
+    { "id": "snack.009", "name": "Lody waniliowe", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 207, "protein_100g": 3.5, "carbs_100g": 24, "fat_100g": 11, "default_portion_g": 100 },
+
+    { "id": "meat.007", "name": "Tofu naturalne", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 76, "protein_100g": 8, "carbs_100g": 1.9, "fat_100g": 4.8, "default_portion_g": 150 },
+    { "id": "meat.008", "name": "Soczewica gotowana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 116, "protein_100g": 9, "carbs_100g": 20, "fat_100g": 0.4, "default_portion_g": 200 },
+    { "id": "meat.009", "name": "Ciecierzyca z puszki", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 139, "protein_100g": 8.4, "carbs_100g": 22, "fat_100g": 2.6, "default_portion_g": 200 }
   ]
 }
