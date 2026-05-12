@@ -12,6 +12,7 @@ struct ProfileView: View {
     let mealSearchService: MealSearchService
     let mealRepository: MealRepository
     let photoStore: MealPhotoStore?
+    let streakCalendarService: StreakCalendarService
     let achievementService: AchievementService
     let calibrationService: CalibrationService
     let weightService: WeightService
@@ -37,6 +38,7 @@ struct ProfileView: View {
     @State private var isShareStreakPresented = false
     @State private var isSearchPresented = false
     @State private var searchSelectedMeal: MealEntry?
+    @State private var isStreakCalendarPresented = false
 
     var body: some View {
         NavigationStack {
@@ -131,6 +133,12 @@ struct ProfileView: View {
                         searchSelectedMeal = meal
                     },
                     onDismiss: { isSearchPresented = false }
+                )
+            }
+            .sheet(isPresented: $isStreakCalendarPresented) {
+                StreakCalendarSheet(
+                    service: streakCalendarService,
+                    onDismiss: { isStreakCalendarPresented = false }
                 )
             }
             .sheet(item: $searchSelectedMeal) { meal in
@@ -258,6 +266,10 @@ struct ProfileView: View {
                     actionRow(symbol: "square.and.arrow.up", title: "Udostępnij serię", role: nil) {
                         isShareStreakPresented = true
                     }
+                }
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "calendar", title: "Historia serii", role: nil) {
+                    isStreakCalendarPresented = true
                 }
             }
         }
