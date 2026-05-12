@@ -23,6 +23,7 @@ final class RecipeListState {
     private(set) var isLoading = false
     var query: String = ""
     var sort: Sort = .recent
+    var favoritesOnly: Bool = false
 
     private let repository: RecipeRepository
 
@@ -42,8 +43,9 @@ final class RecipeListState {
     }
 
     var filtered: [Recipe] {
-        let matching = filteredByQuery
-        return Self.sort(matching, by: sort)
+        let queried = filteredByQuery
+        let favorited = favoritesOnly ? queried.filter(\.isFavorite) : queried
+        return Self.sort(favorited, by: sort)
     }
 
     private var filteredByQuery: [Recipe] {

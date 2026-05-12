@@ -39,4 +39,19 @@ final class RecipeListStateTests: XCTestCase {
         let sorted = RecipeListState.sort([anna, bartek, cyryl], by: .cookedCount)
         XCTAssertEqual(sorted.map(\.title), ["Cyryl", "Anna", "Bartek"])
     }
+
+    // MARK: - Favorites filter (via filtered)
+
+    func testRecipeIsFavoriteDefaultsFalse() {
+        let recipe = Recipe(title: "X")
+        XCTAssertFalse(recipe.isFavorite)
+    }
+
+    func testRecipeIsFavoriteRoundTrip() {
+        let recipe = Recipe(title: "X")
+        recipe.isFavorite = true
+        XCTAssertTrue(recipe.isFavorite)
+        recipe.isFavorite = false
+        XCTAssertFalse(recipe.isFavorite)
+    }
 }

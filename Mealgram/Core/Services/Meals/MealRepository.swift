@@ -24,9 +24,10 @@ final class MealRepository {
         // Refetch in this context so we see the latest tags/portion the
         // user just wrote — the `source` parameter may be a stale snapshot
         // bound to a previous context. Standard cross-context pattern.
-        let attached = try context.fetch(
-            FetchDescriptor<MealEntry>(predicate: #Predicate { $0.id == sourceID })
-        ).first ?? source
+        let attached =
+            try context.fetch(
+                FetchDescriptor<MealEntry>(predicate: #Predicate { $0.id == sourceID })
+            ).first ?? source
         let copy = MealEntry(
             consumedAt: now,
             mealType: attached.mealType,

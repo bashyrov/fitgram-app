@@ -32,6 +32,9 @@ final class Recipe {
 
     var cookCount: Int
     var rating: Double?
+    /// User favorited the recipe. Defaults false so SwiftData lightweight
+    /// migration keeps existing rows valid.
+    var isFavorite: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \RecipeIngredient.recipe)
     var ingredients: [RecipeIngredient]
