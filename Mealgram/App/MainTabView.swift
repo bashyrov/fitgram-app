@@ -11,6 +11,7 @@ struct MainTabView: View {
     let foodCatalog: any FoodCatalog
     let recipeRepository: RecipeRepository
     let mealRepository: MealRepository
+    let photoStore: MealPhotoStore?
     let weightService: WeightService
     let heatmapService: ActivityHeatmapService
     let challengeService: ChallengeService
@@ -48,6 +49,7 @@ struct MainTabView: View {
         foodCatalog: any FoodCatalog,
         recipeRepository: RecipeRepository,
         mealRepository: MealRepository,
+        photoStore: MealPhotoStore?,
         weightService: WeightService,
         heatmapService: ActivityHeatmapService,
         challengeService: ChallengeService,
@@ -68,6 +70,7 @@ struct MainTabView: View {
         self.foodCatalog = foodCatalog
         self.recipeRepository = recipeRepository
         self.mealRepository = mealRepository
+        self.photoStore = photoStore
         self.weightService = weightService
         self.heatmapService = heatmapService
         self.challengeService = challengeService
@@ -226,6 +229,7 @@ struct MainTabView: View {
             ScanRootView(
                 detector: FoodDetectorFactory.make(),
                 mealSaver: mealSaver,
+                photoStore: photoStore,
                 onDismiss: {
                     isScanPresented = false
                     refreshAfterSave()
@@ -274,6 +278,7 @@ struct MainTabView: View {
             MealDetailSheet(
                 meal: meal,
                 repository: mealRepository,
+                photoStore: photoStore,
                 onDismiss: { selectedMeal = nil },
                 onChanged: { refreshAfterSave() },
                 onDeleted: { snapshot in queueUndo(snapshot) }

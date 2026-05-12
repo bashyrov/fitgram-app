@@ -12,6 +12,7 @@ struct ScanRootView: View {
         captureSession: CameraCaptureSession = CameraCaptureSession(),
         detector: any FoodDetector = MockFoodDetector(),
         mealSaver: MealSaving,
+        photoStore: MealPhotoStore? = nil,
         onDismiss: @escaping () -> Void
     ) {
         self.session = captureSession
@@ -19,7 +20,8 @@ struct ScanRootView: View {
             initialValue: ScanState(
                 captureSession: captureSession,
                 detector: detector,
-                mealSaver: mealSaver
+                mealSaver: mealSaver,
+                photoStore: photoStore
             )
         )
         self.onDismiss = onDismiss

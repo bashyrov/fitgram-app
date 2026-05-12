@@ -27,15 +27,18 @@ final class ScanState {
     private let captureSession: CameraCaptureSession
     private let detector: any FoodDetector
     private let mealSaver: MealSaving
+    private let photoStore: MealPhotoStore?
 
     init(
         captureSession: CameraCaptureSession,
         detector: any FoodDetector,
-        mealSaver: MealSaving
+        mealSaver: MealSaving,
+        photoStore: MealPhotoStore? = nil
     ) {
         self.captureSession = captureSession
         self.detector = detector
         self.mealSaver = mealSaver
+        self.photoStore = photoStore
     }
 
     // MARK: - Flow
@@ -82,10 +85,18 @@ final class ScanState {
     }
 
     func commit(result: ScanResult, portionMultiplier: Double) throws {
+        // Persist the captured frame to Documents first (if a store is
+        // wired) so the meal carries a stable filename. Photo writes are
+        // best-effort — failure logs and continues with a nil filename.
+        let photoFilename: String? = capturedImageData.flatMap { data in
+            guard let photoStore else { return nil }
+            return try? photoStore.save(imageData: data)
+        }
         let entry = MealEntry(
             consumedAt: Date(),
             mealType: result.suggestedMealType,
             source: .photoScan,
+            photoFilename: photoFilename,
             portionMultiplier: portionMultiplier,
             items: result.items.map { detected in
                 FoodItem(
