@@ -37,12 +37,24 @@ struct RecipeListView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        formMode = .adding
-                    } label: {
-                        Image(systemName: "plus")
+                    HStack(spacing: Tokens.Space.sm) {
+                        Menu {
+                            Picker("Sortuj", selection: $state.sort) {
+                                ForEach(RecipeListState.Sort.allCases, id: \.self) { sort in
+                                    Text(sort.label).tag(sort)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down")
+                        }
+                        .accessibilityLabel(Text("Sortuj"))
+                        Button {
+                            formMode = .adding
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel(Text("Dodaj przepis"))
                     }
-                    .accessibilityLabel(Text("Dodaj przepis"))
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Zamknij", action: onDismiss)
