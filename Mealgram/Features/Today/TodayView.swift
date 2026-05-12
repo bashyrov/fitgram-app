@@ -45,6 +45,10 @@ struct TodayView: View {
                         proteinGoal: state.user?.proteinGoalGrams ?? 120
                     )
 
+                    if let upcoming = state.upcomingEvent {
+                        CulturalEventBanner(upcoming: upcoming)
+                    }
+
                     if let suggested = state.suggestedRecipe, let onCookSuggested {
                         SuggestedRecipeCard(recipe: suggested) {
                             onCookSuggested(suggested)
