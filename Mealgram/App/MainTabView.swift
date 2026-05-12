@@ -11,6 +11,7 @@ struct MainTabView: View {
     let foodCatalog: any FoodCatalog
     let recipeRepository: RecipeRepository
     let weightService: WeightService
+    let friendService: any FriendService
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -24,11 +25,48 @@ struct MainTabView: View {
     @State private var isVoicePresented = false
     @State private var isRecipesPresented = false
     @State private var selectedTab: Tab = Self.initialTab()
+    @State private var friendsState: FriendsState
+
+    init(
+        authUser: AuthUser,
+        mealSaver: any MealSaving,
+        exportService: DataExportService,
+        achievementService: AchievementService,
+        calibrationService: CalibrationService,
+        foodCatalog: any FoodCatalog,
+        recipeRepository: RecipeRepository,
+        weightService: WeightService,
+        friendService: any FriendService,
+        unlockBus: AchievementUnlockBus,
+        onSignOut: @escaping () -> Void,
+        onDeleteAccount: @escaping () -> Void,
+        todayState: TodayState,
+        progressState: ProgressState
+    ) {
+        self.authUser = authUser
+        self.mealSaver = mealSaver
+        self.exportService = exportService
+        self.achievementService = achievementService
+        self.calibrationService = calibrationService
+        self.foodCatalog = foodCatalog
+        self.recipeRepository = recipeRepository
+        self.weightService = weightService
+        self.friendService = friendService
+        self.unlockBus = unlockBus
+        self.onSignOut = onSignOut
+        self.onDeleteAccount = onDeleteAccount
+        self.todayState = todayState
+        self.progressState = progressState
+        self._friendsState = State(
+            initialValue: FriendsState(service: friendService, userRemoteID: authUser.id)
+        )
+    }
 
     enum Tab: Hashable {
         case today
         case add
         case progress
+        case friends
         case profile
     }
 
@@ -37,6 +75,7 @@ struct MainTabView: View {
         switch DebugBypass.initialTab {
         case "progress": return .progress
         case "profile": return .profile
+        case "friends": return .friends
         default: return .today
         }
         #else
@@ -72,6 +111,12 @@ struct MainTabView: View {
                     Label("Tydzień", systemImage: "chart.bar.fill")
                 }
                 .tag(Tab.progress)
+
+            FriendsRootView(state: friendsState)
+                .tabItem {
+                    Label("Znajomi", systemImage: "person.2.fill")
+                }
+                .tag(Tab.friends)
 
             ProfileView(
                 user: todayState.user,
