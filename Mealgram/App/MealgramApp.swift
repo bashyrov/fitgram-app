@@ -24,6 +24,7 @@ struct MealgramApp: App {
     private let friendService: any FriendService
     private let notificationCoordinator: NotificationCoordinator
 
+    // swiftlint:disable function_body_length
     init() {
         let session = AuthSession()
         let providers: [any AuthProvider] = [
@@ -52,16 +53,23 @@ struct MealgramApp: App {
         self.foodCatalog = FoodCatalogService(container: persistence.container)
         let recipeRepository = RecipeRepository(container: persistence.container)
         self.recipeRepository = recipeRepository
-        self.weightService = WeightService(container: persistence.container)
+        let weightService = WeightService(container: persistence.container)
+        self.weightService = weightService
         self.friendService = InMemoryFriendService()
         self.notificationCoordinator = NotificationCoordinator(
             scheduler: NotificationService(),
             container: persistence.container
         )
+        let coachService = CoachService(
+            container: persistence.container,
+            streakService: streakService,
+            weightService: weightService
+        )
         self.todayState = TodayState(
             container: persistence.container,
             streakService: streakService,
-            recipeRepository: recipeRepository
+            recipeRepository: recipeRepository,
+            coachService: coachService
         )
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
@@ -84,6 +92,7 @@ struct MealgramApp: App {
         }
         #endif
     }
+    // swiftlint:enable function_body_length
 
     var body: some Scene {
         WindowGroup {
