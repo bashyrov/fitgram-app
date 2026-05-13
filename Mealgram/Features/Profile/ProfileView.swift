@@ -56,6 +56,7 @@ struct ProfileView: View {
     @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
     @AppStorage("preferences.eveningReminderEnabled") private var eveningReminderEnabled = true
     @State private var isHelpPresented = false
+    @State private var isLegalPresented = false
 
     var body: some View {
         NavigationStack {
@@ -173,6 +174,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $isHelpPresented) {
                 HelpFAQSheet(onDismiss: { isHelpPresented = false })
+            }
+            .sheet(isPresented: $isLegalPresented) {
+                LegalSheet(onDismiss: { isLegalPresented = false })
             }
             .sheet(item: $selectedHeatmapDay) { wrapper in
                 DayMealsSheet(
@@ -466,12 +470,12 @@ struct ProfileView: View {
                     legalRow(symbol: "questionmark.circle", title: "Pomoc / FAQ")
                 }
                 .buttonStyle(.plain)
-                Link(destination: URL(string: "https://mealgram.pl/privacy") ?? URL(filePath: "/")) {
-                    legalRow(symbol: "lock.shield", title: "Polityka prywatności")
+                Button {
+                    isLegalPresented = true
+                } label: {
+                    legalRow(symbol: "lock.shield", title: "Prawo i prywatność")
                 }
-                Link(destination: URL(string: "https://mealgram.pl/terms") ?? URL(filePath: "/")) {
-                    legalRow(symbol: "doc.text", title: "Regulamin")
-                }
+                .buttonStyle(.plain)
             }
         }
     }
