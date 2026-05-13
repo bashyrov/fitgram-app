@@ -45,6 +45,15 @@ final class QuickDatabaseState {
         try? catalog.recordPick(food)
     }
 
+    func createCustomFood(_ food: Food) async {
+        do {
+            try catalog.create(food)
+            await refresh()
+        } catch {
+            Logger.persistence.error("Custom food create failed: \(String(describing: error))")
+        }
+    }
+
     /// Convenience for the search field's `.onChange`.
     func applyQuery(_ raw: String) async {
         query = raw
