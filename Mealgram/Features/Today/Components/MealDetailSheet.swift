@@ -19,6 +19,12 @@ struct MealDetailSheet: View {
     @State private var tags: [String]
     @State private var newTag: String = ""
     @State private var notes: String
+    @State private var zoomedPhoto: ZoomedPhoto?
+
+    private struct ZoomedPhoto: Identifiable {
+        let id = UUID()
+        let image: UIImage
+    }
 
     init(
         meal: MealEntry,
@@ -113,6 +119,11 @@ struct MealDetailSheet: View {
             } message: {
                 Text("Wpis zostanie skasowany i wyleci z dziennika.")
             }
+            .fullScreenCover(item: $zoomedPhoto) { zoomed in
+                MealPhotoZoomView(image: zoomed.image) {
+                    zoomedPhoto = nil
+                }
+            }
         }
     }
 
@@ -124,13 +135,28 @@ struct MealDetailSheet: View {
     }
 
     private func photoHeader(_ image: UIImage) -> some View {
-        Image(uiImage: image)
-            .resizable()
-            .scaledToFill()
-            .frame(maxWidth: .infinity)
-            .frame(height: 200)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous))
+        Button {
+            zoomedPhoto = ZoomedPhoto(image: image)
+            Haptics.light()
+        } label: {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity)
+                .frame(height: 200)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous))
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "arrow.up.left.and.arrow.down.right")
+                        .font(.caption)
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(.black.opacity(0.4), in: Circle())
+                        .padding(8)
+                }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Powiększ zdjęcie"))
     }
 
     private var summaryCard: some View {
