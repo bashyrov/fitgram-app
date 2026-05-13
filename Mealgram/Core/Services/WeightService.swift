@@ -76,16 +76,28 @@ final class WeightService {
     }
 
     /// Returns the most recent and the oldest entry within the last 30
-    /// days so the UI can show a delta.
+    /// days so the UI can show a delta, plus the 7-day rolling average.
     func summary(for userRemoteID: String) throws -> Summary? {
         let entries = try entries(for: userRemoteID)
         guard let latest = entries.first else { return nil }
-        let monthAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        let now = Date()
+        let calendar = Calendar.current
+        let monthAgo = calendar.date(byAdding: .day, value: -30, to: now) ?? now
         let monthSlice = entries.filter { $0.recordedAt >= monthAgo }
         let comparable = monthSlice.last ?? latest
+        let weekAgo = calendar.date(byAdding: .day, value: -7, to: now) ?? now
+        let weekSlice = entries.filter { $0.recordedAt >= weekAgo }
+        let sevenDayAverage: Double?
+        if weekSlice.isEmpty {
+            sevenDayAverage = nil
+        } else {
+            let total = weekSlice.reduce(0.0) { $0 + $1.weightKg }
+            sevenDayAverage = total / Double(weekSlice.count)
+        }
         return Summary(
             latest: latest,
             thirtyDayDelta: latest.weightKg - comparable.weightKg,
+            sevenDayAverageKg: sevenDayAverage,
             entries: entries
         )
     }
@@ -93,6 +105,7 @@ final class WeightService {
     struct Summary: Sendable {
         let latest: WeightEntry
         let thirtyDayDelta: Double
+        let sevenDayAverageKg: Double?
         let entries: [WeightEntry]
     }
 }
