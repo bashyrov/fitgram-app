@@ -370,7 +370,7 @@ struct MainTabView: View {
         undoDismissTask?.cancel()
         undoSnapshot = snapshot
         undoDismissTask = Task { [snapshotID = snapshot.id] in
-            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            try? await Task.sleep(nanoseconds: 8_000_000_000)
             guard !Task.isCancelled else { return }
             if undoSnapshot?.id == snapshotID {
                 undoSnapshot = nil
