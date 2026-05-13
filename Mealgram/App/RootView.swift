@@ -216,6 +216,8 @@ struct RootView: View {
         let flow = OnboardingFlow(
             authUser: authUser,
             userRepository: userRepository,
+            recommendationsService: recommendationsService,
+            userProfileService: userProfileService,
             onFinished: { [router, todayState, streakService] outcome in
                 if outcome == .completed {
                     router.markOnboarded()

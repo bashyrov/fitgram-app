@@ -12,6 +12,9 @@ final class OnboardingFlow {
         case welcome
         case goal
         case profile
+        /// Pace + target-weight picker. Skipped when goal is not
+        /// `.lose` / `.gain` — flow auto-advances over it.
+        case pace
         case dietary
         case firstScan
         case calibration
@@ -38,8 +41,16 @@ final class OnboardingFlow {
     private(set) var isSubmitting: Bool = false
     private(set) var lastError: String?
 
+    /// Lazily loaded once the user reaches calibration. UI renders a
+    /// loading skeleton until non-nil. Persisted to User row inside
+    /// `complete()` so Profile can re-display it later.
+    private(set) var recommendations: Recommendations?
+    private(set) var isLoadingRecommendations: Bool = false
+
     private let authUser: AuthUser
     private let userRepository: UserRepository
+    private let recommendationsService: any RecommendationsServing
+    private let userProfileService: UserProfileServing?
     private let onFinished: @MainActor (CompletionOutcome) -> Void
 
     /// Surface name for the celebration step ("Witaj, X!"). Sourced from
@@ -51,6 +62,13 @@ final class OnboardingFlow {
     var computedGoals: GoalCalculator.Output? {
         guard let input = goalCalculatorInput else { return nil }
         return GoalCalculator.calculate(from: input)
+    }
+
+    /// Full target bundle (kcal + macros + fiber + water + bmr + tdee +
+    /// safetyFloor flag). Drives the AI results screen.
+    var computedTargets: GoalCalculator.Targets? {
+        guard let input = goalCalculatorInput else { return nil }
+        return GoalCalculator.calculateTargets(from: input)
     }
 
     private var goalCalculatorInput: GoalCalculator.Input? {
@@ -65,41 +83,86 @@ final class OnboardingFlow {
             age: age,
             biologicalSex: profile.biologicalSex,
             activityLevel: profile.activityLevel,
-            goal: profile.goal
+            goal: profile.goal,
+            paceKgPerWeek: profile.goalPaceKgPerWeek
         )
     }
 
-    private func applyComputedGoals() {
-        guard let output = computedGoals else { return }
-        profile.dailyCalorieGoalKcal = output.dailyCalorieGoalKcal
-        profile.proteinGoalGrams = output.proteinGoalGrams
-        profile.carbsGoalGrams = output.carbsGoalGrams
-        profile.fatGoalGrams = output.fatGoalGrams
+    private func applyComputedTargets() {
+        guard let targets = computedTargets else { return }
+        profile.dailyCalorieGoalKcal = targets.dailyCalorieGoalKcal
+        profile.proteinGoalGrams = targets.proteinGoalGrams
+        profile.carbsGoalGrams = targets.carbsGoalGrams
+        profile.fatGoalGrams = targets.fatGoalGrams
+        profile.fiberGoalGrams = targets.fiberGoalGrams
+        profile.waterGoalMl = targets.waterGoalMl
+        profile.hitSafetyFloor = targets.hitSafetyFloor
+    }
+
+    /// Kicks off the AI recommendations call. Idempotent — re-entering
+    /// the calibration step won't re-fire while one is in flight, and
+    /// won't re-fire once `recommendations` is non-nil for the current
+    /// profile snapshot.
+    func loadRecommendationsIfNeeded() async {
+        guard recommendations == nil, !isLoadingRecommendations else { return }
+        applyComputedTargets()
+        guard let request = profile.recommendationsRequest else { return }
+        isLoadingRecommendations = true
+        defer { isLoadingRecommendations = false }
+        do {
+            recommendations = try await recommendationsService.generate(for: request)
+        } catch {
+            Logger.coach.error("Onboarding recommendations failed: \(String(describing: error))")
+        }
     }
 
     init(
         authUser: AuthUser,
         userRepository: UserRepository,
+        recommendationsService: any RecommendationsServing,
+        userProfileService: UserProfileServing? = nil,
         onFinished: @escaping @MainActor (CompletionOutcome) -> Void
     ) {
         self.authUser = authUser
         self.userRepository = userRepository
+        self.recommendationsService = recommendationsService
+        self.userProfileService = userProfileService
         self.onFinished = onFinished
     }
 
     // MARK: - Navigation
 
     func advance() {
-        if let next = Step(rawValue: currentStep.rawValue + 1) {
-            currentStep = next
+        var next = Step(rawValue: currentStep.rawValue + 1)
+        while let candidate = next, shouldSkip(step: candidate) {
+            next = Step(rawValue: candidate.rawValue + 1)
+        }
+        if let resolved = next {
+            currentStep = resolved
         } else {
             Task { await complete() }
         }
     }
 
     func goBack() {
-        guard let previous = Step(rawValue: currentStep.rawValue - 1) else { return }
-        currentStep = previous
+        var previous = Step(rawValue: currentStep.rawValue - 1)
+        while let candidate = previous, shouldSkip(step: candidate) {
+            previous = Step(rawValue: candidate.rawValue - 1)
+        }
+        guard let resolved = previous else { return }
+        currentStep = resolved
+    }
+
+    /// Steps that don't apply to the current profile snapshot get
+    /// skipped both forward and back so the user never sees a dead-end
+    /// "Dalej" / "Wróć" tap.
+    private func shouldSkip(step: Step) -> Bool {
+        switch step {
+        case .pace:
+            return !profile.goal.requiresPaceAndTarget
+        default:
+            return false
+        }
     }
 
     func jump(to step: Step) {
@@ -127,10 +190,13 @@ final class OnboardingFlow {
         // Apply the Mifflin-St Jeor calculation right before persisting
         // so the user lands on Today with real numbers instead of the
         // 2100 / 120 / 240 / 70 defaults.
-        applyComputedGoals()
+        applyComputedTargets()
         do {
             let user = try userRepository.ensureUser(for: authUser)
             try userRepository.completeOnboarding(user, profile: profile)
+            if let recommendations {
+                try? userProfileService?.storeRecommendations(recommendations)
+            }
             lastError = nil
             onFinished(.completed)
         } catch {

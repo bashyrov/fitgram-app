@@ -58,6 +58,8 @@ struct OnboardingView: View {
                 GoalStepView(goal: $flow.profile.goal) { flow.advance() }
             case .profile:
                 ProfileStepView(profile: $flow.profile) { flow.advance() }
+            case .pace:
+                PaceStepView(profile: $flow.profile) { flow.advance() }
             case .dietary:
                 DietaryStepView(selected: $flow.profile.dietaryPreferences) { flow.advance() }
             case .firstScan:
@@ -65,8 +67,13 @@ struct OnboardingView: View {
             case .calibration:
                 CalibrationStepView(
                     profile: $flow.profile,
-                    computedGoals: flow.computedGoals
+                    computedTargets: flow.computedTargets,
+                    recommendations: flow.recommendations,
+                    isLoadingRecommendations: flow.isLoadingRecommendations
                 ) { flow.advance() }
+                .task(id: flow.currentStep) {
+                    await flow.loadRecommendationsIfNeeded()
+                }
             case .notifications:
                 NotificationStepView { flow.advance() }
             case .paywall:

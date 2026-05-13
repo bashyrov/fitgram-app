@@ -23,6 +23,8 @@ final class OnboardingFlowTests: XCTestCase {
         OnboardingFlow(
             authUser: AuthUser(id: "u-1", email: "a@b.pl", displayName: "Anka", provider: .apple),
             userRepository: repository,
+            recommendationsService: RuleBasedRecommendationsService(),
+            userProfileService: nil,
             onFinished: onFinished
         )
     }
@@ -31,10 +33,12 @@ final class OnboardingFlowTests: XCTestCase {
 
     func testAdvanceMovesForwardThroughEveryStep() {
         let flow = makeFlow()
+        // Goal defaults to .maintain so the pace step gets auto-skipped.
         XCTAssertEqual(flow.currentStep, .welcome)
         for expected in [
             OnboardingFlow.Step.goal,
             .profile,
+            .dietary,
             .firstScan,
             .calibration,
             .notifications,
@@ -44,6 +48,38 @@ final class OnboardingFlowTests: XCTestCase {
             flow.advance()
             XCTAssertEqual(flow.currentStep, expected)
         }
+    }
+
+    func testPaceStepShownForLoseGoal() {
+        let flow = makeFlow()
+        flow.profile.goal = .lose
+        flow.jump(to: .profile)
+        flow.advance()
+        XCTAssertEqual(flow.currentStep, .pace)
+    }
+
+    func testPaceStepSkippedForMaintainGoal() {
+        let flow = makeFlow()
+        flow.profile.goal = .maintain
+        flow.jump(to: .profile)
+        flow.advance()
+        XCTAssertEqual(flow.currentStep, .dietary)
+    }
+
+    func testPaceStepSkippedForJustTrackingGoal() {
+        let flow = makeFlow()
+        flow.profile.goal = .justTracking
+        flow.jump(to: .profile)
+        flow.advance()
+        XCTAssertEqual(flow.currentStep, .dietary)
+    }
+
+    func testGoBackFromDietarySkipsPaceForMaintain() {
+        let flow = makeFlow()
+        flow.profile.goal = .maintain
+        flow.jump(to: .dietary)
+        flow.goBack()
+        XCTAssertEqual(flow.currentStep, .profile)
     }
 
     func testAdvanceFromLastStepTriggersCompletion() async {
