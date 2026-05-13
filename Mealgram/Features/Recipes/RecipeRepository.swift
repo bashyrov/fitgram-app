@@ -9,9 +9,11 @@ import SwiftData
 @MainActor
 final class RecipeRepository {
     private let container: ModelContainer
+    private let spotlightIndexer: RecipeSpotlightIndexing?
 
-    init(container: ModelContainer) {
+    init(container: ModelContainer, spotlightIndexer: RecipeSpotlightIndexing? = nil) {
         self.container = container
+        self.spotlightIndexer = spotlightIndexer
     }
 
     func all(sortedByCookCount: Bool = false) throws -> [Recipe] {
@@ -35,6 +37,7 @@ final class RecipeRepository {
         context.insert(recipe)
         try context.save()
         Logger.persistence.notice("Created recipe \(recipe.id, privacy: .public)")
+        spotlightIndexer?.index(recipe)
         return recipe
     }
 
@@ -44,7 +47,7 @@ final class RecipeRepository {
         recipe.updatedAt = Date()
         let context = ModelContext(container)
         try context.save()
-        _ = recipe
+        spotlightIndexer?.index(recipe)
     }
 
     func delete(_ recipe: Recipe) throws {
@@ -58,6 +61,7 @@ final class RecipeRepository {
         if let stored = try context.fetch(descriptor).first {
             context.delete(stored)
             try context.save()
+            spotlightIndexer?.remove(recipeID: recipeID)
         }
     }
 
@@ -96,7 +100,17 @@ final class RecipeRepository {
         copy.fatPerServing = attached.fatPerServing
         context.insert(copy)
         try context.save()
+        spotlightIndexer?.index(copy)
         return copy
+    }
+
+    /// One-shot reindex of every recipe. Called at launch so cold installs
+    /// + post-restore states have a populated Spotlight index without
+    /// waiting for the user to touch each recipe again.
+    func reindexSpotlight() throws {
+        guard let spotlightIndexer else { return }
+        let recipes = try all()
+        spotlightIndexer.indexAll(recipes)
     }
 
     /// Produces a `MealEntry` for one serving of the recipe and bumps the

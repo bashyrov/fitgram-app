@@ -63,8 +63,14 @@ struct MealgramApp: App {
         self.mealSearchService = MealSearchService(container: persistence.container)
         self.streakCalendarService = StreakCalendarService(container: persistence.container)
         self.foodCatalog = FoodCatalogService(container: persistence.container)
-        let recipeRepository = RecipeRepository(container: persistence.container)
+        let recipeRepository = RecipeRepository(
+            container: persistence.container,
+            spotlightIndexer: RecipeSpotlightIndexer()
+        )
         self.recipeRepository = recipeRepository
+        Task { @MainActor in
+            try? recipeRepository.reindexSpotlight()
+        }
         self.mealRepository = MealRepository(container: persistence.container)
         self.photoStore = try? MealPhotoStore()
         self.heatmapService = ActivityHeatmapService(container: persistence.container)

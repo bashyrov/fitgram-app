@@ -1,3 +1,4 @@
+import CoreSpotlight
 import SwiftUI
 
 // swiftlint:disable type_body_length
@@ -230,6 +231,12 @@ struct MainTabView: View {
         ) { _ in
             selectedTab = .today
             presentWeeklyDebrief()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.openRecipes)) { _ in
+            isRecipesPresented = true
+        }
+        .onContinueUserActivity(CSSearchableItemActionType) { _ in
+            isRecipesPresented = true
         }
         .confirmationDialog(
             "Jak chcesz dodać?",
