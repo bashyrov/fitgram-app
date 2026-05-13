@@ -58,6 +58,24 @@ final class WeightServiceTests: XCTestCase {
         XCTAssertNil(try service.summary(for: "ghost"))
     }
 
+    func testSummaryWeeklyRateLinear() throws {
+        let calendar = Calendar.current
+        let now = Date()
+        let twoWeeksAgo = try XCTUnwrap(calendar.date(byAdding: .day, value: -14, to: now))
+        try service.log(80, for: "u-rate", at: twoWeeksAgo)
+        try service.log(78, for: "u-rate", at: now)
+        let summary = try XCTUnwrap(try service.summary(for: "u-rate"))
+        let rate = try XCTUnwrap(summary.weeklyRateKg)
+        // -2 kg / 14 days = -0.143 kg/day → -1.0 kg/week
+        XCTAssertEqual(rate, -1.0, accuracy: 0.01)
+    }
+
+    func testSummaryWeeklyRateNilWithShortWindow() throws {
+        try service.log(80, for: "u-rate-short")
+        let summary = try XCTUnwrap(try service.summary(for: "u-rate-short"))
+        XCTAssertNil(summary.weeklyRateKg, "Single entry should not produce a rate")
+    }
+
     func testSummarySevenDayAverageOnlyIncludesRecent() throws {
         let calendar = Calendar.current
         let now = Date()
