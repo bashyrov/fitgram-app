@@ -45,6 +45,11 @@ struct ProfileStatsCard: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.warning)
                 }
+                if summary.longestStreakLength > 0 {
+                    Text("Rekord serii: 🔥 \(summary.longestStreakLength) dni")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.warning)
+                }
                 if let memberSince = summary.memberSince {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
