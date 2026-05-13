@@ -39,6 +39,7 @@ struct EditGoalsView: View {
                                 stepper(label: "Tłuszcz (g)", value: $fat, step: 5, range: 20...200)
                             }
                         }
+                        macroPresetsCard
                         PrimaryButton(title: "Zapisz", systemImage: "checkmark") { save() }
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
@@ -53,6 +54,46 @@ struct EditGoalsView: View {
                 }
             }
         }
+    }
+
+    private var macroPresetsCard: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                Text("Szybki podział makro")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text("Przeliczane z aktualnej puli kalorii — możesz dalej dostroić ręcznie.")
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                ForEach(MacroSplit.presets, id: \.id) { preset in
+                    Button {
+                        apply(preset)
+                    } label: {
+                        HStack {
+                            Text(preset.label)
+                                .font(Tokens.Font.body)
+                                .foregroundStyle(Tokens.Palette.ink)
+                            Spacer()
+                            Image(systemName: "arrow.right.circle")
+                                .foregroundStyle(Tokens.Palette.primary)
+                        }
+                        .padding(.vertical, 6)
+                    }
+                    .buttonStyle(.plain)
+                    if preset.id != MacroSplit.presets.last?.id {
+                        Divider().background(Tokens.Palette.separator)
+                    }
+                }
+            }
+        }
+    }
+
+    private func apply(_ split: MacroSplit) {
+        let grams = split.grams(forCalories: calories)
+        protein = grams.protein
+        carbs = grams.carbs
+        fat = grams.fat
+        Haptics.light()
     }
 
     private func stepper(
