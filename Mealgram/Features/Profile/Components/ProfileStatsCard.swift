@@ -30,6 +30,11 @@ struct ProfileStatsCard: View {
                     tile(symbol: "scalemass.fill", value: summary.totalWeightEntries, caption: "wpisów wagi")
                     tile(symbol: "trophy.fill", value: summary.totalAchievements, caption: "odznak")
                 }
+                if summary.totalCaloriesKcal > 0 {
+                    Text("Łącznie: \(Self.kcalString(summary.totalCaloriesKcal)) kcal")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
                 if let memberSince = summary.memberSince {
                     Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
                         .font(Tokens.Font.caption)
@@ -37,6 +42,15 @@ struct ProfileStatsCard: View {
                 }
             }
         }
+    }
+
+    /// Formats large kcal totals with thousands separators so "172000"
+    /// reads as "172 000" — easier to scan at a glance.
+    private static func kcalString(_ value: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "pl_PL")
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 
     private func tile(symbol: String, value: Int, caption: LocalizedStringKey) -> some View {

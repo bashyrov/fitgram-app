@@ -57,6 +57,7 @@ final class ProfileStatsServiceTests: XCTestCase {
         XCTAssertEqual(summary.totalRecipes, 1)
         XCTAssertEqual(summary.totalWeightEntries, 1)
         XCTAssertEqual(summary.totalAchievements, 1)
+        XCTAssertEqual(summary.totalCaloriesKcal, 500, "Should sum 200 + 300 across the two meals")
         XCTAssertNotNil(summary.memberSince)
     }
 
