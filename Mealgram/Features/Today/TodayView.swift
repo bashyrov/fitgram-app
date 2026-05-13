@@ -37,6 +37,8 @@ struct TodayView: View {
                     )
                     .padding(.top, Tokens.Space.md)
 
+                    dayScrubBar
+
                     if state.canUseFreeze, let streak = state.streak {
                         StreakFreezeCard(
                             streakLength: streak.currentLength,
@@ -62,20 +64,22 @@ struct TodayView: View {
                         fatGoal: state.user?.fatGoalGrams ?? 70
                     )
 
-                    WaterCard(
-                        totalMilliliters: state.waterTotalMl,
-                        goalMilliliters: WaterService.defaultDailyGoalMilliliters,
-                        onAddGlass: {
-                            Haptics.light()
-                            Task { await state.logWaterGlass(for: userRemoteID) }
-                        },
-                        onUndo: {
-                            Haptics.warning()
-                            Task { await state.undoLastWater(for: userRemoteID) }
-                        }
-                    )
+                    if state.isViewingToday {
+                        WaterCard(
+                            totalMilliliters: state.waterTotalMl,
+                            goalMilliliters: WaterService.defaultDailyGoalMilliliters,
+                            onAddGlass: {
+                                Haptics.light()
+                                Task { await state.logWaterGlass(for: userRemoteID) }
+                            },
+                            onUndo: {
+                                Haptics.warning()
+                                Task { await state.undoLastWater(for: userRemoteID) }
+                            }
+                        )
+                    }
 
-                    if let insight = state.coachInsights.first {
+                    if state.isViewingToday, let insight = state.coachInsights.first {
                         AIInsightCard(
                             insight: insight,
                             onAction: { kind in handleCoachAction(kind) },
@@ -85,19 +89,15 @@ struct TodayView: View {
                         )
                     }
 
-                    if let onOpenWeeklyDebrief {
+                    if state.isViewingToday, let onOpenWeeklyDebrief {
                         WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
                     }
 
-                    if let upcoming = state.upcomingEvent {
+                    if state.isViewingToday, let upcoming = state.upcomingEvent {
                         CulturalEventBanner(upcoming: upcoming)
                     }
 
-                    if let suggested = state.suggestedRecipe, let onCookSuggested {
-                        SuggestedRecipeCard(recipe: suggested) {
-                            onCookSuggested(suggested)
-                        }
-                    }
+                    suggestedRecipeCard
 
                     mealsSection
                 }
@@ -114,10 +114,70 @@ struct TodayView: View {
     }
 
     @ViewBuilder
+    private var suggestedRecipeCard: some View {
+        if state.isViewingToday, let suggested = state.suggestedRecipe, let onCookSuggested {
+            SuggestedRecipeCard(recipe: suggested) {
+                onCookSuggested(suggested)
+            }
+        }
+    }
+
+    private var dayScrubBar: some View {
+        HStack(spacing: Tokens.Space.md) {
+            Button {
+                Haptics.light()
+                Task { await state.goToPreviousDay(userRemoteID: userRemoteID) }
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.title3)
+                    .foregroundStyle(Tokens.Palette.primary)
+                    .frame(width: 36, height: 36)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Poprzedni dzień"))
+
+            VStack(spacing: 0) {
+                Text(state.isViewingToday ? "Dziś" : Self.dayLabel(state.viewingDate))
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.ink)
+                if !state.isViewingToday {
+                    Button("Wróć do dziś") {
+                        Haptics.light()
+                        Task { await state.jumpToToday(userRemoteID: userRemoteID) }
+                    }
+                    .font(Tokens.Font.caption)
+                    .foregroundStyle(Tokens.Palette.primary)
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            Button {
+                Haptics.light()
+                Task { await state.goToNextDay(userRemoteID: userRemoteID) }
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.title3)
+                    .foregroundStyle(state.isViewingToday ? Tokens.Palette.inkSubtle : Tokens.Palette.primary)
+                    .frame(width: 36, height: 36)
+            }
+            .buttonStyle(.plain)
+            .disabled(state.isViewingToday)
+            .accessibilityLabel(Text("Następny dzień"))
+        }
+    }
+
+    private static func dayLabel(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.dateFormat = "EEEE, d MMM"
+        return formatter.string(from: date).capitalized
+    }
+
+    @ViewBuilder
     private var mealsSection: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             HStack {
-                Text("Dziś")
+                Text(state.isViewingToday ? "Dziś" : "Dziennik dnia")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 Spacer()

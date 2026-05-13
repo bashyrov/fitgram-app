@@ -183,6 +183,66 @@ final class TodayStateTests: XCTestCase {
         XCTAssertFalse(state.canUseFreeze)
     }
 
+    // MARK: - Date scrub
+
+    func testGoToPreviousDayShowsYesterdayMeals() async throws {
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let yesterdayMeal = Self.date("2026-05-11T13:00:00Z")
+        let todayMeal = Self.date("2026-05-12T13:00:00Z")
+
+        context.insert(
+            MealEntry(
+                consumedAt: yesterdayMeal,
+                mealType: .lunch,
+                source: .manual,
+                items: [FoodItem(name: "Y", quantityGrams: 100, caloriesKcal: 400)]
+            )
+        )
+        context.insert(
+            MealEntry(
+                consumedAt: todayMeal,
+                mealType: .lunch,
+                source: .manual,
+                items: [FoodItem(name: "T", quantityGrams: 100, caloriesKcal: 700)]
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        XCTAssertEqual(state.totals.calories, 700, accuracy: 0.001)
+        XCTAssertTrue(state.isViewingToday)
+
+        await state.goToPreviousDay(userRemoteID: "u-1")
+        XCTAssertEqual(state.totals.calories, 400, accuracy: 0.001)
+        XCTAssertFalse(state.isViewingToday)
+    }
+
+    func testGoToNextDayClampsAtToday() async throws {
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        await state.goToNextDay(userRemoteID: "u-1")
+        XCTAssertTrue(state.isViewingToday, "Should not advance past today")
+    }
+
+    func testJumpToTodayReturnsAfterScrub() async throws {
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        await state.goToPreviousDay(userRemoteID: "u-1")
+        await state.goToPreviousDay(userRemoteID: "u-1")
+        XCTAssertFalse(state.isViewingToday)
+        await state.jumpToToday(userRemoteID: "u-1")
+        XCTAssertTrue(state.isViewingToday)
+    }
+
     func testConsumeFreezeDecrementsAvailableCount() async throws {
         let now = Self.date("2026-05-12T15:00:00Z")
         let yesterday = Self.date("2026-05-11T12:00:00Z")
