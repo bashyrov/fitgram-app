@@ -31,6 +31,9 @@ struct RecipeDetailView: View {
                         if !recipe.instructions.isEmpty {
                             instructionsCard
                         }
+                        if let minutes = recipe.cookMinutes, minutes > 0 {
+                            CookTimerCard(cookMinutes: minutes)
+                        }
                         PrimaryButton(title: "Ugotuj i dodaj do dziennika", systemImage: "checkmark") {
                             onCook(servings)
                         }
