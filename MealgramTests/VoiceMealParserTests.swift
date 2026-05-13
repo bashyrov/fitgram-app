@@ -115,4 +115,50 @@ final class VoiceMealParserTests: XCTestCase {
         XCTAssertEqual(items.count, 1)
         XCTAssertEqual(items.first?.caloriesKcal, 400)
     }
+
+    // MARK: - Decimal + comma edge cases
+
+    func testCommaDecimalSeparatorParsed() {
+        let parser = VoiceMealParser()
+        let item = parser.parse("masło 12,5 g")
+        XCTAssertEqual(item.quantityGrams, 12.5, accuracy: 0.01)
+    }
+
+    func testHandlesShortFormGramUnit() {
+        let parser = VoiceMealParser()
+        let item = parser.parse("ryż 80g")
+        XCTAssertEqual(item.quantityGrams, 80)
+    }
+
+    func testHandlesGramówSuffix() {
+        let parser = VoiceMealParser()
+        let item = parser.parse("schab 200 gramów")
+        XCTAssertEqual(item.quantityGrams, 200)
+    }
+
+    func testKalorieSuffixAccepted() {
+        let parser = VoiceMealParser()
+        let item = parser.parse("tort 350 kalorie")
+        XCTAssertEqual(item.caloriesKcal, 350)
+    }
+
+    // MARK: - Connective splitting edge cases
+
+    func testSplitIgnoresIInsideWord() {
+        // Polish word "iść" starts with "i" — must not split it.
+        let pieces = VoiceMealParser.split("iść do sklepu")
+        XCTAssertEqual(pieces.count, 1)
+    }
+
+    func testSplitHandlesPlusOnly() {
+        let pieces = VoiceMealParser.split("kawa plus mleko")
+        XCTAssertEqual(pieces, ["kawa", "mleko"])
+    }
+
+    func testParseMultipleSkipsEmptyFragments() {
+        let parser = VoiceMealParser()
+        // Double comma → empty middle fragment must drop.
+        let items = parser.parseMultiple("jajka,, tost")
+        XCTAssertEqual(items.count, 2)
+    }
 }
