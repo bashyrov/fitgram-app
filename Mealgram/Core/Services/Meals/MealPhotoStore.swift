@@ -18,7 +18,7 @@ final class MealPhotoStore {
         case directoryUnavailable
     }
 
-    private let directory: URL
+    let directory: URL
     private let fileManager: FileManager
     private let compressionQuality: CGFloat = 0.85
 
