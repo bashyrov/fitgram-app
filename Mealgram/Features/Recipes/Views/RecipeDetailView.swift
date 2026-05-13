@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Read-only view of a saved recipe with a "cook" CTA that scales the per-
 /// serving nutrition and pipes it through `MealSaving`.
@@ -11,6 +12,7 @@ struct RecipeDetailView: View {
 
     @State private var servings: Double = 1
     @State private var checkedIngredients: Set<UUID> = []
+    @State private var didCopyIngredients = false
 
     var body: some View {
         NavigationStack {
@@ -216,6 +218,17 @@ struct RecipeDetailView: View {
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
+                    Button {
+                        copyIngredients()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: didCopyIngredients ? "checkmark" : "doc.on.doc")
+                            Text(didCopyIngredients ? "Skopiowane" : "Kopiuj")
+                        }
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.primary)
+                    }
+                    .buttonStyle(.plain)
                     if !checkedIngredients.isEmpty {
                         Button("Wyczyść") {
                             checkedIngredients.removeAll()
@@ -276,6 +289,16 @@ struct RecipeDetailView: View {
                     }
                 }
             }
+        }
+    }
+
+    private func copyIngredients() {
+        UIPasteboard.general.string = recipe.ingredients.map { "• \($0.name)" }.joined(separator: "\n")
+        didCopyIngredients = true
+        Haptics.light()
+        Task {
+            try? await Task.sleep(nanoseconds: 1_800_000_000)
+            didCopyIngredients = false
         }
     }
 
