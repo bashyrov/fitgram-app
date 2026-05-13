@@ -14,6 +14,10 @@ final class InMemoryFriendService: FriendService {
     private var friendships: Set<UnorderedPair>
     private var requests: [FriendRequest]
     private var feed: [FeedEvent]
+    private var blocks: [String: Set<String>] = [:]
+    /// Per-friend rich snapshot — produced once at seed time so the
+    /// stub returns realistic data on every call.
+    private var snapshots: [String: FriendProfileSnapshot] = [:]
     private let now: () -> Date
 
     // swiftlint:disable function_body_length
@@ -116,6 +120,82 @@ final class InMemoryFriendService: FriendService {
         self.friendships = seedFriendships
         self.requests = [pendingRequest]
         self.feed = seedFeed
+        self.snapshots = Self.makeSeedSnapshots(
+            kasia: kasia, michal: michal, ola: ola, nina: nina, now: now()
+        )
+    }
+
+    private static func makeSeedSnapshots(
+        kasia: PublicProfile, michal: PublicProfile, ola: PublicProfile, nina: PublicProfile,
+        now: Date
+    ) -> [String: FriendProfileSnapshot] {
+        let earlierMember = Calendar.current.date(byAdding: .month, value: -8, to: now) ?? now
+        let weeklyOla = WeeklyStats(
+            averageDailyKcal: 1820, totalScans: 31, daysHitGoal: 6,
+            topFoods: ["Owsianka", "Pierogi ruskie", "Tofu z warzywami"]
+        )
+        let weeklyKasia = WeeklyStats(
+            averageDailyKcal: 1980, totalScans: 24, daysHitGoal: 5,
+            topFoods: ["Schabowy", "Surówka", "Sernik"]
+        )
+        let recipesOla: [PublicRecipeReference] = [
+            .init(id: UUID(), name: "Buddha bowl z tofu", kcalPerServing: 520, cookCount: 7),
+            .init(id: UUID(), name: "Naleśniki bananowe", kcalPerServing: 320, cookCount: 4),
+        ]
+        return [
+            ola.id: FriendProfileSnapshot(
+                id: ola.id, displayName: ola.displayName,
+                username: "@ola_k", avatarURL: nil,
+                bio: "Bieganie i pierogi. Zaczęłam logować w styczniu.",
+                memberSinceDate: earlierMember,
+                currentStreak: ola.currentStreak,
+                level: ProfileLevel(number: 12, label: "Pro"),
+                goalLabel: "Schudnąć 3 kg",
+                achievements: [],
+                weeklyStats: weeklyOla,
+                topRecipes: recipesOla,
+                recentEvents: nil,
+                weightKg: nil,
+                heightCm: nil
+            ),
+            kasia.id: FriendProfileSnapshot(
+                id: kasia.id, displayName: kasia.displayName,
+                username: "@kasia_zdrowo", avatarURL: nil,
+                bio: nil,
+                memberSinceDate: earlierMember,
+                currentStreak: kasia.currentStreak,
+                level: ProfileLevel(number: 8, label: "Explorer"),
+                goalLabel: "Utrzymać wagę",
+                achievements: [],
+                weeklyStats: weeklyKasia,
+                topRecipes: [],
+                recentEvents: nil,
+                weightKg: nil,
+                heightCm: nil
+            ),
+            michal.id: FriendProfileSnapshot(
+                id: michal.id, displayName: michal.displayName,
+                username: "@michal", avatarURL: nil,
+                bio: nil,
+                memberSinceDate: earlierMember,
+                currentStreak: michal.currentStreak,
+                level: nil,
+                goalLabel: nil,
+                achievements: nil,
+                weeklyStats: nil,
+                topRecipes: nil,
+                recentEvents: nil,
+                weightKg: nil,
+                heightCm: nil
+            ),
+            nina.id: FriendProfileSnapshot(
+                id: nina.id, displayName: nina.displayName,
+                username: "@nina", avatarURL: nil, bio: nil, memberSinceDate: nil,
+                currentStreak: nil, level: nil, goalLabel: nil, achievements: nil,
+                weeklyStats: nil, topRecipes: nil, recentEvents: nil,
+                weightKg: nil, heightCm: nil
+            ),
+        ]
     }
     // swiftlint:enable function_body_length
 
@@ -215,6 +295,67 @@ final class InMemoryFriendService: FriendService {
         }
         feed[index] = stored
         return stored
+    }
+
+    // MARK: - Profile snapshot + reactions + blocks
+
+    func snapshot(forUserID userID: String, viewer: String) async throws -> FriendProfileSnapshot {
+        if blocks[viewer]?.contains(userID) == true {
+            throw FriendError.notFound(query: userID)
+        }
+        guard let snapshot = snapshots[userID] else {
+            throw FriendError.notFound(query: userID)
+        }
+        // Recent events for this friend pulled from the feed so the
+        // Activity tab has something to render.
+        let events = feed.filter { $0.actorID == userID }.sorted { $0.createdAt > $1.createdAt }
+        return FriendProfileSnapshot(
+            id: snapshot.id,
+            displayName: snapshot.displayName,
+            username: snapshot.username,
+            avatarURL: snapshot.avatarURL,
+            bio: snapshot.bio,
+            memberSinceDate: snapshot.memberSinceDate,
+            currentStreak: snapshot.currentStreak,
+            level: snapshot.level,
+            goalLabel: snapshot.goalLabel,
+            achievements: snapshot.achievements,
+            weeklyStats: snapshot.weeklyStats,
+            topRecipes: snapshot.topRecipes,
+            recentEvents: events.isEmpty ? nil : events,
+            weightKg: snapshot.weightKg,
+            heightCm: snapshot.heightCm
+        )
+    }
+
+    func sendPositiveReaction(
+        to userID: String, from viewer: String, intent: PositiveReactionIntent
+    ) async throws {
+        // In-memory backend has no real push pipeline — log the intent
+        // so test reads stay simple.
+        Logger.persistence.notice(
+            "Positive reaction \(intent.rawValue, privacy: .public) → \(userID, privacy: .private)"
+        )
+    }
+
+    func block(_ userID: String, as viewer: String) async throws {
+        blocks[viewer, default: []].insert(userID)
+        // Block is symmetric for visibility purposes — also unfriend.
+        friendships.remove(UnorderedPair(viewer, userID))
+    }
+
+    func unblock(_ userID: String, as viewer: String) async throws {
+        blocks[viewer]?.remove(userID)
+    }
+
+    func blockedUserIDs(for viewer: String) async throws -> Set<String> {
+        blocks[viewer] ?? []
+    }
+
+    func report(_ userID: String, reason: String, as viewer: String) async throws {
+        Logger.persistence.notice(
+            "Moderation report from \(viewer, privacy: .private) → \(userID, privacy: .private): \(reason, privacy: .public)"
+        )
     }
 }
 

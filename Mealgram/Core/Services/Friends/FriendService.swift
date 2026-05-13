@@ -44,4 +44,29 @@ protocol FriendService: Sendable {
     /// Reactions are toggles — passing `nil` removes the current user's
     /// reaction.
     func react(to event: FeedEvent, as userID: String, kind: ReactionKind?) async throws -> FeedEvent
+
+    /// Full friend-profile snapshot honouring the owner's PrivacySettings.
+    /// Fields the owner has hidden come back nil; UI renders by presence.
+    func snapshot(forUserID userID: String, viewer: String) async throws -> FriendProfileSnapshot
+
+    /// Sends a positive-only reaction at the profile level (encourage /
+    /// congratulate / celebrate). Distinct from feed-event reactions —
+    /// these surface as push notifications to the recipient.
+    func sendPositiveReaction(
+        to userID: String,
+        from viewer: String,
+        intent: PositiveReactionIntent
+    ) async throws
+
+    /// Hard hide. Blocked user can no longer see viewer's profile in any
+    /// surface; viewer's UI hides any reference to them.
+    func block(_ userID: String, as viewer: String) async throws
+
+    func unblock(_ userID: String, as viewer: String) async throws
+
+    func blockedUserIDs(for viewer: String) async throws -> Set<String>
+
+    /// Submits a moderation report. Backend logs it for review; UI
+    /// silently confirms.
+    func report(_ userID: String, reason: String, as viewer: String) async throws
 }
