@@ -15,6 +15,10 @@ struct TodayView: View {
     var onDismissInsight: ((CoachInsight) -> Void)?
 
     @State private var isDatePickerPresented = false
+    @State private var isWaterGoalAlertPresented = false
+    @State private var waterGoalDraft: Int = WaterService.defaultDailyGoalMilliliters
+
+    @AppStorage("water.dailyGoalMl") private var waterGoalStored = WaterService.defaultDailyGoalMilliliters
 
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
@@ -69,7 +73,7 @@ struct TodayView: View {
                     if state.isViewingToday {
                         WaterCard(
                             totalMilliliters: state.waterTotalMl,
-                            goalMilliliters: WaterService.defaultDailyGoalMilliliters,
+                            goalMilliliters: waterGoalStored,
                             onAddGlass: {
                                 Haptics.light()
                                 Task { await state.logWaterGlass(for: userRemoteID) }
@@ -77,6 +81,10 @@ struct TodayView: View {
                             onUndo: {
                                 Haptics.warning()
                                 Task { await state.undoLastWater(for: userRemoteID) }
+                            },
+                            onEditGoal: {
+                                waterGoalDraft = waterGoalStored
+                                isWaterGoalAlertPresented = true
                             }
                         )
                     }
@@ -134,6 +142,20 @@ struct TodayView: View {
                 onDismiss: { isDatePickerPresented = false }
             )
             .presentationDetents([.medium])
+        }
+        .alert("Dzienny cel wody", isPresented: $isWaterGoalAlertPresented) {
+            TextField("ml", value: $waterGoalDraft, format: .number)
+                .keyboardType(.numberPad)
+            Button("Zapisz") {
+                waterGoalStored = max(250, min(8000, waterGoalDraft))
+                Haptics.light()
+            }
+            Button("Domyślnie") {
+                waterGoalStored = WaterService.defaultDailyGoalMilliliters
+            }
+            Button("Anuluj", role: .cancel) {}
+        } message: {
+            Text("250–8000 ml. Standard to 2000 ml.")
         }
     }
 
