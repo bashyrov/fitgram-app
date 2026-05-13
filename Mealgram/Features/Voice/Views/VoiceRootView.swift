@@ -5,6 +5,7 @@ import SwiftUI
 /// Worker) slots in here once the Worker has credentials.
 struct VoiceRootView: View {
     @State private var state: VoiceFlowState
+    let parser: VoiceMealParser
     let onDismiss: () -> Void
 
     init(
@@ -13,6 +14,7 @@ struct VoiceRootView: View {
         parser: VoiceMealParser = VoiceMealParser(),
         onDismiss: @escaping () -> Void
     ) {
+        self.parser = parser
         self._state = State(
             initialValue: VoiceFlowState(session: session, mealSaver: mealSaver, parser: parser)
         )
@@ -46,6 +48,7 @@ struct VoiceRootView: View {
             case .finished(let transcript):
                 ConfirmationView(
                     transcript: transcript,
+                    parser: parser,
                     onSave: { commit($0) },
                     onRetake: { state.reset() },
                     onDismiss: onDismiss
@@ -155,6 +158,7 @@ private struct VoicePermissionGate: View {
 
 private struct ConfirmationView: View {
     let transcript: String
+    let parser: VoiceMealParser
     let onSave: (String) -> Void
     let onRetake: () -> Void
     let onDismiss: () -> Void
@@ -163,15 +167,21 @@ private struct ConfirmationView: View {
 
     init(
         transcript: String,
+        parser: VoiceMealParser,
         onSave: @escaping (String) -> Void,
         onRetake: @escaping () -> Void,
         onDismiss: @escaping () -> Void
     ) {
         self.transcript = transcript
+        self.parser = parser
         self.onSave = onSave
         self.onRetake = onRetake
         self.onDismiss = onDismiss
         self._edited = State(initialValue: transcript)
+    }
+
+    private var parsedItems: [FoodItem] {
+        parser.parseMultiple(edited)
     }
 
     var body: some View {
@@ -206,6 +216,27 @@ private struct ConfirmationView: View {
                             .foregroundStyle(Tokens.Palette.ink)
                             .scrollContentBackground(.hidden)
                             .frame(minHeight: 120)
+                    }
+                }
+                Card {
+                    VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                        Text("Co zapiszemy")
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                        ForEach(parsedItems) { item in
+                            HStack(alignment: .firstTextBaseline) {
+                                Text(item.name)
+                                    .font(Tokens.Font.body)
+                                    .foregroundStyle(Tokens.Palette.ink)
+                                Spacer(minLength: Tokens.Space.sm)
+                                Text("\(Int(item.quantityGrams)) g · \(Int(item.caloriesKcal)) kcal")
+                                    .font(Tokens.Font.caption)
+                                    .foregroundStyle(Tokens.Palette.inkMuted)
+                            }
+                            if item.id != parsedItems.last?.id {
+                                Divider().background(Tokens.Palette.separator)
+                            }
+                        }
                     }
                 }
                 Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.card) {
