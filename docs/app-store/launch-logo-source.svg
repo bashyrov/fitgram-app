@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Mealgram launch logo: just the leaf glyph in sage, transparent
+       background. The UILaunchScreen UIColorName supplies the cream
+       background from BrandBackground.colorset; this glyph sits on top. -->
+  <g transform="translate(256 270) rotate(-12)">
+    <path d="
+      M 0 -180
+      C 105 -150, 160 -65, 160 50
+      C 160 140, 90 205, 0 205
+      C -90 205, -160 140, -160 50
+      C -160 -65, -105 -150, 0 -180
+      Z"
+      fill="#7BA590"/>
+    <path d="M 0 -170 L 0 198" stroke="#FAF7F2" stroke-width="9" stroke-linecap="round"/>
+    <g stroke="#FAF7F2" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M 0 -100 C 40 -82, 60 -56, 72 -24"/>
+      <path d="M 0 -100 C -40 -82, -60 -56, -72 -24"/>
+      <path d="M 0 -24 C 52 0, 84 38, 102 82"/>
+      <path d="M 0 -24 C -52 0, -84 38, -102 82"/>
+      <path d="M 0 64 C 44 82, 70 120, 82 160"/>
+      <path d="M 0 64 C -44 82, -70 120, -82 160"/>
+    </g>
+  </g>
+</svg>
