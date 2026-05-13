@@ -9,6 +9,8 @@ struct StreakHeader: View {
     let streakLength: Int
     let onTapProfile: () -> Void
 
+    @State private var isExplanationPresented = false
+
     var body: some View {
         HStack(alignment: .center, spacing: Tokens.Space.md) {
             VStack(alignment: .leading, spacing: 4) {
@@ -20,22 +22,31 @@ struct StreakHeader: View {
                     .foregroundStyle(Tokens.Palette.ink)
             }
             Spacer()
-            if streakLength > 0 {
+            Button {
+                isExplanationPresented = true
+                Haptics.light()
+            } label: {
                 HStack(spacing: 6) {
-                    Image(systemName: "flame.fill")
+                    Image(systemName: streakLength > 0 ? "flame.fill" : "flame")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.warning)
+                        .foregroundStyle(streakLength > 0 ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
                     Text("\(streakLength)")
                         .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .foregroundStyle(streakLength > 0 ? Tokens.Palette.ink : Tokens.Palette.inkMuted)
                 }
                 .padding(.horizontal, Tokens.Space.md)
                 .padding(.vertical, Tokens.Space.sm)
                 .background(
-                    Capsule().fill(Tokens.Palette.warning.opacity(0.15))
+                    Capsule().fill(
+                        streakLength > 0
+                            ? Tokens.Palette.warning.opacity(0.15)
+                            : Tokens.Palette.surfaceMuted
+                    )
                 )
-                .accessibilityLabel(Text("Streak \(streakLength) dni"))
             }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Streak \(streakLength) dni"))
+            .accessibilityHint(Text("Stuknij, aby zobaczyć jak działa streak"))
             Button(action: onTapProfile) {
                 Circle()
                     .fill(Tokens.Palette.primarySoft)
@@ -47,6 +58,12 @@ struct StreakHeader: View {
                     )
             }
             .accessibilityLabel(Text("Profil"))
+        }
+        .sheet(isPresented: $isExplanationPresented) {
+            StreakExplanationSheet(streakLength: streakLength) {
+                isExplanationPresented = false
+            }
+            .presentationDetents([.medium])
         }
     }
 
