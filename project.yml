@@ -71,8 +71,6 @@ targets:
           - uk
         UILaunchScreen:
           UIColorName: BrandBackground
-          UIImageName: LaunchLogo
-          UIImageRespectsSafeAreaInsets: true
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         UISupportedInterfaceOrientations:
