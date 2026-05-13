@@ -126,6 +126,24 @@ final class MealRepository {
         try context.save()
     }
 
+    /// Returns every tag the user has ever attached to a meal, ordered
+    /// by frequency desc (most-used first), unique. Used to power the
+    /// tag-autocomplete strip on MealDetailSheet.
+    func knownTags() throws -> [String] {
+        let context = ModelContext(container)
+        let meals = try context.fetch(FetchDescriptor<MealEntry>())
+        var counts: [String: Int] = [:]
+        for meal in meals {
+            for tag in meal.tags {
+                counts[tag, default: 0] += 1
+            }
+        }
+        return counts.sorted { lhs, rhs in
+            if lhs.value != rhs.value { return lhs.value > rhs.value }
+            return lhs.key < rhs.key
+        }.map(\.key)
+    }
+
     /// Updates the portion multiplier on an existing meal. Same refetch
     /// pattern to dodge cross-context surprises.
     func updatePortion(_ meal: MealEntry, multiplier: Double) throws {
