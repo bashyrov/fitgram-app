@@ -125,6 +125,11 @@ struct QuickDatabaseRootView: View {
                 chip(label: "Wszystkie", isSelected: state.selectedCategory == nil) {
                     Task { await state.selectCategory(nil) }
                 }
+                if state.hasCustomFoods {
+                    chip(label: "Tylko moje", isSelected: state.customOnly) {
+                        Task { await state.toggleCustomOnly() }
+                    }
+                }
                 ForEach(state.availableCategories, id: \.self) { category in
                     chip(
                         label: category.localizedLabel,
