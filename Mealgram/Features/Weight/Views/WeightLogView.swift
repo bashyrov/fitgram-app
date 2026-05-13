@@ -12,6 +12,10 @@ struct WeightLogView: View {
     @State private var isAddingPresented = false
     @State private var importStatus: String?
     @State private var isImporting = false
+    @State private var isEditingTarget = false
+    @State private var targetDraftKg: Double = 70
+
+    @AppStorage("weight.targetKg") private var targetWeightStored: Double = 0
 
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -67,6 +71,22 @@ struct WeightLogView: View {
                     onDismiss: { isAddingPresented = false }
                 )
             }
+            .alert("Cel wagi", isPresented: $isEditingTarget) {
+                TextField("kg", value: $targetDraftKg, format: .number)
+                    .keyboardType(.decimalPad)
+                Button("Zapisz") {
+                    targetWeightStored = targetDraftKg
+                    Haptics.light()
+                }
+                if targetWeightStored > 0 {
+                    Button("Wyczyść", role: .destructive) {
+                        targetWeightStored = 0
+                    }
+                }
+                Button("Anuluj", role: .cancel) {}
+            } message: {
+                Text("Linia celu pojawi się na wykresie.")
+            }
         }
     }
 
@@ -97,9 +117,30 @@ struct WeightLogView: View {
     private var chartCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Trend")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+                HStack {
+                    Text("Trend")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    Button {
+                        targetDraftKg =
+                            targetWeightStored > 0
+                            ? targetWeightStored
+                            : (state.summary?.latest.weightKg ?? 70)
+                        isEditingTarget = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "flag.checkered")
+                            Text(
+                                targetWeightStored > 0
+                                    ? String(format: "Cel %.1f kg", targetWeightStored)
+                                    : "Ustaw cel")
+                        }
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.primary)
+                    }
+                    .buttonStyle(.plain)
+                }
                 if state.entries.count >= 2 {
                     Chart(state.entries.reversed()) { entry in
                         LineMark(
@@ -114,6 +155,16 @@ struct WeightLogView: View {
                         )
                         .symbolSize(28)
                         .foregroundStyle(Tokens.Palette.primary)
+                        if targetWeightStored > 0 {
+                            RuleMark(y: .value("Cel", targetWeightStored))
+                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                                .foregroundStyle(Tokens.Palette.warning)
+                                .annotation(position: .top, alignment: .trailing) {
+                                    Text(String(format: "%.1f kg", targetWeightStored))
+                                        .font(Tokens.Font.caption2)
+                                        .foregroundStyle(Tokens.Palette.warning)
+                                }
+                        }
                     }
                     .chartXAxis {
                         AxisMarks(values: .automatic(desiredCount: 4)) { _ in
