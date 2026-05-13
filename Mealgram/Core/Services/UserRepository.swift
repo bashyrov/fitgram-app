@@ -62,6 +62,25 @@ final class UserRepository {
         stored.proteinGoalGrams = profile.proteinGoalGrams
         stored.carbsGoalGrams = profile.carbsGoalGrams
         stored.fatGoalGrams = profile.fatGoalGrams
+        stored.fiberGoalGrams = profile.fiberGoalGrams
+        stored.waterGoalMl = profile.waterGoalMl
+        stored.goalPaceKgPerWeek = profile.goalPaceKgPerWeek
+        stored.goalTargetWeightKg = profile.goalTargetWeightKg
+        if let pace = profile.goalPaceKgPerWeek,
+            let target = profile.goalTargetWeightKg,
+            let current = profile.weightKg,
+            pace > 0
+        {
+            stored.goalStartDate = Date()
+            stored.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
+                currentWeightKg: current,
+                targetWeightKg: target,
+                paceKgPerWeek: pace
+            )
+        } else {
+            stored.goalStartDate = nil
+            stored.goalEstimatedEndDate = nil
+        }
         stored.onboardingCompletedAt = Date()
         stored.updatedAt = Date()
         try context.save()
@@ -119,6 +138,47 @@ struct OnboardingProfile: Equatable {
     var proteinGoalGrams: Int = 120
     var carbsGoalGrams: Int = 240
     var fatGoalGrams: Int = 70
+    var fiberGoalGrams: Int = 30
+    var waterGoalMl: Int = 2500
+
+    /// Set only when goal is `.lose` or `.gain` and the user proceeded
+    /// through the pace step. Nil otherwise.
+    var goalPaceKgPerWeek: Double?
+    var goalTargetWeightKg: Double?
+
+    /// True when the calculator returned a kcal value below the safety
+    /// floor and clamped. Surfaced on the results step so the user gets
+    /// a "Cel jest zbyt agresywny" warning before they finish.
+    var hitSafetyFloor: Bool = false
 
     var dietaryPreferences: Set<DietaryPreference> = []
+}
+
+extension OnboardingProfile {
+    /// Snapshot suitable for the (anonymous) Worker payload. No name, no
+    /// auth ID — just the metrics + targets that produced the plan.
+    var recommendationsRequest: RecommendationsRequest? {
+        guard let height = heightCm,
+            let weight = weightKg,
+            let birth = birthDate
+        else { return nil }
+        let age = Calendar.current.dateComponents([.year], from: birth, to: Date()).year ?? 0
+        return RecommendationsRequest(
+            biologicalSex: biologicalSex,
+            age: age,
+            heightCm: height,
+            weightKg: weight,
+            activityLevel: activityLevel,
+            goal: goal,
+            paceKgPerWeek: goalPaceKgPerWeek,
+            dailyCalorieGoalKcal: dailyCalorieGoalKcal,
+            proteinGoalGrams: proteinGoalGrams,
+            fatGoalGrams: fatGoalGrams,
+            carbsGoalGrams: carbsGoalGrams,
+            fiberGoalGrams: fiberGoalGrams,
+            waterGoalMl: waterGoalMl,
+            dietaryPreferences: Array(dietaryPreferences),
+            hitSafetyFloor: hitSafetyFloor
+        )
+    }
 }

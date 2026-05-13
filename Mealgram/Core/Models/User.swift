@@ -145,7 +145,7 @@ extension User {
 /// User-facing dietary preference / restriction tags. Used by the
 /// onboarding step + Coach context to bias suggestions. Adding a case
 /// is safe for existing rows because storage is comma-joined raw.
-enum DietaryPreference: String, CaseIterable, Sendable, Identifiable, Hashable {
+enum DietaryPreference: String, Codable, CaseIterable, Sendable, Identifiable, Hashable {
     case vegetarian
     case vegan
     case glutenFree

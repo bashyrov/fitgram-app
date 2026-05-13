@@ -9,4 +9,5 @@ extension Logger {
     static let networking = Logger(subsystem: subsystem, category: "networking")
     static let persistence = Logger(subsystem: subsystem, category: "persistence")
     static let ui = Logger(subsystem: subsystem, category: "ui")
+    static let coach = Logger(subsystem: subsystem, category: "coach")
 }
