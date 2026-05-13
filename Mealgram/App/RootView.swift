@@ -143,6 +143,11 @@ struct RootView: View {
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
+                    onRestartOnboarding: {
+                        try? userRepository.resetOnboarding(forRemoteID: authUser.id)
+                        onboardingFlow = nil
+                        router.restartOnboarding()
+                    },
                     todayState: todayState,
                     progressState: progressState
                 )
