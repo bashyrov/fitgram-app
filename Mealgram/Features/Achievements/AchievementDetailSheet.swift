@@ -8,6 +8,8 @@ struct AchievementDetailSheet: View {
     let earnedAt: Date?
     let onDismiss: () -> Void
 
+    @State private var renderedImage: Image?
+
     private var isEarned: Bool { earnedAt != nil }
 
     var body: some View {
@@ -25,10 +27,41 @@ struct AchievementDetailSheet: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                     statusLine
+                    if isEarned, let renderedImage {
+                        ShareLink(
+                            item: renderedImage,
+                            preview: SharePreview(
+                                "Mealgram — \(definition.title)",
+                                image: renderedImage
+                            )
+                        ) {
+                            HStack(spacing: Tokens.Space.sm) {
+                                Image(systemName: "square.and.arrow.up")
+                                Text("Udostępnij odznakę")
+                                    .font(Tokens.Font.bodyEmphasized)
+                            }
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, Tokens.Space.md)
+                            .background(Capsule().fill(Tokens.Palette.primary))
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, Tokens.Space.lg)
+                    }
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
                 .padding(.vertical, Tokens.Space.lg)
+            }
+            .task(id: definition.id) {
+                guard isEarned else { return }
+                if let uiImage = AchievementShareCard.render(
+                    definition: definition,
+                    earnedAt: earnedAt,
+                    displayName: nil
+                ) {
+                    renderedImage = Image(uiImage: uiImage)
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
