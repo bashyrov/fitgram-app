@@ -111,6 +111,7 @@ struct RecipeListView: View {
                         detailRecipe = nil
                         formMode = .editing(recipe)
                     },
+                    onRate: { newValue in rate(recipe, value: newValue) },
                     onDismiss: { detailRecipe = nil }
                 )
             }
@@ -198,6 +199,15 @@ struct RecipeListView: View {
                         .lineLimit(1)
                 }
                 Spacer(minLength: 0)
+                if let rating = recipe.rating, rating > 0 {
+                    HStack(spacing: 2) {
+                        Image(systemName: "star.fill")
+                            .font(.caption2)
+                        Text(String(format: "%.0f", rating))
+                            .font(Tokens.Font.caption)
+                    }
+                    .foregroundStyle(Tokens.Palette.warning)
+                }
                 if recipe.cookCount > 0 {
                     Text("× \(recipe.cookCount)")
                         .font(Tokens.Font.caption)
@@ -254,6 +264,12 @@ struct RecipeListView: View {
     }
 
     // swiftlint:enable function_body_length
+
+    private func rate(_ recipe: Recipe, value: Double?) {
+        recipe.rating = value
+        try? repository.save(recipe)
+        Task { await state.refresh() }
+    }
 
     private func toggleFavorite(_ recipe: Recipe) {
         recipe.isFavorite.toggle()

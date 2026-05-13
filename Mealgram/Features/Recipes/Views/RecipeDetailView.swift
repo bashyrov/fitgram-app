@@ -6,6 +6,7 @@ struct RecipeDetailView: View {
     let recipe: Recipe
     let onCook: (Double) -> Void
     let onEdit: () -> Void
+    let onRate: (Double?) -> Void
     let onDismiss: () -> Void
 
     @State private var servings: Double = 1
@@ -21,6 +22,7 @@ struct RecipeDetailView: View {
                             summaryCard(summary)
                         }
                         nutritionCard
+                        ratingCard
                         servingsCard
                         if !recipe.ingredients.isEmpty {
                             ingredientsCard
@@ -145,6 +147,43 @@ struct RecipeDetailView: View {
 
     private var servingsLabel: LocalizedStringKey {
         servings == 1 ? "Wartości / porcję" : "Wartości łącznie"
+    }
+
+    private var ratingCard: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                HStack {
+                    Text("Twoja ocena")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    if recipe.rating != nil {
+                        Button("Wyczyść") {
+                            onRate(nil)
+                            Haptics.light()
+                        }
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
+                }
+                HStack(spacing: Tokens.Space.xs) {
+                    ForEach(1...5, id: \.self) { star in
+                        Button {
+                            onRate(Double(star))
+                            Haptics.light()
+                        } label: {
+                            let filled = Double(star) <= (recipe.rating ?? 0)
+                            Image(systemName: filled ? "star.fill" : "star")
+                                .font(.title3)
+                                .foregroundStyle(filled ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Oceń \(star) gwiazdek"))
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
 
     private var servingsCard: some View {
