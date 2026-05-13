@@ -54,6 +54,15 @@ final class QuickDatabaseState {
         }
     }
 
+    func resetPickHistory() async {
+        do {
+            try catalog.resetPickHistory()
+            await refresh()
+        } catch {
+            Logger.persistence.error("Pick history reset failed: \(String(describing: error))")
+        }
+    }
+
     /// Convenience for the search field's `.onChange`.
     func applyQuery(_ raw: String) async {
         query = raw
