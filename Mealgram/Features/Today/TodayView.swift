@@ -94,7 +94,10 @@ struct TodayView: View {
                     }
 
                     if state.isViewingToday, let upcoming = state.upcomingEvent {
-                        CulturalEventBanner(upcoming: upcoming)
+                        CulturalEventBanner(upcoming: upcoming) {
+                            Haptics.light()
+                            state.dismissCulturalEvent()
+                        }
                     }
 
                     suggestedRecipeCard

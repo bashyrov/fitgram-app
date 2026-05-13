@@ -4,6 +4,7 @@ import SwiftUI
 /// between the AI insight card and the meal timeline on the Today screen.
 struct CulturalEventBanner: View {
     let upcoming: CulturalEventService.Upcoming
+    var onDismiss: (() -> Void)?
 
     var body: some View {
         Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.card) {
@@ -33,6 +34,18 @@ struct CulturalEventBanner: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                         .fixedSize(horizontal: false, vertical: true)
+                }
+                if let onDismiss {
+                    Button {
+                        onDismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.caption)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                            .padding(6)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Ukryj"))
                 }
             }
         }
