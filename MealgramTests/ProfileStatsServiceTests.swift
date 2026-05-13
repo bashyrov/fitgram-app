@@ -61,6 +61,23 @@ final class ProfileStatsServiceTests: XCTestCase {
         XCTAssertNotNil(summary.memberSince)
     }
 
+    func testTotalRecipeCooksSumsAcrossRecipes() throws {
+        let context = ModelContext(controller.container)
+        context.insert(User(remoteID: "u-x", providerKind: .apple))
+        let r1 = Recipe(title: "Schabowy")
+        r1.cookCount = 5
+        let r2 = Recipe(title: "Pierogi")
+        r2.cookCount = 3
+        let r3 = Recipe(title: "Nieugotowany")
+        context.insert(r1)
+        context.insert(r2)
+        context.insert(r3)
+        try context.save()
+
+        let summary = ProfileStatsService(container: controller.container).summary(for: "u-x")
+        XCTAssertEqual(summary.totalRecipeCooks, 8)
+    }
+
     func testWeightAndAchievementsSegregatePerUser() throws {
         let context = ModelContext(controller.container)
         context.insert(User(remoteID: "u-a", providerKind: .apple))

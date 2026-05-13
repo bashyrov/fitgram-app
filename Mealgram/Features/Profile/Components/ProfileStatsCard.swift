@@ -35,6 +35,11 @@ struct ProfileStatsCard: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
+                if summary.totalRecipeCooks > 0 {
+                    Text("Ugotowane: \(summary.totalRecipeCooks)×")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
                 if let memberSince = summary.memberSince {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
