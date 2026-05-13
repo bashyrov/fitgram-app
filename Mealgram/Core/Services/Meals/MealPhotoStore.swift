@@ -76,6 +76,20 @@ final class MealPhotoStore {
         return contents.count
     }
 
+    /// Total bytes occupied by every JPEG in the photos directory.
+    /// Cheap enough to call from the Profile screen on demand.
+    func totalBytesOnDisk() -> Int {
+        let urls =
+            (try? fileManager.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: [.fileSizeKey]
+            )) ?? []
+        return urls.reduce(0) { sum, url in
+            let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            return sum + size
+        }
+    }
+
     /// Returns every JPEG filename currently in the photos directory.
     /// Used by orphan-sweep to compare against in-use filenames.
     func allFilenames() -> [String] {
