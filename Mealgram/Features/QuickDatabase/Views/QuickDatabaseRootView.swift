@@ -1,5 +1,7 @@
 import SwiftUI
 
+// swiftlint:disable type_body_length
+
 /// Quick Database — browse + search the local Polish food catalogue. Tap
 /// an item → portion sheet → save as a MealEntry with source=.quickDatabase.
 struct QuickDatabaseRootView: View {
@@ -9,6 +11,7 @@ struct QuickDatabaseRootView: View {
 
     @State private var pickedFood: Food?
     @State private var isAddingCustom = false
+    @State private var isScanningLabel = false
     @State private var isResetConfirmed = false
 
     var body: some View {
@@ -31,6 +34,11 @@ struct QuickDatabaseRootView: View {
                             isAddingCustom = true
                         } label: {
                             Label("Dodaj własne danie", systemImage: "plus")
+                        }
+                        Button {
+                            isScanningLabel = true
+                        } label: {
+                            Label("Zeskanuj etykietę", systemImage: "doc.text.viewfinder")
                         }
                         if state.shouldShowSuggestions {
                             Button(role: .destructive) {
@@ -65,6 +73,18 @@ struct QuickDatabaseRootView: View {
                         }
                     },
                     onDismiss: { isAddingCustom = false }
+                )
+            }
+            .fullScreenCover(isPresented: $isScanningLabel) {
+                LabelScannerSheet(
+                    scanner: FoodLabelScanner(),
+                    onSave: { food in
+                        Task {
+                            await state.createCustomFood(food)
+                            isScanningLabel = false
+                        }
+                    },
+                    onDismiss: { isScanningLabel = false }
                 )
             }
             .confirmationDialog(
@@ -367,3 +387,5 @@ struct QuickDatabaseRootView: View {
         }
     }
 }
+
+// swiftlint:enable type_body_length
