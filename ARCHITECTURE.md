@@ -160,6 +160,36 @@ SwiftData store  (M1.2 schema v1.0)
 **Rationale:** Unblocks the Quick Database UX without waiting on Supabase, gives us a known-good local dataset for tests, and the protocol seam makes the swap mechanical.  
 **Consequences:** The JSON is the single source of truth for the seed catalog; updating it requires a build (no OTA refresh) until M2.5 lands.
 
+### 2026-05-13: SwiftData lightweight migrations are append-only
+**Context:** Phase 1 shipped MealgramSchemaV1 with no migration plan. Every new feature in this session that touched the schema (MealEntry.rating, MealEntry.tags, MealEntry.notes, User.dietaryPreferencesRaw, CoachMemoryNote, WaterEntry, etc.) needs to land without invalidating existing user installs.  
+**Decision:** Stick to lightweight migration: add optional / default-valued properties, never rename or remove. For sets / lists too complex for SwiftData (dietary preferences, future tag groupings), encode as comma-joined raw strings on the model and expose typed accessors via extensions.  
+**Rationale:** No `SchemaMigrationPlan` boilerplate, no Phase 2 schema-version bump. Future LLM features (M3.1 Claude, M3.2 memory) get their own models added the same way.  
+**Consequences:** Comma-joined strings sort alphabetically on save and lose insertion order — fine for sets, not fine for ordered lists. Any breaking schema change still triggers a versioned migration step; we'll bump SchemaV1 → SchemaV2 when that happens.
+
+### 2026-05-13: M2.5 photo-OCR ships as local Vision before the Worker is wired
+**Context:** Master prompt's M2.5 originally targeted a Worker-side OCR + nutrition extraction pipeline; that path is blocked on Cloudflare credentials.  
+**Decision:** Build `FoodLabelScanner` against Apple's Vision (`VNRecognizeTextRequest`) + a pure-function `NutritionLabelParser` that handles Polish + English labels with regex extraction of kcal/protein/carbs/fat per 100 g. Wire into `Quick Database → "Zeskanuj etykietę"` raising a Vision-backed flow that prefills `CustomFoodFormSheet`.  
+**Rationale:** Zero credentials needed, runs entirely on-device, ships actual value to users today. The Worker-side path can either replace or co-exist later for non-Polish labels or complex multi-language packaging.  
+**Consequences:** Accuracy is bounded by Vision's recognition quality on photographed labels; failure case lands on a "spróbuj ponownie" empty state. Parser is the pure-function seam tests pin down.
+
+### 2026-05-13: M3.2 Coach memory stored locally, no LLM yet
+**Context:** Master prompt's M3.2 calls for "Ola's memory" — long-lived facts the coach references in future prompts. The Claude-backed generator (M3.1) needs a stable storage API to read/write against.  
+**Decision:** Ship `CoachMemoryNote` (@Model) + `CoachMemoryStore` now: observation/preference/milestone/goal kinds, 0–1 confidence, case-insensitive upsert by summary text. Rule-based generator doesn't write notes; Claude-backed generator will.  
+**Rationale:** When credentials arrive, the LLM has somewhere to land its observations without forcing a schema migration mid-launch. Tests pin down the upsert + confidence-averaging behaviour so the swap is mechanical.  
+**Consequences:** Storage assumes summaries are short freeform Polish strings; if the LLM produces structured slots later we'll widen the model rather than reinterpret existing rows.
+
+### 2026-05-13: M3.3 modifications surface text-only suggestions before LLM
+**Context:** Master prompt's M3.3 wants AI-driven recipe modifications (lighter, more protein, gluten-free, dairy-free). That ideally calls Claude with the full recipe context.  
+**Decision:** `RecipeModificationEngine` returns deterministic text suggestions based on ingredient-substring rules per intent. UI shows them in a sheet with per-suggestion clipboard + share. No auto-apply yet — user copies into their own edit.  
+**Rationale:** Gets real value out of the feature today without an LLM dependency; the rule book doubles as gold-standard test fixtures for the eventual LLM diff.  
+**Consequences:** Rule book is in Polish + assumes Polish recipe ingredient naming. Need to widen for EN/UK once localisation expands beyond the current 56-string catalog.
+
+### 2026-05-13: ZIP exports via NSFileCoordinator, no third-party dependency
+**Context:** Multi-entry archive of JSON + CSV + photos for GDPR / portability. iOS doesn't expose a public `Archive` API; `Compression` is single-stream only.  
+**Decision:** Use `NSFileCoordinator.coordinate(readingItemAt:options:[.forUploading])` — the Apple-blessed way to materialise a directory as a temp `.zip`. Copy out into `tmp/exports/` so the URL outlives the coordinator callback.  
+**Rationale:** Zero new dependencies, works back to iOS 11, no need to vend a `zip` lib through SPM.  
+**Consequences:** No control over compression level / encryption; encrypted exports (if ever needed) require switching to a real zip lib.
+
 ## API Contracts
 
 ### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)
