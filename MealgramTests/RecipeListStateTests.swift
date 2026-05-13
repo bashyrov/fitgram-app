@@ -40,6 +40,19 @@ final class RecipeListStateTests: XCTestCase {
         XCTAssertEqual(sorted.map(\.title), ["Cyryl", "Anna", "Bartek"])
     }
 
+    func testRatingDescSortPutsHighestFirstThenAlpha() {
+        let aaa = makeRecipe(title: "Aaa")
+        aaa.rating = 4
+        let bbb = makeRecipe(title: "Bbb")
+        bbb.rating = 5
+        let ccc = makeRecipe(title: "Ccc")
+        ccc.rating = 5
+        let ddd = makeRecipe(title: "Ddd")
+        // ddd has nil rating — treated as 0
+        let sorted = RecipeListState.sort([aaa, bbb, ccc, ddd], by: .ratingDesc)
+        XCTAssertEqual(sorted.map(\.title), ["Bbb", "Ccc", "Aaa", "Ddd"])
+    }
+
     // MARK: - Favorites filter (via filtered)
 
     func testRecipeIsFavoriteDefaultsFalse() {

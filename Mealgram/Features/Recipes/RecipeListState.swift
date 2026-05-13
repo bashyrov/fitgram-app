@@ -9,12 +9,14 @@ final class RecipeListState {
         case recent
         case nameAsc
         case cookedCount
+        case ratingDesc
 
         var label: String {
             switch self {
             case .recent: return String(localized: "Najnowsze")
             case .nameAsc: return String(localized: "Nazwa")
             case .cookedCount: return String(localized: "Najczęściej gotowane")
+            case .ratingDesc: return String(localized: "Najwyższa ocena")
             }
         }
     }
@@ -71,6 +73,13 @@ final class RecipeListState {
         case .cookedCount:
             return recipes.sorted {
                 if $0.cookCount != $1.cookCount { return $0.cookCount > $1.cookCount }
+                return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+        case .ratingDesc:
+            return recipes.sorted {
+                let lhs = $0.rating ?? 0
+                let rhs = $1.rating ?? 0
+                if lhs != rhs { return lhs > rhs }
                 return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
             }
         }
