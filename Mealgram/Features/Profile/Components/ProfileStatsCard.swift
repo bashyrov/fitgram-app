@@ -137,5 +137,8 @@ struct ProfileStatsCard: View {
             RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
                 .fill(Tokens.Palette.primarySoft.opacity(0.5))
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(caption))
+        .accessibilityValue(Text("\(value)"))
     }
 }

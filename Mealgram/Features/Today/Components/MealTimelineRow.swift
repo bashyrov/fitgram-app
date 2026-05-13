@@ -58,6 +58,14 @@ struct MealTimelineRow: View {
                 }
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(a11yLabel))
+        .accessibilityValue(Text("\(Int(meal.totalCaloriesKcal)) kilokalorii"))
+    }
+
+    private var a11yLabel: String {
+        let parts = [Self.timeFormatter.string(from: meal.consumedAt), headline]
+        return parts.joined(separator: ", ")
     }
 
     private var headline: String {
