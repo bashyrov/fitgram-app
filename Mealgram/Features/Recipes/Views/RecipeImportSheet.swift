@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Lightweight URL paste-and-import sheet. Hands the parsed draft back
 /// via `onImported` so `RecipeListView` can route it into the existing
@@ -70,6 +71,20 @@ struct RecipeImportSheet: View {
                 .textInputAutocapitalization(.never)
                 .keyboardType(.URL)
                 .autocorrectionDisabled()
+            if urlString.isEmpty, clipboardURL != nil {
+                Button {
+                    if let url = clipboardURL {
+                        urlString = url
+                        Haptics.light()
+                    }
+                } label: {
+                    Text("Wklej")
+                        .font(Tokens.Font.footnote.bold())
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Wklej link ze schowka"))
+            }
         }
         .padding(Tokens.Space.md)
         .background(
@@ -80,6 +95,21 @@ struct RecipeImportSheet: View {
             RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
                 .stroke(Tokens.Palette.separator, lineWidth: 1)
         )
+    }
+
+    /// Reads the clipboard once when the field is empty; returns the
+    /// string only if it parses as a URL with an http(s) scheme. We
+    /// don't subscribe to clipboard change events because that triggers
+    /// the system "X pasted from Y" banner on iOS 16+.
+    private var clipboardURL: String? {
+        guard UIPasteboard.general.hasURLs || UIPasteboard.general.hasStrings else { return nil }
+        let raw = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let candidate = raw, !candidate.isEmpty,
+            let url = URL(string: candidate),
+            let scheme = url.scheme?.lowercased(),
+            scheme == "http" || scheme == "https"
+        else { return nil }
+        return candidate
     }
 
     private func runImport() async {
