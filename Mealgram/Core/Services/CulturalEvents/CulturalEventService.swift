@@ -64,6 +64,13 @@ struct CulturalEventService {
                 return calendar.date(byAdding: .day, value: -52, to: easter)
             case CulturalEvent.wielkanoc.id:
                 return easterSunday(year: year)
+            case CulturalEvent.dzienMatki.id:
+                return fixedDate(year: year, month: 5, day: 26)
+            case CulturalEvent.dzienDziecka.id:
+                return fixedDate(year: year, month: 6, day: 1)
+            case CulturalEvent.truskawkowySezon.id:
+                // June 5 — peak of Polish strawberry season.
+                return fixedDate(year: year, month: 6, day: 5)
             default:
                 return nil
             }

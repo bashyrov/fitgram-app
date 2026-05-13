@@ -60,7 +60,32 @@ extension CulturalEvent {
         foodNote: "Drobne przekąski liczą się bardziej niż myślisz — wpisz je razem na koniec wieczoru."
     )
 
+    static let dzienMatki = CulturalEvent(
+        id: "dzienmatki",
+        name: "Dzień Matki",
+        summary: "26 maja — święto wszystkich Mam.",
+        symbol: "gift.fill",
+        foodNote: "Mama często prosi tylko o miły obiad i kawałek tortu — wpisz go bez wyrzutów."
+    )
+
+    static let dzienDziecka = CulturalEvent(
+        id: "dziendziecka",
+        name: "Dzień Dziecka",
+        summary: "1 czerwca — lody, gofry, dzień przyjemności.",
+        symbol: "cup.and.saucer.fill",
+        foodNote: "Słodkości w plenerze sumują się szybciej, niż się wydaje — kilka pyszności + ruch = ok."
+    )
+
+    static let truskawkowySezon = CulturalEvent(
+        id: "truskawkowysezon",
+        name: "Sezon polskich truskawek",
+        summary: "Początek czerwca — szczyt sezonu na lokalne truskawki.",
+        symbol: "leaf.circle.fill",
+        foodNote: "Truskawki ~32 kcal/100g — idealna przekąska zamiast słodyczy."
+    )
+
     static let catalog: [CulturalEvent] = [
         .wigilia, .tlustyCzwartek, .walentynki, .wielkanoc, .andrzejki, .sylwester,
+        .dzienMatki, .dzienDziecka, .truskawkowySezon,
     ]
 }
