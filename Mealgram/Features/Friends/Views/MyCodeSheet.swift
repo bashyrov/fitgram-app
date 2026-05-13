@@ -88,23 +88,59 @@ struct MyCodeSheet: View {
                         RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
                             .fill(Tokens.Palette.surfaceMuted)
                     )
-                Button {
-                    UIPasteboard.general.string = userID
-                    copied = true
-                    Task {
-                        try? await Task.sleep(nanoseconds: 1_800_000_000)
-                        copied = false
+                HStack(spacing: Tokens.Space.md) {
+                    Button {
+                        UIPasteboard.general.string = userID
+                        copied = true
+                        Task {
+                            try? await Task.sleep(nanoseconds: 1_800_000_000)
+                            copied = false
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                            Text(copied ? "Skopiowane" : "Skopiuj")
+                                .font(Tokens.Font.bodyEmphasized)
+                        }
+                        .foregroundStyle(Tokens.Palette.primary)
                     }
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: copied ? "checkmark" : "doc.on.doc")
-                        Text(copied ? "Skopiowane" : "Skopiuj")
-                            .font(Tokens.Font.bodyEmphasized)
+                    .buttonStyle(.plain)
+
+                    ShareLink(
+                        item: inviteMessage,
+                        subject: Text("Dodaj mnie na Mealgram"),
+                        preview: SharePreview(
+                            "Mealgram",
+                            icon: Image(systemName: "leaf.fill")
+                        )
+                    ) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "square.and.arrow.up")
+                            Text("Udostępnij")
+                                .font(Tokens.Font.bodyEmphasized)
+                        }
+                        .foregroundStyle(Tokens.Palette.primary)
                     }
-                    .foregroundStyle(Tokens.Palette.primary)
                 }
-                .buttonStyle(.plain)
             }
         }
+    }
+
+    /// Plain-text invite the user can paste anywhere. Includes the deep
+    /// link form of the id so any client that recognises the
+    /// mealgram:// scheme (the app itself, once we ship Universal Links
+    /// for mealgram.pl, an Open Graph preview later) can route on tap.
+    private var inviteMessage: String {
+        let opener: String
+        if let displayName, !displayName.isEmpty {
+            opener = "\(displayName) zaprasza Cię do Mealgram"
+        } else {
+            opener = "Dodaj mnie na Mealgram"
+        }
+        return """
+            \(opener)
+            Mój kod: \(userID)
+            \(QRCodeRenderer.deepLink(forUserID: userID))
+            """
     }
 }
