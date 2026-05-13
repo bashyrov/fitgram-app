@@ -39,6 +39,7 @@ final class TodayState {
     private let streakService: StreakService
     private let recipeRepository: RecipeRepository?
     private let culturalEvents: CulturalEventService
+    private let culturalDismissals: CulturalEventDismissalStore
     private let coachService: CoachService?
     private let waterService: WaterService?
     private let calendar: Calendar
@@ -49,6 +50,7 @@ final class TodayState {
         streakService: StreakService,
         recipeRepository: RecipeRepository? = nil,
         culturalEvents: CulturalEventService = CulturalEventService(),
+        culturalDismissals: CulturalEventDismissalStore = CulturalEventDismissalStore(),
         coachService: CoachService? = nil,
         waterService: WaterService? = nil,
         calendar: Calendar = .current,
@@ -58,11 +60,18 @@ final class TodayState {
         self.streakService = streakService
         self.recipeRepository = recipeRepository
         self.culturalEvents = culturalEvents
+        self.culturalDismissals = culturalDismissals
         self.coachService = coachService
         self.waterService = waterService
         self.calendar = calendar
         self.now = now
         self.viewingDate = calendar.startOfDay(for: now())
+    }
+
+    func dismissCulturalEvent() {
+        guard let upcoming = upcomingEvent else { return }
+        culturalDismissals.dismiss(upcoming)
+        upcomingEvent = nil
     }
 
     var isViewingToday: Bool {
@@ -123,7 +132,10 @@ final class TodayState {
             self.streak = try streakService.currentStreak(for: userRemoteID)
             self.suggestedRecipe = (try? recipeRepository?.all(sortedByCookCount: true))?
                 .first { $0.cookCount > 0 }
-            self.upcomingEvent = culturalEvents.upcoming(from: now())
+            let nextEvent = culturalEvents.upcoming(from: now())
+            self.upcomingEvent = nextEvent.flatMap { event in
+                culturalDismissals.isDismissed(event) ? nil : event
+            }
             self.coachInsights = coachService?.insights(for: userRemoteID) ?? []
             self.waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
             self.loadError = nil
