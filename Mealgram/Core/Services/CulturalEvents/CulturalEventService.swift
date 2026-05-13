@@ -49,37 +49,36 @@ struct CulturalEventService {
     private func occurrences(of event: CulturalEvent, near reference: Date) -> [Date] {
         let referenceYear = calendar.component(.year, from: reference)
         let years = [referenceYear, referenceYear + 1]
-        return years.compactMap { year in
-            switch event.id {
-            case CulturalEvent.wigilia.id:
-                return fixedDate(year: year, month: 12, day: 24)
-            case CulturalEvent.walentynki.id:
-                return fixedDate(year: year, month: 2, day: 14)
-            case CulturalEvent.andrzejki.id:
-                return fixedDate(year: year, month: 11, day: 30)
-            case CulturalEvent.sylwester.id:
-                return fixedDate(year: year, month: 12, day: 31)
-            case CulturalEvent.tlustyCzwartek.id:
-                guard let easter = easterSunday(year: year) else { return nil }
-                return calendar.date(byAdding: .day, value: -52, to: easter)
-            case CulturalEvent.wielkanoc.id:
-                return easterSunday(year: year)
-            case CulturalEvent.dzienMatki.id:
-                return fixedDate(year: year, month: 5, day: 26)
-            case CulturalEvent.dzienDziecka.id:
-                return fixedDate(year: year, month: 6, day: 1)
-            case CulturalEvent.truskawkowySezon.id:
-                // June 5 — peak of Polish strawberry season.
-                return fixedDate(year: year, month: 6, day: 5)
-            case CulturalEvent.dzienBabci.id:
-                return fixedDate(year: year, month: 1, day: 21)
-            case CulturalEvent.niepodleglosci.id:
-                return fixedDate(year: year, month: 11, day: 11)
-            case CulturalEvent.nocSwietojanska.id:
-                return fixedDate(year: year, month: 6, day: 23)
-            default:
-                return nil
-            }
+        return years.compactMap { year in resolve(event: event, in: year) }
+    }
+
+    /// Fixed-date lookup keyed by event id. `nil` value = movable feast
+    /// resolved by easter math below.
+    private static let fixedMonthDay: [String: (Int, Int)] = [
+        CulturalEvent.wigilia.id: (12, 24),
+        CulturalEvent.walentynki.id: (2, 14),
+        CulturalEvent.andrzejki.id: (11, 30),
+        CulturalEvent.sylwester.id: (12, 31),
+        CulturalEvent.dzienMatki.id: (5, 26),
+        CulturalEvent.dzienDziecka.id: (6, 1),
+        CulturalEvent.truskawkowySezon.id: (6, 5),
+        CulturalEvent.dzienBabci.id: (1, 21),
+        CulturalEvent.niepodleglosci.id: (11, 11),
+        CulturalEvent.nocSwietojanska.id: (6, 23),
+    ]
+
+    private func resolve(event: CulturalEvent, in year: Int) -> Date? {
+        if let monthDay = Self.fixedMonthDay[event.id] {
+            return fixedDate(year: year, month: monthDay.0, day: monthDay.1)
+        }
+        switch event.id {
+        case CulturalEvent.tlustyCzwartek.id:
+            guard let easter = easterSunday(year: year) else { return nil }
+            return calendar.date(byAdding: .day, value: -52, to: easter)
+        case CulturalEvent.wielkanoc.id:
+            return easterSunday(year: year)
+        default:
+            return nil
         }
     }
 
