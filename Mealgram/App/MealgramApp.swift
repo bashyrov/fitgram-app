@@ -18,6 +18,7 @@ struct MealgramApp: App {
     private let accountDeletionService: AccountDeletionService
     private let exportService: DataExportService
     private let csvExportService: MealCSVExportService
+    private let bundleExportService: DataBundleExportService
     private let mealSearchService: MealSearchService
     private let streakCalendarService: StreakCalendarService
     private let foodCatalog: any FoodCatalog
@@ -58,8 +59,15 @@ struct MealgramApp: App {
             authService: authService,
             persistence: persistence
         )
-        self.exportService = DataExportService(container: persistence.container)
-        self.csvExportService = MealCSVExportService(container: persistence.container)
+        let exportService = DataExportService(container: persistence.container)
+        let csvExportService = MealCSVExportService(container: persistence.container)
+        self.exportService = exportService
+        self.csvExportService = csvExportService
+        self.bundleExportService = DataBundleExportService(
+            jsonService: exportService,
+            csvService: csvExportService,
+            photoDirectory: try? MealPhotoStore().directory
+        )
         self.mealSearchService = MealSearchService(container: persistence.container)
         self.streakCalendarService = StreakCalendarService(container: persistence.container)
         self.foodCatalog = FoodCatalogService(container: persistence.container)
@@ -132,6 +140,7 @@ struct MealgramApp: App {
                 accountDeletionService: accountDeletionService,
                 exportService: exportService,
                 csvExportService: csvExportService,
+                bundleExportService: bundleExportService,
                 mealSearchService: mealSearchService,
                 streakCalendarService: streakCalendarService,
                 achievementService: achievementService,

@@ -9,6 +9,7 @@ struct ProfileView: View {
     let streak: Streak?
     let exportService: DataExportService
     let csvExportService: MealCSVExportService
+    let bundleExportService: DataBundleExportService
     let mealSearchService: MealSearchService
     let mealRepository: MealRepository
     let photoStore: MealPhotoStore?
@@ -26,6 +27,7 @@ struct ProfileView: View {
     @State private var sharedFile: SharedFile?
     @State private var isPreparingExport = false
     @State private var isCSVRangePresented = false
+    @State private var isPreparingBundle = false
     @State private var isEditingGoals = false
     @State private var isEditingPreferences = false
     @State private var isCalibrating = false
@@ -363,6 +365,11 @@ struct ProfileView: View {
                     isCSVRangePresented = true
                 }
                 Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "archivebox", title: bundleRowTitle, role: nil) {
+                    runBundleExport()
+                }
+                .disabled(isPreparingBundle || user == nil)
+                Divider().background(Tokens.Palette.separator)
                 actionRow(symbol: "magnifyingglass", title: "Szukaj w historii", role: nil) {
                     isSearchPresented = true
                 }
@@ -419,6 +426,24 @@ struct ProfileView: View {
         Task {
             try? await Task.sleep(nanoseconds: 3_000_000_000)
             orphanSweepResult = nil
+        }
+    }
+
+    private var bundleRowTitle: LocalizedStringKey {
+        isPreparingBundle ? "Pakuję bundle…" : "Pełna paczka (ZIP)"
+    }
+
+    private func runBundleExport() {
+        guard let user, !isPreparingBundle else { return }
+        isPreparingBundle = true
+        Task { @MainActor in
+            defer { isPreparingBundle = false }
+            do {
+                let url = try bundleExportService.export(forUser: user.remoteID)
+                sharedFile = SharedFile(url: url)
+            } catch {
+                exportError = String(describing: error)
+            }
         }
     }
 

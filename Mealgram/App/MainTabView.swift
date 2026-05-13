@@ -10,6 +10,7 @@ struct MainTabView: View {
     let mealSaver: any MealSaving
     let exportService: DataExportService
     let csvExportService: MealCSVExportService
+    let bundleExportService: DataBundleExportService
     let mealSearchService: MealSearchService
     let streakCalendarService: StreakCalendarService
     let achievementService: AchievementService
@@ -52,6 +53,7 @@ struct MainTabView: View {
         mealSaver: any MealSaving,
         exportService: DataExportService,
         csvExportService: MealCSVExportService,
+        bundleExportService: DataBundleExportService,
         mealSearchService: MealSearchService,
         streakCalendarService: StreakCalendarService,
         achievementService: AchievementService,
@@ -77,6 +79,7 @@ struct MainTabView: View {
         self.mealSaver = mealSaver
         self.exportService = exportService
         self.csvExportService = csvExportService
+        self.bundleExportService = bundleExportService
         self.mealSearchService = mealSearchService
         self.streakCalendarService = streakCalendarService
         self.achievementService = achievementService
@@ -189,6 +192,7 @@ struct MainTabView: View {
                 streak: todayState.streak,
                 exportService: exportService,
                 csvExportService: csvExportService,
+                bundleExportService: bundleExportService,
                 mealSearchService: mealSearchService,
                 mealRepository: mealRepository,
                 photoStore: photoStore,
