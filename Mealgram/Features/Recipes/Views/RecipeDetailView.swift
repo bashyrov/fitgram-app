@@ -10,6 +10,7 @@ struct RecipeDetailView: View {
     let onDismiss: () -> Void
 
     @State private var servings: Double = 1
+    @State private var checkedIngredients: Set<UUID> = []
 
     var body: some View {
         NavigationStack {
@@ -207,22 +208,50 @@ struct RecipeDetailView: View {
     private var ingredientsCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Składniki")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                ForEach(recipe.ingredients) { ingredient in
-                    HStack {
-                        Image(systemName: "circle.fill")
-                            .font(.system(size: 6))
-                            .foregroundStyle(Tokens.Palette.primary)
-                        Text(ingredient.name)
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Spacer()
+                HStack {
+                    Text("Składniki")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    if !checkedIngredients.isEmpty {
+                        Button("Wyczyść") {
+                            checkedIngredients.removeAll()
+                            Haptics.light()
+                        }
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
                     }
+                }
+                ForEach(recipe.ingredients) { ingredient in
+                    ingredientRow(ingredient)
                 }
             }
         }
+    }
+
+    private func ingredientRow(_ ingredient: RecipeIngredient) -> some View {
+        let isChecked = checkedIngredients.contains(ingredient.id)
+        return Button {
+            if isChecked {
+                checkedIngredients.remove(ingredient.id)
+            } else {
+                checkedIngredients.insert(ingredient.id)
+            }
+            Haptics.light()
+        } label: {
+            HStack(spacing: Tokens.Space.sm) {
+                Image(systemName: isChecked ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(isChecked ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
+                Text(ingredient.name)
+                    .font(Tokens.Font.body)
+                    .strikethrough(isChecked, color: Tokens.Palette.inkMuted)
+                    .foregroundStyle(isChecked ? Tokens.Palette.inkMuted : Tokens.Palette.ink)
+                Spacer()
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private var instructionsCard: some View {
