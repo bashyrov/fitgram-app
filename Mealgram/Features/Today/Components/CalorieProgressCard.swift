@@ -41,6 +41,13 @@ struct CalorieProgressCard: View {
                     }
                 }
                 .frame(width: 156, height: 156)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text("Pierścień kalorii"))
+                .accessibilityValue(
+                    Text(
+                        "\(Int(consumed)) z \(goal) kilokalorii, \(Int((progress * 100).rounded())) procent"
+                    )
+                )
 
                 VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                     summaryRow(label: "Spożyte", value: "\(Int(consumed)) kcal", color: Tokens.Palette.primary)

@@ -107,5 +107,8 @@ struct MacroDistributionCard: View {
             }
             .frame(height: 6)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(label))
+        .accessibilityValue(Text("\(Int(grams)) z \(goal) gramów"))
     }
 }
