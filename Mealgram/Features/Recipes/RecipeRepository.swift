@@ -61,6 +61,44 @@ final class RecipeRepository {
         }
     }
 
+    /// Duplicates the recipe into a fresh row with " (kopia)" appended
+    /// to the title. New UUIDs everywhere; cookCount + isFavorite reset
+    /// since the copy is a new dish in the user's mind.
+    @discardableResult
+    func duplicate(_ source: Recipe) throws -> Recipe {
+        let context = ModelContext(container)
+        let sourceID = source.id
+        let attached =
+            (try? context.fetch(
+                FetchDescriptor<Recipe>(predicate: #Predicate { $0.id == sourceID })
+            ).first) ?? source
+        let copy = Recipe(
+            title: attached.title + " (kopia)",
+            summary: attached.summary,
+            sourceURL: attached.sourceURL,
+            servings: attached.servings,
+            prepMinutes: attached.prepMinutes,
+            cookMinutes: attached.cookMinutes,
+            instructions: attached.instructions,
+            ingredients: attached.ingredients.map {
+                RecipeIngredient(
+                    name: $0.name,
+                    quantityText: $0.quantityText,
+                    quantityGrams: $0.quantityGrams,
+                    note: $0.note,
+                    catalogFoodID: $0.catalogFoodID
+                )
+            }
+        )
+        copy.caloriesPerServing = attached.caloriesPerServing
+        copy.proteinPerServing = attached.proteinPerServing
+        copy.carbsPerServing = attached.carbsPerServing
+        copy.fatPerServing = attached.fatPerServing
+        context.insert(copy)
+        try context.save()
+        return copy
+    }
+
     /// Produces a `MealEntry` for one serving of the recipe and bumps the
     /// recipe's cook counter. The recipe row itself stays in the catalogue.
     func cook(_ recipe: Recipe, servings: Double = 1) -> MealEntry {

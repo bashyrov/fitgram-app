@@ -234,12 +234,23 @@ struct RecipeListView: View {
             } label: {
                 Label("Edytuj", systemImage: "pencil")
             }
+            Button {
+                duplicateRecipe(recipe)
+            } label: {
+                Label("Duplikuj", systemImage: "doc.on.doc")
+            }
             Button(role: .destructive) {
                 delete(recipe)
             } label: {
                 Label("Usuń", systemImage: "trash")
             }
         }
+    }
+
+    private func duplicateRecipe(_ recipe: Recipe) {
+        try? repository.duplicate(recipe)
+        Haptics.light()
+        Task { await state.refresh() }
     }
 
     // swiftlint:enable function_body_length
