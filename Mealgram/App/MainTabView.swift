@@ -151,6 +151,7 @@ struct MainTabView: View {
             TodayView(
                 userRemoteID: authUser.id,
                 state: todayState,
+                customGoalsService: goalsService,
                 onOpenProfile: { selectedTab = .profile },
                 onOpenScanner: { isScanPresented = true },
                 onCookSuggested: { recipe in cookSuggested(recipe) },

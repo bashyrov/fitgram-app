@@ -6,6 +6,7 @@ import SwiftUI
 struct TodayView: View {
     let userRemoteID: String
     @Bindable var state: TodayState
+    let customGoalsService: GoalsService?
     let onOpenProfile: () -> Void
     let onOpenScanner: () -> Void
     var onCookSuggested: ((Recipe) -> Void)?
@@ -99,6 +100,10 @@ struct TodayView: View {
                                     isWaterGoalAlertPresented = true
                                 }
                             )
+                        }
+
+                        if state.isViewingToday, let customGoalsService {
+                            CustomGoalsStrip(goalsService: customGoalsService)
                         }
 
                         if state.isViewingToday, let insight = state.coachInsights.first {
