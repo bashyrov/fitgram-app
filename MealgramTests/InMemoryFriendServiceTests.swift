@@ -118,6 +118,92 @@ final class InMemoryFriendServiceTests: XCTestCase {
         XCTAssertFalse(feed.contains(where: { $0.actorID == "friend-ola" }))
         XCTAssertTrue(feed.contains(where: { $0.actorID == "friend-kasia" }))
     }
+
+    // MARK: - Snapshot + blocks + positive reactions
+
+    func testSnapshotReturnsRichFields() async throws {
+        let service = InMemoryFriendService()
+        let snap = try await service.snapshot(forUserID: "friend-ola", viewer: me)
+        XCTAssertEqual(snap.displayName, "Ola")
+        XCTAssertNotNil(snap.currentStreak)
+        XCTAssertNotNil(snap.level)
+        XCTAssertNotNil(snap.weeklyStats)
+        XCTAssertTrue(snap.hasAnyShared)
+    }
+
+    func testSnapshotIncludesActivityForOwner() async throws {
+        let service = InMemoryFriendService()
+        let snap = try await service.snapshot(forUserID: "friend-ola", viewer: me)
+        XCTAssertNotNil(snap.recentEvents)
+        XCTAssertFalse(snap.recentEvents!.isEmpty)
+    }
+
+    func testBlockHidesSnapshotAndDropsFriendship() async throws {
+        let service = InMemoryFriendService()
+        try await service.block("friend-ola", as: me)
+        do {
+            _ = try await service.snapshot(forUserID: "friend-ola", viewer: me)
+            XCTFail("Snapshot should fail for blocked user")
+        } catch FriendError.notFound { /* expected */ }
+        let friends = try await service.friends(of: me)
+        XCTAssertFalse(friends.contains { $0.id == "friend-ola" })
+    }
+
+    func testBlockedUserIDsRoundtrip() async throws {
+        let service = InMemoryFriendService()
+        try await service.block("friend-michal", as: me)
+        var blocked = try await service.blockedUserIDs(for: me)
+        XCTAssertTrue(blocked.contains("friend-michal"))
+        try await service.unblock("friend-michal", as: me)
+        blocked = try await service.blockedUserIDs(for: me)
+        XCTAssertFalse(blocked.contains("friend-michal"))
+    }
+
+    func testPositiveReactionDoesNotThrow() async throws {
+        let service = InMemoryFriendService()
+        try await service.sendPositiveReaction(to: "friend-ola", from: me, intent: .celebrate)
+    }
+
+    func testReportDoesNotThrow() async throws {
+        let service = InMemoryFriendService()
+        try await service.report("friend-ola", reason: "test reason", as: me)
+    }
+}
+
+@MainActor
+final class PrivacyStoreTests: XCTestCase {
+    private func makeStore(suffix: String = #function) -> PrivacyStore {
+        let suiteName = "PrivacyStoreTests.\(suffix).\(UUID())"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        return PrivacyStore(defaults: defaults, storageKey: "privacy.test")
+    }
+
+    func testDefaultIsFullyPrivate() {
+        let store = makeStore()
+        XCTAssertEqual(store.current.visibility, .privateOnly)
+        XCTAssertFalse(store.current.showStreak)
+        XCTAssertFalse(store.current.showAchievements)
+        XCTAssertFalse(store.current.showWeightAndHeight)
+        XCTAssertFalse(store.current.showMealDetails)
+    }
+
+    func testUpdateMutatesAndPersists() {
+        let suiteName = "PrivacyStoreTests.persist.\(UUID())"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        let first = PrivacyStore(defaults: defaults, storageKey: "privacy.test")
+        first.update {
+            $0.visibility = .friendsOnly
+            $0.showStreak = true
+            $0.showAchievements = true
+        }
+        XCTAssertEqual(first.current.visibility, .friendsOnly)
+        XCTAssertTrue(first.current.showStreak)
+        let second = PrivacyStore(defaults: defaults, storageKey: "privacy.test")
+        XCTAssertEqual(second.current.visibility, .friendsOnly)
+        XCTAssertTrue(second.current.showStreak)
+        XCTAssertTrue(second.current.showAchievements)
+        XCTAssertFalse(second.current.showWeightAndHeight)
+    }
 }
 
 extension Optional {
