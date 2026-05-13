@@ -9,6 +9,7 @@ struct PreferencesView: View {
     let onDismiss: () -> Void
 
     @Environment(\.modelContext) private var modelContext
+    @AppStorage("preferences.theme") private var themeRaw = ThemePreference.auto.rawValue
     @AppStorage("preferences.morningReminderEnabled") private var morningEnabled = true
     @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
     @AppStorage("preferences.eveningReminderEnabled") private var eveningEnabled = true
@@ -52,6 +53,26 @@ struct PreferencesView: View {
                                 Toggle("Poranny budzik 8:00", isOn: $morningEnabled)
                                 Toggle("Seria zagrożona 20:30", isOn: $streakRiskEnabled)
                                 Toggle("Wieczorne podsumowanie 21:00", isOn: $eveningEnabled)
+                            }
+                        }
+
+                        Card {
+                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
+                                Text("Wygląd")
+                                    .font(Tokens.Font.headline)
+                                    .foregroundStyle(Tokens.Palette.ink)
+                                Picker(
+                                    "Motyw",
+                                    selection: Binding(
+                                        get: { ThemePreference(rawValue: themeRaw) ?? .auto },
+                                        set: { themeRaw = $0.rawValue }
+                                    )
+                                ) {
+                                    ForEach(ThemePreference.allCases) { option in
+                                        Text(option.label).tag(option)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
                             }
                         }
 
