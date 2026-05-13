@@ -84,8 +84,33 @@ extension CulturalEvent {
         foodNote: "Truskawki ~32 kcal/100g — idealna przekąska zamiast słodyczy."
     )
 
+    static let dzienBabci = CulturalEvent(
+        id: "dzienbabci",
+        name: "Dzień Babci",
+        summary: "21 stycznia — odwiedziny u Babci.",
+        symbol: "heart.text.square.fill",
+        foodNote: "Babcina szarlotka, pierogi, rosół — wpisz to, co naprawdę zjadłeś, nie połowę."
+    )
+
+    static let niepodleglosci = CulturalEvent(
+        id: "niepodleglosci",
+        name: "Święto Niepodległości",
+        summary: "11 listopada — narodowe święto, rogale świętomarcińskie w Wielkopolsce.",
+        symbol: "flag.fill",
+        foodNote: "Rogal świętomarciński ~480 kcal/100g. Jeden ważył ~150 g."
+    )
+
+    static let nocSwietojanska = CulturalEvent(
+        id: "nocswietojanska",
+        name: "Noc Świętojańska",
+        summary: "23 czerwca — wianki, ogniska, grill.",
+        symbol: "flame.fill",
+        foodNote: "Grillowane mięso + piwo + przekąski — łatwy wieczór 1500+ kcal. Notuj na bieżąco."
+    )
+
     static let catalog: [CulturalEvent] = [
         .wigilia, .tlustyCzwartek, .walentynki, .wielkanoc, .andrzejki, .sylwester,
         .dzienMatki, .dzienDziecka, .truskawkowySezon,
+        .dzienBabci, .niepodleglosci, .nocSwietojanska,
     ]
 }
