@@ -179,6 +179,21 @@ final class MealRepository {
         try context.save()
     }
 
+    /// 1–5 star meal rating; nil clears it. Out-of-range values clamp.
+    func updateRating(_ meal: MealEntry, rating: Int?) throws {
+        let context = ModelContext(container)
+        let mealID = meal.id
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.id == mealID }
+        )
+        guard let attached = try context.fetch(descriptor).first else {
+            throw MealRepositoryError.notFound
+        }
+        attached.rating = rating.map { max(1, min(5, $0)) }
+        attached.updatedAt = Date()
+        try context.save()
+    }
+
     func updatePortion(_ meal: MealEntry, multiplier: Double) throws {
         let context = ModelContext(container)
         let mealID = meal.id

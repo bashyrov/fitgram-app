@@ -24,6 +24,10 @@ final class MealEntry {
     /// User-applied portion multiplier (1.0 = original detection). Stored
     /// separately so we can show the AI's raw output vs. the user's edit.
     var portionMultiplier: Double
+    /// Optional 1-5 rating for how much the user enjoyed the meal. Nil
+    /// until they actively rate. Default-nil keeps existing rows valid
+    /// post lightweight migration.
+    var rating: Int?
 
     @Relationship(deleteRule: .cascade, inverse: \FoodItem.meal)
     var items: [FoodItem]

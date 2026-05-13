@@ -1,6 +1,6 @@
 import SwiftUI
 
-// swiftlint:disable type_body_length
+// swiftlint:disable type_body_length file_length
 
 /// Inspect-and-edit sheet for a saved meal. Lets the user nudge the
 /// portion multiplier or delete the meal outright. Item-level edits live
@@ -15,6 +15,7 @@ struct MealDetailSheet: View {
 
     @State private var portion: Double
     @State private var consumedAt: Date
+    @State private var rating: Int?
     @State private var isConfirmingDelete = false
     @State private var errorMessage: String?
     @State private var tags: [String]
@@ -44,6 +45,7 @@ struct MealDetailSheet: View {
         self.onDeleted = onDeleted
         self._portion = State(initialValue: meal.portionMultiplier)
         self._consumedAt = State(initialValue: meal.consumedAt)
+        self._rating = State(initialValue: meal.rating)
         self._tags = State(initialValue: meal.tags)
         self._notes = State(initialValue: meal.notes ?? "")
     }
@@ -59,6 +61,7 @@ struct MealDetailSheet: View {
                         }
                         summaryCard
                         portionCard
+                        ratingCard
                         tagsCard
                         notesCard
                         itemsCard
@@ -160,6 +163,43 @@ struct MealDetailSheet: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Powiększ zdjęcie"))
+    }
+
+    private var ratingCard: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                HStack {
+                    Text("Ocena")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    if rating != nil {
+                        Button("Wyczyść") {
+                            rating = nil
+                            Haptics.light()
+                        }
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
+                }
+                HStack(spacing: Tokens.Space.xs) {
+                    ForEach(1...5, id: \.self) { star in
+                        Button {
+                            rating = star
+                            Haptics.light()
+                        } label: {
+                            let filled = star <= (rating ?? 0)
+                            Image(systemName: filled ? "star.fill" : "star")
+                                .font(.title3)
+                                .foregroundStyle(filled ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Oceń \(star) gwiazdek"))
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
 
     private var summaryCard: some View {
@@ -393,6 +433,9 @@ struct MealDetailSheet: View {
             try repository.updatePortion(meal, multiplier: portion)
             try repository.updateTags(meal, tags: tags)
             try repository.updateNotes(meal, notes: notes)
+            if rating != meal.rating {
+                try repository.updateRating(meal, rating: rating)
+            }
             if !Calendar.current.isDate(consumedAt, equalTo: meal.consumedAt, toGranularity: .minute) {
                 try repository.updateConsumedAt(meal, to: consumedAt)
             }
