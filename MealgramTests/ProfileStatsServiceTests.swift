@@ -61,6 +61,18 @@ final class ProfileStatsServiceTests: XCTestCase {
         XCTAssertNotNil(summary.memberSince)
     }
 
+    func testTotalWaterAggregatesEntries() throws {
+        let context = ModelContext(controller.container)
+        context.insert(User(remoteID: "u-water", providerKind: .apple))
+        context.insert(WaterEntry(userRemoteID: "u-water", recordedAt: Date(), milliliters: 250))
+        context.insert(WaterEntry(userRemoteID: "u-water", recordedAt: Date(), milliliters: 500))
+        context.insert(WaterEntry(userRemoteID: "u-water", recordedAt: Date(), milliliters: 250))
+        try context.save()
+
+        let summary = ProfileStatsService(container: controller.container).summary(for: "u-water")
+        XCTAssertEqual(summary.totalWaterMilliliters, 1000)
+    }
+
     func testTotalRecipeCooksSumsAcrossRecipes() throws {
         let context = ModelContext(controller.container)
         context.insert(User(remoteID: "u-x", providerKind: .apple))

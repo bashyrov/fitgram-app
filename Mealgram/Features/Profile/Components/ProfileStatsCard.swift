@@ -50,6 +50,11 @@ struct ProfileStatsCard: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.warning)
                 }
+                if summary.totalWaterMilliliters > 0 {
+                    Text("Wypita woda: 💧 \(Self.litersString(summary.totalWaterMilliliters)) L")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
                 if let memberSince = summary.memberSince {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
@@ -90,6 +95,18 @@ struct ProfileStatsCard: View {
 
     private func daysWithUsLabel(_ days: Int) -> String {
         Self.daysWithUsLabel(days)
+    }
+
+    /// Renders ml → "L" with one decimal place, Polish comma separator.
+    /// 28350 ml → "28,4 L".
+    static func litersString(_ milliliters: Int) -> String {
+        let liters = Double(milliliters) / 1000
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.minimumFractionDigits = 1
+        formatter.maximumFractionDigits = 1
+        return formatter.string(from: NSNumber(value: liters)) ?? "\(liters)"
     }
 
     /// Formats large kcal totals with thousands separators so "172000"

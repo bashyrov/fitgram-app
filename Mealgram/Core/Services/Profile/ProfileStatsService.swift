@@ -14,6 +14,7 @@ final class ProfileStatsService {
         let totalAchievements: Int
         let totalCaloriesKcal: Int
         let totalRecipeCooks: Int
+        let totalWaterMilliliters: Int
         let averageMealRating: Double?
         let longestStreakLength: Int
         let memberSince: Date?
@@ -52,6 +53,13 @@ final class ProfileStatsService {
                 predicate: #Predicate { $0.userRemoteID == userRemoteID }
             )
         ).first
+        let waterEntries =
+            (try? context.fetch(
+                FetchDescriptor<WaterEntry>(
+                    predicate: #Predicate { $0.userRemoteID == userRemoteID }
+                )
+            )) ?? []
+        let totalWaterMl = waterEntries.reduce(0) { $0 + $1.milliliters }
         let ratings = meals.compactMap(\.rating)
         let averageRating: Double? =
             ratings.isEmpty
@@ -64,6 +72,7 @@ final class ProfileStatsService {
             totalAchievements: achievementCount,
             totalCaloriesKcal: Int(totalKcal.rounded()),
             totalRecipeCooks: totalRecipeCooks,
+            totalWaterMilliliters: totalWaterMl,
             averageMealRating: averageRating,
             longestStreakLength: streak?.longestLength ?? 0,
             memberSince: user?.createdAt

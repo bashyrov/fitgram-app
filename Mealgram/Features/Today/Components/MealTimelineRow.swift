@@ -20,6 +20,12 @@ struct MealTimelineRow: View {
                     Text(mealTypeLabel)
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.inkSubtle)
+                    if meal.photoFilename != nil {
+                        Image(systemName: "camera.fill")
+                            .font(.caption2)
+                            .foregroundStyle(Tokens.Palette.primary)
+                            .accessibilityLabel(Text("Z zdjęciem"))
+                    }
                 }
                 .frame(width: 56, alignment: .center)
                 Divider()

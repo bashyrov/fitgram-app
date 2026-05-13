@@ -36,6 +36,17 @@ final class WaterService {
         return entry
     }
 
+    /// All-time water sum (ml) for the user. Used by the Profile lifetime
+    /// stats card.
+    func totalLifetime(for userRemoteID: String) -> Int {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<WaterEntry>(
+            predicate: #Predicate { $0.userRemoteID == userRemoteID }
+        )
+        let entries = (try? context.fetch(descriptor)) ?? []
+        return entries.reduce(0) { $0 + $1.milliliters }
+    }
+
     func totalToday(for userRemoteID: String) -> Int {
         let dayStart = calendar.startOfDay(for: now())
         guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return 0 }
