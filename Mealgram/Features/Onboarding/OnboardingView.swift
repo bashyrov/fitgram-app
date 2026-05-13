@@ -58,6 +58,8 @@ struct OnboardingView: View {
                 GoalStepView(goal: $flow.profile.goal) { flow.advance() }
             case .profile:
                 ProfileStepView(profile: $flow.profile) { flow.advance() }
+            case .dietary:
+                DietaryStepView(selected: $flow.profile.dietaryPreferences) { flow.advance() }
             case .firstScan:
                 FirstScanStepView { flow.advance() }
             case .calibration:

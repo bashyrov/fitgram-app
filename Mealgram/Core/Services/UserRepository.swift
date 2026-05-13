@@ -58,6 +58,7 @@ final class UserRepository {
         stored.heightCm = profile.heightCm
         stored.weightKg = profile.weightKg
         stored.dailyCalorieGoalKcal = profile.dailyCalorieGoalKcal
+        stored.dietaryPreferences = profile.dietaryPreferences
         stored.proteinGoalGrams = profile.proteinGoalGrams
         stored.carbsGoalGrams = profile.carbsGoalGrams
         stored.fatGoalGrams = profile.fatGoalGrams
@@ -118,4 +119,6 @@ struct OnboardingProfile: Equatable {
     var proteinGoalGrams: Int = 120
     var carbsGoalGrams: Int = 240
     var fatGoalGrams: Int = 70
+
+    var dietaryPreferences: Set<DietaryPreference> = []
 }

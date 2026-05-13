@@ -35,6 +35,12 @@ final class User {
     var carbsGoalGrams: Int
     var fatGoalGrams: Int
 
+    /// Persisted as a comma-joined raw-value list so SwiftData lightweight
+    /// migration on existing rows keeps default-empty without bumping the
+    /// schema version. Read/write via the typed `dietaryPreferences`
+    /// extension below.
+    var dietaryPreferencesRaw: String = ""
+
     init(
         id: UUID = UUID(),
         remoteID: String,
@@ -93,4 +99,52 @@ extension User {
     }
 
     var isOnboarded: Bool { onboardingCompletedAt != nil }
+
+    var dietaryPreferences: Set<DietaryPreference> {
+        get {
+            Set(
+                dietaryPreferencesRaw.split(separator: ",")
+                    .compactMap { DietaryPreference(rawValue: String($0)) }
+            )
+        }
+        set {
+            dietaryPreferencesRaw = newValue.map(\.rawValue).sorted().joined(separator: ",")
+        }
+    }
+}
+
+/// User-facing dietary preference / restriction tags. Used by the
+/// onboarding step + Coach context to bias suggestions. Adding a case
+/// is safe for existing rows because storage is comma-joined raw.
+enum DietaryPreference: String, CaseIterable, Sendable, Identifiable, Hashable {
+    case vegetarian
+    case vegan
+    case glutenFree
+    case dairyFree
+    case keto
+    case pescatarian
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .vegetarian: return String(localized: "Wegetariańskie")
+        case .vegan: return String(localized: "Wegańskie")
+        case .glutenFree: return String(localized: "Bez glutenu")
+        case .dairyFree: return String(localized: "Bez nabiału")
+        case .keto: return String(localized: "Keto")
+        case .pescatarian: return String(localized: "Pescatariańskie")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .vegetarian: return "leaf"
+        case .vegan: return "leaf.fill"
+        case .glutenFree: return "carrot.fill"
+        case .dairyFree: return "drop.triangle"
+        case .keto: return "bolt.fill"
+        case .pescatarian: return "fish.fill"
+        }
+    }
 }

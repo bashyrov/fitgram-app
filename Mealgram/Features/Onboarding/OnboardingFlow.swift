@@ -12,6 +12,7 @@ final class OnboardingFlow {
         case welcome
         case goal
         case profile
+        case dietary
         case firstScan
         case calibration
         case notifications
