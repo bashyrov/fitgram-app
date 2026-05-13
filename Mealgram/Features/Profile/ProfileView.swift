@@ -61,6 +61,7 @@ struct ProfileView: View {
                         dataSection
                         legalSection
                         accountSection
+                        appVersionFooter
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
@@ -360,6 +361,26 @@ struct ProfileView: View {
                 }
             }
         }
+    }
+
+    private var appVersionFooter: some View {
+        VStack(spacing: 2) {
+            Text("Mealgram \(Self.appVersionString)")
+                .font(Tokens.Font.footnote)
+                .foregroundStyle(Tokens.Palette.inkSubtle)
+            Text("Zrobione z miłością w Polsce")
+                .font(Tokens.Font.footnote)
+                .foregroundStyle(Tokens.Palette.inkSubtle)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, Tokens.Space.sm)
+    }
+
+    private static var appVersionString: String {
+        let info = Bundle.main.infoDictionary
+        let short = (info?["CFBundleShortVersionString"] as? String) ?? "0"
+        let build = (info?["CFBundleVersion"] as? String) ?? "0"
+        return "v\(short) (\(build))"
     }
 
     // MARK: - Helpers
