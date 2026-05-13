@@ -166,6 +166,22 @@ struct RecipeListView: View {
         } else {
             ScrollView {
                 LazyVStack(spacing: Tokens.Space.sm) {
+                    if state.filtered.count != state.recipes.count {
+                        HStack {
+                            Text("\(state.filtered.count) z \(state.recipes.count) przepisów")
+                                .font(Tokens.Font.caption)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                            Spacer()
+                            Button("Wyczyść filtry") {
+                                state.query = ""
+                                state.favoritesOnly = false
+                            }
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.primary)
+                        }
+                        .padding(.horizontal, 4)
+                        .padding(.top, Tokens.Space.sm)
+                    }
                     ForEach(state.filtered) { recipe in
                         row(recipe)
                     }
