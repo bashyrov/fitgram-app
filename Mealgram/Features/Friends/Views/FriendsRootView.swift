@@ -8,9 +8,18 @@ struct FriendsRootView: View {
 
     @State private var isAddPresented = false
     @State private var isLeaderboardPresented = false
+    @State private var openedProfileID: String?
+
+    /// Trivial Identifiable wrapper so the sheet binding can present
+    /// FriendProfileView when openedProfileID flips non-nil.
+    private struct IdentifiedID: Identifiable {
+        let value: String
+        var id: String { value }
+    }
     var yourStreak: Int = 0
     var yourDisplayName: String = ""
     var yourID: String = ""
+    var friendService: (any FriendService)?
 
     var body: some View {
         NavigationStack {
@@ -52,6 +61,22 @@ struct FriendsRootView: View {
             .task { await state.refresh() }
             .sheet(isPresented: $isAddPresented) {
                 AddFriendSheet(state: state) { isAddPresented = false }
+            }
+            .sheet(item: Binding(
+                get: { openedProfileID.map(IdentifiedID.init) },
+                set: { openedProfileID = $0?.value }
+            )) { wrapped in
+                if let friendService {
+                    FriendProfileView(
+                        userID: wrapped.value,
+                        viewerID: yourID,
+                        service: friendService,
+                        onDismiss: {
+                            openedProfileID = nil
+                            Task { await state.refresh() }
+                        }
+                    )
+                }
             }
             .sheet(isPresented: $isLeaderboardPresented) {
                 LeaderboardView(
@@ -143,6 +168,10 @@ struct FriendsRootView: View {
                     FeedEventCard(event: event) { kind in
                         Task { await state.toggleReaction(on: event, kind: kind) }
                     }
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        openedProfileID = event.actorID
+                    }
                 }
             }
         }
@@ -172,14 +201,24 @@ struct FriendsRootView: View {
                 }
             } else {
                 ForEach(state.friends) { profile in
-                    FriendRow(profile: profile)
-                        .contextMenu {
-                            Button(role: .destructive) {
-                                Task { await state.unfriend(profile) }
-                            } label: {
-                                Label("Usuń znajomość", systemImage: "person.fill.xmark")
-                            }
+                    Button {
+                        openedProfileID = profile.id
+                    } label: {
+                        FriendRow(profile: profile)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        Button {
+                            openedProfileID = profile.id
+                        } label: {
+                            Label("Otwórz profil", systemImage: "person.crop.circle")
                         }
+                        Button(role: .destructive) {
+                            Task { await state.unfriend(profile) }
+                        } label: {
+                            Label("Usuń znajomość", systemImage: "person.fill.xmark")
+                        }
+                    }
                 }
             }
         }

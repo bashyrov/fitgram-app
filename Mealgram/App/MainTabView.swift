@@ -190,7 +190,8 @@ struct MainTabView: View {
                 state: friendsState,
                 yourStreak: todayState.streak?.currentLength ?? 0,
                 yourDisplayName: todayState.user?.displayName ?? "Ty",
-                yourID: authUser.id
+                yourID: authUser.id,
+                friendService: friendService
             )
             .tabItem {
                 Label("Znajomi", systemImage: "person.2.fill")
