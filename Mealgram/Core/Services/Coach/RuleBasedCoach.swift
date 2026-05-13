@@ -29,6 +29,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
         warnStreakAtRisk,
         suggestProtein,
         warnCalorieOvershoot,
+        suggestMorningProtein,
+        suggestAfternoonMomentum,
         suggestLightEvening,
         encourageBalancedWeek,
         reminderToLogFirstMeal,
@@ -115,6 +117,45 @@ struct RuleBasedCoach: CoachInsightGenerator {
             body: String(
                 localized:
                     "Już ponad cel kalorii. Wieczorem warto coś lekkiego — sałata, twaróg, owoce."
+            )
+        )
+    }
+
+    /// Morning rule (6–11): user has eaten breakfast but the protein
+    /// content is light — nudge to keep mid-morning protein in mind.
+    /// Skips when the day's protein is already on pace with goal.
+    private static func suggestMorningProtein(_ context: CoachContext) -> CoachInsight? {
+        guard context.hourOfDay >= 6, context.hourOfDay < 11 else { return nil }
+        guard context.today.entryCount > 0 else { return nil }
+        guard context.goals.proteinGoalGrams > 0 else { return nil }
+        guard context.today.proteinGrams < 15 else { return nil }
+        return CoachInsight(
+            tone: .suggestion,
+            headline: String(localized: "Białko na śniadanie"),
+            body: String(
+                localized:
+                    "Śniadanie zalogowane — dorzuć trochę białka (jajka, twaróg, skyr). Łatwiej trzymać sytość do obiadu."
+            ),
+            actionTitle: String(localized: "Szybka baza"),
+            actionKind: .openQuickDB
+        )
+    }
+
+    /// Mid-afternoon rule (14–17): user is at 40–70 % of the calorie
+    /// goal with at least 2 entries — encourage steady pacing without
+    /// nudging them to overeat.
+    private static func suggestAfternoonMomentum(_ context: CoachContext) -> CoachInsight? {
+        guard context.hourOfDay >= 14, context.hourOfDay < 17 else { return nil }
+        guard context.today.entryCount >= 2 else { return nil }
+        guard context.goals.calorieGoalKcal > 0 else { return nil }
+        let ratio = context.today.caloriesKcal / Double(context.goals.calorieGoalKcal)
+        guard ratio >= 0.4, ratio < 0.7 else { return nil }
+        return CoachInsight(
+            tone: .encouragement,
+            headline: String(localized: "Dobre tempo"),
+            body: String(
+                localized:
+                    "Pół dnia za Tobą i ładnie w limicie. Lekka przekąska + kolacja domyka dzień."
             )
         )
     }

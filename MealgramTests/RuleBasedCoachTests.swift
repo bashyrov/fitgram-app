@@ -147,6 +147,38 @@ final class RuleBasedCoachTests: XCTestCase {
         XCTAssertTrue(result.contains { $0.headline.contains("Świetny tydzień") })
     }
 
+    // MARK: - Morning protein
+
+    func testMorningProteinFiresWhenBreakfastLightOnProtein() {
+        let result = coach.generate(
+            for: context(todayKcal: 250, todayProtein: 5, entryCount: 1, hour: 8)
+        )
+        XCTAssertTrue(result.contains { $0.headline.contains("Białko na śniadanie") })
+    }
+
+    func testMorningProteinSilentAfterEnoughProtein() {
+        let result = coach.generate(
+            for: context(todayKcal: 250, todayProtein: 25, entryCount: 1, hour: 8)
+        )
+        XCTAssertFalse(result.contains { $0.headline.contains("Białko na śniadanie") })
+    }
+
+    // MARK: - Afternoon momentum
+
+    func testAfternoonMomentumFiresMidDayInRange() {
+        let result = coach.generate(
+            for: context(todayKcal: 1100, entryCount: 2, hour: 15)
+        )
+        XCTAssertTrue(result.contains { $0.headline.contains("Dobre tempo") })
+    }
+
+    func testAfternoonMomentumSilentBefore14() {
+        let result = coach.generate(
+            for: context(todayKcal: 1100, entryCount: 2, hour: 12)
+        )
+        XCTAssertFalse(result.contains { $0.headline.contains("Dobre tempo") })
+    }
+
     // MARK: - Max insights bound
 
     func testNeverReturnsMoreThanThree() {
