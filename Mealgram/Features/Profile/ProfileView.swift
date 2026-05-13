@@ -280,8 +280,7 @@ struct ProfileView: View {
     @ViewBuilder
     private var recommendationsCard: some View {
         if let user, let data = user.latestRecommendationsJSON,
-            let rec = try? JSONDecoder().decode(Recommendations.self, from: data)
-        {
+            let rec = try? JSONDecoder().decode(Recommendations.self, from: data) {
             Card {
                 VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                     Label("Wskazówki od Oli", systemImage: "sparkles")

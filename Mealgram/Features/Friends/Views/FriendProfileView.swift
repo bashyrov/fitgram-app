@@ -1,10 +1,12 @@
 import OSLog
 import SwiftUI
 
-/// Rich friend profile sheet — header + 4 tabs (Achievements / Stats /
-/// Recipes / Activity). Renders only the fields the owner's privacy
-/// settings permit (the service is responsible for filtering).
+// Sheet glues 4 tabs + header + toolbar in one place — long body is intentional.
+// swiftlint:disable:next type_body_length
 struct FriendProfileView: View {
+    /// Rich friend profile sheet — header + 4 tabs (Achievements / Stats /
+    /// Recipes / Activity). Renders only the fields the owner's privacy
+    /// settings permit (the service is responsible for filtering).
     let userID: String
     let viewerID: String
     let service: any FriendService

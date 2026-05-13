@@ -190,6 +190,36 @@ SwiftData store  (M1.2 schema v1.0)
 **Rationale:** Zero new dependencies, works back to iOS 11, no need to vend a `zip` lib through SPM.  
 **Consequences:** No control over compression level / encryption; encrypted exports (if ever needed) require switching to a real zip lib.
 
+### 2026-05-13: Mifflin-St Jeor over Harris-Benedict / Katch-McArdle for BMR
+**Context:** Daily calorie target needs a reproducible BMR formula. Three are commonly used: Harris-Benedict (1919, revised 1984), Mifflin-St Jeor (1990), and Katch-McArdle (lean-mass-based).  
+**Decision:** Mifflin-St Jeor for all sex/age/height/weight branches. Activity multiplier picks one of {1.2, 1.375, 1.55, 1.725, 1.9}; goal adjustment subtracts/adds 1100 kcal per kg/week pace, with sex-specific safety floors (1200/1500 kcal) clamping aggressive deficits and surfacing a `hitSafetyFloor` flag to the UI.  
+**Rationale:** Mifflin-St Jeor has the best validation against indirect calorimetry in non-athlete adults; it's the formula every credible nutrition app ships. Katch-McArdle would be more accurate but requires bodyfat %, which our onboarding doesn't collect. Pure-function `GoalCalculator` with 39 unit tests pinned to reference numbers so future re-tuning needs to break a test on purpose.  
+**Consequences:** Underestimates for very lean / athletic users (would need Katch-McArdle); we surface the override flags so they can manually pin a higher kcal target. Safety floor is non-negotiable — clamping happens before macro split, so even if the user picks 1 kg/wk on a 60 kg frame they still get a viable plan.
+
+### 2026-05-13: Privacy-first social model — default fully private, opt-in per field
+**Context:** Friends feature lets users share streaks, achievements, weekly stats, recipes, and (optionally) weight/height/meal details. Misconfigured defaults could leak sensitive health data.  
+**Decision:** `PrivacySettings` starts at `.privateOnly` with every per-field toggle off. Visibility tier (`private` / `friends` / `public`) is the outer gate; per-field booleans are the inner gates. Supabase RLS enforces the same model server-side via `can_view_profile(viewer, owner)` helper — no client query can bypass it. A signup trigger seeds a default-private row for every new auth user so silent sign-ups don't leak. Sensitive fields (weight, height, meal details) live in a separate UI card so the user explicitly opts in.  
+**Rationale:** Health data + social mechanics is a high-stakes combination. "Off by default, on by intent" is the only model where a confused user can't accidentally publish their weight. Symmetric blocks complete the picture — blocked-user can't observe viewer either, neither can pull a snapshot.  
+**Consequences:** Onboarding can't show off the social mechanics without an extra opt-in step; we trade discoverability for safety. RLS policies are the single source of truth — iOS-side projection in `FriendProfileSnapshot` is a presentation convenience, not a security boundary.
+
+### 2026-05-13: Friends ship against InMemoryFriendService now, Supabase schema ready
+**Context:** Supabase URL + anon key are still pending. Spec asks for fully working social layer.  
+**Decision:** Ship `InMemoryFriendService` extended to deliver realistic snapshots, blocks, reactions, reports. The same `FriendService` protocol gets a `SupabaseFriendService` once creds arrive. Full SQL migration (`supabase/migrations/20260514_social_layer.sql`) committed now so the backend lands as a `supabase db push` — 7 tables, helper functions (`user_pair` / `are_friends` / `is_blocked` / `can_view_profile`), full RLS, default-private trigger.  
+**Rationale:** UI ships value today without a "coming soon" placeholder. SQL is reviewed + version-controlled so the eventual deploy is a no-surprise migration. Composition root flips from `InMemoryFriendService` → `SupabaseFriendService` in one line.  
+**Consequences:** In-memory backend isn't shared between devices and resets on app reinstall; we lose the social layer entirely in development without seeded fixtures (already handled). Reactions / blocks survive process restart only via UserDefaults — chosen consciously so testing the privacy-first UI doesn't need a backend.
+
+### 2026-05-13: AI Coach ships rule-based fallback now, Worker primary later
+**Context:** Onboarding wants Ola's recommendations after the user finishes their profile. Worker URL + Claude key are pending.  
+**Decision:** `RuleBasedRecommendationsService` is the always-shipping fallback — 8 prioritised rules (safety floor, pace warning, goal-anchor, protein adequacy, sedentary nudge, Polish-cuisine reassurance, hydration prompt, dietary preference echo) capped at 5 tips. `WorkerRecommendationsService` is the production primary that activates as soon as `AppConfig.workerBaseURL` is non-nil. Composite `RecommendationsService` tries primary, logs + falls back on any error, marks the response source so debug surfaces can tell which path served the tips.  
+**Rationale:** Rule-based output is deterministic, testable, and on-brand for the PL market (cites pierogi ruskie, żurek, polskie warzywa). When Claude is wired, identical UI contract — only the `source` field changes from `rule_based` → `worker_claude_sonnet_4_5`. Anonymised request body (no name, no auth id, no avatar) is the same on both paths.  
+**Consequences:** Rule-based tips can't react to free-form user goals (just enum branches); Claude-backed tips will. Persisted `latestRecommendationsJSON` on User means re-running the onboarding wizard isn't required to refresh advice — we'll add a "Odśwież rady" button on Profile in a follow-up.
+
+### 2026-05-13: Target override flags are per-axis, not a single mega-flag
+**Context:** Users routinely want to lock in a specific calorie target while letting macros + water float with the calculator (e.g. dietician set 1850 kcal but app-calculated macros are fine). One bool would force "all or nothing".  
+**Decision:** `User` row carries four independent override flags — `caloriesOverridden`, `macrosOverridden`, `fiberOverridden`, `waterOverridden`. `UserProfileService.recalculate` re-derives only the fields whose flag is false; "Wróć do zalecanych" resets all four.  
+**Rationale:** Matches how real users think about their numbers — they don't customise as a unit. Per-axis means the calculator can keep working partially while the user owns the bits they care about.  
+**Consequences:** Slightly more state to keep in sync; we centralise mutation through UserProfileService so every edit path flips the right flag and saves through one method.
+
 ## API Contracts
 
 ### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)

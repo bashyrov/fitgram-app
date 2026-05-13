@@ -14,6 +14,11 @@ struct PreferencesView: View {
     @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
     @AppStorage("preferences.eveningReminderEnabled") private var eveningEnabled = true
     @AppStorage("preferences.usesMetric") private var usesMetric = true
+    @AppStorage("preferences.friend.requestReceivedEnabled") private var friendRequestEnabled = true
+    @AppStorage("preferences.friend.requestAcceptedEnabled") private var friendAcceptedEnabled = true
+    @AppStorage("preferences.friend.bigAchievementEnabled") private var friendAchievementEnabled = true
+    @AppStorage("preferences.friend.reactionEnabled") private var friendReactionEnabled = true
+    @AppStorage("preferences.friend.challengeEnabled") private var friendChallengeEnabled = true
 
     var body: some View {
         NavigationStack {
@@ -53,6 +58,22 @@ struct PreferencesView: View {
                                 Toggle("Poranny budzik 8:00", isOn: $morningEnabled)
                                 Toggle("Seria zagrożona 20:30", isOn: $streakRiskEnabled)
                                 Toggle("Wieczorne podsumowanie 21:00", isOn: $eveningEnabled)
+                            }
+                        }
+
+                        Card {
+                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
+                                Text("Znajomi")
+                                    .font(Tokens.Font.headline)
+                                    .foregroundStyle(Tokens.Palette.ink)
+                                Toggle("Nowe zaproszenie", isOn: $friendRequestEnabled)
+                                Toggle("Zaakceptowane zaproszenie", isOn: $friendAcceptedEnabled)
+                                Toggle("Duże osiągnięcie znajomego", isOn: $friendAchievementEnabled)
+                                Toggle("Reakcja na moje osiągnięcie", isOn: $friendReactionEnabled)
+                                Toggle("Wyzwanie od znajomego", isOn: $friendChallengeEnabled)
+                                Text("Sterują wysyłką push z naszego serwera — działają od momentu wprowadzenia konta Supabase.")
+                                    .font(Tokens.Font.caption)
+                                    .foregroundStyle(Tokens.Palette.inkMuted)
                             }
                         }
 

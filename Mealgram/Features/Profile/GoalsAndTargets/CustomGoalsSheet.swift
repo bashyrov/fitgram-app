@@ -207,9 +207,9 @@ struct CustomGoalRowCard: View {
     }
 
     private var dateRange: String {
-        let f = DateFormatter()
-        f.dateStyle = .medium
-        return "\(f.string(from: goal.startDate)) → \(f.string(from: goal.endDate))"
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return "\(formatter.string(from: goal.startDate)) → \(formatter.string(from: goal.endDate))"
     }
 
     private func symbol(for type: CustomGoalTarget.TargetType) -> String {
@@ -361,8 +361,13 @@ struct CustomGoalBuilderSheet: View {
                 Text("Co chcesz osiągnąć?")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
-                ForEach(targetOptions, id: \.0) { type, label, suffix, defaultValue in
-                    targetRow(type: type, label: label, suffix: suffix, defaultValue: defaultValue)
+                ForEach(targetOptions) { option in
+                    targetRow(
+                        type: option.type,
+                        label: option.label,
+                        suffix: option.suffix,
+                        defaultValue: option.defaultValue
+                    )
                 }
                 if selected.contains(.custom) {
                     TextField("Nazwa własnego celu", text: $customName)
@@ -372,17 +377,23 @@ struct CustomGoalBuilderSheet: View {
         }
     }
 
-    private var targetOptions:
-        [(CustomGoalTarget.TargetType, String, String, Double)]
-    {
+    private struct TargetOption: Identifiable {
+        var type: CustomGoalTarget.TargetType
+        var label: String
+        var suffix: String
+        var defaultValue: Double
+        var id: CustomGoalTarget.TargetType { type }
+    }
+
+    private var targetOptions: [TargetOption] {
         [
-            (.weightLoss, "Schudnąć", "kg", 5),
-            (.weightGain, "Nabrać", "kg", 3),
-            (.proteinDaily, "Białko dziennie", "g", 130),
-            (.waterDaily, "Woda dziennie", "ml", 2500),
-            (.noFastFoodDays, "Bez fast-food", "dni", 30),
-            (.maxCaloriesDaily, "Max kcal dziennie", "kcal", 1800),
-            (.custom, "Własny cel", "", 1),
+            TargetOption(type: .weightLoss, label: "Schudnąć", suffix: "kg", defaultValue: 5),
+            TargetOption(type: .weightGain, label: "Nabrać", suffix: "kg", defaultValue: 3),
+            TargetOption(type: .proteinDaily, label: "Białko dziennie", suffix: "g", defaultValue: 130),
+            TargetOption(type: .waterDaily, label: "Woda dziennie", suffix: "ml", defaultValue: 2500),
+            TargetOption(type: .noFastFoodDays, label: "Bez fast-food", suffix: "dni", defaultValue: 30),
+            TargetOption(type: .maxCaloriesDaily, label: "Max kcal dziennie", suffix: "kcal", defaultValue: 1800),
+            TargetOption(type: .custom, label: "Własny cel", suffix: "", defaultValue: 1),
         ]
     }
 

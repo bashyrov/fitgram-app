@@ -83,7 +83,7 @@ struct CustomGoalTarget: Codable, Equatable, Sendable, Identifiable {
         case custom
     }
 
-    var id: UUID = UUID()
+    var id = UUID()
     var type: TargetType
     /// Target numeric value. Unit defined by `type`:
     /// - weightLoss / weightGain → kg

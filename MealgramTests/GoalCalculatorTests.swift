@@ -109,76 +109,77 @@ final class GoalCalculatorTests: XCTestCase {
 
     // MARK: - Pace-based deficit (spec: 1100 kcal per kg/week)
 
-    func testPaceQuarterKgLosesAround275() {
-        let none = GoalCalculator.calculateTargets(from: input(goal: .lose, pace: nil))!
-        let paced = GoalCalculator.calculateTargets(from: input(goal: .lose, pace: 0.25))!
-        let maintain = GoalCalculator.calculateTargets(from: input(goal: .maintain))!
+    func testPaceQuarterKgLosesAround275() throws {
+        let none = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .lose, pace: nil)))
+        let paced = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .lose, pace: 0.25)))
+        let maintain = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .maintain)))
         XCTAssertEqual(maintain.dailyCalorieGoalKcal - paced.dailyCalorieGoalKcal, 280, accuracy: 10)
         XCTAssertNotEqual(none.dailyCalorieGoalKcal, paced.dailyCalorieGoalKcal)
     }
 
-    func testPaceHalfKgLosesAround550() {
-        let paced = GoalCalculator.calculateTargets(from: input(goal: .lose, pace: 0.5))!
-        let maintain = GoalCalculator.calculateTargets(from: input(goal: .maintain))!
+    func testPaceHalfKgLosesAround550() throws {
+        let paced = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .lose, pace: 0.5)))
+        let maintain = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .maintain)))
         XCTAssertEqual(maintain.dailyCalorieGoalKcal - paced.dailyCalorieGoalKcal, 550, accuracy: 10)
     }
 
-    func testPaceOneKgGainsAround1100() {
-        let paced = GoalCalculator.calculateTargets(
-            from: input(weight: 80, sex: .male, goal: .gain, pace: 1.0)
-        )!
-        let maintain = GoalCalculator.calculateTargets(
-            from: input(weight: 80, sex: .male, goal: .maintain)
-        )!
+    func testPaceOneKgGainsAround1100() throws {
+        let paced = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(weight: 80, sex: .male, goal: .gain, pace: 1.0)))
+        let maintain = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(weight: 80, sex: .male, goal: .maintain)))
         XCTAssertEqual(paced.dailyCalorieGoalKcal - maintain.dailyCalorieGoalKcal, 1100, accuracy: 10)
     }
 
-    func testPaceIgnoredForMaintainGoal() {
-        let withPace = GoalCalculator.calculateTargets(from: input(goal: .maintain, pace: 0.5))!
-        let withoutPace = GoalCalculator.calculateTargets(from: input(goal: .maintain))!
+    func testPaceIgnoredForMaintainGoal() throws {
+        let withPace = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .maintain, pace: 0.5)))
+        let withoutPace = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .maintain)))
         XCTAssertEqual(withPace.dailyCalorieGoalKcal, withoutPace.dailyCalorieGoalKcal)
     }
 
-    func testNegativePaceTreatedAsNil() {
-        let weird = GoalCalculator.calculateTargets(from: input(goal: .lose, pace: -0.5))!
-        let legacy = GoalCalculator.calculateTargets(from: input(goal: .lose, pace: nil))!
+    func testNegativePaceTreatedAsNil() throws {
+        let weird = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .lose, pace: -0.5)))
+        let legacy = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(goal: .lose, pace: nil)))
         XCTAssertEqual(weird.dailyCalorieGoalKcal, legacy.dailyCalorieGoalKcal)
     }
 
     // MARK: - Safety floor (1200 F / 1500 M / 1350 undisclosed)
 
-    func testAggressivePaceCappedAtFemaleFloor() {
+    func testAggressivePaceCappedAtFemaleFloor() throws {
         // 60kg female, sedentary, lose at 1 kg/wk would compute well
         // under 1200 — must cap and flag.
-        let targets = GoalCalculator.calculateTargets(
-            from: input(weight: 60, age: 40, sex: .female, activity: .sedentary, goal: .lose, pace: 1.0)
-        )!
+        let probe = input(
+            weight: 60, age: 40, sex: .female,
+            activity: .sedentary, goal: .lose, pace: 1.0
+        )
+        let targets = try XCTUnwrap(GoalCalculator.calculateTargets(from: probe))
         XCTAssertEqual(targets.dailyCalorieGoalKcal, 1200)
         XCTAssertTrue(targets.hitSafetyFloor)
     }
 
-    func testAggressivePaceCappedAtMaleFloor() {
-        let targets = GoalCalculator.calculateTargets(
-            from: input(weight: 70, age: 40, sex: .male, activity: .sedentary, goal: .lose, pace: 1.0)
-        )!
+    func testAggressivePaceCappedAtMaleFloor() throws {
+        let probe = input(
+            weight: 70, age: 40, sex: .male,
+            activity: .sedentary, goal: .lose, pace: 1.0
+        )
+        let targets = try XCTUnwrap(GoalCalculator.calculateTargets(from: probe))
         XCTAssertGreaterThanOrEqual(targets.dailyCalorieGoalKcal, 1500)
         XCTAssertTrue(targets.hitSafetyFloor)
     }
 
-    func testSafeDeficitDoesNotFlagFloor() {
-        let targets = GoalCalculator.calculateTargets(
-            from: input(weight: 80, sex: .male, activity: .active, goal: .lose, pace: 0.5)
-        )!
+    func testSafeDeficitDoesNotFlagFloor() throws {
+        let probe = input(
+            weight: 80, sex: .male, activity: .active,
+            goal: .lose, pace: 0.5
+        )
+        let targets = try XCTUnwrap(GoalCalculator.calculateTargets(from: probe))
         XCTAssertFalse(targets.hitSafetyFloor)
         XCTAssertGreaterThan(targets.dailyCalorieGoalKcal, 1500)
     }
 
-    func testMaintainNeverHitsFloor() {
+    func testMaintainNeverHitsFloor() throws {
         // 30kg female (extreme low) — maintain shouldn't trip the floor
         // because there's no deficit subtraction.
-        let targets = GoalCalculator.calculateTargets(
-            from: input(weight: 30, sex: .female, activity: .sedentary, goal: .maintain)
-        )!
+        let probe = input(weight: 30, sex: .female, activity: .sedentary, goal: .maintain)
+        let targets = try XCTUnwrap(GoalCalculator.calculateTargets(from: probe))
         XCTAssertFalse(targets.hitSafetyFloor)
     }
 
@@ -253,10 +254,10 @@ final class GoalCalculatorTests: XCTestCase {
     }
 
     func testBmrUndisclosedSitsBetweenMaleAndFemale() {
-        let m = GoalCalculator.mifflinStJeorBMR(input: input(sex: .male))
-        let f = GoalCalculator.mifflinStJeorBMR(input: input(sex: .female))
-        let u = GoalCalculator.mifflinStJeorBMR(input: input(sex: .undisclosed))
-        XCTAssertEqual(u, (m + f) / 2, accuracy: 1.0)
+        let male = GoalCalculator.mifflinStJeorBMR(input: input(sex: .male))
+        let female = GoalCalculator.mifflinStJeorBMR(input: input(sex: .female))
+        let undisclosed = GoalCalculator.mifflinStJeorBMR(input: input(sex: .undisclosed))
+        XCTAssertEqual(undisclosed, (male + female) / 2, accuracy: 1.0)
     }
 
     // MARK: - Edge cases
@@ -269,12 +270,11 @@ final class GoalCalculatorTests: XCTestCase {
         XCTAssertNotNil(out)
     }
 
-    func testMaximumPhysiologicalInputs() {
-        let out = GoalCalculator.calculateTargets(
+    func testMaximumPhysiologicalInputs() throws {
+        let out = try XCTUnwrap(GoalCalculator.calculateTargets(
             from: input(height: 220, weight: 200, age: 100, sex: .male, activity: .veryActive)
-        )
-        XCTAssertNotNil(out)
-        XCTAssertGreaterThan(out!.dailyCalorieGoalKcal, 3000)
+        ))
+        XCTAssertGreaterThan(out.dailyCalorieGoalKcal, 3000)
     }
 
     func testFullTargetsBundle() throws {

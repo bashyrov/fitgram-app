@@ -79,8 +79,7 @@ final class UserProfileService: UserProfileServing {
         recalculate(user: user)
         if let pace = user.goalPaceKgPerWeek,
             let target = user.goalTargetWeightKg,
-            pace > 0
-        {
+            pace > 0 {
             user.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
                 currentWeightKg: kg,
                 targetWeightKg: target,
@@ -163,8 +162,7 @@ final class UserProfileService: UserProfileServing {
             if let pace = paceKgPerWeek,
                 let target = targetWeightKg,
                 let current = user.weightKg,
-                pace > 0
-            {
+                pace > 0 {
                 user.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
                     currentWeightKg: current,
                     targetWeightKg: target,

@@ -1,6 +1,8 @@
 import OSLog
 import SwiftUI
 
+// swiftlint:disable file_length
+
 // MARK: - Shared sheet chrome
 
 private struct GoalSheetScaffold<Content: View>: View {
@@ -119,13 +121,13 @@ struct EditActivitySheet: View {
     }
 
     private var previewKcal: Int {
-        guard let h = user.heightCm,
-            let w = user.weightKg,
+        guard let height = user.heightCm,
+            let weight = user.weightKg,
             let birth = user.birthDate
         else { return user.dailyCalorieGoalKcal }
         let age = Calendar.current.dateComponents([.year], from: birth, to: Date()).year ?? 0
         let input = GoalCalculator.Input(
-            heightCm: h, weightKg: w, age: age,
+            heightCm: height, weightKg: weight, age: age,
             biologicalSex: user.biologicalSex,
             activityLevel: selected,
             goal: user.goalKind,
@@ -172,8 +174,8 @@ struct EditActivitySheet: View {
         onDismiss()
     }
 
-    private func symbol(for l: ActivityLevel) -> String {
-        switch l {
+    private func symbol(for level: ActivityLevel) -> String {
+        switch level {
         case .sedentary: return "chair.fill"
         case .light: return "figure.walk"
         case .moderate: return "figure.run"
@@ -182,8 +184,8 @@ struct EditActivitySheet: View {
         }
     }
 
-    private func title(for l: ActivityLevel) -> String {
-        switch l {
+    private func title(for level: ActivityLevel) -> String {
+        switch level {
         case .sedentary: return "Siedzący"
         case .light: return "Lekko aktywny"
         case .moderate: return "Umiarkowanie aktywny"
@@ -192,8 +194,8 @@ struct EditActivitySheet: View {
         }
     }
 
-    private func subtitle(for l: ActivityLevel) -> String {
-        switch l {
+    private func subtitle(for level: ActivityLevel) -> String {
+        switch level {
         case .sedentary: return "Biuro, niewiele ruchu"
         case .light: return "Ćwiczenia 1-3× w tygodniu"
         case .moderate: return "Ćwiczenia 3-5× w tygodniu"
@@ -219,15 +221,17 @@ struct EditCaloriesSheet: View {
         self._kcal = State(initialValue: user.dailyCalorieGoalKcal)
     }
 
+    private func save() {
+        try? service.overrideCalories(kcal)
+        Haptics.light()
+        onDismiss()
+    }
+
     var body: some View {
         GoalSheetScaffold(
             title: "Cel kaloryczny",
             onCancel: onDismiss,
-            onSave: {
-                try? service.overrideCalories(kcal)
-                Haptics.light()
-                onDismiss()
-            }
+            onSave: save
         ) {
             Card {
                 VStack(spacing: Tokens.Space.md) {
@@ -290,19 +294,21 @@ struct EditMacrosSheet: View {
         Int((Double(user.dailyCalorieGoalKcal) * carbsPct / 4).rounded())
     }
 
+    private func save() {
+        try? service.overrideMacros(
+            protein: proteinGrams,
+            carbs: carbsGrams,
+            fat: fatGrams
+        )
+        Haptics.light()
+        onDismiss()
+    }
+
     var body: some View {
         GoalSheetScaffold(
             title: "Makroskładniki",
             onCancel: onDismiss,
-            onSave: {
-                try? service.overrideMacros(
-                    protein: proteinGrams,
-                    carbs: carbsGrams,
-                    fat: fatGrams
-                )
-                Haptics.light()
-                onDismiss()
-            }
+            onSave: save
         ) {
             Card {
                 VStack(alignment: .leading, spacing: Tokens.Space.md) {
@@ -370,15 +376,17 @@ struct EditWaterSheet: View {
         self._waterMl = State(initialValue: user.waterGoalMl)
     }
 
+    private func save() {
+        try? service.overrideWater(waterMl)
+        Haptics.light()
+        onDismiss()
+    }
+
     var body: some View {
         GoalSheetScaffold(
             title: "Cel wody",
             onCancel: onDismiss,
-            onSave: {
-                try? service.overrideWater(waterMl)
-                Haptics.light()
-                onDismiss()
-            }
+            onSave: save
         ) {
             Card {
                 VStack(spacing: Tokens.Space.md) {
@@ -426,19 +434,21 @@ struct EditMainGoalSheet: View {
         self._targetWeightKg = State(initialValue: user.goalTargetWeightKg ?? fallbackTarget)
     }
 
+    private func save() {
+        try? service.updateMainGoal(
+            kind: kind,
+            paceKgPerWeek: kind.requiresPaceAndTarget ? paceKgPerWeek : nil,
+            targetWeightKg: kind.requiresPaceAndTarget ? targetWeightKg : nil
+        )
+        Haptics.success()
+        onDismiss()
+    }
+
     var body: some View {
         GoalSheetScaffold(
             title: "Twój cel",
             onCancel: onDismiss,
-            onSave: {
-                try? service.updateMainGoal(
-                    kind: kind,
-                    paceKgPerWeek: kind.requiresPaceAndTarget ? paceKgPerWeek : nil,
-                    targetWeightKg: kind.requiresPaceAndTarget ? targetWeightKg : nil
-                )
-                Haptics.success()
-                onDismiss()
-            }
+            onSave: save
         ) {
             VStack(spacing: Tokens.Space.md) {
                 ForEach(GoalKind.allCases, id: \.self) { option in

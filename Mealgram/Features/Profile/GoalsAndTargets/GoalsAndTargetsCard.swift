@@ -188,13 +188,13 @@ struct GoalsAndTargetsCard: View {
                 Divider().background(Tokens.Palette.separator)
                 row(label: "Płeć", value: sexLabel)
                 if let age = ageString { row(label: "Wiek", value: age) }
-                if let h = user.heightCm { row(label: "Wzrost", value: "\(h) cm") }
-                if let w = user.weightKg {
+                if let height = user.heightCm { row(label: "Wzrost", value: "\(height) cm") }
+                if let weight = user.weightKg {
                     HStack {
                         Text("Waga")
                             .foregroundStyle(Tokens.Palette.inkMuted)
                         Spacer()
-                        Text(String(format: "%.1f kg", w).replacingOccurrences(of: ".", with: ","))
+                        Text(String(format: "%.1f kg", weight).replacingOccurrences(of: ".", with: ","))
                             .foregroundStyle(Tokens.Palette.ink)
                         Button { sheet = .weight } label: {
                             Text("Aktualizuj")

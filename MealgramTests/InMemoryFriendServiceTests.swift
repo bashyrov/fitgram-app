@@ -135,7 +135,8 @@ final class InMemoryFriendServiceTests: XCTestCase {
         let service = InMemoryFriendService()
         let snap = try await service.snapshot(forUserID: "friend-ola", viewer: me)
         XCTAssertNotNil(snap.recentEvents)
-        XCTAssertFalse(snap.recentEvents!.isEmpty)
+        let events = try XCTUnwrap(snap.recentEvents)
+        XCTAssertFalse(events.isEmpty)
     }
 
     func testBlockHidesSnapshotAndDropsFriendship() async throws {
@@ -174,7 +175,7 @@ final class InMemoryFriendServiceTests: XCTestCase {
 final class PrivacyStoreTests: XCTestCase {
     private func makeStore(suffix: String = #function) -> PrivacyStore {
         let suiteName = "PrivacyStoreTests.\(suffix).\(UUID())"
-        let defaults = UserDefaults(suiteName: suiteName)!
+        let defaults = UserDefaults(suiteName: suiteName) ?? .standard
         return PrivacyStore(defaults: defaults, storageKey: "privacy.test")
     }
 
@@ -189,7 +190,7 @@ final class PrivacyStoreTests: XCTestCase {
 
     func testUpdateMutatesAndPersists() {
         let suiteName = "PrivacyStoreTests.persist.\(UUID())"
-        let defaults = UserDefaults(suiteName: suiteName)!
+        let defaults = UserDefaults(suiteName: suiteName) ?? .standard
         let first = PrivacyStore(defaults: defaults, storageKey: "privacy.test")
         first.update {
             $0.visibility = .friendsOnly

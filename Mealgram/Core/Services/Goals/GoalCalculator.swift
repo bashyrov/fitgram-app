@@ -165,11 +165,18 @@ struct GoalCalculator {
     /// Macro split as fractions of total kcal. Different goal kinds bias
     /// towards different macros: weight loss → more protein for satiety
     /// + lean-mass retention; gain → more carbs for training fuel.
-    static func macroSplit(for goal: GoalKind) -> (protein: Double, carbs: Double, fat: Double) {
+    struct MacroSplit: Equatable, Sendable {
+        var protein: Double
+        var carbs: Double
+        var fat: Double
+    }
+
+    static func macroSplit(for goal: GoalKind) -> MacroSplit {
         switch goal {
-        case .lose: return (protein: 0.30, carbs: 0.42, fat: 0.28)
-        case .maintain, .healthCondition, .justTracking: return (protein: 0.25, carbs: 0.45, fat: 0.30)
-        case .gain: return (protein: 0.25, carbs: 0.50, fat: 0.25)
+        case .lose: return MacroSplit(protein: 0.30, carbs: 0.42, fat: 0.28)
+        case .maintain, .healthCondition, .justTracking:
+            return MacroSplit(protein: 0.25, carbs: 0.45, fat: 0.30)
+        case .gain: return MacroSplit(protein: 0.25, carbs: 0.50, fat: 0.25)
         }
     }
 

@@ -28,24 +28,24 @@ struct RecommendationsRequest: Codable, Equatable, Sendable {
 /// rule-based fallback in the same shape so the UI doesn't branch on
 /// data source.
 struct Recommendations: Codable, Equatable, Sendable {
-    struct Tip: Codable, Equatable, Sendable, Identifiable {
-        var id = UUID()
-        /// Single emoji used as the leading glyph in the UI. Worker is
-        /// instructed to return one in its response; fallback supplies
-        /// canonical ones per tip category.
-        var icon: String
-        var title: String
-        var description: String
-
-        enum CodingKeys: String, CodingKey { case icon, title, description }
-    }
-
     var summary: String
-    var tips: [Tip]
+    var tips: [RecommendationTip]
     var warnings: [String]
     var nextSteps: String
     /// "rule_based" | "worker_claude_sonnet_4_5" — surfaced in the
     /// debug build only so we can tell which path delivered the
     /// recommendations the user is reading.
     var source: String
+}
+
+struct RecommendationTip: Codable, Equatable, Sendable, Identifiable {
+    var id = UUID()
+    /// Single emoji used as the leading glyph in the UI. Worker is
+    /// instructed to return one in its response; fallback supplies
+    /// canonical ones per tip category.
+    var icon: String
+    var title: String
+    var description: String
+
+    enum CodingKeys: String, CodingKey { case icon, title, description }
 }

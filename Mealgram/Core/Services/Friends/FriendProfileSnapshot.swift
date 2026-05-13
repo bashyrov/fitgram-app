@@ -58,9 +58,9 @@ struct PublicRecipeReference: Equatable, Sendable, Identifiable {
 
 /// Per-spec only positive reactions on a friend's event.
 enum PositiveReactionIntent: String, Sendable, CaseIterable {
-    case encourage = "encourage"
-    case celebrate = "celebrate"
-    case congratulate = "congratulate"
+    case encourage
+    case celebrate
+    case congratulate
 
     var label: String {
         switch self {

@@ -69,8 +69,7 @@ final class UserRepository {
         if let pace = profile.goalPaceKgPerWeek,
             let target = profile.goalTargetWeightKg,
             let current = profile.weightKg,
-            pace > 0
-        {
+            pace > 0 {
             stored.goalStartDate = Date()
             stored.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
                 currentWeightKg: current,
