@@ -255,6 +255,37 @@ struct QuickDatabaseRootView: View {
             )
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            if food.defaultPortionGrams != nil {
+                Button {
+                    quickLog(food)
+                } label: {
+                    Label("Dodaj porcję domyślną", systemImage: "bolt.fill")
+                }
+            }
+            Button {
+                pickedFood = food
+            } label: {
+                Label("Wybierz wielkość…", systemImage: "ruler")
+            }
+        }
+    }
+
+    /// One-tap commit using the food's default portion. Skips the
+    /// FoodDetailSheet entirely — useful when the user picks the same
+    /// staple every day.
+    private func quickLog(_ food: Food) {
+        guard let portion = food.defaultPortionGrams, portion > 0 else { return }
+        let scale = portion / 100
+        let item = FoodItem(
+            name: food.name,
+            quantityGrams: portion,
+            caloriesKcal: food.caloriesKcalPer100g * scale,
+            proteinGrams: food.proteinGramsPer100g * scale,
+            carbsGrams: food.carbsGramsPer100g * scale,
+            fatGrams: food.fatGramsPer100g * scale
+        )
+        commit(food: food, item: item, suggestedMealType: Self.suggestedMealType())
     }
 
     private func subtitle(for food: Food) -> String {
