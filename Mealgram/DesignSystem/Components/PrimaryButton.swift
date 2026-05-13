@@ -30,11 +30,20 @@ struct PrimaryButton: View {
             .frame(height: 56)
             .background(
                 RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                    .fill(Tokens.Palette.primary)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Tokens.Palette.primary,
+                                Tokens.Palette.primary.opacity(0.85),
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 12, x: 0, y: 6)
             )
-            .mealgramShadow(Tokens.Shadow.card)
             .contentShape(RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
-            .opacity(effectiveEnabled ? 1 : 0.55)
+            .opacity(effectiveEnabled ? 1 : 0.5)
         }
         .buttonStyle(PressableButtonStyle())
         .disabled(!effectiveEnabled || isLoading)

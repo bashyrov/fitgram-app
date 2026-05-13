@@ -38,13 +38,21 @@ struct OnboardingChoiceCard: View {
             .padding(Tokens.Space.lg)
             .background(
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
+                    .fill(isSelected ? Tokens.Palette.primarySoft : Tokens.Palette.surface)
+                    .shadow(
+                        color: isSelected
+                            ? Tokens.Palette.primary.opacity(0.18)
+                            : .black.opacity(0.04),
+                        radius: isSelected ? 12 : 8,
+                        x: 0,
+                        y: isSelected ? 5 : 2
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
                     .stroke(
-                        isSelected ? Tokens.Palette.primary : Tokens.Palette.separator,
-                        lineWidth: isSelected ? 2 : 1
+                        isSelected ? Tokens.Palette.primary : Color.clear,
+                        lineWidth: isSelected ? 2 : 0
                     )
             )
         }

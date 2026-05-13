@@ -2,6 +2,10 @@ import SwiftUI
 
 /// Shared layout for each onboarding step. Keeps spacing + button placement
 /// consistent so steps just provide content and a CTA title.
+///
+/// Content is hosted in a ScrollView so tall steps (Profile picker with
+/// 3 sections of cards + 2 text fields) don't get cut off, and the
+/// keyboard inset is automatically respected.
 struct OnboardingStepScaffold<Content: View>: View {
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey?
@@ -14,20 +18,28 @@ struct OnboardingStepScaffold<Content: View>: View {
     @ViewBuilder var content: () -> Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.xl) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(title)
-                    .font(Tokens.Font.title)
-                    .foregroundStyle(Tokens.Palette.ink)
-                if let subtitle {
-                    Text(subtitle)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Tokens.Space.xl) {
+                    VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                        Text(title)
+                            .font(Tokens.Font.title)
+                            .foregroundStyle(Tokens.Palette.ink)
+                        if let subtitle {
+                            Text(subtitle)
+                                .font(Tokens.Font.body)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                        }
+                    }
+                    content()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, Tokens.Space.lg)
+                .padding(.bottom, Tokens.Space.lg)
             }
-            content()
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Spacer(minLength: Tokens.Space.lg)
+            .scrollDismissesKeyboard(.interactively)
+
             VStack(spacing: Tokens.Space.sm) {
                 PrimaryButton(
                     title: primaryTitle,
@@ -44,11 +56,22 @@ struct OnboardingStepScaffold<Content: View>: View {
                     .padding(.bottom, Tokens.Space.xs)
                 }
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.top, Tokens.Space.md)
+            .padding(.bottom, Tokens.Space.xl)
+            .background(
+                LinearGradient(
+                    colors: [Tokens.Palette.background.opacity(0), Tokens.Palette.background],
+                    startPoint: .top,
+                    endPoint: .center
+                )
+                .frame(height: 32)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .offset(y: -32)
+                .allowsHitTesting(false)
+            )
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.lg)
-        .padding(.bottom, Tokens.Space.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Tokens.Palette.background)
     }
 }

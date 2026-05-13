@@ -12,7 +12,10 @@ struct BarcodeScannerView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            CameraPreviewView(session: session.session)
+            // Barcode scanner: aspect-fit so the user sees the entire
+            // camera frame — aspect-fill would crop the edges where a
+            // barcode might actually be sitting.
+            CameraPreviewView(session: session.session, gravity: .resizeAspect)
                 .ignoresSafeArea()
 
             ReticleOverlay(isBusy: isLooking)
