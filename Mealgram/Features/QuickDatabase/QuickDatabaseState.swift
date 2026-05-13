@@ -11,7 +11,12 @@ final class QuickDatabaseState {
     private(set) var popularPicks: [Food] = []
     var selectedCategory: FoodCategory?
     var query: String = ""
+    /// Filter to user-authored (verified == false) Food rows.
+    var customOnly: Bool = false
     private(set) var isLoading = false
+    /// True when the catalogue holds at least one user-authored row;
+    /// drives whether the "Tylko moje" filter chip should appear.
+    private(set) var hasCustomFoods: Bool = false
 
     private let catalog: any FoodCatalog
 
@@ -24,6 +29,8 @@ final class QuickDatabaseState {
         defer { isLoading = false }
         do {
             availableCategories = try catalog.categories()
+            let all = try catalog.all()
+            hasCustomFoods = all.contains { !$0.verified }
             foods = try filteredFoods()
             recentPicks = (try? catalog.recent(limit: 8)) ?? []
             popularPicks = (try? catalog.popular(limit: 8)) ?? []
@@ -74,12 +81,20 @@ final class QuickDatabaseState {
         await refresh()
     }
 
+    func toggleCustomOnly() async {
+        customOnly.toggle()
+        await refresh()
+    }
+
     private func filteredFoods() throws -> [Food] {
-        let base: [Food]
+        var base: [Food]
         if let selectedCategory {
             base = try catalog.byCategory(selectedCategory)
         } else {
             base = try catalog.all()
+        }
+        if customOnly {
+            base = base.filter { !$0.verified }
         }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return base }
