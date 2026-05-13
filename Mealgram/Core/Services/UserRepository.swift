@@ -67,6 +67,22 @@ final class UserRepository {
         Logger.persistence.notice("Onboarding completed for \(user.remoteID, privacy: .private)")
     }
 
+    /// Clears the onboarding completion timestamp so AppRouter sends the
+    /// user back through the onboarding flow on next evaluation. Used by
+    /// Profile → Preferences → "Powtórz onboarding".
+    func resetOnboarding(forRemoteID remoteID: String) throws {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<User>(
+            predicate: #Predicate { $0.remoteID == remoteID }
+        )
+        guard let stored = try context.fetch(descriptor).first else {
+            throw RepositoryError.userNotFound
+        }
+        stored.onboardingCompletedAt = nil
+        stored.updatedAt = Date()
+        try context.save()
+    }
+
     func fetchUser(remoteID: String) throws -> User? {
         let context = ModelContext(container)
         let descriptor = FetchDescriptor<User>(

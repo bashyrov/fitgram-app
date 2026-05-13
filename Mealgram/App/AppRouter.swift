@@ -45,4 +45,12 @@ final class AppRouter {
         guard case .onboarding(let authUser) = phase else { return }
         phase = .main(authUser: authUser)
     }
+
+    /// Sends the authenticated user back to the onboarding flow — used by
+    /// Profile → Preferences → "Powtórz onboarding". Caller is expected to
+    /// have already cleared the user's onboardingCompletedAt flag.
+    func restartOnboarding() {
+        guard case .main(let authUser) = phase else { return }
+        phase = .onboarding(authUser: authUser)
+    }
 }

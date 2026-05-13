@@ -21,6 +21,7 @@ struct ProfileView: View {
     let statsService: ProfileStatsService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
+    let onRestartOnboarding: () -> Void
 
     @State private var sharedFile: SharedFile?
     @State private var isPreparingExport = false
@@ -39,6 +40,7 @@ struct ProfileView: View {
     @State private var isSearchPresented = false
     @State private var searchSelectedMeal: MealEntry?
     @State private var isStreakCalendarPresented = false
+    @State private var isRestartOnboardingConfirmed = false
     @State private var isHelpPresented = false
 
     var body: some View {
@@ -276,7 +278,21 @@ struct ProfileView: View {
                 actionRow(symbol: "calendar", title: "Historia serii", role: nil) {
                     isStreakCalendarPresented = true
                 }
+                Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "arrow.counterclockwise", title: "Powtórz onboarding", role: nil) {
+                    isRestartOnboardingConfirmed = true
+                }
             }
+        }
+        .confirmationDialog(
+            "Powtórzyć onboarding?",
+            isPresented: $isRestartOnboardingConfirmed,
+            titleVisibility: .visible
+        ) {
+            Button("Powtórz", role: .destructive, action: onRestartOnboarding)
+            Button("Anuluj", role: .cancel) {}
+        } message: {
+            Text("Twoje dane zostaną — przeprowadzimy Cię tylko jeszcze raz przez ustawienia.")
         }
     }
 

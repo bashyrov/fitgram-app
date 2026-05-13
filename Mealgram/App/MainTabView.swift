@@ -27,6 +27,7 @@ struct MainTabView: View {
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
+    let onRestartOnboarding: () -> Void
     let todayState: TodayState
     let progressState: ProgressState
 
@@ -68,6 +69,7 @@ struct MainTabView: View {
         unlockBus: AchievementUnlockBus,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
+        onRestartOnboarding: @escaping () -> Void,
         todayState: TodayState,
         progressState: ProgressState
     ) {
@@ -92,6 +94,7 @@ struct MainTabView: View {
         self.unlockBus = unlockBus
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
+        self.onRestartOnboarding = onRestartOnboarding
         self.todayState = todayState
         self.progressState = progressState
         self._friendsState = State(
@@ -183,7 +186,8 @@ struct MainTabView: View {
                 challengeService: challengeService,
                 statsService: statsService,
                 onSignOut: onSignOut,
-                onDeleteAccount: onDeleteAccount
+                onDeleteAccount: onDeleteAccount,
+                onRestartOnboarding: onRestartOnboarding
             )
             .tabItem {
                 Label("Profil", systemImage: "person.crop.circle")
