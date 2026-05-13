@@ -5,6 +5,14 @@ import SwiftUI
 struct AchievementsSection: View {
     let earnedKindsToDate: [String: Date]
 
+    @State private var selected: AchievementSelection?
+
+    private struct AchievementSelection: Identifiable {
+        let id: String
+        let definition: AchievementDefinition
+        let earnedAt: Date?
+    }
+
     private let columns = [
         GridItem(.flexible(), spacing: Tokens.Space.md),
         GridItem(.flexible(), spacing: Tokens.Space.md),
@@ -32,14 +40,32 @@ struct AchievementsSection: View {
                 }
                 LazyVGrid(columns: columns, spacing: Tokens.Space.md) {
                     ForEach(AchievementCatalog.all.sorted(by: { $0.order < $1.order }), id: \.id) { definition in
-                        AchievementBadge(
-                            definition: definition,
-                            isEarned: earnedKindsToDate[definition.id] != nil,
-                            earnedAt: earnedKindsToDate[definition.id]
-                        )
+                        Button {
+                            selected = AchievementSelection(
+                                id: definition.id,
+                                definition: definition,
+                                earnedAt: earnedKindsToDate[definition.id]
+                            )
+                            Haptics.light()
+                        } label: {
+                            AchievementBadge(
+                                definition: definition,
+                                isEarned: earnedKindsToDate[definition.id] != nil,
+                                earnedAt: earnedKindsToDate[definition.id]
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
+        }
+        .sheet(item: $selected) { item in
+            AchievementDetailSheet(
+                definition: item.definition,
+                earnedAt: item.earnedAt,
+                onDismiss: { selected = nil }
+            )
+            .presentationDetents([.fraction(0.45), .medium])
         }
     }
 }
