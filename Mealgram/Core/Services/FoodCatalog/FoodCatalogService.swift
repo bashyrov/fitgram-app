@@ -21,6 +21,10 @@ protocol FoodCatalog {
     /// persisted row.
     @discardableResult
     func create(_ food: Food) throws -> Food
+    /// Zeroes pickCount + clears lastPickedAt on every Food. Used by
+    /// Profile → Preferences → "Resetuj statystyki Szybkiej bazy" to
+    /// give the user a fresh "Ostatnie / Częste" recommendation pool.
+    func resetPickHistory() throws
 }
 
 @MainActor
@@ -101,6 +105,19 @@ final class FoodCatalogService: FoodCatalog {
         context.insert(food)
         try context.save()
         return food
+    }
+
+    func resetPickHistory() throws {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<Food>(
+            predicate: #Predicate { $0.pickCount > 0 || $0.lastPickedAt != nil }
+        )
+        let touched = try context.fetch(descriptor)
+        for food in touched {
+            food.pickCount = 0
+            food.lastPickedAt = nil
+        }
+        try context.save()
     }
 }
 

@@ -9,6 +9,7 @@ struct QuickDatabaseRootView: View {
 
     @State private var pickedFood: Food?
     @State private var isAddingCustom = false
+    @State private var isResetConfirmed = false
 
     var body: some View {
         NavigationStack {
@@ -25,12 +26,23 @@ struct QuickDatabaseRootView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        isAddingCustom = true
+                    Menu {
+                        Button {
+                            isAddingCustom = true
+                        } label: {
+                            Label("Dodaj własne danie", systemImage: "plus")
+                        }
+                        if state.shouldShowSuggestions {
+                            Button(role: .destructive) {
+                                isResetConfirmed = true
+                            } label: {
+                                Label("Resetuj Ostatnie / Częste", systemImage: "arrow.counterclockwise")
+                            }
+                        }
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: "ellipsis.circle")
                     }
-                    .accessibilityLabel(Text("Dodaj własne danie"))
+                    .accessibilityLabel(Text("Więcej opcji"))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Zamknij", action: onDismiss)
@@ -54,6 +66,18 @@ struct QuickDatabaseRootView: View {
                     },
                     onDismiss: { isAddingCustom = false }
                 )
+            }
+            .confirmationDialog(
+                "Wyzerować Ostatnie i Częste?",
+                isPresented: $isResetConfirmed,
+                titleVisibility: .visible
+            ) {
+                Button("Resetuj", role: .destructive) {
+                    Task { await state.resetPickHistory() }
+                }
+                Button("Anuluj", role: .cancel) {}
+            } message: {
+                Text("Karuzele Ostatnie i Częste wrócą do pierwszej konfiguracji.")
             }
         }
     }
