@@ -143,9 +143,20 @@ struct WeightLogView: View {
                     Text(deltaText(summary.thirtyDayDelta))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(deltaColor(summary.thirtyDayDelta))
+                    if let rate = summary.weeklyRateKg {
+                        Text(rateText(rate))
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkSubtle)
+                    }
                 }
             }
         }
+    }
+
+    private func rateText(_ value: Double) -> String {
+        if abs(value) < 0.05 { return "≈ stabilnie" }
+        let sign = value > 0 ? "+" : ""
+        return "\(sign)\(String(format: "%.2f", value)) kg/tyg."
     }
 
     private var chartCard: some View {

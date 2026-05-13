@@ -94,10 +94,26 @@ final class WeightService {
             let total = weekSlice.reduce(0.0) { $0 + $1.weightKg }
             sevenDayAverage = total / Double(weekSlice.count)
         }
+        // Linear weekly rate from the comparable (oldest-in-30d) entry to
+        // latest. Nil when the slice has only one row or covers less than
+        // 3 days — too noisy to report yet.
+        let weeklyRate: Double?
+        if comparable.id != latest.id {
+            let days = calendar.dateComponents([.day], from: comparable.recordedAt, to: latest.recordedAt).day ?? 0
+            if days >= 3 {
+                let perDay = (latest.weightKg - comparable.weightKg) / Double(days)
+                weeklyRate = perDay * 7
+            } else {
+                weeklyRate = nil
+            }
+        } else {
+            weeklyRate = nil
+        }
         return Summary(
             latest: latest,
             thirtyDayDelta: latest.weightKg - comparable.weightKg,
             sevenDayAverageKg: sevenDayAverage,
+            weeklyRateKg: weeklyRate,
             entries: entries
         )
     }
@@ -106,6 +122,7 @@ final class WeightService {
         let latest: WeightEntry
         let thirtyDayDelta: Double
         let sevenDayAverageKg: Double?
+        let weeklyRateKg: Double?
         let entries: [WeightEntry]
     }
 }
