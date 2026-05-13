@@ -7,6 +7,7 @@ enum AppShortcutAction {
     static let logMeal = Notification.Name("mealgram.shortcut.logMeal")
     static let showToday = Notification.Name("mealgram.shortcut.showToday")
     static let showWeeklyDebrief = Notification.Name("mealgram.shortcut.showWeeklyDebrief")
+    static let openRecipes = Notification.Name("mealgram.shortcut.openRecipes")
 }
 
 /// Open the app and raise the "Add meal" action sheet.
