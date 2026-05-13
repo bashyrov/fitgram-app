@@ -93,4 +93,26 @@ final class VoiceMealParserTests: XCTestCase {
         XCTAssertEqual(item.quantityGrams, 100)
         XCTAssertEqual(item.caloriesKcal, 0)
     }
+
+    // MARK: - Multi-item
+
+    func testSplitOnPolishConnectives() {
+        let pieces = VoiceMealParser.split("jajka i tost oraz kawa, sok")
+        XCTAssertEqual(pieces, ["jajka", "tost", "kawa", "sok"])
+    }
+
+    func testParseMultipleReturnsOneItemPerSegment() {
+        let parser = VoiceMealParser()
+        let items = parser.parseMultiple("schabowy 200 gram i ziemniaki 250 g")
+        XCTAssertEqual(items.count, 2)
+        XCTAssertTrue(items.contains { $0.name.lowercased().contains("schabowy") })
+        XCTAssertTrue(items.contains { $0.name.lowercased().contains("ziemniaki") })
+    }
+
+    func testParseMultipleFallsBackToSingleItemWhenUnsplit() {
+        let parser = VoiceMealParser()
+        let items = parser.parseMultiple("kanapka 250 g 400 kcal")
+        XCTAssertEqual(items.count, 1)
+        XCTAssertEqual(items.first?.caloriesKcal, 400)
+    }
 }

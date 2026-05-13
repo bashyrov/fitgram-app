@@ -18,6 +18,45 @@ struct VoiceMealParser {
         self.catalog = catalog
     }
 
+    /// Multi-item entry point — splits the transcript on Polish
+    /// connectives ("i", "oraz", "plus") and commas, parses each segment
+    /// independently, drops empty fragments. Always returns at least
+    /// one item.
+    func parseMultiple(_ transcript: String) -> [FoodItem] {
+        let cleaned = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else { return [parse("")] }
+        let segments = Self.split(cleaned)
+        let items = segments.map { parse($0) }
+            .filter { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }
+        return items.isEmpty ? [parse(cleaned)] : items
+    }
+
+    /// Splits `"jajka 2 i tost z masłem oraz kawa"` into
+    /// `["jajka 2", "tost z masłem", "kawa"]`. Lowercase, then matches
+    /// `\bi\b`, `\boraz\b`, `\bplus\b`, and commas as separators.
+    static func split(_ transcript: String) -> [String] {
+        let lower = transcript.lowercased()
+        let pattern = #"\s*(,|\bi\b|\boraz\b|\bplus\b)\s*"#
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+            return [transcript]
+        }
+        let nsRange = NSRange(lower.startIndex..., in: lower)
+        var pieces: [String] = []
+        var cursor = lower.startIndex
+        regex.enumerateMatches(in: lower, options: [], range: nsRange) { match, _, _ in
+            guard let match,
+                let range = Range(match.range, in: lower)
+            else { return }
+            let segment = lower[cursor..<range.lowerBound]
+            let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty { pieces.append(trimmed) }
+            cursor = range.upperBound
+        }
+        let tail = lower[cursor..<lower.endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+        if !tail.isEmpty { pieces.append(tail) }
+        return pieces.isEmpty ? [transcript] : pieces
+    }
+
     /// Always produces at least one item, even for unparseable transcripts.
     /// Returns the catalog-match flag so callers know whether to trust
     /// the macro numbers.
