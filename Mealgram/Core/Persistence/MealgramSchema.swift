@@ -21,6 +21,7 @@ enum MealgramSchemaV1: VersionedSchema {
             Achievement.self,
             WeightEntry.self,
             CoachInsightLog.self,
+            CoachMemoryNote.self,
             WaterEntry.self,
         ]
     }
