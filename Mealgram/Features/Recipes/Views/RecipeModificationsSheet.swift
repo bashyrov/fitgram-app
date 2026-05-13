@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Read-only suggestions sheet for the recipe modification engine
 /// (M3.3 prep). Bullets call out which ingredient to swap and the
@@ -8,6 +9,8 @@ struct RecipeModificationsSheet: View {
     let recipe: Recipe
     let intent: RecipeModificationEngine.Intent
     let onDismiss: () -> Void
+
+    @State private var copiedAt: UUID?
 
     private var suggestions: [RecipeModificationEngine.Suggestion] {
         RecipeModificationEngine.suggestions(for: recipe, intent: intent)
@@ -27,6 +30,25 @@ struct RecipeModificationsSheet: View {
                                 ForEach(suggestions) { suggestion in
                                     card(suggestion)
                                 }
+                                ShareLink(
+                                    item: bulletList,
+                                    subject: Text("Modyfikacje: \(recipe.title)"),
+                                    preview: SharePreview(
+                                        "Modyfikacje: \(recipe.title)",
+                                        icon: Image(systemName: intent.symbol)
+                                    )
+                                ) {
+                                    HStack(spacing: Tokens.Space.sm) {
+                                        Image(systemName: "square.and.arrow.up")
+                                        Text("Udostępnij listę")
+                                            .font(Tokens.Font.bodyEmphasized)
+                                    }
+                                    .foregroundStyle(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, Tokens.Space.md)
+                                    .background(Capsule().fill(Tokens.Palette.primary))
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -66,15 +88,41 @@ struct RecipeModificationsSheet: View {
     private func card(_ suggestion: RecipeModificationEngine.Suggestion) -> some View {
         Card {
             VStack(alignment: .leading, spacing: 4) {
-                Text(suggestion.ingredient.capitalized)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
+                HStack {
+                    Text(suggestion.ingredient.capitalized)
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.primary)
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = "\(suggestion.ingredient): \(suggestion.replacement)"
+                        copiedAt = suggestion.id
+                        Haptics.light()
+                        Task {
+                            try? await Task.sleep(nanoseconds: 1_500_000_000)
+                            if copiedAt == suggestion.id { copiedAt = nil }
+                        }
+                    } label: {
+                        Image(systemName: copiedAt == suggestion.id ? "checkmark" : "doc.on.doc")
+                            .font(.caption)
+                            .foregroundStyle(Tokens.Palette.primary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Skopiuj sugestię"))
+                }
                 Text(suggestion.replacement)
                     .font(Tokens.Font.body)
                     .foregroundStyle(Tokens.Palette.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+    }
+
+    private var bulletList: String {
+        var lines = ["Modyfikacje: \(recipe.title)", "(\(intent.label))", ""]
+        for suggestion in suggestions {
+            lines.append("• \(suggestion.ingredient.capitalized): \(suggestion.replacement)")
+        }
+        return lines.joined(separator: "\n")
     }
 
     private var empty: some View {
