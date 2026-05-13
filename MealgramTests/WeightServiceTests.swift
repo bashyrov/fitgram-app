@@ -58,6 +58,21 @@ final class WeightServiceTests: XCTestCase {
         XCTAssertNil(try service.summary(for: "ghost"))
     }
 
+    func testSummarySevenDayAverageOnlyIncludesRecent() throws {
+        let calendar = Calendar.current
+        let now = Date()
+        let tenDaysAgo = try XCTUnwrap(calendar.date(byAdding: .day, value: -10, to: now))
+        let threeDaysAgo = try XCTUnwrap(calendar.date(byAdding: .day, value: -3, to: now))
+        try service.log(70, for: "u-avg", at: tenDaysAgo)
+        try service.log(80, for: "u-avg", at: threeDaysAgo)
+        try service.log(82, for: "u-avg", at: now)
+
+        let summary = try XCTUnwrap(try service.summary(for: "u-avg"))
+        // 80 + 82 = 162, / 2 = 81 — the 10-days-ago entry falls outside the window.
+        let average = try XCTUnwrap(summary.sevenDayAverageKg)
+        XCTAssertEqual(average, 81, accuracy: 0.01)
+    }
+
     func testDelete() throws {
         try service.log(70, for: "u")
         let entry = try XCTUnwrap(try service.entries(for: "u").first)

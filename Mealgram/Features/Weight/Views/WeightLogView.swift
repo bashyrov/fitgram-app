@@ -125,6 +125,17 @@ struct WeightLogView: View {
                         .foregroundStyle(Tokens.Palette.ink)
                 }
                 Spacer(minLength: 0)
+                if let avg = summary.sevenDayAverageKg {
+                    VStack(alignment: .center, spacing: 2) {
+                        Text("Średnia 7d")
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                        Text(String(format: "%.1f kg", avg))
+                            .font(Tokens.Font.bodyEmphasized)
+                            .foregroundStyle(Tokens.Palette.primary)
+                    }
+                    Spacer(minLength: 0)
+                }
                 VStack(alignment: .trailing, spacing: 2) {
                     Text("30 dni")
                         .font(Tokens.Font.footnote)
