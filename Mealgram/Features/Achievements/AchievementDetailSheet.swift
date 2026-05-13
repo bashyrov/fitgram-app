@@ -1,0 +1,80 @@
+import SwiftUI
+
+/// Raised when the user taps a badge in the Profile grid. Shows the
+/// larger glyph, title, longer description, and the earned date if any.
+/// Locked badges show the same info plus a "co trzeba zrobić" line.
+struct AchievementDetailSheet: View {
+    let definition: AchievementDefinition
+    let earnedAt: Date?
+    let onDismiss: () -> Void
+
+    private var isEarned: Bool { earnedAt != nil }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Tokens.Palette.background.ignoresSafeArea()
+                VStack(spacing: Tokens.Space.lg) {
+                    badge
+                    Text(definition.title)
+                        .font(Tokens.Font.title3)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(definition.summary)
+                        .font(Tokens.Font.body)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    statusLine
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.vertical, Tokens.Space.lg)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Zamknij", action: onDismiss)
+                }
+            }
+        }
+    }
+
+    private var badge: some View {
+        ZStack {
+            Circle()
+                .fill(isEarned ? Tokens.Palette.primarySoft : Tokens.Palette.surfaceMuted)
+                .frame(width: 128, height: 128)
+            Image(systemName: definition.symbol)
+                .font(.system(size: 52, weight: .semibold))
+                .foregroundStyle(isEarned ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
+            if !isEarned {
+                Circle()
+                    .fill(Color.black.opacity(0.18))
+                    .frame(width: 128, height: 128)
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 36, weight: .semibold))
+                    .foregroundStyle(.white)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var statusLine: some View {
+        if let earnedAt {
+            Text("Zdobyte \(Self.dateFormatter.string(from: earnedAt))")
+                .font(Tokens.Font.subheadline)
+                .foregroundStyle(Tokens.Palette.primary)
+        } else {
+            Text("Jeszcze niezdobyte")
+                .font(Tokens.Font.subheadline)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+        }
+    }
+
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.dateFormat = "d MMMM yyyy"
+        return formatter
+    }()
+}
