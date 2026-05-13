@@ -55,6 +55,21 @@ final class MealRepository {
         return copy
     }
 
+    /// Sweeps the photo directory for filenames no MealEntry references,
+    /// deletes them, returns the count. Safe to call from Profile → "Wyczyść
+    /// osierocone zdjęcia" — only orphans go.
+    @discardableResult
+    func cleanupOrphanedPhotos(in store: MealPhotoStore) -> Int {
+        let context = ModelContext(container)
+        let allMeals = (try? context.fetch(FetchDescriptor<MealEntry>())) ?? []
+        let inUse = Set(allMeals.compactMap(\.photoFilename))
+        let orphans = store.allFilenames().filter { !inUse.contains($0) }
+        for filename in orphans {
+            store.delete(filename: filename)
+        }
+        return orphans.count
+    }
+
     /// Returns true when no MealEntry references the given photo
     /// filename. The MealDetailSheet's deferred-cleanup path uses this
     /// just before deleting the file — protects against the undo
