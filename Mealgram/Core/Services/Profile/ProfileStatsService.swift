@@ -13,6 +13,7 @@ final class ProfileStatsService {
         let totalWeightEntries: Int
         let totalAchievements: Int
         let totalCaloriesKcal: Int
+        let totalRecipeCooks: Int
         let memberSince: Date?
     }
 
@@ -25,7 +26,9 @@ final class ProfileStatsService {
     func summary(for userRemoteID: String) -> Summary {
         let context = ModelContext(container)
         let meals = (try? context.fetch(FetchDescriptor<MealEntry>())) ?? []
-        let recipeCount = (try? context.fetchCount(FetchDescriptor<Recipe>())) ?? 0
+        let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
+        let recipeCount = recipes.count
+        let totalRecipeCooks = recipes.reduce(0) { $0 + $1.cookCount }
         let weightCount =
             (try? context.fetchCount(
                 FetchDescriptor<WeightEntry>(
@@ -48,6 +51,7 @@ final class ProfileStatsService {
             totalWeightEntries: weightCount,
             totalAchievements: achievementCount,
             totalCaloriesKcal: Int(totalKcal.rounded()),
+            totalRecipeCooks: totalRecipeCooks,
             memberSince: user?.createdAt
         )
     }
