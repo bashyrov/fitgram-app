@@ -50,7 +50,10 @@ struct OnboardingView: View {
         Group {
             switch flow.currentStep {
             case .welcome:
-                WelcomeStepView { flow.advance() }
+                WelcomeStepView(
+                    onContinue: { flow.advance() },
+                    onSkip: { flow.skipToEnd() }
+                )
             case .goal:
                 GoalStepView(goal: $flow.profile.goal) { flow.advance() }
             case .profile:
