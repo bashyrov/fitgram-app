@@ -8,43 +8,47 @@ struct DietaryStepView: View {
     @Binding var selected: Set<DietaryPreference>
     let onContinue: () -> Void
 
+    private let columns = [
+        GridItem(.flexible(), spacing: Tokens.Space.sm),
+        GridItem(.flexible(), spacing: Tokens.Space.sm),
+    ]
+
     var body: some View {
-        ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
-            VStack(spacing: Tokens.Space.lg) {
-                Spacer()
-                VStack(spacing: Tokens.Space.sm) {
-                    Text("Czego unikasz?")
-                        .font(Tokens.Font.title)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("Pomożemy dostroić sugestie. Nic nie musisz wybierać.")
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, Tokens.Space.xl)
-                }
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: Tokens.Space.md),
-                        GridItem(.flexible(), spacing: Tokens.Space.md),
-                    ],
-                    spacing: Tokens.Space.md
-                ) {
-                    ForEach(DietaryPreference.allCases) { pref in
-                        chip(pref)
+        OnboardingStepScaffold(
+            title: "Czego unikasz?",
+            subtitle: "Pomożemy dostroić sugestie. Nic nie musisz wybierać.",
+            primaryTitle: selected.isEmpty ? "Pomiń" : "Dalej",
+            primarySystemImage: "arrow.right",
+            onPrimary: onContinue,
+            content: {
+                VStack(spacing: Tokens.Space.lg) {
+                    LazyVGrid(columns: columns, spacing: Tokens.Space.sm) {
+                        ForEach(DietaryPreference.allCases) { pref in
+                            chip(pref)
+                        }
+                    }
+                    if selected.isEmpty {
+                        emptyHint
                     }
                 }
-                .padding(.horizontal, Tokens.Space.xl)
-                Spacer()
-                PrimaryButton(
-                    title: selected.isEmpty ? "Pomiń" : "Dalej",
-                    systemImage: "arrow.right",
-                    action: onContinue
-                )
-                .padding(.horizontal, Tokens.Space.screenPadding)
             }
-            .padding(.vertical, Tokens.Space.xl)
+        )
+    }
+
+    private var emptyHint: some View {
+        HStack(spacing: Tokens.Space.sm) {
+            Image(systemName: "info.circle")
+                .foregroundStyle(Tokens.Palette.primary)
+            Text("Wszystko jest w porządku — nic nie musisz zaznaczać.")
+                .font(Tokens.Font.footnote)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+            Spacer()
         }
+        .padding(Tokens.Space.md)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                .fill(Tokens.Palette.primarySoft)
+        )
     }
 
     private func chip(_ pref: DietaryPreference) -> some View {
@@ -70,10 +74,31 @@ struct DietaryStepView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, Tokens.Space.lg)
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(isOn ? Tokens.Palette.primary : Tokens.Palette.primarySoft)
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .fill(
+                        isOn
+                            ? AnyShapeStyle(
+                                LinearGradient(
+                                    colors: [
+                                        Tokens.Palette.primary,
+                                        Tokens.Palette.primary.opacity(0.85),
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            : AnyShapeStyle(Tokens.Palette.surface)
+                    )
+                    .shadow(
+                        color: isOn
+                            ? Tokens.Palette.primary.opacity(0.25)
+                            : .black.opacity(0.04),
+                        radius: isOn ? 12 : 8,
+                        x: 0,
+                        y: isOn ? 6 : 2
+                    )
             )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle())
     }
 }

@@ -9,35 +9,19 @@ struct CelebrationStepView: View {
     let onContinue: () -> Void
 
     @State private var animateBadge = false
+    @State private var animateCheckmarks = false
 
     var body: some View {
         ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
+            backdrop
             ConfettiCanvas()
                 .allowsHitTesting(false)
-            VStack(spacing: Tokens.Space.xl) {
+            VStack(spacing: Tokens.Space.lg) {
                 Spacer()
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
-                        .frame(width: 140, height: 140)
-                    Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: 72, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .scaleEffect(animateBadge ? 1.0 : 0.6)
-                        .opacity(animateBadge ? 1 : 0)
-                }
-                VStack(spacing: Tokens.Space.sm) {
-                    Text(welcomeHeadline)
-                        .font(Tokens.Font.title)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("Cele zapisane, przypomnienia gotowe. Wpisz pierwszy posiłek — Ola podpowie resztę.")
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, Tokens.Space.lg)
-                }
+                heroBadge
+                headline
+                checklist
+                    .padding(.top, Tokens.Space.md)
                 Spacer()
                 PrimaryButton(title: "Zaczynamy", systemImage: "arrow.right") {
                     onContinue()
@@ -50,6 +34,94 @@ struct CelebrationStepView: View {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.55).delay(0.15)) {
                 animateBadge = true
             }
+            withAnimation(.easeOut(duration: 0.5).delay(0.6)) {
+                animateCheckmarks = true
+            }
+        }
+    }
+
+    private var backdrop: some View {
+        ZStack {
+            Tokens.Palette.background.ignoresSafeArea()
+            Circle()
+                .fill(Tokens.Palette.primary.opacity(0.16))
+                .frame(width: 360, height: 360)
+                .blur(radius: 80)
+                .offset(x: -160, y: -300)
+                .allowsHitTesting(false)
+            Circle()
+                .fill(Tokens.Palette.accent.opacity(0.12))
+                .frame(width: 280, height: 280)
+                .blur(radius: 80)
+                .offset(x: 170, y: 300)
+                .allowsHitTesting(false)
+        }
+    }
+
+    private var heroBadge: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Tokens.Palette.primary.opacity(0.85),
+                            Tokens.Palette.primary,
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 160, height: 160)
+                .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 28, y: 14)
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 80, weight: .semibold))
+                .foregroundStyle(.white)
+                .scaleEffect(animateBadge ? 1.0 : 0.5)
+                .opacity(animateBadge ? 1 : 0)
+        }
+    }
+
+    private var headline: some View {
+        VStack(spacing: Tokens.Space.sm) {
+            Text(welcomeHeadline)
+                .font(Tokens.Font.title)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(Tokens.Palette.ink)
+            Text("Cele zapisane, przypomnienia gotowe. Wpisz pierwszy posiłek — Ola podpowie resztę.")
+                .font(Tokens.Font.body)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Tokens.Space.xl)
+        }
+    }
+
+    private var checklist: some View {
+        VStack(spacing: Tokens.Space.sm) {
+            checkRow("Profil i cele zapisane", delay: 0)
+            checkRow("Ola dostosowała Twój plan", delay: 0.1)
+            checkRow("Bezpieczna prywatność domyślnie", delay: 0.2)
+        }
+        .padding(.horizontal, Tokens.Space.xl)
+    }
+
+    private func checkRow(_ text: LocalizedStringKey, delay: Double) -> some View {
+        HStack(spacing: Tokens.Space.sm) {
+            ZStack {
+                Circle()
+                    .fill(Tokens.Palette.primary)
+                    .frame(width: 22, height: 22)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(.white)
+            }
+            .scaleEffect(animateCheckmarks ? 1 : 0)
+            .opacity(animateCheckmarks ? 1 : 0)
+            .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(delay), value: animateCheckmarks)
+
+            Text(text)
+                .font(Tokens.Font.body)
+                .foregroundStyle(Tokens.Palette.ink)
+            Spacer()
         }
     }
 

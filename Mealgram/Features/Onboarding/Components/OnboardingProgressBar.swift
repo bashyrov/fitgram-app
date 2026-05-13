@@ -17,12 +17,22 @@ struct OnboardingProgressBar: View {
                 Capsule()
                     .fill(Tokens.Palette.surfaceMuted)
                 Capsule()
-                    .fill(Tokens.Palette.primary)
-                    .frame(width: proxy.size.width * progress)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Tokens.Palette.primary,
+                                Tokens.Palette.primary.opacity(0.7),
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: max(8, proxy.size.width * progress))
+                    .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 4, y: 0)
                     .animation(Tokens.Motion.gentle, value: progress)
             }
         }
-        .frame(height: 6)
+        .frame(height: 8)
         .accessibilityElement()
         .accessibilityLabel("Krok \(index + 1) z \(total)")
         .accessibilityValue("\(Int(progress * 100))%")
