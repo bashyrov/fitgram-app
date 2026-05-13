@@ -37,4 +37,9 @@ final class WeightLogState {
         try? service.delete(entry)
         await refresh(for: userRemoteID)
     }
+
+    func update(_ entry: WeightEntry, weightKg: Double, note: String?, for userRemoteID: String) async {
+        try? service.update(entry, weightKg: weightKg, note: note)
+        await refresh(for: userRemoteID)
+    }
 }
