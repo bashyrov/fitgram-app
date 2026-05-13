@@ -14,6 +14,7 @@ struct MealDetailSheet: View {
     var onDeleted: ((MealEntrySnapshot) -> Void)?
 
     @State private var portion: Double
+    @State private var consumedAt: Date
     @State private var isConfirmingDelete = false
     @State private var errorMessage: String?
     @State private var tags: [String]
@@ -42,6 +43,7 @@ struct MealDetailSheet: View {
         self.onChanged = onChanged
         self.onDeleted = onDeleted
         self._portion = State(initialValue: meal.portionMultiplier)
+        self._consumedAt = State(initialValue: meal.consumedAt)
         self._tags = State(initialValue: meal.tags)
         self._notes = State(initialValue: meal.notes ?? "")
     }
@@ -163,9 +165,15 @@ struct MealDetailSheet: View {
     private var summaryCard: some View {
         Card(elevation: Tokens.Shadow.float) {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(Self.timeFormatter.string(from: meal.consumedAt))
-                    .font(Tokens.Font.subheadline)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                DatePicker(
+                    "",
+                    selection: $consumedAt,
+                    in: ...Date(),
+                    displayedComponents: [.date, .hourAndMinute]
+                )
+                .labelsHidden()
+                .datePickerStyle(.compact)
+                .tint(Tokens.Palette.primary)
                 Text("\(Int(adjustedCalories)) kcal")
                     .font(Tokens.Font.counter)
                     .foregroundStyle(Tokens.Palette.primary)
@@ -385,6 +393,9 @@ struct MealDetailSheet: View {
             try repository.updatePortion(meal, multiplier: portion)
             try repository.updateTags(meal, tags: tags)
             try repository.updateNotes(meal, notes: notes)
+            if !Calendar.current.isDate(consumedAt, equalTo: meal.consumedAt, toGranularity: .minute) {
+                try repository.updateConsumedAt(meal, to: consumedAt)
+            }
             onChanged()
             onDismiss()
         } catch {
