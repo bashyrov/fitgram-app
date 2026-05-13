@@ -60,6 +60,37 @@ final class MealCSVExportServiceTests: XCTestCase {
         XCTAssertTrue(csv.contains("Ziemniaki"))
     }
 
+    func testDateRangeFiltersMealsOutsideWindow() throws {
+        let context = ModelContext(controller.container)
+        let iso = ISO8601DateFormatter()
+        let monthAgo = iso.date(from: "2026-04-10T13:00:00Z") ?? Date()
+        let lastWeek = iso.date(from: "2026-05-06T13:00:00Z") ?? Date()
+        context.insert(
+            MealEntry(
+                consumedAt: monthAgo,
+                mealType: .lunch,
+                source: .manual,
+                items: [FoodItem(name: "Stary", quantityGrams: 100, caloriesKcal: 100)]
+            )
+        )
+        context.insert(
+            MealEntry(
+                consumedAt: lastWeek,
+                mealType: .lunch,
+                source: .manual,
+                items: [FoodItem(name: "Świeży", quantityGrams: 100, caloriesKcal: 100)]
+            )
+        )
+        try context.save()
+
+        let service = MealCSVExportService(container: controller.container)
+        let from = iso.date(from: "2026-05-01T00:00:00Z")
+        let to = iso.date(from: "2026-05-12T23:59:59Z")
+        let csv = try service.buildCSV(from: from, to: to)
+        XCTAssertFalse(csv.contains("Stary"), "Out-of-range meal should be excluded")
+        XCTAssertTrue(csv.contains("Świeży"), "In-range meal should be included")
+    }
+
     func testPortionMultiplierAppliedToMacros() throws {
         let context = ModelContext(controller.container)
         let meal = MealEntry(

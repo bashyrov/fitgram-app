@@ -1,6 +1,6 @@
 import SwiftUI
 
-// swiftlint:disable type_body_length
+// swiftlint:disable type_body_length file_length
 
 /// Profile + settings hub. App-Store guideline 5.1.1(v) requires in-app
 /// data export and deletion to be reachable from this screen.
@@ -25,6 +25,7 @@ struct ProfileView: View {
 
     @State private var sharedFile: SharedFile?
     @State private var isPreparingExport = false
+    @State private var isCSVRangePresented = false
     @State private var isEditingGoals = false
     @State private var isEditingPreferences = false
     @State private var isCalibrating = false
@@ -114,6 +115,15 @@ struct ProfileView: View {
             }
             .sheet(item: $sharedFile) { file in
                 ShareSheet(activityItems: [file.url])
+            }
+            .sheet(isPresented: $isCSVRangePresented) {
+                CSVExportRangeSheet(
+                    onExport: { from, to in
+                        isCSVRangePresented = false
+                        runCSVExport(from: from, to: to)
+                    },
+                    onDismiss: { isCSVRangePresented = false }
+                )
             }
             .sheet(isPresented: $isChallengesPresented) {
                 ChallengesView(
@@ -325,7 +335,7 @@ struct ProfileView: View {
                 .disabled(isPreparingExport || user == nil)
                 Divider().background(Tokens.Palette.separator)
                 actionRow(symbol: "tablecells", title: "Eksport CSV (Excel)", role: nil) {
-                    runCSVExport()
+                    isCSVRangePresented = true
                 }
                 Divider().background(Tokens.Palette.separator)
                 actionRow(symbol: "magnifyingglass", title: "Szukaj w historii", role: nil) {
@@ -335,9 +345,9 @@ struct ProfileView: View {
         }
     }
 
-    private func runCSVExport() {
+    private func runCSVExport(from: Date?, to: Date?) {
         do {
-            let url = try csvExportService.export()
+            let url = try csvExportService.export(from: from, to: to)
             sharedFile = SharedFile(url: url)
         } catch {
             exportError = String(describing: error)

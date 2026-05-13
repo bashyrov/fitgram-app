@@ -21,12 +21,13 @@ final class MealCSVExportService {
         self.now = now
     }
 
-    /// Renders the full meal log to a CSV file in tmp/exports/ and returns
+    /// Renders the meal log to a CSV file in tmp/exports/ and returns
     /// the URL. Headers in PL so the Excel-using user has labels they'll
     /// recognise; numeric values use a dot decimal separator regardless of
-    /// locale (Excel-pl auto-detects).
-    func export() throws -> URL {
-        let csv = try buildCSV()
+    /// locale (Excel-pl auto-detects). `from`/`to` filter to a date range
+    /// — pass nil for either bound to leave that end open.
+    func export(from: Date? = nil, to: Date? = nil) throws -> URL {
+        let csv = try buildCSV(from: from, to: to)
         let directory = FileManager.default.temporaryDirectory
             .appending(path: "exports", directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -38,13 +39,29 @@ final class MealCSVExportService {
     }
 
     /// Public for tests — string form of the CSV without the file write.
-    func buildCSV() throws -> String {
+    func buildCSV(from: Date? = nil, to: Date? = nil) throws -> String {
         let context = ModelContext(container)
-        let meals = try context.fetch(
-            FetchDescriptor<MealEntry>(
-                sortBy: [SortDescriptor(\MealEntry.consumedAt)]
-            )
+        let lowerBound = from.map(calendar.startOfDay(for:))
+        let upperBound = to.flatMap { date in
+            let dayStart = calendar.startOfDay(for: date)
+            return calendar.date(byAdding: .day, value: 1, to: dayStart)
+        }
+        let predicate: Predicate<MealEntry>?
+        switch (lowerBound, upperBound) {
+        case (let low?, let high?):
+            predicate = #Predicate { $0.consumedAt >= low && $0.consumedAt < high }
+        case (let low?, nil):
+            predicate = #Predicate { $0.consumedAt >= low }
+        case (nil, let high?):
+            predicate = #Predicate { $0.consumedAt < high }
+        case (nil, nil):
+            predicate = nil
+        }
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\MealEntry.consumedAt)]
         )
+        let meals = try context.fetch(descriptor)
         var rows: [String] = [Self.header]
         for meal in meals {
             for item in meal.items {
