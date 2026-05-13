@@ -39,6 +39,7 @@ struct ProfileView: View {
     @State private var isSearchPresented = false
     @State private var searchSelectedMeal: MealEntry?
     @State private var isStreakCalendarPresented = false
+    @State private var isHelpPresented = false
 
     var body: some View {
         NavigationStack {
@@ -140,6 +141,9 @@ struct ProfileView: View {
                     service: streakCalendarService,
                     onDismiss: { isStreakCalendarPresented = false }
                 )
+            }
+            .sheet(isPresented: $isHelpPresented) {
+                HelpFAQSheet(onDismiss: { isHelpPresented = false })
             }
             .sheet(item: $searchSelectedMeal) { meal in
                 MealDetailSheet(
@@ -326,7 +330,13 @@ struct ProfileView: View {
     private var legalSection: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader("Prawo")
+                sectionHeader("Prawo i pomoc")
+                Button {
+                    isHelpPresented = true
+                } label: {
+                    legalRow(symbol: "questionmark.circle", title: "Pomoc / FAQ")
+                }
+                .buttonStyle(.plain)
                 Link(destination: URL(string: "https://mealgram.pl/privacy") ?? URL(filePath: "/")) {
                     legalRow(symbol: "lock.shield", title: "Polityka prywatności")
                 }
