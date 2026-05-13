@@ -122,6 +122,36 @@
 
     { "id": "meat.007", "name": "Tofu naturalne", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 76, "protein_100g": 8, "carbs_100g": 1.9, "fat_100g": 4.8, "default_portion_g": 150 },
     { "id": "meat.008", "name": "Soczewica gotowana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 116, "protein_100g": 9, "carbs_100g": 20, "fat_100g": 0.4, "default_portion_g": 200 },
-    { "id": "meat.009", "name": "Ciecierzyca z puszki", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 139, "protein_100g": 8.4, "carbs_100g": 22, "fat_100g": 2.6, "default_portion_g": 200 }
+    { "id": "meat.009", "name": "Ciecierzyca z puszki", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 139, "protein_100g": 8.4, "carbs_100g": 22, "fat_100g": 2.6, "default_portion_g": 200 },
+
+    { "id": "trad.030", "name": "Pyzy z mięsem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 195, "protein_100g": 8, "carbs_100g": 28, "fat_100g": 6, "default_portion_g": 250 },
+    { "id": "trad.031", "name": "Krokiety z mięsem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 245, "protein_100g": 9, "carbs_100g": 26, "fat_100g": 11, "default_portion_g": 150 },
+    { "id": "trad.032", "name": "Łazanki z kapustą i grzybami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 170, "protein_100g": 6, "carbs_100g": 24, "fat_100g": 5, "default_portion_g": 280 },
+    { "id": "trad.033", "name": "Schab pieczony", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 215, "protein_100g": 27, "carbs_100g": 0.5, "fat_100g": 11, "default_portion_g": 150 },
+    { "id": "trad.034", "name": "Karkówka z grilla", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 270, "protein_100g": 24, "carbs_100g": 0.5, "fat_100g": 19, "default_portion_g": 180 },
+    { "id": "trad.035", "name": "Ryba po grecku", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 130, "protein_100g": 12, "carbs_100g": 8, "fat_100g": 6, "default_portion_g": 220 },
+    { "id": "trad.036", "name": "Sałatka jarzynowa", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 138, "protein_100g": 3, "carbs_100g": 12, "fat_100g": 8, "default_portion_g": 200 },
+    { "id": "trad.037", "name": "Mizeria ze śmietaną", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 58, "protein_100g": 1.6, "carbs_100g": 4, "fat_100g": 4, "default_portion_g": 150 },
+    { "id": "trad.038", "name": "Zupa pomidorowa z ryżem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 64, "protein_100g": 2, "carbs_100g": 10, "fat_100g": 2, "default_portion_g": 300 },
+    { "id": "trad.039", "name": "Kapuśniak", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 3, "carbs_100g": 5, "fat_100g": 2.5, "default_portion_g": 300 },
+    { "id": "trad.040", "name": "Pierogi z kapustą i grzybami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 180, "protein_100g": 5, "carbs_100g": 28, "fat_100g": 5, "default_portion_g": 250 },
+
+    { "id": "bakery.014", "name": "Bagietka pszenna", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 274, "protein_100g": 9, "carbs_100g": 55, "fat_100g": 2, "default_portion_g": 80 },
+    { "id": "bakery.015", "name": "Bułka grahamka", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 240, "protein_100g": 9, "carbs_100g": 46, "fat_100g": 2, "default_portion_g": 65 },
+    { "id": "bakery.016", "name": "Sernik na zimno", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 285, "protein_100g": 7, "carbs_100g": 28, "fat_100g": 16, "default_portion_g": 110 },
+
+    { "id": "dairy.008", "name": "Twaróg półtłusty", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 132, "protein_100g": 18, "carbs_100g": 3.5, "fat_100g": 4.7, "default_portion_g": 100 },
+    { "id": "dairy.009", "name": "Kefir 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 49, "protein_100g": 3.3, "carbs_100g": 4.5, "fat_100g": 2, "default_portion_g": 250 },
+    { "id": "dairy.010", "name": "Maślanka naturalna", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 40, "protein_100g": 3.3, "carbs_100g": 4.3, "fat_100g": 1, "default_portion_g": 250 },
+
+    { "id": "produce.014", "name": "Pomidor", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 18, "protein_100g": 0.9, "carbs_100g": 3.9, "fat_100g": 0.2, "default_portion_g": 120 },
+    { "id": "produce.015", "name": "Ogórek zielony", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 16, "protein_100g": 0.7, "carbs_100g": 3.6, "fat_100g": 0.1, "default_portion_g": 100 },
+    { "id": "produce.016", "name": "Papryka czerwona", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 31, "protein_100g": 1, "carbs_100g": 6, "fat_100g": 0.3, "default_portion_g": 150 },
+    { "id": "produce.017", "name": "Marchew", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 41, "protein_100g": 0.9, "carbs_100g": 10, "fat_100g": 0.2, "default_portion_g": 100 },
+    { "id": "produce.018", "name": "Banan", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 89, "protein_100g": 1.1, "carbs_100g": 23, "fat_100g": 0.3, "default_portion_g": 120 },
+
+    { "id": "drink.010", "name": "Sok jabłkowy 100%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 46, "protein_100g": 0.1, "carbs_100g": 11, "fat_100g": 0.1, "default_portion_g": 250 },
+    { "id": "drink.011", "name": "Piwo jasne 5%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 43, "protein_100g": 0.5, "carbs_100g": 3.6, "fat_100g": 0, "default_portion_g": 500 },
+    { "id": "drink.012", "name": "Wino czerwone wytrawne", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 85, "protein_100g": 0.1, "carbs_100g": 2.6, "fat_100g": 0, "default_portion_g": 150 }
   ]
 }

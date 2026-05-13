@@ -24,7 +24,7 @@ final class FoodCatalogTests: XCTestCase {
         let seeder = FoodSeeder(container: controller.container)
         let bundle = try seeder.load()
         XCTAssertEqual(bundle.schemaVersion, "1.0.0")
-        XCTAssertGreaterThan(bundle.items.count, 95)
+        XCTAssertGreaterThan(bundle.items.count, 120)
         XCTAssertTrue(bundle.items.contains(where: { $0.name == "Schabowy z kotleta" }))
     }
 
