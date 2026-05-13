@@ -1,6 +1,8 @@
 import SwiftUI
 import UIKit
 
+// swiftlint:disable type_body_length
+
 /// Read-only view of a saved recipe with a "cook" CTA that scales the per-
 /// serving nutrition and pipes it through `MealSaving`.
 struct RecipeDetailView: View {
@@ -15,6 +17,7 @@ struct RecipeDetailView: View {
     @State private var servings: Double = 1
     @State private var checkedIngredients: Set<UUID> = []
     @State private var didCopyIngredients = false
+    @State private var activeModIntent: RecipeModificationEngine.Intent?
 
     var body: some View {
         NavigationStack {
@@ -70,6 +73,20 @@ struct RecipeDetailView: View {
                             }
                             .accessibilityLabel(Text("Lista zakupów"))
                         }
+                        if !recipe.ingredients.isEmpty {
+                            Menu {
+                                ForEach(RecipeModificationEngine.Intent.allCases, id: \.self) { intent in
+                                    Button {
+                                        activeModIntent = intent
+                                    } label: {
+                                        Label(intent.label, systemImage: intent.symbol)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "wand.and.stars")
+                            }
+                            .accessibilityLabel(Text("Modyfikacje przepisu"))
+                        }
                         Button {
                             onEdit()
                         } label: {
@@ -78,6 +95,14 @@ struct RecipeDetailView: View {
                         .accessibilityLabel(Text("Edytuj"))
                     }
                 }
+            }
+            .sheet(item: $activeModIntent) { intent in
+                RecipeModificationsSheet(
+                    recipe: recipe,
+                    intent: intent,
+                    onDismiss: { activeModIntent = nil }
+                )
+                .presentationDetents([.medium, .large])
             }
         }
     }
@@ -371,3 +396,5 @@ struct RecipeDetailView: View {
         .frame(maxWidth: .infinity)
     }
 }
+
+// swiftlint:enable type_body_length
