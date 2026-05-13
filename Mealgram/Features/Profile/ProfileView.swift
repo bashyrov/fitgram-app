@@ -374,7 +374,22 @@ struct ProfileView: View {
         if let orphanSweepResult {
             return "Usunięto \(orphanSweepResult) zdjęć"
         }
+        if let size = photoCacheSize {
+            return "Wyczyść osierocone zdjęcia (\(size))"
+        }
         return "Wyczyść osierocone zdjęcia"
+    }
+
+    private var photoCacheSize: LocalizedStringKey? {
+        guard let store = photoStore else { return nil }
+        let bytes = store.totalBytesOnDisk()
+        guard bytes > 0 else { return nil }
+        let mb = Double(bytes) / (1024 * 1024)
+        if mb < 1 {
+            let kb = Double(bytes) / 1024
+            return "\(Int(kb.rounded())) KB"
+        }
+        return "\(String(format: "%.1f", mb)) MB"
     }
 
     private func runOrphanPhotoSweep() {
