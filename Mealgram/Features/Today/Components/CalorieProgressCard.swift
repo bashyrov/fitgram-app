@@ -7,6 +7,16 @@ struct CalorieProgressCard: View {
     let progress: Double
     var onTapGoal: (() -> Void)?
 
+    private var goalHit: Bool {
+        progress >= 1.0
+    }
+
+    private var ringColor: Color {
+        if progress >= 1.2 { return Tokens.Palette.error }
+        if goalHit { return Tokens.Palette.warning }
+        return Tokens.Palette.primary
+    }
+
     var body: some View {
         Card(elevation: Tokens.Shadow.float) {
             HStack(alignment: .center, spacing: Tokens.Space.lg) {
@@ -14,9 +24,9 @@ struct CalorieProgressCard: View {
                     Circle()
                         .stroke(Tokens.Palette.surfaceMuted, lineWidth: 12)
                     Circle()
-                        .trim(from: 0, to: max(0.001, progress))
+                        .trim(from: 0, to: max(0.001, min(1.0, progress)))
                         .stroke(
-                            Tokens.Palette.primary,
+                            ringColor,
                             style: StrokeStyle(lineWidth: 12, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -25,9 +35,9 @@ struct CalorieProgressCard: View {
                         Text("\(Int(consumed))")
                             .font(Tokens.Font.counter)
                             .foregroundStyle(Tokens.Palette.ink)
-                        Text("/ \(goal) kcal")
+                        Text(goalHit ? "✓ \(goal) kcal" : "/ \(goal) kcal")
                             .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
+                            .foregroundStyle(goalHit ? Tokens.Palette.warning : Tokens.Palette.inkMuted)
                     }
                 }
                 .frame(width: 156, height: 156)
