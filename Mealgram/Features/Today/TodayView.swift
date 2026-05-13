@@ -37,98 +37,108 @@ struct TodayView: View {
     var body: some View {
         ZStack {
             Tokens.Palette.background.ignoresSafeArea()
-            ScrollView {
-                VStack(spacing: Tokens.Space.lg) {
-                    StreakHeader(
-                        greeting: state.greeting,
-                        displayName: state.user?.displayName,
-                        streakLength: state.streak?.currentLength ?? 0,
-                        onTapProfile: onOpenProfile
-                    )
-                    .padding(.top, Tokens.Space.md)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: Tokens.Space.lg) {
+                        StreakHeader(
+                            greeting: state.greeting,
+                            displayName: state.user?.displayName,
+                            streakLength: state.streak?.currentLength ?? 0,
+                            onTapProfile: onOpenProfile
+                        )
+                        .padding(.top, Tokens.Space.md)
+                        .id("todayTop")
 
-                    dayScrubBar
+                        dayScrubBar
 
-                    if state.canUseFreeze, let streak = state.streak {
-                        StreakFreezeCard(
-                            streakLength: streak.currentLength,
-                            freezesAvailable: streak.freezesAvailable
-                        ) {
-                            Haptics.success()
-                            Task { await state.consumeFreeze(for: userRemoteID) }
-                        }
-                    }
-
-                    CalorieProgressCard(
-                        consumed: state.totals.calories,
-                        goal: state.calorieGoal,
-                        progress: state.calorieProgress,
-                        onTapGoal: state.user.map { _ in
-                            {
-                                calorieGoalDraft = state.calorieGoal
-                                isCalorieGoalAlertPresented = true
+                        if state.canUseFreeze, let streak = state.streak {
+                            StreakFreezeCard(
+                                streakLength: streak.currentLength,
+                                freezesAvailable: streak.freezesAvailable
+                            ) {
+                                Haptics.success()
+                                Task { await state.consumeFreeze(for: userRemoteID) }
                             }
                         }
-                    )
 
-                    MacroDistributionCard(
-                        protein: state.totals.protein,
-                        carbs: state.totals.carbs,
-                        fat: state.totals.fat,
-                        proteinGoal: state.user?.proteinGoalGrams ?? 120,
-                        carbsGoal: state.user?.carbsGoalGrams ?? 240,
-                        fatGoal: state.user?.fatGoalGrams ?? 70
-                    )
+                        CalorieProgressCard(
+                            consumed: state.totals.calories,
+                            goal: state.calorieGoal,
+                            progress: state.calorieProgress,
+                            onTapGoal: state.user.map { _ in
+                                {
+                                    calorieGoalDraft = state.calorieGoal
+                                    isCalorieGoalAlertPresented = true
+                                }
+                            }
+                        )
 
-                    if state.isViewingToday {
-                        WaterCard(
-                            totalMilliliters: state.waterTotalMl,
-                            goalMilliliters: waterGoalStored,
-                            onAddGlass: {
+                        MacroDistributionCard(
+                            protein: state.totals.protein,
+                            carbs: state.totals.carbs,
+                            fat: state.totals.fat,
+                            proteinGoal: state.user?.proteinGoalGrams ?? 120,
+                            carbsGoal: state.user?.carbsGoalGrams ?? 240,
+                            fatGoal: state.user?.fatGoalGrams ?? 70
+                        )
+
+                        if state.isViewingToday {
+                            WaterCard(
+                                totalMilliliters: state.waterTotalMl,
+                                goalMilliliters: waterGoalStored,
+                                onAddGlass: {
+                                    Haptics.light()
+                                    Task { await state.logWaterGlass(for: userRemoteID) }
+                                },
+                                onUndo: {
+                                    Haptics.warning()
+                                    Task { await state.undoLastWater(for: userRemoteID) }
+                                },
+                                onEditGoal: {
+                                    waterGoalDraft = waterGoalStored
+                                    isWaterGoalAlertPresented = true
+                                }
+                            )
+                        }
+
+                        if state.isViewingToday, let insight = state.coachInsights.first {
+                            AIInsightCard(
+                                insight: insight,
+                                onAction: { kind in handleCoachAction(kind) },
+                                onDismiss: onDismissInsight.map { handler in
+                                    { handler(insight) }
+                                }
+                            )
+                        }
+
+                        if state.isViewingToday, let onOpenWeeklyDebrief {
+                            WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
+                        }
+
+                        if state.isViewingToday, let upcoming = state.upcomingEvent {
+                            CulturalEventBanner(upcoming: upcoming) {
                                 Haptics.light()
-                                Task { await state.logWaterGlass(for: userRemoteID) }
-                            },
-                            onUndo: {
-                                Haptics.warning()
-                                Task { await state.undoLastWater(for: userRemoteID) }
-                            },
-                            onEditGoal: {
-                                waterGoalDraft = waterGoalStored
-                                isWaterGoalAlertPresented = true
+                                state.dismissCulturalEvent()
                             }
-                        )
-                    }
-
-                    if state.isViewingToday, let insight = state.coachInsights.first {
-                        AIInsightCard(
-                            insight: insight,
-                            onAction: { kind in handleCoachAction(kind) },
-                            onDismiss: onDismissInsight.map { handler in
-                                { handler(insight) }
-                            }
-                        )
-                    }
-
-                    if state.isViewingToday, let onOpenWeeklyDebrief {
-                        WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
-                    }
-
-                    if state.isViewingToday, let upcoming = state.upcomingEvent {
-                        CulturalEventBanner(upcoming: upcoming) {
-                            Haptics.light()
-                            state.dismissCulturalEvent()
                         }
+
+                        suggestedRecipeCard
+
+                        mealsSection
                     }
-
-                    suggestedRecipeCard
-
-                    mealsSection
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.bottom, Tokens.Space.xxxl)
                 }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.bottom, Tokens.Space.xxxl)
-            }
-            .refreshable {
-                await state.refresh(for: userRemoteID)
+                .refreshable {
+                    await state.refresh(for: userRemoteID)
+                }
+                .onReceive(
+                    NotificationCenter.default.publisher(for: AppShortcutAction.scrollTodayToTop)
+                ) { _ in
+                    withAnimation(Tokens.Motion.gentle) {
+                        proxy.scrollTo("todayTop", anchor: .top)
+                    }
+                }
             }
         }
         .task {

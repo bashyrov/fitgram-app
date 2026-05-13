@@ -123,8 +123,22 @@ struct MainTabView: View {
         #endif
     }
 
+    private var tabSelectionBinding: Binding<Tab> {
+        Binding(
+            get: { selectedTab },
+            set: { newValue in
+                if newValue == selectedTab, newValue == .today {
+                    NotificationCenter.default.post(
+                        name: AppShortcutAction.scrollTodayToTop, object: nil
+                    )
+                }
+                selectedTab = newValue
+            }
+        )
+    }
+
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: tabSelectionBinding) {
             TodayView(
                 userRemoteID: authUser.id,
                 state: todayState,

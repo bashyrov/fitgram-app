@@ -8,6 +8,10 @@ enum AppShortcutAction {
     static let showToday = Notification.Name("mealgram.shortcut.showToday")
     static let showWeeklyDebrief = Notification.Name("mealgram.shortcut.showWeeklyDebrief")
     static let openRecipes = Notification.Name("mealgram.shortcut.openRecipes")
+    /// Posted when the user taps the currently-selected tab item. Tab
+    /// content listens and scrolls itself to the top — matches the
+    /// platform default behaviour of iOS apps with scroll views.
+    static let scrollTodayToTop = Notification.Name("mealgram.tab.scrollTodayToTop")
 }
 
 /// Open the app and raise the "Add meal" action sheet.
