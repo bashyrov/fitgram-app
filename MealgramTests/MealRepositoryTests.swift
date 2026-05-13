@@ -173,6 +173,32 @@ final class MealRepositoryTests: XCTestCase {
         XCTAssertNil(stored?.notes)
     }
 
+    func testUpdateRatingClampsToValidRange() throws {
+        let meal = try seedMeal()
+        try repository.updateRating(meal, rating: 3)
+        var stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.rating, 3)
+
+        // Clamp high values
+        try repository.updateRating(meal, rating: 99)
+        stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.rating, 5)
+
+        // Clamp low values
+        try repository.updateRating(meal, rating: 0)
+        stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.rating, 1)
+
+        // Nil clears
+        try repository.updateRating(meal, rating: nil)
+        stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertNil(stored?.rating)
+    }
+
     func testUpdateConsumedAtMovesEntryAndClampsFuture() throws {
         let meal = try seedMeal()
         let iso = ISO8601DateFormatter()
