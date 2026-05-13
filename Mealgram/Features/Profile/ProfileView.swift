@@ -104,6 +104,7 @@ struct ProfileView: View {
                     WeightLogView(
                         userRemoteID: user.remoteID,
                         initialWeight: user.weightKg,
+                        heightCm: user.heightCm,
                         state: WeightLogState(service: weightService),
                         healthImporter: HealthImporter(
                             health: HealthKitService(),

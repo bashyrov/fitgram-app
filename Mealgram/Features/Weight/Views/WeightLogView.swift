@@ -1,10 +1,13 @@
 import Charts
 import SwiftUI
 
+// swiftlint:disable type_body_length
+
 /// History + trend chart for weigh-ins. Reachable from Profile → "Waga".
 struct WeightLogView: View {
     let userRemoteID: String
     let initialWeight: Double?
+    var heightCm: Int?
     @Bindable var state: WeightLogState
     let healthImporter: HealthImporter?
     let onDismiss: () -> Void
@@ -33,6 +36,9 @@ struct WeightLogView: View {
                     VStack(spacing: Tokens.Space.lg) {
                         if let summary = state.summary {
                             summaryCard(summary)
+                            if let bmi = bmiSummary(latest: summary.latest.weightKg) {
+                                bmiCard(bmi)
+                            }
                             chartCard
                         } else {
                             emptyCard
@@ -326,6 +332,60 @@ struct WeightLogView: View {
         }
     }
 
+    /// BMI calculation + WHO band label. Returns nil when the user hasn't
+    /// recorded a height (e.g., skipped onboarding) — the card simply
+    /// hides itself in that case.
+    private struct BMI: Equatable {
+        let value: Double
+        let label: LocalizedStringKey
+        let color: Color
+    }
+
+    private func bmiSummary(latest weightKg: Double) -> BMI? {
+        guard let heightCm, heightCm > 0 else { return nil }
+        let meters = Double(heightCm) / 100
+        let value = weightKg / (meters * meters)
+        let label: LocalizedStringKey
+        let color: Color
+        switch value {
+        case ..<18.5:
+            label = "Niedowaga"
+            color = Tokens.Palette.warning
+        case 18.5..<25:
+            label = "Norma"
+            color = Tokens.Palette.primary
+        case 25..<30:
+            label = "Nadwaga"
+            color = Tokens.Palette.warning
+        default:
+            label = "Otyłość"
+            color = Tokens.Palette.error
+        }
+        return BMI(value: value, label: label, color: color)
+    }
+
+    private func bmiCard(_ bmi: BMI) -> some View {
+        Card {
+            HStack(spacing: Tokens.Space.md) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("BMI")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    Text(String(format: "%.1f", bmi.value))
+                        .font(Tokens.Font.title3)
+                        .foregroundStyle(Tokens.Palette.ink)
+                }
+                Spacer()
+                Text(bmi.label)
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, Tokens.Space.md)
+                    .padding(.vertical, Tokens.Space.sm)
+                    .background(Capsule().fill(bmi.color))
+            }
+        }
+    }
+
     private func deltaText(_ value: Double) -> String {
         if abs(value) < 0.05 { return "bez zmian" }
         let sign = value > 0 ? "+" : ""
@@ -358,3 +418,5 @@ struct WeightLogView: View {
         }
     }
 }
+
+// swiftlint:enable type_body_length
