@@ -8,6 +8,7 @@ struct WaterCard: View {
     let goalMilliliters: Int
     let onAddGlass: () -> Void
     let onUndo: () -> Void
+    var onEditGoal: (() -> Void)?
 
     private var glassesConsumed: Double {
         Double(totalMilliliters) / Double(WaterService.glassMilliliters)
@@ -25,9 +26,21 @@ struct WaterCard: View {
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
-                    Text("\(totalMilliliters) / \(goalMilliliters) ml")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    if let onEditGoal {
+                        Button {
+                            onEditGoal()
+                        } label: {
+                            Text("\(totalMilliliters) / \(goalMilliliters) ml")
+                                .font(Tokens.Font.footnote)
+                                .foregroundStyle(Tokens.Palette.primary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Zmień dzienny cel wody"))
+                    } else {
+                        Text("\(totalMilliliters) / \(goalMilliliters) ml")
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
                 }
                 glassRow
                 HStack(spacing: Tokens.Space.sm) {
