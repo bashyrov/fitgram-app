@@ -100,6 +100,15 @@ final class TodayState {
         await refresh(for: userRemoteID)
     }
 
+    /// Jumps to an arbitrary calendar day chosen via the date picker.
+    /// Clamped at today so the user can't scrub into the future.
+    func jumpToDate(_ date: Date, userRemoteID: String) async {
+        let today = calendar.startOfDay(for: now())
+        let dayStart = calendar.startOfDay(for: date)
+        viewingDate = min(today, dayStart)
+        await refresh(for: userRemoteID)
+    }
+
     func refresh(for userRemoteID: String) async {
         isLoading = true
         defer { isLoading = false }
