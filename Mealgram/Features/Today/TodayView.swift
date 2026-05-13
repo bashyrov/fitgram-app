@@ -14,6 +14,8 @@ struct TodayView: View {
     var onSelectMeal: ((MealEntry) -> Void)?
     var onDismissInsight: ((CoachInsight) -> Void)?
 
+    @State private var isDatePickerPresented = false
+
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
             onCoachAction(kind)
@@ -114,6 +116,25 @@ struct TodayView: View {
         .task {
             await state.refresh(for: userRemoteID)
         }
+        .sheet(isPresented: $isDatePickerPresented) {
+            DateJumpSheet(
+                viewingDate: state.viewingDate,
+                onPick: { date in
+                    Task {
+                        await state.jumpToDate(date, userRemoteID: userRemoteID)
+                        isDatePickerPresented = false
+                    }
+                },
+                onToday: {
+                    Task {
+                        await state.jumpToToday(userRemoteID: userRemoteID)
+                        isDatePickerPresented = false
+                    }
+                },
+                onDismiss: { isDatePickerPresented = false }
+            )
+            .presentationDetents([.medium])
+        }
     }
 
     @ViewBuilder
@@ -139,20 +160,25 @@ struct TodayView: View {
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Poprzedni dzień"))
 
-            VStack(spacing: 0) {
-                Text(state.isViewingToday ? "Dziś" : Self.dayLabel(state.viewingDate))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                if !state.isViewingToday {
-                    Button("Wróć do dziś") {
-                        Haptics.light()
-                        Task { await state.jumpToToday(userRemoteID: userRemoteID) }
+            Button {
+                isDatePickerPresented = true
+                Haptics.light()
+            } label: {
+                VStack(spacing: 0) {
+                    Text(state.isViewingToday ? "Dziś" : Self.dayLabel(state.viewingDate))
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    if !state.isViewingToday {
+                        Text("Wróć do dziś")
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.primary)
                     }
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.primary)
                 }
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
             }
-            .frame(maxWidth: .infinity)
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Wybierz datę"))
 
             Button {
                 Haptics.light()
