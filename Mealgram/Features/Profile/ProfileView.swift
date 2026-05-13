@@ -43,6 +43,10 @@ struct ProfileView: View {
     @State private var isStreakCalendarPresented = false
     @State private var isRestartOnboardingConfirmed = false
     @State private var orphanSweepResult: Int?
+
+    @AppStorage("preferences.morningReminderEnabled") private var morningReminderEnabled = true
+    @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
+    @AppStorage("preferences.eveningReminderEnabled") private var eveningReminderEnabled = true
     @State private var isHelpPresented = false
 
     var body: some View {
@@ -260,7 +264,7 @@ struct ProfileView: View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                 sectionHeader("Preferencje")
-                actionRow(symbol: "bell", title: "Przypomnienia, język, jednostki", role: nil) {
+                actionRow(symbol: "bell", title: preferencesRowTitle, role: nil) {
                     isEditingPreferences = true
                 }
                 .disabled(user == nil)
@@ -351,6 +355,19 @@ struct ProfileView: View {
                 }
             }
         }
+    }
+
+    private var preferencesRowTitle: LocalizedStringKey {
+        let enabled = [morningReminderEnabled, streakRiskEnabled, eveningReminderEnabled]
+            .filter { $0 }
+            .count
+        if enabled == 3 {
+            return "Przypomnienia, język, jednostki"
+        }
+        if enabled == 0 {
+            return "Przypomnienia wyciszone"
+        }
+        return "Przypomnienia (\(enabled) / 3 aktywne)"
     }
 
     private var photosRowTitle: LocalizedStringKey {
