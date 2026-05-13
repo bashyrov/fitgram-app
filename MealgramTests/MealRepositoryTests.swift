@@ -172,4 +172,22 @@ final class MealRepositoryTests: XCTestCase {
             .fetch(FetchDescriptor<MealEntry>()).first
         XCTAssertNil(stored?.notes)
     }
+
+    func testUpdateConsumedAtMovesEntryAndClampsFuture() throws {
+        let meal = try seedMeal()
+        let iso = ISO8601DateFormatter()
+        let now = iso.date(from: "2026-05-13T12:00:00Z") ?? Date()
+        let yesterday = iso.date(from: "2026-05-12T19:00:00Z") ?? Date()
+        let future = iso.date(from: "2026-05-14T19:00:00Z") ?? Date()
+
+        try repository.updateConsumedAt(meal, to: yesterday, now: now)
+        var stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.consumedAt, yesterday)
+
+        try repository.updateConsumedAt(meal, to: future, now: now)
+        stored = try ModelContext(controller.container)
+            .fetch(FetchDescriptor<MealEntry>()).first
+        XCTAssertEqual(stored?.consumedAt, now, "Future timestamps should snap to now")
+    }
 }

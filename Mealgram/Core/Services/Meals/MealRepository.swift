@@ -146,6 +146,24 @@ final class MealRepository {
 
     /// Updates the portion multiplier on an existing meal. Same refetch
     /// pattern to dodge cross-context surprises.
+    /// Edits the consumedAt timestamp on an existing meal so users can
+    /// correct entries logged at the wrong time (or back-date a meal eaten
+    /// yesterday). Clamped at "not in the future" — anything past now
+    /// snaps to now.
+    func updateConsumedAt(_ meal: MealEntry, to date: Date, now: Date = Date()) throws {
+        let context = ModelContext(container)
+        let mealID = meal.id
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.id == mealID }
+        )
+        guard let attached = try context.fetch(descriptor).first else {
+            throw MealRepositoryError.notFound
+        }
+        attached.consumedAt = min(date, now)
+        attached.updatedAt = now
+        try context.save()
+    }
+
     func updatePortion(_ meal: MealEntry, multiplier: Double) throws {
         let context = ModelContext(container)
         let mealID = meal.id
