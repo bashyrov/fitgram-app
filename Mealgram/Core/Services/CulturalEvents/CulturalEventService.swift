@@ -71,6 +71,12 @@ struct CulturalEventService {
             case CulturalEvent.truskawkowySezon.id:
                 // June 5 — peak of Polish strawberry season.
                 return fixedDate(year: year, month: 6, day: 5)
+            case CulturalEvent.dzienBabci.id:
+                return fixedDate(year: year, month: 1, day: 21)
+            case CulturalEvent.niepodleglosci.id:
+                return fixedDate(year: year, month: 11, day: 11)
+            case CulturalEvent.nocSwietojanska.id:
+                return fixedDate(year: year, month: 6, day: 23)
             default:
                 return nil
             }
