@@ -17,8 +17,12 @@ struct TodayView: View {
     @State private var isDatePickerPresented = false
     @State private var isWaterGoalAlertPresented = false
     @State private var waterGoalDraft: Int = WaterService.defaultDailyGoalMilliliters
+    @State private var isCalorieGoalAlertPresented = false
+    @State private var calorieGoalDraft: Int = 2100
 
     @AppStorage("water.dailyGoalMl") private var waterGoalStored = WaterService.defaultDailyGoalMilliliters
+
+    @Environment(\.modelContext) private var modelContext
 
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
@@ -58,7 +62,13 @@ struct TodayView: View {
                     CalorieProgressCard(
                         consumed: state.totals.calories,
                         goal: state.calorieGoal,
-                        progress: state.calorieProgress
+                        progress: state.calorieProgress,
+                        onTapGoal: state.user.map { _ in
+                            {
+                                calorieGoalDraft = state.calorieGoal
+                                isCalorieGoalAlertPresented = true
+                            }
+                        }
                     )
 
                     MacroDistributionCard(
@@ -157,6 +167,26 @@ struct TodayView: View {
         } message: {
             Text("250–8000 ml. Standard to 2000 ml.")
         }
+        .alert("Dzienny cel kalorii", isPresented: $isCalorieGoalAlertPresented) {
+            TextField("kcal", value: $calorieGoalDraft, format: .number)
+                .keyboardType(.numberPad)
+            Button("Zapisz") {
+                applyCalorieGoal(calorieGoalDraft)
+            }
+            Button("Anuluj", role: .cancel) {}
+        } message: {
+            Text("1000–4500 kcal. Pełna edycja w Profilu → Cele.")
+        }
+    }
+
+    private func applyCalorieGoal(_ kcal: Int) {
+        guard let user = state.user else { return }
+        let clamped = max(1000, min(4500, kcal))
+        user.dailyCalorieGoalKcal = clamped
+        user.updatedAt = Date()
+        try? modelContext.save()
+        Haptics.light()
+        Task { await state.refresh(for: userRemoteID) }
     }
 
     @ViewBuilder

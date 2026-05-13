@@ -5,6 +5,7 @@ struct CalorieProgressCard: View {
     let consumed: Double
     let goal: Int
     let progress: Double
+    var onTapGoal: (() -> Void)?
 
     var body: some View {
         Card(elevation: Tokens.Shadow.float) {
@@ -33,7 +34,20 @@ struct CalorieProgressCard: View {
 
                 VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                     summaryRow(label: "Spożyte", value: "\(Int(consumed)) kcal", color: Tokens.Palette.primary)
-                    summaryRow(label: "Cel", value: "\(goal) kcal", color: Tokens.Palette.inkMuted)
+                    if let onTapGoal {
+                        Button {
+                            onTapGoal()
+                        } label: {
+                            summaryRow(
+                                label: "Cel — stuknij, aby zmienić",
+                                value: "\(goal) kcal",
+                                color: Tokens.Palette.primary
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        summaryRow(label: "Cel", value: "\(goal) kcal", color: Tokens.Palette.inkMuted)
+                    }
                     summaryRow(
                         label: "Pozostało",
                         value: "\(max(0, goal - Int(consumed))) kcal",
