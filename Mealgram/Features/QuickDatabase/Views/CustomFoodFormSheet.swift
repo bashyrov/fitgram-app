@@ -6,15 +6,35 @@ import SwiftUI
 struct CustomFoodFormSheet: View {
     let onSave: (Food) -> Void
     let onDismiss: () -> Void
+    var rawOCR: String?
 
-    @State private var name: String = ""
-    @State private var brand: String = ""
-    @State private var category: FoodCategory = .homemade
-    @State private var kcal: Int = 0
-    @State private var protein: Int = 0
-    @State private var carbs: Int = 0
-    @State private var fat: Int = 0
-    @State private var defaultPortion: Int = 0
+    @State private var name: String
+    @State private var brand: String
+    @State private var category: FoodCategory
+    @State private var kcal: Int
+    @State private var protein: Int
+    @State private var carbs: Int
+    @State private var fat: Int
+    @State private var defaultPortion: Int
+
+    init(
+        prefilled: Food? = nil,
+        rawOCR: String? = nil,
+        onSave: @escaping (Food) -> Void,
+        onDismiss: @escaping () -> Void
+    ) {
+        self.onSave = onSave
+        self.onDismiss = onDismiss
+        self.rawOCR = rawOCR
+        self._name = State(initialValue: prefilled?.name ?? "")
+        self._brand = State(initialValue: prefilled?.brand ?? "")
+        self._category = State(initialValue: prefilled?.category ?? .homemade)
+        self._kcal = State(initialValue: Int(prefilled?.caloriesKcalPer100g ?? 0))
+        self._protein = State(initialValue: Int(prefilled?.proteinGramsPer100g ?? 0))
+        self._carbs = State(initialValue: Int(prefilled?.carbsGramsPer100g ?? 0))
+        self._fat = State(initialValue: Int(prefilled?.fatGramsPer100g ?? 0))
+        self._defaultPortion = State(initialValue: Int(prefilled?.defaultPortionGrams ?? 0))
+    }
 
     private var canSave: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && kcal > 0
