@@ -1,8 +1,9 @@
+import Charts
 import SwiftUI
 
-/// Three thin horizontal progress bars — protein, carbs, fat — with the
-/// gram value next to each. Kept low-contrast so it doesn't compete with
-/// the hero calorie card.
+/// Pie chart of today's macro split (by kcal-equivalent grams) + three
+/// thin horizontal progress bars below. Pie only renders once there's
+/// some intake — otherwise it'd look like an empty wheel.
 struct MacroDistributionCard: View {
     let protein: Double
     let carbs: Double
@@ -11,12 +12,37 @@ struct MacroDistributionCard: View {
     let carbsGoal: Int
     let fatGoal: Int
 
+    private struct Slice: Identifiable {
+        let id = UUID()
+        let name: String
+        let kcal: Double
+        let color: Color
+    }
+
+    private var slices: [Slice] {
+        [
+            Slice(name: "Białko", kcal: protein * 4, color: Tokens.Palette.primary),
+            Slice(name: "Węgle", kcal: carbs * 4, color: Tokens.Palette.warning),
+            Slice(name: "Tłuszcz", kcal: fat * 9, color: Tokens.Palette.accent),
+        ]
+    }
+
+    private var hasIntake: Bool {
+        protein + carbs + fat > 0
+    }
+
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text("Makro")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+                HStack(alignment: .top) {
+                    Text("Makro")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    if hasIntake {
+                        pieChart
+                    }
+                }
                 macroRow(
                     label: "Białko",
                     grams: protein,
@@ -37,6 +63,20 @@ struct MacroDistributionCard: View {
                 )
             }
         }
+    }
+
+    private var pieChart: some View {
+        Chart(slices) { slice in
+            SectorMark(
+                angle: .value("kcal", slice.kcal),
+                innerRadius: .ratio(0.55),
+                angularInset: 1
+            )
+            .foregroundStyle(slice.color)
+            .cornerRadius(2)
+        }
+        .frame(width: 64, height: 64)
+        .accessibilityLabel(Text("Wykres kołowy podziału makro"))
     }
 
     private func macroRow(
