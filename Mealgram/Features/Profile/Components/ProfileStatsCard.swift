@@ -40,6 +40,11 @@ struct ProfileStatsCard: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
+                if let avg = summary.averageMealRating {
+                    Text(String(format: "Średnia ocena posiłku: ⭐ %.1f / 5", avg))
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.warning)
+                }
                 if let memberSince = summary.memberSince {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
