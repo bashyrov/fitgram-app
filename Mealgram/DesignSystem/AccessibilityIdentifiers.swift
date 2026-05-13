@@ -14,8 +14,10 @@ enum A11yID {
 
     enum Onboarding {
         static let welcomeStart = "onboarding.welcome.start"
+        static let welcomeSkip = "onboarding.welcome.skip"
         static let goalContinue = "onboarding.goal.continue"
         static let profileContinue = "onboarding.profile.continue"
+        static let dietaryContinue = "onboarding.dietary.continue"
         static let firstScanContinue = "onboarding.firstScan.continue"
         static let calibrationContinue = "onboarding.calibration.continue"
         static let notificationContinue = "onboarding.notification.continue"
@@ -31,8 +33,14 @@ enum A11yID {
 
     enum Today {
         static let streakProfileTap = "today.streak.profile"
+        static let streakExplain = "today.streak.explain"
         static let emptyMealsCallout = "today.meals.empty"
         static let suggestedCookButton = "today.suggested.cook"
+        static let dayScrubPrev = "today.scrub.prev"
+        static let dayScrubNext = "today.scrub.next"
+        static let dayScrubLabel = "today.scrub.label"
+        static let waterAdd = "today.water.add"
+        static let waterUndo = "today.water.undo"
     }
 
     enum Add {
@@ -55,8 +63,19 @@ enum A11yID {
         static let calibration = "profile.row.calibration"
         static let weight = "profile.row.weight"
         static let exportData = "profile.row.export"
+        static let exportCSV = "profile.row.exportCSV"
+        static let exportBundle = "profile.row.exportBundle"
+        static let helpFAQ = "profile.row.help"
+        static let restartOnboarding = "profile.row.restartOnboarding"
+        static let cleanupPhotos = "profile.row.cleanupPhotos"
         static let signOut = "profile.row.signOut"
         static let deleteAccount = "profile.row.delete"
+    }
+
+    enum QuickDB {
+        static let searchField = "quickdb.search"
+        static let addCustom = "quickdb.menu.addCustom"
+        static let scanLabel = "quickdb.menu.scanLabel"
     }
 
     enum Recipes {
