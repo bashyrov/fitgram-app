@@ -420,11 +420,11 @@ struct MealDetailSheet: View {
             let filenameToCleanup = meal.photoFilename
             try repository.delete(meal)
             Haptics.warning()
-            // Fire the photo deletion after the 5s undo window closes
+            // Fire the photo deletion after the 8s undo window closes
             // so a Cofnij tap can still restore with the original JPEG.
             if let filename = filenameToCleanup, let photoStore {
                 Task {
-                    try? await Task.sleep(nanoseconds: 6_000_000_000)
+                    try? await Task.sleep(nanoseconds: 9_000_000_000)
                     // Undo banner may have restored a meal that still
                     // points at this filename; skip the delete if so.
                     if repository.photoIsOrphaned(filename: filename) {
