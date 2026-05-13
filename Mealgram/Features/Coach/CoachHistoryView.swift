@@ -9,6 +9,29 @@ struct CoachHistoryView: View {
     let onDismiss: () -> Void
 
     @State private var expandedID: UUID?
+    @State private var filter = Filter.all
+
+    enum Filter: Hashable {
+        case all
+        case helpful
+        case unhelpful
+
+        var label: LocalizedStringKey {
+            switch self {
+            case .all: return "Wszystkie"
+            case .helpful: return "👍 Pomocne"
+            case .unhelpful: return "👎 Nietrafione"
+            }
+        }
+    }
+
+    private var visibleLogs: [CoachInsightLog] {
+        switch filter {
+        case .all: return logs
+        case .helpful: return logs.filter { $0.helpful == true }
+        case .unhelpful: return logs.filter { $0.helpful == false }
+        }
+    }
 
     private static let weekFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -26,7 +49,14 @@ struct CoachHistoryView: View {
                         if logs.isEmpty {
                             empty
                         } else {
-                            ForEach(logs) { log in
+                            filterChips
+                            if visibleLogs.isEmpty {
+                                Text("Brak wpisów w tym filtrze.")
+                                    .font(Tokens.Font.footnote)
+                                    .foregroundStyle(Tokens.Palette.inkMuted)
+                                    .padding(.vertical, Tokens.Space.lg)
+                            }
+                            ForEach(visibleLogs) { log in
                                 row(log)
                             }
                         }
@@ -40,6 +70,36 @@ struct CoachHistoryView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Zamknij", action: onDismiss)
+                }
+            }
+        }
+    }
+
+    private var filterChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: Tokens.Space.sm) {
+                ForEach([Filter.all, .helpful, .unhelpful], id: \.self) { option in
+                    Button {
+                        filter = option
+                    } label: {
+                        Text(option.label)
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(filter == option ? .white : Tokens.Palette.ink)
+                            .padding(.horizontal, Tokens.Space.md)
+                            .padding(.vertical, Tokens.Space.sm)
+                            .background(
+                                Capsule().fill(
+                                    filter == option ? Tokens.Palette.primary : Tokens.Palette.surface
+                                )
+                            )
+                            .overlay(
+                                Capsule().stroke(
+                                    filter == option ? Tokens.Palette.primary : Tokens.Palette.separator,
+                                    lineWidth: 1
+                                )
+                            )
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
