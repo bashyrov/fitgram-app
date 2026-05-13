@@ -31,6 +31,9 @@ struct RootView: View {
     let coachService: CoachService
     let notificationCoordinator: NotificationCoordinator
     let unlockBus: AchievementUnlockBus
+    let userProfileService: UserProfileService
+    let goalsService: GoalsService
+    let recommendationsService: RecommendationsService
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -61,7 +64,10 @@ struct RootView: View {
         friendService: any FriendService,
         coachService: CoachService,
         notificationCoordinator: NotificationCoordinator,
-        unlockBus: AchievementUnlockBus
+        unlockBus: AchievementUnlockBus,
+        userProfileService: UserProfileService,
+        goalsService: GoalsService,
+        recommendationsService: RecommendationsService
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -89,6 +95,9 @@ struct RootView: View {
         self.coachService = coachService
         self.notificationCoordinator = notificationCoordinator
         self.unlockBus = unlockBus
+        self.userProfileService = userProfileService
+        self.goalsService = goalsService
+        self.recommendationsService = recommendationsService
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 

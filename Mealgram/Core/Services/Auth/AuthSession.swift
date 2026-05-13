@@ -34,4 +34,12 @@ final class AuthSession {
     func setWorking(_ value: Bool) {
         self.isWorking = value
     }
+
+    /// Convenience for services that only need the auth identity string
+    /// (e.g. `UserProfileService`) so they don't have to do their own
+    /// phase pattern match every call.
+    var currentRemoteID: String? {
+        if case .authenticated(let user) = phase { return user.id }
+        return nil
+    }
 }

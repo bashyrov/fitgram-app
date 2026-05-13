@@ -33,6 +33,9 @@ struct MealgramApp: App {
     private let friendService: any FriendService
     private let coachService: CoachService
     private let notificationCoordinator: NotificationCoordinator
+    private let userProfileService: UserProfileService
+    private let goalsService: GoalsService
+    private let recommendationsService: RecommendationsService
 
     // swiftlint:disable function_body_length
     init() {
@@ -106,6 +109,32 @@ struct MealgramApp: App {
             coachService: coachService,
             waterService: WaterService(container: persistence.container)
         )
+        // Profile + Goals + AI Coach surfaces. session.currentRemoteID is
+        // read on every call so post-auth swap doesn't need re-wiring.
+        let sessionRef = session
+        self.userProfileService = UserProfileService(
+            container: persistence.container,
+            sessionRemoteID: { sessionRef.currentRemoteID }
+        )
+        self.goalsService = GoalsService(
+            container: persistence.container,
+            sessionRemoteID: { sessionRef.currentRemoteID }
+        )
+        // Worker URL + Claude key live in .env; if neither is present we
+        // ship the rule-based fallback alone. The composition is the
+        // single switch point.
+        // Worker base URL comes from AppConfig (same env-var pipeline the
+        // photo scan flow uses). Nil → primary is nil → fallback alone.
+        let workerPrimary: (any RecommendationsServing)? = AppConfig.workerBaseURL.map { base in
+            WorkerRecommendationsService(
+                baseURL: base,
+                client: URLSessionAPIClient(baseURL: base, interceptors: [LoggingInterceptor()])
+            )
+        }
+        self.recommendationsService = RecommendationsService(
+            primary: workerPrimary,
+            fallback: RuleBasedRecommendationsService()
+        )
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
         do {
@@ -157,7 +186,10 @@ struct MealgramApp: App {
                 friendService: friendService,
                 coachService: coachService,
                 notificationCoordinator: notificationCoordinator,
-                unlockBus: unlockBus
+                unlockBus: unlockBus,
+                userProfileService: userProfileService,
+                goalsService: goalsService,
+                recommendationsService: recommendationsService
             )
             .environment(session)
             .modelContainer(persistenceController.container)
