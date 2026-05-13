@@ -55,6 +55,20 @@ final class MealRepository {
         return copy
     }
 
+    /// Fetches every MealEntry whose consumedAt falls within `[from, to)`.
+    /// Used by the activity-heatmap drill-down sheet to render a single
+    /// day's meals.
+    func meals(in range: Range<Date>) -> [MealEntry] {
+        let context = ModelContext(container)
+        let lower = range.lowerBound
+        let upper = range.upperBound
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.consumedAt >= lower && $0.consumedAt < upper },
+            sortBy: [SortDescriptor(\MealEntry.consumedAt)]
+        )
+        return (try? context.fetch(descriptor)) ?? []
+    }
+
     /// Sweeps the photo directory for filenames no MealEntry references,
     /// deletes them, returns the count. Safe to call from Profile → "Wyczyść
     /// osierocone zdjęcia" — only orphans go.

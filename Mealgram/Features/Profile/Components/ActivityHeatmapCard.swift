@@ -4,6 +4,7 @@ import SwiftUI
 /// oldest week left → newest right). Reads from `ActivityHeatmapService`.
 struct ActivityHeatmapCard: View {
     let snapshot: ActivityHeatmap.Snapshot
+    var onSelectDay: ((Date) -> Void)?
 
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -37,10 +38,7 @@ struct ActivityHeatmapCard: View {
                 HStack(spacing: 4) {
                     ForEach(0..<rows[rowIndex].count, id: \.self) { colIndex in
                         let cell = rows[rowIndex][colIndex]
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(color(for: cell?.intensity ?? 0))
-                            .frame(width: cellSide, height: cellSide)
-                            .opacity(cell == nil ? 0.4 : 1)
+                        cellView(cell)
                     }
                 }
             }
@@ -66,6 +64,26 @@ struct ActivityHeatmapCard: View {
     private var captionRange: String {
         guard let first = snapshot.cells.first, let last = snapshot.cells.last else { return "" }
         return "\(Self.dayFormatter.string(from: first.date)) – \(Self.dayFormatter.string(from: last.date))"
+    }
+
+    @ViewBuilder
+    private func cellView(_ cell: ActivityHeatmap.Cell?) -> some View {
+        let intensity = cell?.intensity ?? 0
+        let shape = RoundedRectangle(cornerRadius: 3, style: .continuous)
+            .fill(color(for: intensity))
+            .frame(width: cellSide, height: cellSide)
+            .opacity(cell == nil ? 0.4 : 1)
+        if let cell, let onSelectDay {
+            Button {
+                onSelectDay(cell.date)
+                Haptics.light()
+            } label: {
+                shape
+            }
+            .buttonStyle(.plain)
+        } else {
+            shape
+        }
     }
 
     private var cellSide: CGFloat { 14 }

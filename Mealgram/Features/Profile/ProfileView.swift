@@ -43,6 +43,12 @@ struct ProfileView: View {
     @State private var isStreakCalendarPresented = false
     @State private var isRestartOnboardingConfirmed = false
     @State private var orphanSweepResult: Int?
+    @State private var selectedHeatmapDay: HeatmapDay?
+
+    private struct HeatmapDay: Identifiable {
+        let id = UUID()
+        let date: Date
+    }
 
     @AppStorage("preferences.morningReminderEnabled") private var morningReminderEnabled = true
     @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
@@ -61,7 +67,9 @@ struct ProfileView: View {
                             ProfileStatsCard(summary: statsSummary)
                         }
                         if let heatmapSnapshot {
-                            ActivityHeatmapCard(snapshot: heatmapSnapshot)
+                            ActivityHeatmapCard(snapshot: heatmapSnapshot) { day in
+                                selectedHeatmapDay = HeatmapDay(date: day)
+                            }
                         }
                         AchievementsSection(earned: earnedAchievements)
                         goalsSection
@@ -163,6 +171,17 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $isHelpPresented) {
                 HelpFAQSheet(onDismiss: { isHelpPresented = false })
+            }
+            .sheet(item: $selectedHeatmapDay) { wrapper in
+                DayMealsSheet(
+                    day: wrapper.date,
+                    repository: mealRepository,
+                    onDismiss: { selectedHeatmapDay = nil },
+                    onSelectMeal: { meal in
+                        selectedHeatmapDay = nil
+                        searchSelectedMeal = meal
+                    }
+                )
             }
             .sheet(item: $searchSelectedMeal) { meal in
                 MealDetailSheet(
