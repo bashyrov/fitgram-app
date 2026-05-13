@@ -20,6 +20,8 @@ struct ProfileView: View {
     let heatmapService: ActivityHeatmapService
     let challengeService: ChallengeService
     let statsService: ProfileStatsService
+    let userProfileService: UserProfileService
+    let goalsService: GoalsService
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
     let onRestartOnboarding: () -> Void
@@ -28,7 +30,6 @@ struct ProfileView: View {
     @State private var isPreparingExport = false
     @State private var isCSVRangePresented = false
     @State private var isPreparingBundle = false
-    @State private var isEditingGoals = false
     @State private var isEditingPreferences = false
     @State private var isCalibrating = false
     @State private var isWeightLogPresented = false
@@ -75,7 +76,14 @@ struct ProfileView: View {
                             }
                         }
                         AchievementsSection(earned: earnedAchievements)
-                        goalsSection
+                        if let user {
+                            GoalsAndTargetsCard(
+                                user: user,
+                                userProfileService: userProfileService,
+                                goalsService: goalsService
+                            )
+                        }
+                        recommendationsCard
                         preferencesSection
                         dataSection
                         legalSection
@@ -96,11 +104,6 @@ struct ProfileView: View {
             }
             .navigationTitle(Text("Profil"))
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $isEditingGoals) {
-                if let user {
-                    EditGoalsView(user: user) { isEditingGoals = false }
-                }
-            }
             .sheet(isPresented: $isEditingPreferences) {
                 if let user {
                     PreferencesView(user: user) { isEditingPreferences = false }
@@ -269,18 +272,32 @@ struct ProfileView: View {
         }
     }
 
-    private var goalsSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader("Cele dzienne")
-                goalRow(label: "Kalorie", value: "\(user?.dailyCalorieGoalKcal ?? 2100) kcal")
-                goalRow(label: "Białko", value: "\(user?.proteinGoalGrams ?? 120) g")
-                goalRow(label: "Węgle", value: "\(user?.carbsGoalGrams ?? 240) g")
-                goalRow(label: "Tłuszcz", value: "\(user?.fatGoalGrams ?? 70) g")
-                actionRow(symbol: "slider.horizontal.3", title: "Edytuj cele", role: nil) {
-                    isEditingGoals = true
+    @ViewBuilder
+    private var recommendationsCard: some View {
+        if let user, let data = user.latestRecommendationsJSON,
+            let rec = try? JSONDecoder().decode(Recommendations.self, from: data)
+        {
+            Card {
+                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                    Label("Wskazówki od Oli", systemImage: "sparkles")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.accent)
+                    Text(rec.summary)
+                        .font(Tokens.Font.body)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    ForEach(rec.tips.prefix(3)) { tip in
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 6) {
+                                Text(tip.icon)
+                                Text(tip.title)
+                                    .font(Tokens.Font.body.weight(.semibold))
+                            }
+                            Text(tip.description)
+                                .font(Tokens.Font.footnote)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                        }
+                    }
                 }
-                .disabled(user == nil)
             }
         }
     }

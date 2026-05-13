@@ -153,6 +153,8 @@ struct RootView: View {
                     statsService: statsService,
                     friendService: friendService,
                     coachService: coachService,
+                    userProfileService: userProfileService,
+                    goalsService: goalsService,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
