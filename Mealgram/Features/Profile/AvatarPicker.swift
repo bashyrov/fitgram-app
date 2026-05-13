@@ -38,6 +38,11 @@ struct AvatarPicker: View {
             Button("Wybierz z biblioteki") {
                 isPhotoPickerPresented = true
             }
+            if user.avatarFilename != nil {
+                Button("Usuń zdjęcie", role: .destructive) {
+                    clearAvatar()
+                }
+            }
             Button("Anuluj", role: .cancel) {}
         }
         .photosPicker(isPresented: $isPhotoPickerPresented, selection: $pickerItem, matching: .images)
@@ -98,6 +103,15 @@ struct AvatarPicker: View {
             // Soft-fail.
         }
         pickerItem = nil
+    }
+
+    private func clearAvatar() {
+        store.remove(user.avatarFilename)
+        user.avatarFilename = nil
+        user.updatedAt = Date()
+        try? modelContext.save()
+        displayedImage = nil
+        Haptics.light()
     }
 
     private func apply(image: UIImage) {
