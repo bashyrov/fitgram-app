@@ -2,20 +2,30 @@ import SwiftUI
 
 struct AddWeightSheet: View {
     let initialWeight: Double?
+    let initialNote: String?
+    let title: LocalizedStringKey
     let onCommit: (Double, String?) -> Void
     let onDismiss: () -> Void
 
     @State private var weightText: String
     @State private var note: String
 
-    init(initialWeight: Double?, onCommit: @escaping (Double, String?) -> Void, onDismiss: @escaping () -> Void) {
+    init(
+        initialWeight: Double?,
+        initialNote: String? = nil,
+        title: LocalizedStringKey = "Dodaj wpis wagi",
+        onCommit: @escaping (Double, String?) -> Void,
+        onDismiss: @escaping () -> Void
+    ) {
         self.initialWeight = initialWeight
+        self.initialNote = initialNote
+        self.title = title
         self.onCommit = onCommit
         self.onDismiss = onDismiss
         self._weightText = State(
             initialValue: initialWeight.map { String(format: "%.1f", $0) } ?? ""
         )
-        self._note = State(initialValue: "")
+        self._note = State(initialValue: initialNote ?? "")
     }
 
     var body: some View {
@@ -51,7 +61,7 @@ struct AddWeightSheet: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Dodaj wpis wagi"))
+            .navigationTitle(Text(title))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

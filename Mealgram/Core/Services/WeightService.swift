@@ -47,6 +47,22 @@ final class WeightService {
         return entry
     }
 
+    /// Edits an existing weight entry in place. Re-fetches by id so the
+    /// caller's @Model instance (potentially in a different context) is
+    /// not the one being mutated.
+    func update(_ entry: WeightEntry, weightKg: Double, note: String?) throws {
+        let context = ModelContext(container)
+        let entryID = entry.id
+        let descriptor = FetchDescriptor<WeightEntry>(
+            predicate: #Predicate { $0.id == entryID }
+        )
+        guard let stored = try context.fetch(descriptor).first else { return }
+        stored.weightKg = weightKg
+        stored.note = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if (stored.note ?? "").isEmpty { stored.note = nil }
+        try context.save()
+    }
+
     func delete(_ entry: WeightEntry) throws {
         let context = ModelContext(container)
         let entryID = entry.id

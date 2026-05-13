@@ -10,6 +10,7 @@ struct WeightLogView: View {
     let onDismiss: () -> Void
 
     @State private var isAddingPresented = false
+    @State private var editingEntry: WeightEntry?
     @State private var importStatus: String?
     @State private var isImporting = false
     @State private var isEditingTarget = false
@@ -69,6 +70,22 @@ struct WeightLogView: View {
                         Task { await state.log(weight, for: userRemoteID, note: note) }
                     },
                     onDismiss: { isAddingPresented = false }
+                )
+            }
+            .sheet(item: $editingEntry) { entry in
+                AddWeightSheet(
+                    initialWeight: entry.weightKg,
+                    initialNote: entry.note,
+                    title: "Edytuj wpis",
+                    onCommit: { weight, note in
+                        Task {
+                            await state.update(
+                                entry, weightKg: weight, note: note,
+                                for: userRemoteID
+                            )
+                        }
+                    },
+                    onDismiss: { editingEntry = nil }
                 )
             }
             .alert("Cel wagi", isPresented: $isEditingTarget) {
@@ -262,14 +279,24 @@ struct WeightLogView: View {
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 } else {
                     ForEach(state.entries) { entry in
-                        row(entry)
-                            .contextMenu {
-                                Button(role: .destructive) {
-                                    Task { await state.delete(entry, for: userRemoteID) }
-                                } label: {
-                                    Label("Usuń", systemImage: "trash")
-                                }
+                        Button {
+                            editingEntry = entry
+                        } label: {
+                            row(entry)
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            Button {
+                                editingEntry = entry
+                            } label: {
+                                Label("Edytuj", systemImage: "pencil")
                             }
+                            Button(role: .destructive) {
+                                Task { await state.delete(entry, for: userRemoteID) }
+                            } label: {
+                                Label("Usuń", systemImage: "trash")
+                            }
+                        }
                         if entry.id != state.entries.last?.id {
                             Divider().background(Tokens.Palette.separator)
                         }
