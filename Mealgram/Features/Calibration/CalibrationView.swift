@@ -13,6 +13,7 @@ struct CalibrationView: View {
     @State private var calibration: Calibration?
     @State private var draftFactor: Double = 1.0
     @State private var draftReference: ReferenceObjectKind = .creditCard
+    @State private var isResetConfirmed = false
 
     var body: some View {
         NavigationStack {
@@ -27,6 +28,20 @@ struct CalibrationView: View {
                             sampleCountCard(calibration)
                         }
                         PrimaryButton(title: "Zapisz", systemImage: "checkmark", action: save)
+                        Button(role: .destructive) {
+                            isResetConfirmed = true
+                        } label: {
+                            HStack(spacing: Tokens.Space.sm) {
+                                Image(systemName: "arrow.counterclockwise")
+                                Text("Resetuj kalibrację")
+                            }
+                            .font(Tokens.Font.bodyEmphasized)
+                            .foregroundStyle(Tokens.Palette.warning)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, Tokens.Space.md)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled((calibration?.sampleCount ?? 0) == 0 && draftFactor == 1)
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
@@ -39,6 +54,16 @@ struct CalibrationView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Zamknij", action: onDismiss)
                 }
+            }
+            .confirmationDialog(
+                "Zresetować kalibrację?",
+                isPresented: $isResetConfirmed,
+                titleVisibility: .visible
+            ) {
+                Button("Resetuj", role: .destructive, action: reset)
+                Button("Anuluj", role: .cancel) {}
+            } message: {
+                Text("Korekta wróci do ×1.00, licznik skanów wyzeruje się.")
             }
         }
     }
@@ -159,6 +184,12 @@ struct CalibrationView: View {
             forUser: userRemoteID
         )
         onDismiss()
+    }
+
+    private func reset() {
+        try? service.reset(forUser: userRemoteID)
+        Haptics.warning()
+        Task { await load() }
     }
 
     private func updatedLabel(_ date: Date) -> String {

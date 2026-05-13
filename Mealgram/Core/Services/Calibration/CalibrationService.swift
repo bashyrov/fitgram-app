@@ -55,6 +55,22 @@ final class CalibrationService {
         )
     }
 
+    /// Restores the calibration row to defaults (factor 1.0, reference
+    /// .creditCard, sample count 0). Used by the "Resetuj" button on the
+    /// Profile → Kalibracja screen when the user wants to start fresh.
+    func reset(forUser userRemoteID: String) throws {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<Calibration>(
+            predicate: #Predicate { $0.userRemoteID == userRemoteID }
+        )
+        guard let stored = try context.fetch(descriptor).first else { return }
+        stored.portionAdjustmentFactor = 1.0
+        stored.referenceObject = .creditCard
+        stored.sampleCount = 0
+        stored.lastUpdated = Date()
+        try context.save()
+    }
+
     /// Bumps the observed sample count — called after each photo scan so
     /// the user sees "from N posiłków" on the screen.
     func recordSample(forUser userRemoteID: String) throws {

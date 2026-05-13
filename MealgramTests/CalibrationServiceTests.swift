@@ -51,6 +51,18 @@ final class CalibrationServiceTests: XCTestCase {
         XCTAssertEqual(try service.current(forUser: "u-4").sampleCount, 2)
     }
 
+    func testResetRestoresDefaults() throws {
+        try service.updateFactor(1.3, referenceObject: .eatingHand, forUser: "u-rst")
+        try service.recordSample(forUser: "u-rst")
+        try service.recordSample(forUser: "u-rst")
+
+        try service.reset(forUser: "u-rst")
+        let stored = try service.current(forUser: "u-rst")
+        XCTAssertEqual(stored.portionAdjustmentFactor, 1.0, accuracy: 0.001)
+        XCTAssertEqual(stored.referenceObject, .creditCard)
+        XCTAssertEqual(stored.sampleCount, 0)
+    }
+
     func testApplyScalesScanResultProportionally() {
         let result = ScanResult(
             items: [
