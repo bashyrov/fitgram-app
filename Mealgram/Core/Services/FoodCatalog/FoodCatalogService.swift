@@ -17,6 +17,10 @@ protocol FoodCatalog {
     /// Increments pickCount + stamps lastPickedAt. Called after the user
     /// commits a Quick DB entry to their meal log.
     func recordPick(_ food: Food) throws
+    /// Inserts a user-authored Food into the catalogue. Returns the
+    /// persisted row.
+    @discardableResult
+    func create(_ food: Food) throws -> Food
 }
 
 @MainActor
@@ -89,6 +93,14 @@ final class FoodCatalogService: FoodCatalog {
         attached.pickCount += 1
         attached.lastPickedAt = Date()
         try context.save()
+    }
+
+    @discardableResult
+    func create(_ food: Food) throws -> Food {
+        let context = ModelContext(container)
+        context.insert(food)
+        try context.save()
+        return food
     }
 }
 

@@ -8,6 +8,7 @@ struct QuickDatabaseRootView: View {
     let onDismiss: () -> Void
 
     @State private var pickedFood: Food?
+    @State private var isAddingCustom = false
 
     var body: some View {
         NavigationStack {
@@ -23,6 +24,14 @@ struct QuickDatabaseRootView: View {
             .navigationTitle(Text("Szybka baza"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        isAddingCustom = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityLabel(Text("Dodaj własne danie"))
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Zamknij", action: onDismiss)
                 }
@@ -33,6 +42,17 @@ struct QuickDatabaseRootView: View {
                     food: food,
                     onSave: { commit(food: food, item: $0, suggestedMealType: Self.suggestedMealType()) },
                     onDismiss: { pickedFood = nil }
+                )
+            }
+            .sheet(isPresented: $isAddingCustom) {
+                CustomFoodFormSheet(
+                    onSave: { food in
+                        Task {
+                            await state.createCustomFood(food)
+                            isAddingCustom = false
+                        }
+                    },
+                    onDismiss: { isAddingCustom = false }
                 )
             }
         }
