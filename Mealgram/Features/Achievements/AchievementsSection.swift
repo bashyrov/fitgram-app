@@ -6,6 +6,7 @@ struct AchievementsSection: View {
     let earnedKindsToDate: [String: Date]
 
     @State private var selected: AchievementSelection?
+    @AppStorage("profile.achievements.earnedOnly") private var earnedOnly = false
 
     private struct AchievementSelection: Identifiable {
         let id: String
@@ -26,6 +27,14 @@ struct AchievementsSection: View {
         )
     }
 
+    private var visibleDefinitions: [AchievementDefinition] {
+        let sorted = AchievementCatalog.all.sorted(by: { $0.order < $1.order })
+        if earnedOnly {
+            return sorted.filter { earnedKindsToDate[$0.id] != nil }
+        }
+        return sorted
+    }
+
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
@@ -38,8 +47,13 @@ struct AchievementsSection: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
+                if !earnedKindsToDate.isEmpty {
+                    Toggle("Pokaż tylko zdobyte", isOn: $earnedOnly)
+                        .font(Tokens.Font.footnote)
+                        .tint(Tokens.Palette.primary)
+                }
                 LazyVGrid(columns: columns, spacing: Tokens.Space.md) {
-                    ForEach(AchievementCatalog.all.sorted(by: { $0.order < $1.order }), id: \.id) { definition in
+                    ForEach(visibleDefinitions, id: \.id) { definition in
                         Button {
                             selected = AchievementSelection(
                                 id: definition.id,
