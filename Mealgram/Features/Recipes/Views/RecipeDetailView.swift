@@ -9,6 +9,8 @@ struct RecipeDetailView: View {
     let onEdit: () -> Void
     let onRate: (Double?) -> Void
     let onDismiss: () -> Void
+    var similarRecipes: [Recipe] = []
+    var onSelectSimilar: ((Recipe) -> Void)?
 
     @State private var servings: Double = 1
     @State private var checkedIngredients: Set<UUID> = []
@@ -35,6 +37,9 @@ struct RecipeDetailView: View {
                         }
                         if let minutes = recipe.cookMinutes, minutes > 0 {
                             CookTimerCard(cookMinutes: minutes)
+                        }
+                        if !similarRecipes.isEmpty, let onSelectSimilar {
+                            similarCard(onSelectSimilar)
                         }
                         PrimaryButton(title: "Ugotuj i dodaj do dziennika", systemImage: "checkmark") {
                             onCook(servings)
@@ -286,6 +291,43 @@ struct RecipeDetailView: View {
                             .font(Tokens.Font.body)
                             .foregroundStyle(Tokens.Palette.ink)
                             .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
+    }
+
+    private func similarCard(_ onTap: @escaping (Recipe) -> Void) -> some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                Text("Co podobnego?")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: Tokens.Space.sm) {
+                        ForEach(similarRecipes) { peer in
+                            Button {
+                                onTap(peer)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(peer.title)
+                                        .font(Tokens.Font.bodyEmphasized)
+                                        .foregroundStyle(Tokens.Palette.ink)
+                                        .lineLimit(1)
+                                    Text("\(peer.ingredients.count) składn.")
+                                        .font(Tokens.Font.caption)
+                                        .foregroundStyle(Tokens.Palette.inkMuted)
+                                }
+                                .padding(.vertical, Tokens.Space.sm)
+                                .padding(.horizontal, Tokens.Space.md)
+                                .frame(maxWidth: 220, alignment: .leading)
+                                .background(
+                                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                                        .fill(Tokens.Palette.primarySoft)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                 }
             }

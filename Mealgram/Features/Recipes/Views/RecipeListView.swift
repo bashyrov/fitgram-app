@@ -112,7 +112,11 @@ struct RecipeListView: View {
                         formMode = .editing(recipe)
                     },
                     onRate: { newValue in rate(recipe, value: newValue) },
-                    onDismiss: { detailRecipe = nil }
+                    onDismiss: { detailRecipe = nil },
+                    similarRecipes: SimilarRecipesEngine.similar(to: recipe, in: state.recipes),
+                    onSelectSimilar: { peer in
+                        detailRecipe = peer
+                    }
                 )
             }
         }
