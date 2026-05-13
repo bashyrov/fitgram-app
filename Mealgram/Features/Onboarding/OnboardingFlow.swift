@@ -109,6 +109,14 @@ final class OnboardingFlow {
         currentStep.rawValue > 0
     }
 
+    /// Skip-ahead from the welcome screen — finishes onboarding with
+    /// whatever defaults are in the OnboardingProfile (typically the
+    /// pristine values). Used by the "Później" link so users who just
+    /// want to peek at the app aren't forced through every step.
+    func skipToEnd() {
+        Task { await complete() }
+    }
+
     // MARK: - Completion
 
     func complete() async {

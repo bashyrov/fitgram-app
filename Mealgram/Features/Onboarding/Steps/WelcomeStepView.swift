@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WelcomeStepView: View {
     let onContinue: () -> Void
+    var onSkip: (() -> Void)?
 
     var body: some View {
         ZStack {
@@ -34,9 +35,16 @@ struct WelcomeStepView: View {
 
                 Spacer()
 
-                PrimaryButton(title: "Zacznijmy", systemImage: "arrow.right", action: onContinue)
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
+                VStack(spacing: Tokens.Space.sm) {
+                    PrimaryButton(title: "Zacznijmy", systemImage: "arrow.right", action: onContinue)
+                        .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
+                    if let onSkip {
+                        Button("Pomiń na razie — rozejrzę się", action: onSkip)
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
             }
             .padding(.vertical, Tokens.Space.xl)
         }
