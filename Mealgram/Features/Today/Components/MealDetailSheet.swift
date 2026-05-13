@@ -20,6 +20,7 @@ struct MealDetailSheet: View {
     @State private var newTag: String = ""
     @State private var notes: String
     @State private var zoomedPhoto: ZoomedPhoto?
+    @State private var knownTags: [String] = []
 
     private struct ZoomedPhoto: Identifiable {
         let id = UUID()
@@ -237,8 +238,51 @@ struct MealDetailSheet: View {
                     .disabled(newTag.trimmingCharacters(in: .whitespaces).isEmpty)
                     .opacity(newTag.trimmingCharacters(in: .whitespaces).isEmpty ? 0.5 : 1)
                 }
+                if !tagSuggestions.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: Tokens.Space.sm) {
+                            ForEach(tagSuggestions, id: \.self) { suggestion in
+                                Button {
+                                    add(tag: suggestion)
+                                } label: {
+                                    Text(suggestion)
+                                        .font(Tokens.Font.caption)
+                                        .foregroundStyle(Tokens.Palette.inkMuted)
+                                        .padding(.horizontal, Tokens.Space.sm)
+                                        .padding(.vertical, 4)
+                                        .background(
+                                            Capsule().stroke(Tokens.Palette.separator, lineWidth: 1)
+                                        )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
             }
         }
+        .task {
+            knownTags = (try? repository.knownTags()) ?? []
+        }
+    }
+
+    /// Up to 6 known tags that match the current input prefix and aren't
+    /// already on the meal. Empty input shows the top tags by frequency.
+    private var tagSuggestions: [String] {
+        let trimmed = newTag.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let candidates = knownTags.filter { !tags.contains($0) }
+        let matching =
+            trimmed.isEmpty
+            ? candidates
+            : candidates.filter { $0.hasPrefix(trimmed) }
+        return Array(matching.prefix(6))
+    }
+
+    private func add(tag: String) {
+        guard !tags.contains(tag) else { return }
+        tags.append(tag)
+        newTag = ""
+        Haptics.light()
     }
 
     private func tagChip(_ tag: String) -> some View {
