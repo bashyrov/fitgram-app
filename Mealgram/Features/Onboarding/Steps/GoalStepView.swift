@@ -21,6 +21,13 @@ struct GoalStepView: View {
                         action: { goal = .lose }
                     )
                     OnboardingChoiceCard(
+                        symbol: "arrow.up.right",
+                        title: "Nabrać masy",
+                        subtitle: "Większa porcja energii i białka",
+                        isSelected: goal == .gain,
+                        action: { goal = .gain }
+                    )
+                    OnboardingChoiceCard(
                         symbol: "equal",
                         title: "Utrzymać wagę",
                         subtitle: "Zdrowe nawyki bez zmiany masy",
@@ -28,11 +35,18 @@ struct GoalStepView: View {
                         action: { goal = .maintain }
                     )
                     OnboardingChoiceCard(
-                        symbol: "arrow.up.right",
-                        title: "Przybrać",
-                        subtitle: "Większa porcja energii i białka",
-                        isSelected: goal == .gain,
-                        action: { goal = .gain }
+                        symbol: "heart.text.square",
+                        title: "Konkretny cel zdrowotny",
+                        subtitle: "Np. współpraca z dietetykiem, choroba",
+                        isSelected: goal == .healthCondition,
+                        action: { goal = .healthCondition }
+                    )
+                    OnboardingChoiceCard(
+                        symbol: "magnifyingglass",
+                        title: "Bez celu, tylko śledzenie",
+                        subtitle: "Po prostu chcę widzieć, co jem",
+                        isSelected: goal == .justTracking,
+                        action: { goal = .justTracking }
                     )
                 }
             }

@@ -38,6 +38,23 @@ enum GoalKind: String, Codable, CaseIterable, Sendable {
     case lose
     case maintain
     case gain
+    /// "Konkretny cel zdrowotny" — user has a medical / clinician-led
+    /// goal that doesn't map to weight change. Math falls back to TDEE
+    /// (maintain), but the surface labels differently.
+    case healthCondition = "health_condition"
+    /// "Bez celu, tylko śledzenie" — user just wants to log without any
+    /// energy target. Math falls back to TDEE.
+    case justTracking = "just_tracking"
+}
+
+extension GoalKind {
+    /// True when this goal involves a directional weight change with a
+    /// pace + target weight. Used by Onboarding to decide whether to
+    /// show the pace/target screen, and by the calculator to know
+    /// whether to apply a deficit/surplus.
+    var requiresPaceAndTarget: Bool {
+        self == .lose || self == .gain
+    }
 }
 
 enum FoodCategory: String, Codable, CaseIterable, Sendable {

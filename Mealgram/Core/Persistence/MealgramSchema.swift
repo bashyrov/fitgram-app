@@ -23,6 +23,7 @@ enum MealgramSchemaV1: VersionedSchema {
             CoachInsightLog.self,
             CoachMemoryNote.self,
             WaterEntry.self,
+            CustomGoal.self,
         ]
     }
 }

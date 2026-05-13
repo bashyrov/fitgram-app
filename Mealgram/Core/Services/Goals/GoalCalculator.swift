@@ -137,7 +137,7 @@ struct GoalCalculator {
     /// fat ÷ 7 days). Otherwise falls back to the legacy fixed deltas.
     static func goalAdjustment(tdee: Double, goal: GoalKind, paceKgPerWeek: Double? = nil) -> Double {
         switch goal {
-        case .maintain:
+        case .maintain, .healthCondition, .justTracking:
             return tdee
         case .lose:
             if let pace = paceKgPerWeek, pace > 0 {
@@ -168,7 +168,7 @@ struct GoalCalculator {
     static func macroSplit(for goal: GoalKind) -> (protein: Double, carbs: Double, fat: Double) {
         switch goal {
         case .lose: return (protein: 0.30, carbs: 0.42, fat: 0.28)
-        case .maintain: return (protein: 0.25, carbs: 0.45, fat: 0.30)
+        case .maintain, .healthCondition, .justTracking: return (protein: 0.25, carbs: 0.45, fat: 0.30)
         case .gain: return (protein: 0.25, carbs: 0.50, fat: 0.25)
         }
     }

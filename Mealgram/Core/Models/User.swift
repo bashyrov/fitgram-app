@@ -35,6 +35,35 @@ final class User {
     var carbsGoalGrams: Int
     var fatGoalGrams: Int
 
+    /// Extended targets — all default-initialised so SwiftData lightweight
+    /// migration fills them in for existing rows without bumping schema.
+    var fiberGoalGrams: Int = 30
+    var waterGoalMl: Int = 2500
+
+    /// Optional pace + target for an active weight-loss / weight-gain
+    /// goal. Nil when goal is maintain / healthCondition / justTracking,
+    /// or when the user skipped the pace step. All-or-nothing: if pace
+    /// is set, target/start/end should all be set too.
+    var goalPaceKgPerWeek: Double?
+    var goalTargetWeightKg: Double?
+    var goalStartDate: Date?
+    var goalEstimatedEndDate: Date?
+
+    /// Override flags — once the user manually edits a target value in
+    /// Profile, the calculator stops recalculating it on weight / activity
+    /// changes. Resetting one of these to false re-derives the value
+    /// from the current profile snapshot.
+    var caloriesOverridden: Bool = false
+    var macrosOverridden: Bool = false
+    var fiberOverridden: Bool = false
+    var waterOverridden: Bool = false
+
+    /// JSON-encoded `Recommendations` payload from the most recent Ola
+    /// AI call (or the rule-based fallback). Surfaced on the onboarding
+    /// results screen + a Profile section. Nil until first generation.
+    var latestRecommendationsJSON: Data?
+    var recommendationsGeneratedAt: Date?
+
     /// Persisted as a comma-joined raw-value list so SwiftData lightweight
     /// migration on existing rows keeps default-empty without bumping the
     /// schema version. Read/write via the typed `dietaryPreferences`
