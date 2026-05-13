@@ -34,6 +34,7 @@ struct RootView: View {
     let userProfileService: UserProfileService
     let goalsService: GoalsService
     let recommendationsService: RecommendationsService
+    let privacyStore: PrivacyStore
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -67,7 +68,8 @@ struct RootView: View {
         unlockBus: AchievementUnlockBus,
         userProfileService: UserProfileService,
         goalsService: GoalsService,
-        recommendationsService: RecommendationsService
+        recommendationsService: RecommendationsService,
+        privacyStore: PrivacyStore
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -98,6 +100,7 @@ struct RootView: View {
         self.userProfileService = userProfileService
         self.goalsService = goalsService
         self.recommendationsService = recommendationsService
+        self.privacyStore = privacyStore
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -155,6 +158,7 @@ struct RootView: View {
                     coachService: coachService,
                     userProfileService: userProfileService,
                     goalsService: goalsService,
+                    privacyStore: privacyStore,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },

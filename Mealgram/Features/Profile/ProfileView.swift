@@ -22,6 +22,7 @@ struct ProfileView: View {
     let statsService: ProfileStatsService
     let userProfileService: UserProfileService
     let goalsService: GoalsService
+    let privacyStore: PrivacyStore
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
     let onRestartOnboarding: () -> Void
@@ -31,6 +32,7 @@ struct ProfileView: View {
     @State private var isCSVRangePresented = false
     @State private var isPreparingBundle = false
     @State private var isEditingPreferences = false
+    @State private var isPrivacyPresented = false
     @State private var isCalibrating = false
     @State private var isWeightLogPresented = false
     @State private var deleteConfirmation = false
@@ -104,6 +106,9 @@ struct ProfileView: View {
             }
             .navigationTitle(Text("Profil"))
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $isPrivacyPresented) {
+                PrivacySettingsSheet(store: privacyStore) { isPrivacyPresented = false }
+            }
             .sheet(isPresented: $isEditingPreferences) {
                 if let user {
                     PreferencesView(user: user) { isEditingPreferences = false }
@@ -311,6 +316,10 @@ struct ProfileView: View {
                 }
                 .disabled(user == nil)
                 Divider().background(Tokens.Palette.separator)
+                actionRow(symbol: "lock.shield.fill", title: privacyRowTitle, role: nil) {
+                    isPrivacyPresented = true
+                }
+                Divider().background(Tokens.Palette.separator)
                 actionRow(symbol: "wand.and.stars", title: "Kalibracja AI", role: nil) {
                     isCalibrating = true
                 }
@@ -351,6 +360,14 @@ struct ProfileView: View {
             Button("Anuluj", role: .cancel) {}
         } message: {
             Text("Twoje dane zostaną — przeprowadzimy Cię tylko jeszcze raz przez ustawienia.")
+        }
+    }
+
+    private var privacyRowTitle: LocalizedStringKey {
+        switch privacyStore.current.visibility {
+        case .privateOnly: return "Prywatność — wyłączone"
+        case .friendsOnly: return "Prywatność — znajomi"
+        case .publicLink: return "Prywatność — z linkiem"
         }
     }
 

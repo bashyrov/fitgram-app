@@ -27,6 +27,7 @@ struct MainTabView: View {
     let coachService: CoachService
     let userProfileService: UserProfileService
     let goalsService: GoalsService
+    let privacyStore: PrivacyStore
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -72,6 +73,7 @@ struct MainTabView: View {
         coachService: CoachService,
         userProfileService: UserProfileService,
         goalsService: GoalsService,
+        privacyStore: PrivacyStore,
         unlockBus: AchievementUnlockBus,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
@@ -100,6 +102,7 @@ struct MainTabView: View {
         self.coachService = coachService
         self.userProfileService = userProfileService
         self.goalsService = goalsService
+        self.privacyStore = privacyStore
         self.unlockBus = unlockBus
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
@@ -212,6 +215,7 @@ struct MainTabView: View {
                 statsService: statsService,
                 userProfileService: userProfileService,
                 goalsService: goalsService,
+                privacyStore: privacyStore,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount,
                 onRestartOnboarding: onRestartOnboarding

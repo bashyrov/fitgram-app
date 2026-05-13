@@ -36,6 +36,7 @@ struct MealgramApp: App {
     private let userProfileService: UserProfileService
     private let goalsService: GoalsService
     private let recommendationsService: RecommendationsService
+    @State private var privacyStore: PrivacyStore
 
     // swiftlint:disable function_body_length
     init() {
@@ -135,6 +136,7 @@ struct MealgramApp: App {
             primary: workerPrimary,
             fallback: RuleBasedRecommendationsService()
         )
+        self._privacyStore = State(initialValue: PrivacyStore())
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
         do {
@@ -189,7 +191,8 @@ struct MealgramApp: App {
                 unlockBus: unlockBus,
                 userProfileService: userProfileService,
                 goalsService: goalsService,
-                recommendationsService: recommendationsService
+                recommendationsService: recommendationsService,
+                privacyStore: privacyStore
             )
             .environment(session)
             .modelContainer(persistenceController.container)
