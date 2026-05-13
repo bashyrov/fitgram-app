@@ -36,12 +36,45 @@ struct ProfileStatsCard: View {
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 if let memberSince = summary.memberSince {
-                    Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkSubtle)
+                        if let daysWithUs = Self.daysSince(memberSince) {
+                            Text(daysWithUsLabel(daysWithUs))
+                                .font(Tokens.Font.caption)
+                                .foregroundStyle(Tokens.Palette.primary)
+                        }
+                    }
                 }
             }
         }
+    }
+
+    /// Day count from a stored date — nil if Calendar can't resolve, or
+    /// if the result would be negative (clock drift / restored backup).
+    static func daysSince(_ date: Date, now: Date = Date()) -> Int? {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: date)
+        let end = calendar.startOfDay(for: now)
+        guard let days = calendar.dateComponents([.day], from: start, to: end).day,
+            days >= 0
+        else { return nil }
+        return days
+    }
+
+    /// Polish day-count label. Singular "1 dzień", plural "N dni".
+    /// Pure function so tests can pin down the strings directly.
+    static func daysWithUsLabel(_ days: Int) -> String {
+        switch days {
+        case 0: return "Dzisiaj dołączyłeś"
+        case 1: return "1 dzień z nami"
+        default: return "\(days) dni z nami"
+        }
+    }
+
+    private func daysWithUsLabel(_ days: Int) -> String {
+        Self.daysWithUsLabel(days)
     }
 
     /// Formats large kcal totals with thousands separators so "172000"
