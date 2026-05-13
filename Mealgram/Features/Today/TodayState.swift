@@ -29,6 +29,12 @@ final class TodayState {
     private(set) var isLoading = false
     private(set) var loadError: String?
 
+    /// The day currently being shown. Mutated via `goToPreviousDay()` /
+    /// `goToNextDay()` / `jumpToToday()`; always start-of-day. Driving
+    /// the meal-window fetch off this lets the user scrub history
+    /// without leaving the Today tab.
+    private(set) var viewingDate: Date = Calendar.current.startOfDay(for: Date())
+
     private let container: ModelContainer
     private let streakService: StreakService
     private let recipeRepository: RecipeRepository?
@@ -56,6 +62,33 @@ final class TodayState {
         self.waterService = waterService
         self.calendar = calendar
         self.now = now
+        self.viewingDate = calendar.startOfDay(for: now())
+    }
+
+    var isViewingToday: Bool {
+        calendar.isDate(viewingDate, inSameDayAs: now())
+    }
+
+    /// Moves the visible day back by one. Always allowed.
+    func goToPreviousDay(userRemoteID: String) async {
+        guard let previous = calendar.date(byAdding: .day, value: -1, to: viewingDate) else { return }
+        viewingDate = calendar.startOfDay(for: previous)
+        await refresh(for: userRemoteID)
+    }
+
+    /// Moves the visible day forward by one — clamped at today (the
+    /// future is empty by definition).
+    func goToNextDay(userRemoteID: String) async {
+        let today = calendar.startOfDay(for: now())
+        guard viewingDate < today else { return }
+        guard let next = calendar.date(byAdding: .day, value: 1, to: viewingDate) else { return }
+        viewingDate = min(today, calendar.startOfDay(for: next))
+        await refresh(for: userRemoteID)
+    }
+
+    func jumpToToday(userRemoteID: String) async {
+        viewingDate = calendar.startOfDay(for: now())
+        await refresh(for: userRemoteID)
     }
 
     func refresh(for userRemoteID: String) async {
@@ -69,7 +102,7 @@ final class TodayState {
             let user = try context.fetch(userDescriptor).first
             self.user = user
 
-            let dayStart = calendar.startOfDay(for: now())
+            let dayStart = calendar.startOfDay(for: viewingDate)
             guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 self.meals = []
                 self.totals = Totals()
@@ -94,7 +127,11 @@ final class TodayState {
             self.coachInsights = coachService?.insights(for: userRemoteID) ?? []
             self.waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
             self.loadError = nil
-            publishWidgetSnapshot()
+            // Widget snapshot is "today" only — never publish a stale
+            // historical day to the home-screen widget.
+            if isViewingToday {
+                publishWidgetSnapshot()
+            }
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
             self.loadError = String(describing: error)
@@ -162,6 +199,7 @@ final class TodayState {
     /// True when the user can use a freeze today: there's a streak to
     /// protect, freezes left, and nothing has been logged today yet.
     var canUseFreeze: Bool {
+        guard isViewingToday else { return false }
         guard let streak, streak.currentLength > 0, streak.freezesAvailable > 0 else { return false }
         let dayStart = calendar.startOfDay(for: now())
         if let last = streak.lastLoggedDate, calendar.startOfDay(for: last) >= dayStart {
