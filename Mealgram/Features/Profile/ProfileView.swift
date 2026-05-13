@@ -42,6 +42,7 @@ struct ProfileView: View {
     @State private var searchSelectedMeal: MealEntry?
     @State private var isStreakCalendarPresented = false
     @State private var isRestartOnboardingConfirmed = false
+    @State private var orphanSweepResult: Int?
     @State private var isHelpPresented = false
 
     var body: some View {
@@ -342,7 +343,31 @@ struct ProfileView: View {
                 actionRow(symbol: "magnifyingglass", title: "Szukaj w historii", role: nil) {
                     isSearchPresented = true
                 }
+                if photoStore != nil {
+                    Divider().background(Tokens.Palette.separator)
+                    actionRow(symbol: "photo.stack", title: photosRowTitle, role: nil) {
+                        runOrphanPhotoSweep()
+                    }
+                }
             }
+        }
+    }
+
+    private var photosRowTitle: LocalizedStringKey {
+        if let orphanSweepResult {
+            return "Usunięto \(orphanSweepResult) zdjęć"
+        }
+        return "Wyczyść osierocone zdjęcia"
+    }
+
+    private func runOrphanPhotoSweep() {
+        guard let photoStore else { return }
+        let removed = mealRepository.cleanupOrphanedPhotos(in: photoStore)
+        orphanSweepResult = removed
+        Haptics.light()
+        Task {
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            orphanSweepResult = nil
         }
     }
 

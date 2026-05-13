@@ -75,4 +75,11 @@ final class MealPhotoStore {
         let contents = (try? fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? []
         return contents.count
     }
+
+    /// Returns every JPEG filename currently in the photos directory.
+    /// Used by orphan-sweep to compare against in-use filenames.
+    func allFilenames() -> [String] {
+        let contents = (try? fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? []
+        return contents.map { $0.lastPathComponent }
+    }
 }
