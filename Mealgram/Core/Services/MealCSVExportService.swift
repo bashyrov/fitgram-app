@@ -76,6 +76,7 @@ final class MealCSVExportService {
     private static let header = [
         "data", "godzina", "typ", "źródło", "pozycja",
         "gramy", "porcja_multiplier", "kcal", "białko_g", "węgle_g", "tłuszcz_g",
+        "ocena", "tagi",
     ].joined(separator: ",")
 
     private func row(meal: MealEntry, item: FoodItem) -> String {
@@ -85,6 +86,8 @@ final class MealCSVExportService {
         let scaledProtein = item.proteinGrams * meal.portionMultiplier
         let scaledCarbs = item.carbsGrams * meal.portionMultiplier
         let scaledFat = item.fatGrams * meal.portionMultiplier
+        let ratingCell = meal.rating.map(String.init) ?? ""
+        let tagsCell = Self.escape(meal.tags.joined(separator: " "))
         return [
             date,
             time,
@@ -97,6 +100,8 @@ final class MealCSVExportService {
             Self.format(scaledProtein),
             Self.format(scaledCarbs),
             Self.format(scaledFat),
+            ratingCell,
+            tagsCell,
         ].joined(separator: ",")
     }
 

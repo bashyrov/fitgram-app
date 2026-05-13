@@ -32,6 +32,23 @@ final class MealCSVExportServiceTests: XCTestCase {
         let csv = try service.buildCSV()
         XCTAssertEqual(csv.components(separatedBy: "\n").count, 1)
         XCTAssertTrue(csv.hasPrefix("data,godzina,typ,źródło"))
+        XCTAssertTrue(csv.contains(",ocena,tagi"))
+    }
+
+    func testRatingAndTagsAppearInRow() throws {
+        let context = ModelContext(controller.container)
+        let meal = MealEntry(
+            mealType: .lunch,
+            source: .quickDatabase,
+            items: [FoodItem(name: "X", quantityGrams: 100, caloriesKcal: 100)]
+        )
+        meal.rating = 4
+        meal.tags = ["domowe", "treningowe"]
+        context.insert(meal)
+        try context.save()
+
+        let csv = try MealCSVExportService(container: controller.container).buildCSV()
+        XCTAssertTrue(csv.contains(",4,domowe treningowe"))
     }
 
     func testOneRowPerFoodItem() throws {
