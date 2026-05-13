@@ -79,12 +79,13 @@ final class VoiceFlowState {
 
     func commit(transcript: String) throws {
         // Run the regex parser first — handles "owsianka 250g 400 kcal"
-        // and similar. If a Food catalog is wired in, the matched row
-        // contributes real per-100g macros. Falls back to a 100g
-        // placeholder for transcripts the regexes can't extract.
-        let item = parser.parse(transcript)
+        // and similar, plus multi-item splits ("jajka i tost"). If a
+        // Food catalog is wired in, each matched row contributes real
+        // per-100g macros. Falls back to a 100g placeholder for
+        // transcripts the regexes can't extract.
+        let items = parser.parseMultiple(transcript)
         let suggested = Self.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date()))
-        let entry = MealEntry(mealType: suggested, source: .voice, items: [item])
+        let entry = MealEntry(mealType: suggested, source: .voice, items: items)
         try mealSaver.save(meal: entry)
     }
 
