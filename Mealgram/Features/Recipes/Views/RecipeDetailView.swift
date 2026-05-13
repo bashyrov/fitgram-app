@@ -333,6 +333,7 @@ struct RecipeDetailView: View {
                         ForEach(similarRecipes) { peer in
                             Button {
                                 onTap(peer)
+                                Haptics.light()
                             } label: {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(peer.title)

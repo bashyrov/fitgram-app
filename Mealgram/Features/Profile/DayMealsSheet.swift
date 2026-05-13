@@ -37,6 +37,7 @@ struct DayMealsSheet: View {
                             summaryCard
                             ForEach(meals) { meal in
                                 Button {
+                                    Haptics.light()
                                     onSelectMeal?(meal)
                                 } label: {
                                     row(meal)

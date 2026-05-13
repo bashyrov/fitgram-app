@@ -121,6 +121,7 @@ struct VoiceRootView: View {
 
     private func commit(_ transcript: String) {
         try? state.commit(transcript: transcript)
+        Haptics.success()
         onDismiss()
     }
 }
