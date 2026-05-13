@@ -152,6 +152,44 @@
 
     { "id": "drink.010", "name": "Sok jabłkowy 100%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 46, "protein_100g": 0.1, "carbs_100g": 11, "fat_100g": 0.1, "default_portion_g": 250 },
     { "id": "drink.011", "name": "Piwo jasne 5%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 43, "protein_100g": 0.5, "carbs_100g": 3.6, "fat_100g": 0, "default_portion_g": 500 },
-    { "id": "drink.012", "name": "Wino czerwone wytrawne", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 85, "protein_100g": 0.1, "carbs_100g": 2.6, "fat_100g": 0, "default_portion_g": 150 }
+    { "id": "drink.012", "name": "Wino czerwone wytrawne", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 85, "protein_100g": 0.1, "carbs_100g": 2.6, "fat_100g": 0, "default_portion_g": 150 },
+
+    { "id": "trad.041", "name": "Pierogi z jagodami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 4, "carbs_100g": 38, "fat_100g": 3, "default_portion_g": 250 },
+    { "id": "trad.042", "name": "Knedle ze śliwkami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 178, "protein_100g": 4, "carbs_100g": 36, "fat_100g": 1.5, "default_portion_g": 250 },
+    { "id": "trad.043", "name": "Racuchy z jabłkami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 215, "protein_100g": 5, "carbs_100g": 30, "fat_100g": 8, "default_portion_g": 200 },
+    { "id": "trad.044", "name": "Kasza gryczana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 343, "protein_100g": 13, "carbs_100g": 72, "fat_100g": 3.4, "default_portion_g": 50 },
+    { "id": "trad.045", "name": "Kasza jaglana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 378, "protein_100g": 11, "carbs_100g": 73, "fat_100g": 4, "default_portion_g": 50 },
+    { "id": "trad.046", "name": "Makaron pełnoziarnisty", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 348, "protein_100g": 14, "carbs_100g": 70, "fat_100g": 2.5, "default_portion_g": 80 },
+    { "id": "trad.047", "name": "Ryż basmati", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 360, "protein_100g": 7.5, "carbs_100g": 79, "fat_100g": 0.5, "default_portion_g": 60 },
+    { "id": "trad.048", "name": "Quinoa", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 368, "protein_100g": 14, "carbs_100g": 64, "fat_100g": 6, "default_portion_g": 50 },
+
+    { "id": "meat.010", "name": "Pierś z indyka", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 135, "protein_100g": 30, "carbs_100g": 0, "fat_100g": 1, "default_portion_g": 150 },
+    { "id": "meat.011", "name": "Wołowina krzyżowa", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 168, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 7, "default_portion_g": 150 },
+    { "id": "meat.012", "name": "Polędwiczki wieprzowe", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 143, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 4, "default_portion_g": 150 },
+    { "id": "meat.013", "name": "Kabanos", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 460, "protein_100g": 28, "carbs_100g": 1, "fat_100g": 38, "default_portion_g": 30 },
+    { "id": "meat.014", "name": "Parówka z indyka", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 175, "protein_100g": 13, "carbs_100g": 4, "fat_100g": 12, "default_portion_g": 50 },
+
+    { "id": "seafood.001", "name": "Łosoś pieczony", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 208, "protein_100g": 22, "carbs_100g": 0, "fat_100g": 13, "default_portion_g": 150 },
+    { "id": "seafood.002", "name": "Tuńczyk z puszki w sosie własnym", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 116, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 1, "default_portion_g": 80 },
+    { "id": "seafood.003", "name": "Sardynka w pomidorach", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 186, "protein_100g": 21, "carbs_100g": 1, "fat_100g": 11, "default_portion_g": 80 },
+    { "id": "seafood.004", "name": "Krewetki gotowane", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 99, "protein_100g": 24, "carbs_100g": 0.2, "fat_100g": 0.3, "default_portion_g": 120 },
+
+    { "id": "produce.019", "name": "Awokado", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 160, "protein_100g": 2, "carbs_100g": 9, "fat_100g": 15, "default_portion_g": 100 },
+    { "id": "produce.020", "name": "Brokuł gotowany", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 35, "protein_100g": 2.4, "carbs_100g": 7, "fat_100g": 0.4, "default_portion_g": 200 },
+    { "id": "produce.021", "name": "Kalafior gotowany", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 23, "protein_100g": 1.8, "carbs_100g": 4, "fat_100g": 0.3, "default_portion_g": 200 },
+    { "id": "produce.022", "name": "Szpinak surowy", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 23, "protein_100g": 2.9, "carbs_100g": 3.6, "fat_100g": 0.4, "default_portion_g": 70 },
+    { "id": "produce.023", "name": "Cukinia", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 17, "protein_100g": 1.2, "carbs_100g": 3.1, "fat_100g": 0.3, "default_portion_g": 200 },
+    { "id": "produce.024", "name": "Bakłażan", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 25, "protein_100g": 1, "carbs_100g": 6, "fat_100g": 0.2, "default_portion_g": 200 },
+
+    { "id": "bakery.017", "name": "Tortilla pszenna", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 304, "protein_100g": 8, "carbs_100g": 50, "fat_100g": 7, "default_portion_g": 60 },
+    { "id": "bakery.018", "name": "Naan", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 310, "protein_100g": 9, "carbs_100g": 53, "fat_100g": 6, "default_portion_g": 90 },
+
+    { "id": "snack.010", "name": "Orzechy włoskie", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 654, "protein_100g": 15, "carbs_100g": 14, "fat_100g": 65, "default_portion_g": 30 },
+    { "id": "snack.011", "name": "Pestki dyni", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 559, "protein_100g": 30, "carbs_100g": 11, "fat_100g": 49, "default_portion_g": 25 },
+    { "id": "snack.012", "name": "Daktyle suszone", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 282, "protein_100g": 2.5, "carbs_100g": 75, "fat_100g": 0.4, "default_portion_g": 30 },
+    { "id": "snack.013", "name": "Suszone żurawiny", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 325, "protein_100g": 0.2, "carbs_100g": 83, "fat_100g": 1.4, "default_portion_g": 25 },
+
+    { "id": "drink.013", "name": "Mleko 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 50, "protein_100g": 3.3, "carbs_100g": 4.8, "fat_100g": 2, "default_portion_g": 250 },
+    { "id": "drink.014", "name": "Mleko owsiane", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 42, "protein_100g": 0.8, "carbs_100g": 6.5, "fat_100g": 1.4, "default_portion_g": 250 }
   ]
 }
