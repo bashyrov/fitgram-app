@@ -14,6 +14,7 @@ final class ProfileStatsService {
         let totalAchievements: Int
         let totalCaloriesKcal: Int
         let totalRecipeCooks: Int
+        let averageMealRating: Double?
         let memberSince: Date?
     }
 
@@ -45,6 +46,11 @@ final class ProfileStatsService {
         let totalKcal = meals.reduce(0.0) { acc, meal in
             acc + meal.totalCaloriesKcal
         }
+        let ratings = meals.compactMap(\.rating)
+        let averageRating: Double? =
+            ratings.isEmpty
+            ? nil
+            : Double(ratings.reduce(0, +)) / Double(ratings.count)
         return Summary(
             totalMeals: meals.count,
             totalRecipes: recipeCount,
@@ -52,6 +58,7 @@ final class ProfileStatsService {
             totalAchievements: achievementCount,
             totalCaloriesKcal: Int(totalKcal.rounded()),
             totalRecipeCooks: totalRecipeCooks,
+            averageMealRating: averageRating,
             memberSince: user?.createdAt
         )
     }

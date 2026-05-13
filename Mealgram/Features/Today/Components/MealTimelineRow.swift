@@ -36,9 +36,20 @@ struct MealTimelineRow: View {
                         .lineLimit(1)
                 }
                 Spacer(minLength: 0)
-                Text("\(Int(meal.totalCaloriesKcal)) kcal")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("\(Int(meal.totalCaloriesKcal)) kcal")
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.primary)
+                    if let rating = meal.rating, rating > 0 {
+                        HStack(spacing: 2) {
+                            Image(systemName: "star.fill")
+                                .font(.caption2)
+                            Text("\(rating)")
+                                .font(Tokens.Font.caption)
+                        }
+                        .foregroundStyle(Tokens.Palette.warning)
+                    }
+                }
             }
         }
     }
