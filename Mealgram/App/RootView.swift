@@ -89,7 +89,19 @@ struct RootView: View {
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
+    @AppStorage("preferences.theme") private var themeRaw = ThemePreference.auto.rawValue
+
+    private var themePreference: ThemePreference {
+        ThemePreference(rawValue: themeRaw) ?? .auto
+    }
+
     var body: some View {
+        rootContent
+            .preferredColorScheme(themePreference.colorScheme)
+    }
+
+    @ViewBuilder
+    private var rootContent: some View {
         Group {
             switch router.phase {
             case .launching:
