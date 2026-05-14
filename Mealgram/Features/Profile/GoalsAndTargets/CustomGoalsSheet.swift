@@ -1,12 +1,16 @@
 import OSLog
 import SwiftUI
 
+// swiftlint:disable file_length
+
 /// Profile entry point for the multi-goal system. Lists active +
 /// historical CustomGoal rows with their progress bars, and lets the
 /// user create new ones (up to GoalsService.maxActiveGoals).
 struct CustomGoalsSheet: View {
     let goalsService: GoalsService
     let userRemoteID: String
+    let entitlementsStore: EntitlementsStore
+    let paywallCoordinator: PaywallCoordinator
     let onDismiss: () -> Void
 
     @State private var goals: [CustomGoal] = []
@@ -17,8 +21,14 @@ struct CustomGoalsSheet: View {
         goals.filter { $0.status == .active }.count
     }
 
+    /// Effective cap = entitlement cap if set, else the hard ceiling
+    /// enforced by GoalsService.
+    private var effectiveCap: Int {
+        entitlementsStore.current.activeCustomGoalsCap ?? GoalsService.maxActiveGoals
+    }
+
     private var canCreate: Bool {
-        activeCount < GoalsService.maxActiveGoals
+        activeCount < effectiveCap
     }
 
     var body: some View {
@@ -43,8 +53,10 @@ struct CustomGoalsSheet: View {
                         Button {
                             if canCreate {
                                 isBuilderPresented = true
-                            } else {
+                            } else if entitlementsStore.current.isPremium {
                                 feedback = "Maks. \(GoalsService.maxActiveGoals) aktywne cele jednocześnie."
+                            } else {
+                                paywallCoordinator.present(.customGoalsCap)
                             }
                         } label: {
                             Label("Nowy cel", systemImage: "plus.circle.fill")

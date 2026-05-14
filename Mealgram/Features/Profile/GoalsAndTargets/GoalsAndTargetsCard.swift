@@ -12,6 +12,8 @@ struct GoalsAndTargetsCard: View {
     let user: User
     let userProfileService: UserProfileService
     let goalsService: GoalsService
+    let entitlementsStore: EntitlementsStore
+    let paywallCoordinator: PaywallCoordinator
 
     @State private var sheet: Sheet?
 
@@ -43,9 +45,13 @@ struct GoalsAndTargetsCard: View {
             case .profileData:
                 EditProfileDataSheet(user: user, service: userProfileService) { sheet = nil }
             case .customGoals:
-                CustomGoalsSheet(goalsService: goalsService, userRemoteID: user.remoteID) {
-                    sheet = nil
-                }
+                CustomGoalsSheet(
+                    goalsService: goalsService,
+                    userRemoteID: user.remoteID,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    onDismiss: { sheet = nil }
+                )
             }
         }
     }

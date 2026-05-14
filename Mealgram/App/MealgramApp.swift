@@ -37,6 +37,10 @@ struct MealgramApp: App {
     private let goalsService: GoalsService
     private let recommendationsService: RecommendationsService
     @State private var privacyStore: PrivacyStore
+    @State private var subscriptionService: MockSubscriptionService
+    @State private var entitlementsStore: EntitlementsStore
+    @State private var usageMeter: UsageMeter
+    @State private var paywallCoordinator: PaywallCoordinator
 
     // swiftlint:disable function_body_length
     init() {
@@ -137,6 +141,13 @@ struct MealgramApp: App {
             fallback: RuleBasedRecommendationsService()
         )
         self._privacyStore = State(initialValue: PrivacyStore())
+        let subscriptionService = MockSubscriptionService()
+        self._subscriptionService = State(initialValue: subscriptionService)
+        self._entitlementsStore = State(
+            initialValue: EntitlementsStore(subscriptionService: subscriptionService)
+        )
+        self._usageMeter = State(initialValue: UsageMeter())
+        self._paywallCoordinator = State(initialValue: PaywallCoordinator())
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
         do {
@@ -192,9 +203,16 @@ struct MealgramApp: App {
                 userProfileService: userProfileService,
                 goalsService: goalsService,
                 recommendationsService: recommendationsService,
-                privacyStore: privacyStore
+                privacyStore: privacyStore,
+                subscriptionService: subscriptionService,
+                entitlementsStore: entitlementsStore,
+                usageMeter: usageMeter,
+                paywallCoordinator: paywallCoordinator
             )
             .environment(session)
+            .environment(entitlementsStore)
+            .environment(usageMeter)
+            .environment(paywallCoordinator)
             .modelContainer(persistenceController.container)
             .tint(Tokens.Palette.primary)
         }

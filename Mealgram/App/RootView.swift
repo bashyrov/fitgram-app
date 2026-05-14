@@ -35,6 +35,10 @@ struct RootView: View {
     let goalsService: GoalsService
     let recommendationsService: RecommendationsService
     let privacyStore: PrivacyStore
+    let subscriptionService: MockSubscriptionService
+    let entitlementsStore: EntitlementsStore
+    let usageMeter: UsageMeter
+    let paywallCoordinator: PaywallCoordinator
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -69,7 +73,11 @@ struct RootView: View {
         userProfileService: UserProfileService,
         goalsService: GoalsService,
         recommendationsService: RecommendationsService,
-        privacyStore: PrivacyStore
+        privacyStore: PrivacyStore,
+        subscriptionService: MockSubscriptionService,
+        entitlementsStore: EntitlementsStore,
+        usageMeter: UsageMeter,
+        paywallCoordinator: PaywallCoordinator
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -101,6 +109,10 @@ struct RootView: View {
         self.goalsService = goalsService
         self.recommendationsService = recommendationsService
         self.privacyStore = privacyStore
+        self.subscriptionService = subscriptionService
+        self.entitlementsStore = entitlementsStore
+        self.usageMeter = usageMeter
+        self.paywallCoordinator = paywallCoordinator
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -113,6 +125,25 @@ struct RootView: View {
     var body: some View {
         rootContent
             .preferredColorScheme(themePreference.colorScheme)
+            .sheet(
+                isPresented: Binding(
+                    get: { paywallCoordinator.activeTrigger != nil },
+                    set: { newValue in
+                        if !newValue { paywallCoordinator.dismiss() }
+                    }
+                )
+            ) {
+                if let trigger = paywallCoordinator.activeTrigger {
+                    UpgradeSheet(
+                        trigger: trigger,
+                        subscriptionService: subscriptionService,
+                        onDismiss: {
+                            entitlementsStore.reconcile()
+                            paywallCoordinator.dismiss()
+                        }
+                    )
+                }
+            }
     }
 
     @ViewBuilder
@@ -137,7 +168,9 @@ struct RootView: View {
                         calibrationService: calibrationService,
                         notificationCoordinator: notificationCoordinator,
                         unlockBus: unlockBus,
-                        userRemoteID: authUser.id
+                        userRemoteID: authUser.id,
+                        usageMeter: usageMeter,
+                        entitlementsStore: entitlementsStore
                     ),
                     exportService: exportService,
                     csvExportService: csvExportService,
@@ -159,6 +192,9 @@ struct RootView: View {
                     userProfileService: userProfileService,
                     goalsService: goalsService,
                     privacyStore: privacyStore,
+                    entitlementsStore: entitlementsStore,
+                    usageMeter: usageMeter,
+                    paywallCoordinator: paywallCoordinator,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
@@ -251,6 +287,8 @@ private struct ChainedMealSaver: MealSaving {
     let notificationCoordinator: NotificationCoordinator
     let unlockBus: AchievementUnlockBus
     let userRemoteID: String
+    let usageMeter: UsageMeter
+    let entitlementsStore: EntitlementsStore
 
     func save(meal: MealEntry) throws {
         // Apply the user-set calibration factor only to AI-derived
@@ -264,6 +302,7 @@ private struct ChainedMealSaver: MealSaving {
         }
         try underlying.save(meal: meal)
         Haptics.success()
+        recordQuotaUsage(for: meal.source)
         if meal.source == .photoScan {
             try? calibrationService.recordSample(forUser: userRemoteID)
         }
@@ -278,5 +317,22 @@ private struct ChainedMealSaver: MealSaving {
             }
         }
         Task { await notificationCoordinator.rescheduleAll(for: userRemoteID) }
+    }
+
+    /// Bumps the relevant weekly counter when an AI-backed entry path
+    /// produces a saved meal. Free tier ↦ counts toward the cap; premium
+    /// ↦ no-op because cap is nil.
+    private func recordQuotaUsage(for source: MealSource) {
+        let entitlements = entitlementsStore.current
+        switch source {
+        case .photoScan:
+            usageMeter.record(.photoScan, cap: entitlements.photoScansPerWeek)
+        case .barcode:
+            usageMeter.record(.barcodeScan, cap: entitlements.barcodeScansPerWeek)
+        case .voice:
+            usageMeter.record(.voiceEntry, cap: entitlements.voiceEntriesPerWeek)
+        case .quickDatabase, .recipe, .manual:
+            break
+        }
     }
 }

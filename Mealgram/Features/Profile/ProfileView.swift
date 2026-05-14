@@ -23,6 +23,9 @@ struct ProfileView: View {
     let userProfileService: UserProfileService
     let goalsService: GoalsService
     let privacyStore: PrivacyStore
+    let entitlementsStore: EntitlementsStore
+    let usageMeter: UsageMeter
+    let paywallCoordinator: PaywallCoordinator
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
     let onRestartOnboarding: () -> Void
@@ -82,9 +85,12 @@ struct ProfileView: View {
                             GoalsAndTargetsCard(
                                 user: user,
                                 userProfileService: userProfileService,
-                                goalsService: goalsService
+                                goalsService: goalsService,
+                                entitlementsStore: entitlementsStore,
+                                paywallCoordinator: paywallCoordinator
                             )
                         }
+                        subscriptionStatusCard
                         recommendationsCard
                         preferencesSection
                         dataSection
@@ -274,6 +280,52 @@ struct ProfileView: View {
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
             .frame(maxWidth: .infinity)
+        }
+    }
+
+    @ViewBuilder
+    private var subscriptionStatusCard: some View {
+        if entitlementsStore.current.isPremium {
+            Card(background: Tokens.Palette.primarySoft) {
+                HStack(spacing: Tokens.Space.md) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 26))
+                        .foregroundStyle(Tokens.Palette.primary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Mealgram Premium aktywne")
+                            .font(Tokens.Font.bodyEmphasized)
+                            .foregroundStyle(Tokens.Palette.ink)
+                        Text("Nieograniczone skany, AI Coach, eksporty.")
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
+                    Spacer()
+                }
+            }
+        } else {
+            Button {
+                paywallCoordinator.present(.manual)
+            } label: {
+                Card(background: Tokens.Palette.primarySoft) {
+                    HStack(spacing: Tokens.Space.md) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 26))
+                            .foregroundStyle(Tokens.Palette.primary)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Wypróbuj Premium za darmo")
+                                .font(Tokens.Font.bodyEmphasized)
+                                .foregroundStyle(Tokens.Palette.ink)
+                            Text("7 dni · pełne AI · brak limitów. Tap, żeby zobaczyć plany.")
+                                .font(Tokens.Font.footnote)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(Tokens.Palette.primary)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
         }
     }
 

@@ -28,6 +28,9 @@ struct MainTabView: View {
     let userProfileService: UserProfileService
     let goalsService: GoalsService
     let privacyStore: PrivacyStore
+    let entitlementsStore: EntitlementsStore
+    let usageMeter: UsageMeter
+    let paywallCoordinator: PaywallCoordinator
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -74,6 +77,9 @@ struct MainTabView: View {
         userProfileService: UserProfileService,
         goalsService: GoalsService,
         privacyStore: PrivacyStore,
+        entitlementsStore: EntitlementsStore,
+        usageMeter: UsageMeter,
+        paywallCoordinator: PaywallCoordinator,
         unlockBus: AchievementUnlockBus,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
@@ -103,6 +109,9 @@ struct MainTabView: View {
         self.userProfileService = userProfileService
         self.goalsService = goalsService
         self.privacyStore = privacyStore
+        self.entitlementsStore = entitlementsStore
+        self.usageMeter = usageMeter
+        self.paywallCoordinator = paywallCoordinator
         self.unlockBus = unlockBus
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
@@ -217,6 +226,9 @@ struct MainTabView: View {
                 userProfileService: userProfileService,
                 goalsService: goalsService,
                 privacyStore: privacyStore,
+                entitlementsStore: entitlementsStore,
+                usageMeter: usageMeter,
+                paywallCoordinator: paywallCoordinator,
                 onSignOut: onSignOut,
                 onDeleteAccount: onDeleteAccount,
                 onRestartOnboarding: onRestartOnboarding
@@ -280,11 +292,21 @@ struct MainTabView: View {
             titleVisibility: .visible
         ) {
             Button("📸 Zdjęcie posiłku") {
-                isScanPresented = true
+                gatedPresent(
+                    kind: .photoScan,
+                    cap: entitlementsStore.current.photoScansPerWeek,
+                    trigger: .photoScanQuota,
+                    onAllowed: { isScanPresented = true }
+                )
             }
             .accessibilityIdentifier(A11yID.Add.photoOption)
             Button("📦 Kod kreskowy") {
-                isBarcodePresented = true
+                gatedPresent(
+                    kind: .barcodeScan,
+                    cap: entitlementsStore.current.barcodeScansPerWeek,
+                    trigger: .barcodeScanQuota,
+                    onAllowed: { isBarcodePresented = true }
+                )
             }
             .accessibilityIdentifier(A11yID.Add.barcodeOption)
             Button("🔎 Szybka baza") {
@@ -292,7 +314,12 @@ struct MainTabView: View {
             }
             .accessibilityIdentifier(A11yID.Add.quickDBOption)
             Button("🎙 Powiedz na głos") {
-                isVoicePresented = true
+                gatedPresent(
+                    kind: .voiceEntry,
+                    cap: entitlementsStore.current.voiceEntriesPerWeek,
+                    trigger: .voiceEntryQuota,
+                    onAllowed: { isVoicePresented = true }
+                )
             }
             .accessibilityIdentifier(A11yID.Add.voiceOption)
             Button("📖 Mój przepis") {
@@ -431,6 +458,23 @@ struct MainTabView: View {
         Task {
             await todayState.refresh(for: authUser.id)
             await progressState.refresh(for: authUser.id)
+        }
+    }
+
+    /// Quota gate for AI-backed scans. Free tier hits a weekly cap; raises
+    /// the upgrade sheet with the matching trigger and short-circuits the
+    /// flow. The usage counter is incremented inside ChainedMealSaver on
+    /// successful meal save — opening the camera doesn't burn the quota.
+    private func gatedPresent(
+        kind: UsageMeter.Kind,
+        cap: Int?,
+        trigger: PaywallTrigger,
+        onAllowed: () -> Void
+    ) {
+        if usageMeter.canUse(kind, cap: cap) {
+            onAllowed()
+        } else {
+            paywallCoordinator.present(trigger)
         }
     }
 
