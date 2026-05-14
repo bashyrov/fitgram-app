@@ -1,36 +1,22 @@
 import SwiftUI
 
-/// Editorial container — flat surface with a 1pt separator border and
-/// a barely-there shadow. Reads like a magazine module rather than a
-/// floating chip. Use `.bordered` (default), `.elevated` (for hero
-/// surfaces) or `.flat` (no border, no shadow) variants.
+/// A soft, rounded container used for grouping content (today's meals,
+/// progress, AI insight bubbles, etc.). Avoid stacking cards on cards — keep
+/// the layout breathing.
 struct Card<Content: View>: View {
-    enum Variant {
-        case bordered, elevated, flat
-    }
-
     var padding: CGFloat = Tokens.Space.lg
     var background: Color = Tokens.Palette.surface
     var elevation: Tokens.ShadowStyle = Tokens.Shadow.card
-    var variant: Variant = .bordered
-    var cornerRadius: CGFloat = Tokens.Radius.lg
     @ViewBuilder var content: () -> Content
 
     var body: some View {
         content()
             .padding(padding)
             .background(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
                     .fill(background)
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(
-                        variant == .bordered ? Tokens.Palette.separator : Color.clear,
-                        lineWidth: 1
-                    )
-            )
-            .mealgramShadow(variant == .elevated ? Tokens.Shadow.float : Tokens.Shadow.card)
+            .mealgramShadow(elevation)
     }
 }
 

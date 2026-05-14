@@ -9,29 +9,28 @@ extension Tokens {
         let y: CGFloat
     }
 
-    /// Editorial-press shadows — minimal, directional, like a magazine
-    /// page peeling off the surface. Used sparingly; many cards now
-    /// use a 1pt border instead.
+    /// Soft, but *present* drop shadows. Cards lift off the canvas just
+    /// enough that the eye can scan the hierarchy at a glance.
     enum Shadow {
         static let card = ShadowStyle(
-            color: Color.black.opacity(0.04),
-            radius: 8,
+            color: Color.black.opacity(0.06),
+            radius: 14,
             x: 0,
-            y: 2
+            y: 4
         )
 
         static let float = ShadowStyle(
-            color: Color.black.opacity(0.08),
-            radius: 16,
+            color: Color.black.opacity(0.09),
+            radius: 20,
             x: 0,
-            y: 6
+            y: 8
         )
 
         static let modal = ShadowStyle(
-            color: Color.black.opacity(0.18),
-            radius: 32,
+            color: Color.black.opacity(0.14),
+            radius: 28,
             x: 0,
-            y: 16
+            y: 12
         )
     }
 }

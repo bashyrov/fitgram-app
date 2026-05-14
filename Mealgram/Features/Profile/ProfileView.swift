@@ -251,34 +251,24 @@ struct ProfileView: View {
     // MARK: - Sections
 
     private var identityCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-            HStack(spacing: 6) {
-                Circle()
-                    .fill(Tokens.Palette.primary)
-                    .frame(width: 6, height: 6)
-                Text("Twój profil")
-                    .eyebrowStyle()
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            HStack(alignment: .center, spacing: Tokens.Space.lg) {
+        Card(elevation: Tokens.Shadow.float) {
+            HStack(spacing: Tokens.Space.lg) {
                 if let user {
-                    AvatarPicker(user: user, store: AvatarStore(), size: 72)
+                    AvatarPicker(user: user, store: AvatarStore(), size: 56)
                 } else {
                     Circle()
-                        .fill(Tokens.Palette.ink)
-                        .frame(width: 72, height: 72)
+                        .fill(Tokens.Palette.primarySoft)
+                        .frame(width: 56, height: 56)
                         .overlay(
                             Text(initial)
-                                .font(.system(size: 28, weight: .heavy, design: .serif))
-                                .foregroundStyle(Tokens.Palette.background)
+                                .font(Tokens.Font.title2)
+                                .foregroundStyle(Tokens.Palette.primary)
                         )
                 }
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(displayName)
-                        .font(.system(size: 28, weight: .bold, design: .serif))
+                        .font(Tokens.Font.title3)
                         .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.6)
                     Text(emailLine)
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)

@@ -9,6 +9,6 @@ final class MealgramTests: XCTestCase {
     func testTokensNamespaceIsAvailable() {
         XCTAssertEqual(Tokens.Space.lg, 16)
         XCTAssertEqual(Tokens.Radius.pill, 999)
-        XCTAssertEqual(Tokens.Shadow.card.radius, 8)
+        XCTAssertEqual(Tokens.Shadow.card.radius, 14)
     }
 }
