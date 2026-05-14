@@ -364,6 +364,9 @@ struct GoalsAndTargetsCard: View {
 
     // MARK: - Profile data card
 
+    /// Profile-data card now reads as a 2×3 stat grid (sex / age /
+    /// height / weight / activity / BMI) with tinted icon chips per
+    /// metric instead of a vertical list of label-value rows.
     private var profileDataCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
@@ -373,43 +376,168 @@ struct GoalsAndTargetsCard: View {
                     tint: Tokens.Palette.inkMuted,
                     editAction: { sheet = .profileData }
                 )
-                row(label: "Płeć", value: sexLabel)
-                if let age = ageString { row(label: "Wiek", value: age) }
-                if let height = user.heightCm { row(label: "Wzrost", value: "\(height) cm") }
-                if let weight = user.weightKg {
-                    HStack {
-                        Text("Waga")
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        Spacer()
-                        Text(String(format: "%.1f kg", weight).replacingOccurrences(of: ".", with: ","))
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Button { sheet = .weight } label: {
-                            Text("Aktualizuj")
-                                .font(Tokens.Font.footnote)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 4)
-                                .background(
-                                    Capsule().fill(Tokens.Palette.primarySoft)
-                                )
-                                .foregroundStyle(Tokens.Palette.primary)
-                        }
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: Tokens.Space.sm),
+                        GridItem(.flexible(), spacing: Tokens.Space.sm),
+                    ],
+                    spacing: Tokens.Space.sm
+                ) {
+                    statTile(
+                        symbol: sexSymbol,
+                        label: "Płeć",
+                        value: sexLabelText,
+                        tint: Color(red: 0.55, green: 0.45, blue: 0.85)
+                    )
+                    if let age = ageString {
+                        statTile(
+                            symbol: "calendar",
+                            label: "Wiek",
+                            value: age,
+                            tint: Tokens.Palette.accent
+                        )
                     }
-                    .font(Tokens.Font.body)
-                }
-                HStack {
-                    Text("Aktywność")
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    Spacer()
-                    Text(activityLabel)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Button { sheet = .activity } label: {
-                        Image(systemName: "pencil")
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .accessibilityLabel(Text("Edytuj aktywność"))
+                    if let height = user.heightCm {
+                        statTile(
+                            symbol: "ruler",
+                            label: "Wzrost",
+                            value: "\(height) cm",
+                            tint: Color(red: 0.42, green: 0.68, blue: 0.95)
+                        )
+                    }
+                    if let weight = user.weightKg {
+                        statTile(
+                            symbol: "scalemass.fill",
+                            label: "Waga",
+                            value: String(format: "%.1f kg", weight)
+                                .replacingOccurrences(of: ".", with: ","),
+                            tint: Tokens.Palette.success,
+                            action: { sheet = .weight }
+                        )
+                    }
+                    statTile(
+                        symbol: activitySymbol,
+                        label: "Aktywność",
+                        value: activityShortLabel,
+                        tint: Tokens.Palette.warning,
+                        action: { sheet = .activity }
+                    )
+                    if let bmi = bmiValue {
+                        statTile(
+                            symbol: "heart.fill",
+                            label: "BMI",
+                            value: String(format: "%.1f", bmi).replacingOccurrences(of: ".", with: ","),
+                            tint: bmiTint(bmi)
+                        )
                     }
                 }
-                .font(Tokens.Font.body)
             }
+        }
+    }
+
+    private func statTile(
+        symbol: String,
+        label: LocalizedStringKey,
+        value: String,
+        tint: Color,
+        action: (() -> Void)? = nil
+    ) -> some View {
+        let content = VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [tint, tint.opacity(0.6)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 30, height: 30)
+                    Image(systemName: symbol)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+                Spacer()
+                if action != nil {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(tint.opacity(0.7))
+                }
+            }
+            Text(value)
+                .font(.system(size: 17, weight: .heavy, design: .rounded))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+            Text(label)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Tokens.Palette.inkMuted)
+                .textCase(.uppercase)
+                .tracking(0.5)
+        }
+        .padding(Tokens.Space.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                .fill(tint.opacity(0.10))
+        )
+        if let action {
+            return AnyView(
+                Button(action: action) { content }.buttonStyle(.plain)
+            )
+        }
+        return AnyView(content)
+    }
+
+    private var sexSymbol: String {
+        switch user.biologicalSex {
+        case .female: return "figure.dress"
+        case .male: return "figure.stand"
+        case .undisclosed: return "person.fill"
+        }
+    }
+
+    private var sexLabelText: String {
+        switch user.biologicalSex {
+        case .female: return String(localized: "Kobieta")
+        case .male: return String(localized: "Mężczyzna")
+        case .undisclosed: return String(localized: "—")
+        }
+    }
+
+    private var activitySymbol: String {
+        switch user.activityLevel {
+        case .sedentary: return "figure.seated.side"
+        case .light: return "figure.walk"
+        case .moderate: return "figure.run"
+        case .active: return "figure.run.treadmill"
+        case .veryActive: return "flame.fill"
+        }
+    }
+
+    private var activityShortLabel: String {
+        switch user.activityLevel {
+        case .sedentary: return String(localized: "Siedzący")
+        case .light: return String(localized: "Lekki")
+        case .moderate: return String(localized: "Umiark.")
+        case .active: return String(localized: "Aktywny")
+        case .veryActive: return String(localized: "B. aktyw.")
+        }
+    }
+
+    private var bmiValue: Double? {
+        guard let h = user.heightCm, let w = user.weightKg, h > 0 else { return nil }
+        let meters = Double(h) / 100.0
+        return w / (meters * meters)
+    }
+
+    private func bmiTint(_ bmi: Double) -> Color {
+        switch bmi {
+        case ..<18.5: return Tokens.Palette.accent
+        case 18.5..<25: return Tokens.Palette.success
+        case 25..<30: return Tokens.Palette.warning
+        default: return Tokens.Palette.error
         }
     }
 

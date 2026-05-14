@@ -153,6 +153,22 @@ struct WeightLogView: View {
         }
     }
 
+    /// Dynamic x-axis range so a freshly-started log with 2-3 entries
+    /// still reads as a chart instead of two points on top of each
+    /// other. Spans the earliest entry minus 12h up to the latest entry
+    /// plus one full day.
+    private var weightChartXDomain: ClosedRange<Date> {
+        let calendar = Calendar.current
+        let dates = state.entries.map(\.recordedAt)
+        guard let earliest = dates.min(), let latest = dates.max() else {
+            let today = Date()
+            return today...(calendar.date(byAdding: .day, value: 1, to: today) ?? today)
+        }
+        let lower = calendar.date(byAdding: .hour, value: -12, to: earliest) ?? earliest
+        let upper = calendar.date(byAdding: .day, value: 1, to: latest) ?? latest
+        return lower...max(upper, calendar.date(byAdding: .day, value: 1, to: lower) ?? upper)
+    }
+
     private func rateText(_ value: Double) -> String {
         if abs(value) < 0.05 { return "≈ stabilnie" }
         let sign = value > 0 ? "+" : ""
@@ -211,6 +227,7 @@ struct WeightLogView: View {
                                 }
                         }
                     }
+                    .chartXScale(domain: weightChartXDomain)
                     .chartXAxis {
                         AxisMarks(values: .automatic(desiredCount: 4)) { _ in
                             AxisValueLabel(format: .dateTime.day().month())

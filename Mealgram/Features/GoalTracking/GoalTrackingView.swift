@@ -142,76 +142,108 @@ struct GoalTrackingView: View {
     private func chartCard(_ snapshot: GoalTrackingService.Snapshot) -> some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Trend")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(rangeLabel(snapshot))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                }
+                chartHeader(snapshot)
                 if snapshot.entries.count >= 2 {
-                    Chart {
-                        ForEach(snapshot.entries) { point in
-                            LineMark(
-                                x: .value("Data", point.date),
-                                y: .value("Waga", point.weightKg)
-                            )
-                            .interpolationMethod(.monotone)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            PointMark(
-                                x: .value("Data", point.date),
-                                y: .value("Waga", point.weightKg)
-                            )
-                            .symbolSize(28)
-                            .foregroundStyle(Tokens.Palette.primary)
-                        }
-                        RuleMark(y: .value("Cel", snapshot.targetWeightKg))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                            .foregroundStyle(Tokens.Palette.warning)
-                            .annotation(position: .top, alignment: .trailing) {
-                                Text(String(format: "Cel %.1f kg", snapshot.targetWeightKg))
-                                    .font(Tokens.Font.caption2)
-                                    .foregroundStyle(Tokens.Palette.warning)
-                            }
-                        if let estimated = snapshot.estimatedEndDate {
-                            RuleMark(x: .value("Koniec", estimated))
-                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
-                                .foregroundStyle(Tokens.Palette.accent)
-                                .annotation(position: .top, alignment: .leading) {
-                                    Text("Plan")
-                                        .font(Tokens.Font.caption2)
-                                        .foregroundStyle(Tokens.Palette.accent)
-                                }
-                        }
-                    }
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisValueLabel(format: .dateTime.day().month())
-                                .font(Tokens.Font.caption2)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                            AxisGridLine().foregroundStyle(Tokens.Palette.separator)
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Tokens.Palette.separator)
-                            AxisValueLabel()
-                                .font(Tokens.Font.caption2)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                    }
-                    .frame(height: 220)
+                    chartBody(snapshot)
                 } else {
-                    Text("Dodaj jeszcze jeden wpis, żeby zobaczyć trend.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, Tokens.Space.lg)
+                    chartEmptyState
                 }
             }
         }
+    }
+
+    private func chartHeader(_ snapshot: GoalTrackingService.Snapshot) -> some View {
+        HStack {
+            Text("Trend")
+                .font(Tokens.Font.headline)
+                .foregroundStyle(Tokens.Palette.ink)
+            Spacer()
+            Text(rangeLabel(snapshot))
+                .font(Tokens.Font.caption)
+                .foregroundStyle(Tokens.Palette.inkSubtle)
+        }
+    }
+
+    private func chartBody(_ snapshot: GoalTrackingService.Snapshot) -> some View {
+        Chart {
+            ForEach(snapshot.entries) { point in
+                LineMark(
+                    x: .value("Data", point.date),
+                    y: .value("Waga", point.weightKg)
+                )
+                .interpolationMethod(.monotone)
+                .foregroundStyle(Tokens.Palette.primary)
+                PointMark(
+                    x: .value("Data", point.date),
+                    y: .value("Waga", point.weightKg)
+                )
+                .symbolSize(28)
+                .foregroundStyle(Tokens.Palette.primary)
+            }
+            RuleMark(y: .value("Cel", snapshot.targetWeightKg))
+                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                .foregroundStyle(Tokens.Palette.warning)
+                .annotation(position: .top, alignment: .trailing) {
+                    Text(String(format: "Cel %.1f kg", snapshot.targetWeightKg))
+                        .font(Tokens.Font.caption2)
+                        .foregroundStyle(Tokens.Palette.warning)
+                }
+            if let estimated = snapshot.estimatedEndDate {
+                RuleMark(x: .value("Koniec", estimated))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
+                    .foregroundStyle(Tokens.Palette.accent)
+                    .annotation(position: .top, alignment: .leading) {
+                        Text("Plan")
+                            .font(Tokens.Font.caption2)
+                            .foregroundStyle(Tokens.Palette.accent)
+                    }
+            }
+        }
+        .chartXScale(domain: chartXDomain(snapshot))
+        .chartXAxis {
+            AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                AxisValueLabel(format: .dateTime.day().month())
+                    .font(Tokens.Font.caption2)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                AxisGridLine().foregroundStyle(Tokens.Palette.separator)
+            }
+        }
+        .chartYAxis {
+            AxisMarks { _ in
+                AxisGridLine().foregroundStyle(Tokens.Palette.separator)
+                AxisValueLabel()
+                    .font(Tokens.Font.caption2)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+            }
+        }
+        .frame(height: 220)
+    }
+
+    /// Adaptive x-axis range. Spans `[earliest entry - 0.5d, latest + 1d]`
+    /// so a tiny 2-3 entry log already reads as a chart instead of two
+    /// points overlapping at the same x. Always honours the goal start
+    /// as the lower floor and includes the projected end if known.
+    private func chartXDomain(_ snapshot: GoalTrackingService.Snapshot) -> ClosedRange<Date> {
+        let calendar = Calendar.current
+        let earliestEntry = snapshot.entries.min(by: { $0.date < $1.date })?.date
+        let latestEntry = snapshot.entries.max(by: { $0.date < $1.date })?.date
+        let lower = earliestEntry.map { calendar.date(byAdding: .hour, value: -12, to: $0) ?? $0 }
+            ?? snapshot.startDate
+        let upperCandidates: [Date] = [
+            latestEntry.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) },
+            snapshot.estimatedEndDate,
+            calendar.date(byAdding: .day, value: 1, to: Date()),
+        ].compactMap { $0 }
+        let upper = upperCandidates.max() ?? Date()
+        return lower...max(upper, calendar.date(byAdding: .day, value: 1, to: lower) ?? upper)
+    }
+
+    private var chartEmptyState: some View {
+        Text("Dodaj jeszcze jeden wpis, żeby zobaczyć trend.")
+            .font(Tokens.Font.footnote)
+            .foregroundStyle(Tokens.Palette.inkMuted)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, Tokens.Space.lg)
     }
 
     private func rangeLabel(_ snapshot: GoalTrackingService.Snapshot) -> String {
