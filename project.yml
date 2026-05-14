@@ -69,6 +69,8 @@ targets:
           - pl
           - en
           - uk
+          - ru
+          - es
         UILaunchScreen:
           UIColorName: BrandBackground
         UIApplicationSceneManifest:
