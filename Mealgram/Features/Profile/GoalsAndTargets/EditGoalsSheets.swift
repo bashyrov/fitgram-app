@@ -450,6 +450,7 @@ struct EditMainGoalSheet: View {
             onCancel: onDismiss,
             onSave: save
         ) {
+            goalHero
             VStack(spacing: Tokens.Space.md) {
                 ForEach(GoalKind.allCases, id: \.self) { option in
                     OnboardingChoiceCard(
@@ -457,31 +458,239 @@ struct EditMainGoalSheet: View {
                         title: LocalizedStringKey(title(for: option)),
                         subtitle: LocalizedStringKey(subtitle(for: option)),
                         isSelected: kind == option,
-                        action: { kind = option }
+                        action: {
+                            Haptics.selection()
+                            kind = option
+                        }
                     )
                 }
             }
             if kind.requiresPaceAndTarget {
-                Card {
-                    VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                        HStack {
-                            Text("Docelowa waga")
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                            Spacer()
-                            Text(String(format: "%.1f kg", targetWeightKg))
-                        }
-                        Slider(value: $targetWeightKg, in: 40...180, step: 0.5)
-                        HStack {
-                            Text("Tempo")
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                            Spacer()
-                            Text(String(format: "%.2f kg / tydz.", paceKgPerWeek))
-                        }
-                        Slider(value: $paceKgPerWeek, in: 0.25...1.0, step: 0.25)
-                    }
+                journeyCard
+                paceCard
+                if paceKgPerWeek >= 0.75 {
+                    paceWarningStrip
                 }
             }
         }
+    }
+
+    // MARK: - Hero header
+
+    /// Big gradient header showing the chosen goal's icon + label so the
+    /// sheet doesn't open with a wall of generic-looking selection rows.
+    private var goalHero: some View {
+        let tint = heroTint(for: kind)
+        return Card(elevation: Tokens.Shadow.float) {
+            HStack(spacing: Tokens.Space.lg) {
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [tint, tint.opacity(0.55)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 64, height: 64)
+                        .shadow(color: tint.opacity(0.4), radius: 12, y: 6)
+                    Image(systemName: symbol(for: kind))
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Twój cel")
+                        .font(Tokens.Font.caption)
+                        .textCase(.uppercase)
+                        .tracking(1.2)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    Text(LocalizedStringKey(title(for: kind)))
+                        .font(Tokens.Font.title2)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(LocalizedStringKey(subtitle(for: kind)))
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                }
+                Spacer(minLength: 0)
+            }
+        }
+    }
+
+    private func heroTint(for kind: GoalKind) -> Color {
+        switch kind {
+        case .lose: return Tokens.Palette.primary
+        case .gain: return Tokens.Palette.warning
+        case .maintain: return Tokens.Palette.success
+        case .healthCondition: return Tokens.Palette.accent
+        case .justTracking: return Tokens.Palette.inkMuted
+        }
+    }
+
+    // MARK: - Journey card (current → target)
+
+    /// Visualises the trip the user is signing up for: current weight on
+    /// the left, target on the right, with a chevron between them, a
+    /// target-weight slider underneath, and a delta chip showing how
+    /// much weight is being lost/gained.
+    private var journeyCard: some View {
+        let current = user.weightKg ?? targetWeightKg
+        let delta = abs(targetWeightKg - current)
+        return Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.md) {
+                HStack(spacing: 4) {
+                    Image(systemName: "scalemass.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Tokens.Palette.primary)
+                    Text("Twoja droga")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    Text(String(format: "%@%.1f kg", deltaSign(), delta))
+                        .font(.system(size: 13, weight: .heavy))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(
+                            Capsule().fill(heroTint(for: kind))
+                        )
+                }
+                HStack(alignment: .center, spacing: Tokens.Space.md) {
+                    journeyPillar(label: "Teraz", value: current, tint: Tokens.Palette.inkMuted)
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                    journeyPillar(label: "Cel", value: targetWeightKg, tint: heroTint(for: kind))
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("Docelowa waga")
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                        Spacer()
+                        Text(String(format: "%.1f kg", targetWeightKg))
+                            .font(Tokens.Font.bodyEmphasized)
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .contentTransition(.numericText())
+                    }
+                    Slider(value: $targetWeightKg, in: 40...180, step: 0.5) { editing in
+                        if editing { Haptics.selection() }
+                    }
+                    .tint(heroTint(for: kind))
+                }
+            }
+        }
+    }
+
+    private func journeyPillar(label: LocalizedStringKey, value: Double, tint: Color) -> some View {
+        VStack(spacing: 2) {
+            Text(label)
+                .font(Tokens.Font.caption)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+            Text(String(format: "%.1f", value))
+                .font(.system(size: 28, weight: .heavy, design: .rounded))
+                .foregroundStyle(tint)
+            Text("kg")
+                .font(Tokens.Font.caption)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, Tokens.Space.sm)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                .fill(tint.opacity(0.10))
+        )
+    }
+
+    private func deltaSign() -> String {
+        switch kind {
+        case .lose: return "−"
+        case .gain: return "+"
+        default: return ""
+        }
+    }
+
+    // MARK: - Pace card
+
+    private var paceCard: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                HStack(spacing: 6) {
+                    Image(systemName: "speedometer")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Tokens.Palette.warning)
+                    Text("Tempo")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    Text(String(format: "%.2f kg / tydz.", paceKgPerWeek))
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .contentTransition(.numericText())
+                }
+                Slider(value: $paceKgPerWeek, in: 0.25...1.0, step: 0.25) { editing in
+                    if editing { Haptics.selection() }
+                }
+                .tint(paceTint)
+                HStack(spacing: 6) {
+                    Text("Wolniej · bezpieczniej")
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    Spacer()
+                    Text("Szybciej · intensywniej")
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                }
+                if let estimatedEnd = estimatedEndDate {
+                    HStack(spacing: 4) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Tokens.Palette.primary)
+                        Text("Szacowany koniec: ")
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                            + Text(estimatedEnd.formatted(.dateTime.day().month(.wide).year()))
+                                .font(Tokens.Font.caption)
+                                .foregroundStyle(Tokens.Palette.ink)
+                    }
+                    .padding(.top, 2)
+                }
+            }
+        }
+    }
+
+    private var paceTint: Color {
+        switch paceKgPerWeek {
+        case ..<0.5: return Tokens.Palette.success
+        case 0.5..<0.75: return Tokens.Palette.warning
+        default: return Tokens.Palette.error
+        }
+    }
+
+    private var estimatedEndDate: Date? {
+        guard let current = user.weightKg, paceKgPerWeek > 0 else { return nil }
+        return GoalProjection.estimatedEndDate(
+            currentWeightKg: current,
+            targetWeightKg: targetWeightKg,
+            paceKgPerWeek: paceKgPerWeek
+        )
+    }
+
+    private var paceWarningStrip: some View {
+        HStack(alignment: .top, spacing: Tokens.Space.sm) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Tokens.Palette.error)
+            Text("To bardzo intensywne tempo. Trwałe rezultaty przy 0,25-0,5 kg/tydzień. Skonsultuj z dietetykiem.")
+                .font(Tokens.Font.footnote)
+                .foregroundStyle(Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(Tokens.Space.md)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                .fill(Tokens.Palette.error.opacity(0.10))
+        )
     }
 
     private func symbol(for goal: GoalKind) -> String {
