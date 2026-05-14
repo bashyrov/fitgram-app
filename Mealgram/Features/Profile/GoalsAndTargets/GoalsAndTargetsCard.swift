@@ -144,17 +144,17 @@ struct GoalsAndTargetsCard: View {
         case .lose:
             if let target = user.goalTargetWeightKg, let current = user.weightKg {
                 let diff = current - target
-                return String(format: "Schudnąć %.1f kg", abs(diff))
+                return String(format: String(localized: "Schudnąć %.1f kg"), abs(diff))
                     .replacingOccurrences(of: ".", with: ",")
             }
-            return "Schudnąć"
+            return String(localized: "Schudnąć")
         case .gain:
             if let target = user.goalTargetWeightKg, let current = user.weightKg {
                 let diff = target - current
-                return String(format: "Nabrać %.1f kg", abs(diff))
+                return String(format: String(localized: "Nabrać %.1f kg"), abs(diff))
                     .replacingOccurrences(of: ".", with: ",")
             }
-            return "Nabrać masy"
+            return String(localized: "Nabrać masy")
         case .maintain: return String(localized: "Utrzymać wagę")
         case .healthCondition: return String(localized: "Cel zdrowotny")
         case .justTracking: return String(localized: "Bez celu, tylko śledzenie")

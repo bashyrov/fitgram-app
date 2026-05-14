@@ -292,7 +292,7 @@ struct TodayView: View {
                 Haptics.light()
             } label: {
                 VStack(spacing: 0) {
-                    Text(state.isViewingToday ? "Dziś" : Self.dayLabel(state.viewingDate))
+                    Text(state.isViewingToday ? String(localized: "Dziś") : Self.dayLabel(state.viewingDate))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     if !state.isViewingToday {
@@ -333,7 +333,7 @@ struct TodayView: View {
     private var mealsSection: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             HStack {
-                Text(state.isViewingToday ? "Dziś" : "Dziennik dnia")
+                Text(state.isViewingToday ? String(localized: "Dziś") : String(localized: "Dziennik dnia"))
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 Spacer()
