@@ -20,6 +20,8 @@ struct MainTabView: View {
     let mealRepository: MealRepository
     let photoStore: MealPhotoStore?
     let weightService: WeightService
+    let goalTrackingService: GoalTrackingService
+    let notificationCoordinator: NotificationCoordinator
     let heatmapService: ActivityHeatmapService
     let challengeService: ChallengeService
     let statsService: ProfileStatsService
@@ -56,6 +58,8 @@ struct MainTabView: View {
     @State private var undoDismissTask: Task<Void, Never>?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
+    @State private var goalTrackingState: GoalTrackingState
+    @State private var isGoalTrackingPresented = false
 
     init(
         authUser: AuthUser,
@@ -72,6 +76,8 @@ struct MainTabView: View {
         mealRepository: MealRepository,
         photoStore: MealPhotoStore?,
         weightService: WeightService,
+        goalTrackingService: GoalTrackingService,
+        notificationCoordinator: NotificationCoordinator,
         heatmapService: ActivityHeatmapService,
         challengeService: ChallengeService,
         statsService: ProfileStatsService,
@@ -105,6 +111,8 @@ struct MainTabView: View {
         self.mealRepository = mealRepository
         self.photoStore = photoStore
         self.weightService = weightService
+        self.goalTrackingService = goalTrackingService
+        self.notificationCoordinator = notificationCoordinator
         self.heatmapService = heatmapService
         self.challengeService = challengeService
         self.statsService = statsService
@@ -125,6 +133,12 @@ struct MainTabView: View {
         self.progressState = progressState
         self._friendsState = State(
             initialValue: FriendsState(service: friendService, userRemoteID: authUser.id)
+        )
+        self._goalTrackingState = State(
+            initialValue: GoalTrackingState(
+                service: goalTrackingService,
+                notificationCoordinator: notificationCoordinator
+            )
         )
     }
 
@@ -168,13 +182,17 @@ struct MainTabView: View {
             TodayView(
                 userRemoteID: authUser.id,
                 state: todayState,
-                customGoalsService: goalsService,
                 favoritesService: favoritesService,
                 mealSaver: mealSaver,
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator,
+                goalTrackingState: goalTrackingState,
                 onOpenProfile: { selectedTab = .profile },
                 onOpenScanner: { isScanPresented = true },
+                onOpenGoalTracking: {
+                    goalTrackingState.refresh(for: authUser.id)
+                    isGoalTrackingPresented = true
+                },
                 onCookSuggested: { recipe in cookSuggested(recipe) },
                 onCoachAction: { kind in handleCoachAction(kind) },
                 onOpenWeeklyDebrief: { presentWeeklyDebrief() },
@@ -471,6 +489,13 @@ struct MainTabView: View {
                 logs: coachHistory,
                 decode: { coachService.decode(log: $0) },
                 onDismiss: { isCoachHistoryPresented = false }
+            )
+        }
+        .sheet(isPresented: $isGoalTrackingPresented) {
+            GoalTrackingView(
+                userRemoteID: authUser.id,
+                state: goalTrackingState,
+                onDismiss: { isGoalTrackingPresented = false }
             )
         }
     }

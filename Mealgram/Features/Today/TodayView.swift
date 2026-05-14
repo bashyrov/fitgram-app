@@ -6,13 +6,14 @@ import SwiftUI
 struct TodayView: View {
     let userRemoteID: String
     @Bindable var state: TodayState
-    let customGoalsService: GoalsService?
     let favoritesService: (any FavoritesServing)?
     let mealSaver: (any MealSaving)?
     let entitlementsStore: EntitlementsStore?
     let paywallCoordinator: PaywallCoordinator?
+    var goalTrackingState: GoalTrackingState?
     let onOpenProfile: () -> Void
     let onOpenScanner: () -> Void
+    var onOpenGoalTracking: (() -> Void)?
     var onCookSuggested: ((Recipe) -> Void)?
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
     var onOpenWeeklyDebrief: (() -> Void)?
@@ -106,6 +107,8 @@ struct TodayView: View {
                             )
                         }
 
+                        goalTrackingSlot
+
                         if state.isViewingToday,
                             let user = state.user,
                             let data = user.latestRecommendationsJSON,
@@ -114,10 +117,6 @@ struct TodayView: View {
                                 recommendations: recs,
                                 lastUpdated: user.recommendationsGeneratedAt
                             )
-                        }
-
-                        if state.isViewingToday, let customGoalsService {
-                            CustomGoalsStrip(goalsService: customGoalsService)
                         }
 
                         if state.isViewingToday,
@@ -179,6 +178,7 @@ struct TodayView: View {
         }
         .task {
             await state.refresh(for: userRemoteID)
+            goalTrackingState?.refresh(for: userRemoteID)
         }
         .sheet(isPresented: $isDatePickerPresented) {
             DateJumpSheet(
@@ -233,6 +233,35 @@ struct TodayView: View {
         try? modelContext.save()
         Haptics.light()
         Task { await state.refresh(for: userRemoteID) }
+    }
+
+    /// Goal Tracking card. Three exclusive outcomes:
+    /// 1. User has lose/gain goal + Premium → show GoalTrackingCard.
+    /// 2. User has lose/gain goal but no Premium → show upsell card.
+    /// 3. Otherwise → nothing.
+    @ViewBuilder
+    private var goalTrackingSlot: some View {
+        if state.isViewingToday, let user = state.user, shouldShowGoalSlot(for: user) {
+            if entitlementsStore?.current.isPremium == true,
+                let goalTrackingState,
+                let snapshot = goalTrackingState.snapshot {
+                GoalTrackingCard(snapshot: snapshot) {
+                    Haptics.light()
+                    onOpenGoalTracking?()
+                }
+            } else if entitlementsStore?.current.isPremium != true {
+                GoalTrackingUpsellCard {
+                    Haptics.light()
+                    paywallCoordinator?.present(.goalTracking)
+                }
+            }
+        }
+    }
+
+    private func shouldShowGoalSlot(for user: User) -> Bool {
+        let kind = user.goalKind
+        guard kind == .lose || kind == .gain else { return false }
+        return user.goalStartDate != nil
     }
 
     @ViewBuilder

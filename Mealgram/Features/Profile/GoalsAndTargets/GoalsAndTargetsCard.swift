@@ -26,7 +26,7 @@ struct GoalsAndTargetsCard: View {
     @State private var sheet: SheetID?
 
     private enum SheetID: Identifiable {
-        case mainGoal, weight, activity, calories, macros, water, profileData, customGoals
+        case mainGoal, weight, activity, calories, macros, water, profileData
         var id: String { String(describing: self) }
     }
 
@@ -58,14 +58,6 @@ struct GoalsAndTargetsCard: View {
                 EditWaterSheet(user: user, service: userProfileService) { sheet = nil }
             case .profileData:
                 EditProfileDataSheet(user: user, service: userProfileService) { sheet = nil }
-            case .customGoals:
-                CustomGoalsSheet(
-                    goalsService: goalsService,
-                    userRemoteID: user.remoteID,
-                    entitlementsStore: entitlementsStore,
-                    paywallCoordinator: paywallCoordinator,
-                    onDismiss: { sheet = nil }
-                )
             }
         }
     }
@@ -101,27 +93,6 @@ struct GoalsAndTargetsCard: View {
                         }
                     }
                 }
-                Button { sheet = .customGoals } label: {
-                    HStack(spacing: Tokens.Space.sm) {
-                        ZStack {
-                            Circle()
-                                .fill(Tokens.Palette.accent.opacity(0.15))
-                                .frame(width: 32, height: 32)
-                            Image(systemName: "list.bullet.rectangle.portrait")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(Tokens.Palette.accent)
-                        }
-                        Text("Dodatkowe cele")
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
-                    .padding(.top, 4)
-                }
-                .buttonStyle(.plain)
             }
         }
     }
