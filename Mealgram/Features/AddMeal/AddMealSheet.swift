@@ -36,6 +36,7 @@ struct AddMealSheet: View {
         .presentationDetents([.height(640), .large])
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(Tokens.Radius.xxl)
+        .toastSurface()
     }
 
     // MARK: - Header

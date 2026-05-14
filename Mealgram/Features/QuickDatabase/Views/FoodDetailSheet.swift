@@ -66,9 +66,17 @@ struct FoodDetailSheet: View {
     private var portionCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Porcja")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+                HStack {
+                    Text("Porcja")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer()
+                    Text("\(Int(grams)) g")
+                        .font(Tokens.Font.title3)
+                        .foregroundStyle(Tokens.Palette.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                }
                 Slider(value: $grams, in: 10...600, step: 5)
                     .tint(Tokens.Palette.primary)
                 HStack {

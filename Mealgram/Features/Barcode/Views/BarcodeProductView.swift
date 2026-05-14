@@ -114,9 +114,16 @@ struct BarcodeProductView: View {
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
-                    Text("\(Int(grams)) g · ×\(String(format: "%.2f", portion))")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("\(Int(grams)) g")
+                            .font(Tokens.Font.title3)
+                            .foregroundStyle(Tokens.Palette.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                        Text(String(format: "×%.2f", portion))
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
                 }
                 Slider(value: $portion, in: 0.25...3.0, step: 0.05)
                     .tint(Tokens.Palette.primary)

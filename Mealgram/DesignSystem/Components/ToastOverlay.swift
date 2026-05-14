@@ -1,5 +1,25 @@
 import SwiftUI
 
+extension View {
+    /// Mount the toast overlay on top of the current view. Needed for
+    /// surfaces presented as sheets / fullScreenCover — those live in
+    /// a separate window, so the RootView-level overlay can't reach
+    /// them. Reads the centre from the SwiftUI environment.
+    func toastSurface() -> some View {
+        modifier(ToastSurfaceModifier())
+    }
+}
+
+private struct ToastSurfaceModifier: ViewModifier {
+    @Environment(ToastCenter.self) private var center
+
+    func body(content: Content) -> some View {
+        content.overlay(alignment: .top) {
+            ToastOverlay(center: center)
+        }
+    }
+}
+
 /// Drops a single toast banner from the top safe-area when
 /// `ToastCenter.current` is non-nil. Auto-dismiss runs from the
 /// center; this view just animates in and renders.

@@ -78,6 +78,7 @@ struct FavoritesListView: View {
                 Button("Anuluj", role: .cancel) { pendingDelete = nil }
             }
         }
+        .toastSurface()
     }
 
     private var list: some View {

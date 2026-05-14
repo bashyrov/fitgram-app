@@ -170,9 +170,16 @@ struct ScanResultView: View {
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
-                    Text(String(format: "×%.2f", portion))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("\(Int(totalAdjustedGrams)) g")
+                            .font(Tokens.Font.title3)
+                            .foregroundStyle(Tokens.Palette.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                        Text(String(format: "×%.2f", portion))
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
                 }
                 Slider(value: $portion, in: 0.25...3.0, step: 0.05)
                     .tint(Tokens.Palette.primary)
@@ -191,6 +198,10 @@ struct ScanResultView: View {
                 }
             }
         }
+    }
+
+    private var totalAdjustedGrams: Double {
+        result.items.reduce(0) { $0 + $1.quantityGrams } * portion
     }
 
     private var itemsCard: some View {

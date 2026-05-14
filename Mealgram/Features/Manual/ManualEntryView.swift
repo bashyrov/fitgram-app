@@ -67,6 +67,7 @@ struct ManualEntryView: View {
                 }
             }
         }
+        .toastSurface()
     }
 
     // MARK: - Cards

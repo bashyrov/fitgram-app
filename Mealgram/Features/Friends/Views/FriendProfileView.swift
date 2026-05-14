@@ -22,7 +22,6 @@ struct FriendProfileView: View {
     @State private var isLoading: Bool = true
     @State private var loadError: String?
     @State private var activeTab: Tab = .achievements
-    @State private var isReactionMenuOpen: Bool = false
     @State private var isReportPresented: Bool = false
     @State private var reportReason: String = ""
     @State private var isBlockConfirmed: Bool = false
@@ -96,18 +95,6 @@ struct FriendProfileView: View {
             }
             .task { await load() }
             .confirmationDialog(
-                "Wybierz reakcję",
-                isPresented: $isReactionMenuOpen,
-                titleVisibility: .visible
-            ) {
-                ForEach(PositiveReactionIntent.allCases, id: \.self) { intent in
-                    Button(intent.label) {
-                        Task { await send(intent: intent) }
-                    }
-                }
-                Button("Anuluj", role: .cancel) {}
-            }
-            .confirmationDialog(
                 "Zablokować tego użytkownika?",
                 isPresented: $isBlockConfirmed,
                 titleVisibility: .visible
@@ -123,6 +110,7 @@ struct FriendProfileView: View {
                 reportSheet
             }
         }
+        .toastSurface()
     }
 
     @ViewBuilder
@@ -245,13 +233,6 @@ struct FriendProfileView: View {
     private var actionRow: some View {
         HStack(spacing: Tokens.Space.sm) {
             primaryActionButton(
-                label: "Zachęć",
-                symbol: "hand.thumbsup.fill",
-                tint: Tokens.Palette.primary
-            ) {
-                isReactionMenuOpen = true
-            }
-            secondaryActionButton(
                 label: "Pogratuluj",
                 symbol: "party.popper.fill",
                 tint: Tokens.Palette.accent
@@ -395,12 +376,16 @@ struct FriendProfileView: View {
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.55)
+                .truncationMode(.tail)
             Text(item.label)
                 .font(Tokens.Font.caption)
                 .foregroundStyle(Tokens.Palette.inkMuted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity)
+        .padding(.horizontal, Tokens.Space.sm)
         .padding(.vertical, Tokens.Space.md)
         .background(
             RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)

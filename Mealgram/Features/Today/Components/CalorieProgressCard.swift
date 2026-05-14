@@ -35,10 +35,15 @@ struct CalorieProgressCard: View {
                         Text("\(Int(consumed))")
                             .font(Tokens.Font.counter)
                             .foregroundStyle(Tokens.Palette.ink)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                         Text(goalHit ? "✓ \(goal) kcal" : "/ \(goal) kcal")
                             .font(Tokens.Font.footnote)
                             .foregroundStyle(goalHit ? Tokens.Palette.warning : Tokens.Palette.inkMuted)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
                     }
+                    .padding(.horizontal, 18)
                 }
                 .frame(width: 156, height: 156)
                 .accessibilityElement(children: .combine)

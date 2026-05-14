@@ -113,6 +113,7 @@ struct UpgradeSheet: View {
                 }
             }
         }
+        .toastSurface()
     }
 
     @ViewBuilder
