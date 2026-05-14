@@ -7,6 +7,9 @@
     "..." : {
 
     },
+    "„schabowy 200 gram 400 kcal”" : {
+
+    },
     "/ %lld kcal" : {
 
     },
@@ -217,9 +220,6 @@
     "−43% TANIEJ" : {
 
     },
-    "✍️ Wpisz ręcznie" : {
-
-    },
     "✓ %lld kcal" : {
 
     },
@@ -227,6 +227,7 @@
 
     },
     "🎙 Powiedz na głos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -255,6 +256,7 @@
 
     },
     "📖 Mój przepis" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -277,6 +279,7 @@
       }
     },
     "📦 Kod kreskowy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -299,6 +302,7 @@
       }
     },
     "📸 Zdjęcie posiłku" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -321,6 +325,7 @@
       }
     },
     "🔎 Szybka baza" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -423,6 +428,9 @@
     "100" : {
 
     },
+    "160+ polskich potraw · bez limitu" : {
+
+    },
     "199 zł" : {
 
     },
@@ -442,6 +450,9 @@
 
     },
     "1000–4500 kcal. Pełna edycja w Profilu → Cele." : {
+
+    },
+    "AI rozpozna składniki w 5 sekund" : {
 
     },
     "Akceptuj" : {
@@ -1334,6 +1345,7 @@
 
     },
     "Jak chcesz dodać?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1464,6 +1476,9 @@
 
     },
     "Kod %@ nie jest jeszcze w bazie Open Food Facts. Spróbuj zeskanować inny lub dodaj ręcznie." : {
+
+    },
+    "Kod kreskowy" : {
 
     },
     "kolacja" : {
@@ -1729,6 +1744,9 @@
         }
       }
     },
+    "Mój przepis" : {
+
+    },
     "Moje przepisy" : {
 
     },
@@ -1981,6 +1999,9 @@
 
     },
     "Ola przygotowuje Twoje wskazówki…" : {
+
+    },
+    "Open Food Facts · prosto z opakowania" : {
 
     },
     "Operacja usuwa wszystkie Twoje dane lokalne i serwerowe. Nie można cofnąć." : {
@@ -2283,6 +2304,9 @@
     "Potrzebujemy mikrofonu" : {
 
     },
+    "Powiedz na głos" : {
+
+    },
     "Powiedz na przykład: „zjadłam zupę pomidorową i kanapkę z serem”." : {
 
     },
@@ -2512,6 +2536,9 @@
 
     },
     "Sałatka z kurczakiem" : {
+
+    },
+    "Sam wpisz kalorie + makro" : {
 
     },
     "Schudnąć" : {
@@ -3442,6 +3469,9 @@
     "wybierz grecki 0 % lub skyr" : {
 
     },
+    "Wybierz najszybszy sposób na ten posiłek" : {
+
+    },
     "Wybierz reakcję" : {
 
     },
@@ -3569,6 +3599,9 @@
 
     },
     "Z nami od %@" : {
+
+    },
+    "Z Twojej książki kucharskiej" : {
 
     },
     "Z zdjęciem" : {
@@ -3796,6 +3829,9 @@
 
     },
     "Zdjęcie jest nieczytelne. Spróbuj ponownie w lepszym świetle." : {
+
+    },
+    "Zdjęcie posiłku" : {
 
     },
     "Zdobyte" : {

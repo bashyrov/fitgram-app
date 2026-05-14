@@ -18,7 +18,9 @@ enum FreeTierLimits {
     static let activeCustomGoals: Int = 1
     static let savedRecipes: Int = 5
     static let friendsCount: Int = 3
-    static let favorites: Int = 0  // free tier can't favourite at all
+    /// "Mój przepis" — cap of 5 on free, unlimited on premium.
+    /// Downgrade (premium → free) trims back to the oldest 5.
+    static let favorites: Int = 5
 
     /// History cutoff — meals + weight entries older than this are
     /// readable but charts only render the trailing window.
@@ -29,7 +31,10 @@ enum FreeTierLimits {
     static let allowedExportFormats: Set<ExportFormat> = [.json]
 
     /// Premium-only switches. UI either hides or shows-with-lock.
-    static let canUseFavorites: Bool = false
+    /// Favourites are *available* on free, just capped at 5 — the cap
+    /// itself is enforced via `favorites`. The bool stays false only
+    /// for features that are entirely premium.
+    static let canUseFavorites: Bool = true
     static let canChangeTheme: Bool = false
     static let canUseICloudSync: Bool = false
 }

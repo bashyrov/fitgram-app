@@ -163,7 +163,7 @@ struct ManualEntryView: View {
                     Image(systemName: saveAsFavorite ? "star.fill" : "star")
                         .foregroundStyle(Tokens.Palette.warning)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Dodaj do ulubionych")
+                        Text("Dodaj do moich przepisów")
                             .font(Tokens.Font.body)
                             .foregroundStyle(Tokens.Palette.ink)
                         Text("Szybki ponowny dodatek z karuzeli na Dziś")
@@ -185,7 +185,7 @@ struct ManualEntryView: View {
                     Image(systemName: "star.fill")
                         .foregroundStyle(Tokens.Palette.warning)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Ulubione — Premium")
+                        Text("Moje przepisy — Premium")
                             .font(Tokens.Font.bodyEmphasized)
                             .foregroundStyle(Tokens.Palette.ink)
                         Text("Zapisuj stałe posiłki i dodawaj jednym tapnięciem.")

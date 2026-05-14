@@ -38,7 +38,7 @@ struct FavoriteToggleButton: View {
                 HStack(spacing: Tokens.Space.sm) {
                     Image(systemName: stored != nil ? "star.fill" : "star")
                         .foregroundStyle(stored != nil ? Tokens.Palette.warning : Tokens.Palette.primary)
-                    Text(stored != nil ? "W ulubionych" : "Dodaj do ulubionych")
+                    Text(stored != nil ? "W moich przepisach" : "Dodaj do moich przepisów")
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
@@ -57,7 +57,7 @@ struct FavoriteToggleButton: View {
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(stored != nil ? Text("Usuń z ulubionych") : Text("Dodaj do ulubionych"))
+        .accessibilityLabel(stored != nil ? Text("Usuń z moich przepisów") : Text("Dodaj do moich przepisów"))
         .task { reload() }
     }
 

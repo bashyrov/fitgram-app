@@ -77,7 +77,8 @@ final class EntitlementsTests: XCTestCase {
         XCTAssertEqual(free.savedRecipesCap, 5)
         XCTAssertEqual(free.historyDays, 30)
         XCTAssertEqual(free.allowedExportFormats, [.json])
-        XCTAssertFalse(free.canUseFavorites)
+        XCTAssertEqual(free.favoritesCap, 5)
+        XCTAssertTrue(free.canUseFavorites)
         XCTAssertFalse(free.canChangeTheme)
         XCTAssertFalse(free.canUseICloudSync)
     }

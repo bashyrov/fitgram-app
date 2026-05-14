@@ -144,12 +144,17 @@ struct MealgramApp: App {
         self._privacyStore = State(initialValue: PrivacyStore())
         let subscriptionService = MockSubscriptionService()
         self._subscriptionService = State(initialValue: subscriptionService)
-        self._entitlementsStore = State(
-            initialValue: EntitlementsStore(subscriptionService: subscriptionService)
-        )
+        let entitlementsStore = EntitlementsStore(subscriptionService: subscriptionService)
+        let favoritesService = FavoritesService(container: persistence.container)
+        // Premium → free downgrade trims "Mój przepis" back to the cap.
+        entitlementsStore.onDowngradeFreeTier = { [favoritesService, session] in
+            guard let remoteID = session.currentRemoteID else { return }
+            try? favoritesService.trimToCap(userID: remoteID, cap: FreeTierLimits.favorites)
+        }
+        self._entitlementsStore = State(initialValue: entitlementsStore)
         self._usageMeter = State(initialValue: UsageMeter())
         self._paywallCoordinator = State(initialValue: PaywallCoordinator())
-        self.favoritesService = FavoritesService(container: persistence.container)
+        self.favoritesService = favoritesService
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
         do {

@@ -1,7 +1,5 @@
 import SwiftUI
 
-// swiftlint:disable type_body_length
-
 /// Quick Database — browse + search the local Polish food catalogue. Tap
 /// an item → portion sheet → save as a MealEntry with source=.quickDatabase.
 struct QuickDatabaseRootView: View {
@@ -10,8 +8,6 @@ struct QuickDatabaseRootView: View {
     let onDismiss: () -> Void
 
     @State private var pickedFood: Food?
-    @State private var isAddingCustom = false
-    @State private var isScanningLabel = false
     @State private var isResetConfirmed = false
 
     var body: some View {
@@ -28,29 +24,19 @@ struct QuickDatabaseRootView: View {
             .navigationTitle(Text("Szybka baza"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Menu {
-                        Button {
-                            isAddingCustom = true
-                        } label: {
-                            Label("Dodaj własne danie", systemImage: "plus")
-                        }
-                        Button {
-                            isScanningLabel = true
-                        } label: {
-                            Label("Zeskanuj etykietę", systemImage: "doc.text.viewfinder")
-                        }
-                        if state.shouldShowSuggestions {
+                if state.shouldShowSuggestions {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Menu {
                             Button(role: .destructive) {
                                 isResetConfirmed = true
                             } label: {
                                 Label("Resetuj Ostatnie / Częste", systemImage: "arrow.counterclockwise")
                             }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
                         }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
+                        .accessibilityLabel(Text("Więcej opcji"))
                     }
-                    .accessibilityLabel(Text("Więcej opcji"))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Zamknij", action: onDismiss)
@@ -62,29 +48,6 @@ struct QuickDatabaseRootView: View {
                     food: food,
                     onSave: { commit(food: food, item: $0, suggestedMealType: Self.suggestedMealType()) },
                     onDismiss: { pickedFood = nil }
-                )
-            }
-            .sheet(isPresented: $isAddingCustom) {
-                CustomFoodFormSheet(
-                    onSave: { food in
-                        Task {
-                            await state.createCustomFood(food)
-                            isAddingCustom = false
-                        }
-                    },
-                    onDismiss: { isAddingCustom = false }
-                )
-            }
-            .fullScreenCover(isPresented: $isScanningLabel) {
-                LabelScannerSheet(
-                    scanner: FoodLabelScanner(),
-                    onSave: { food in
-                        Task {
-                            await state.createCustomFood(food)
-                            isScanningLabel = false
-                        }
-                    },
-                    onDismiss: { isScanningLabel = false }
                 )
             }
             .confirmationDialog(
@@ -387,5 +350,3 @@ struct QuickDatabaseRootView: View {
         }
     }
 }
-
-// swiftlint:enable type_body_length

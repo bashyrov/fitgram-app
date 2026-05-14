@@ -114,7 +114,7 @@ struct AddMealSheet: View {
             emoji: "📖",
             iconTint: Color(red: 0.45, green: 0.55, blue: 0.90),
             title: "Mój przepis",
-            subtitle: "Z Twojej książki kucharskiej",
+            subtitle: "Twoje stałe posiłki — jeden tap, gotowe",
             quota: .unlimited,
             action: onRecipe
         )

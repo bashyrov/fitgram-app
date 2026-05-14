@@ -21,6 +21,11 @@ protocol FavoritesServing: AnyObject {
         name: String,
         catalogFoodID: UUID?
     ) throws -> FavoriteMeal?
+
+    /// Trims the user's favourites to at most `cap` rows, keeping the
+    /// oldest entries (lowest `createdAt`). No-op when cap is nil
+    /// (premium) or when count is already under the cap.
+    func trimToCap(userID: String, cap: Int?) throws
 }
 
 @MainActor
@@ -89,5 +94,24 @@ final class FavoritesService: FavoritesServing {
             return matches.first(where: { $0.catalogFoodID == catalogID }) ?? matches.first
         }
         return matches.first
+    }
+
+    func trimToCap(userID: String, cap: Int?) throws {
+        guard let cap, cap >= 0 else { return }
+        let context = ModelContext(container)
+        // Sort ascending by createdAt so "first N" = the oldest N.
+        let descriptor = FetchDescriptor<FavoriteMeal>(
+            predicate: #Predicate { $0.userRemoteID == userID },
+            sortBy: [SortDescriptor(\FavoriteMeal.createdAt, order: .forward)]
+        )
+        let rows = try context.fetch(descriptor)
+        guard rows.count > cap else { return }
+        for stale in rows.suffix(rows.count - cap) {
+            context.delete(stale)
+        }
+        try context.save()
+        Logger.persistence.notice(
+            "FavoritesService trimmed \(rows.count - cap) rows on downgrade"
+        )
     }
 }

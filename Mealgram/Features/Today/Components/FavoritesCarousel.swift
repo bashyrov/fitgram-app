@@ -30,7 +30,7 @@ struct FavoritesCarousel: View {
         }
         .task { reload() }
         .confirmationDialog(
-            "Usunąć z ulubionych?",
+            "Usunąć z moich przepisów?",
             isPresented: Binding(
                 get: { pendingDelete != nil },
                 set: { if !$0 { pendingDelete = nil } }
@@ -52,7 +52,7 @@ struct FavoritesCarousel: View {
     private var activeCarousel: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             HStack {
-                Label("Ulubione", systemImage: "star.fill")
+                Label("Moje przepisy", systemImage: "star.fill")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Spacer()
@@ -89,7 +89,7 @@ struct FavoritesCarousel: View {
                         .foregroundStyle(Tokens.Palette.warning)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Ulubione — szybkie dodawanie")
+                    Text("Moje przepisy — szybkie dodawanie")
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("Premium: jednym tapnięciem dodaj swoje stałe pozycje.")

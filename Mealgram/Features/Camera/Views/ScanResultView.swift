@@ -30,19 +30,20 @@ struct ScanResultView: View {
     }
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Tokens.Palette.background.ignoresSafeArea()
-            VStack(spacing: 0) {
-                header
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        summaryCard
-                        portionCard
-                        itemsCard
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(spacing: 0) {
+                    photoHero
+                    contentPanel
                 }
+            }
+            .ignoresSafeArea(edges: .top)
+            closeButton
+                .padding(.leading, Tokens.Space.screenPadding)
+                .padding(.top, Tokens.Space.sm)
+            VStack {
+                Spacer()
                 footer
             }
         }
@@ -55,6 +56,59 @@ struct ScanResultView: View {
         }
     }
 
+    /// Hero image at the top — lives inside the ScrollView so it
+    /// parallax-scrolls naturally with the content below.
+    private var photoHero: some View {
+        preview
+            .frame(height: 280)
+            .frame(maxWidth: .infinity)
+            .clipped()
+    }
+
+    /// Cards section with an opaque background + rounded top corners
+    /// that overlap the photo by 28pt. Once the user scrolls, the
+    /// cards visually float over the photo and the photo's bottom edge
+    /// is fully hidden by the panel.
+    private var contentPanel: some View {
+        VStack(spacing: Tokens.Space.lg) {
+            summaryCard
+            portionCard
+            itemsCard
+            Color.clear.frame(height: 120)  // breathing room for the floating CTA
+        }
+        .padding(.horizontal, Tokens.Space.screenPadding)
+        .padding(.top, Tokens.Space.lg)
+        .padding(.bottom, Tokens.Space.lg)
+        .frame(maxWidth: .infinity)
+        .background(
+            Tokens.Palette.background
+                .clipShape(
+                    .rect(
+                        topLeadingRadius: 28,
+                        bottomLeadingRadius: 0,
+                        bottomTrailingRadius: 0,
+                        topTrailingRadius: 28,
+                        style: .continuous
+                    )
+                )
+        )
+        .offset(y: -28)
+    }
+
+    private var closeButton: some View {
+        HStack {
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(.ultraThinMaterial, in: Circle())
+            }
+            .accessibilityLabel(Text("Zamknij"))
+            Spacer()
+        }
+    }
+
     private func apply(edited item: ScanResult.DetectedItem, mode: FoodItemEditorSheet.Mode) {
         switch mode {
         case .adding:
@@ -64,26 +118,6 @@ struct ScanResultView: View {
                 result.items[index] = item
             }
         }
-    }
-
-    private var header: some View {
-        ZStack(alignment: .topLeading) {
-            preview
-            HStack {
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 36, height: 36)
-                        .background(.ultraThinMaterial, in: Circle())
-                }
-                .padding(.leading, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.md)
-                .accessibilityLabel(Text("Zamknij"))
-                Spacer()
-            }
-        }
-        .frame(height: 200)
     }
 
     private var preview: some View {
@@ -258,7 +292,15 @@ struct ScanResultView: View {
         .padding(.horizontal, Tokens.Space.screenPadding)
         .padding(.bottom, Tokens.Space.xl)
         .padding(.top, Tokens.Space.md)
-        .background(Tokens.Palette.background)
+        .background(
+            LinearGradient(
+                colors: [Tokens.Palette.background.opacity(0), Tokens.Palette.background],
+                startPoint: .top,
+                endPoint: .center
+            )
+            .frame(maxHeight: .infinity)
+            .allowsHitTesting(false)
+        )
     }
 
     // MARK: - Helpers

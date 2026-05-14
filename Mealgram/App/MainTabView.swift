@@ -46,6 +46,7 @@ struct MainTabView: View {
     @State private var isVoicePresented = false
     @State private var isRecipesPresented = false
     @State private var isManualEntryPresented = false
+    @State private var isFavoritesListPresented = false
     @State private var isWeeklyDebriefPresented = false
     @State private var weeklyDebrief: WeeklyDebrief?
     @State private var isCoachHistoryPresented = false
@@ -331,7 +332,7 @@ struct MainTabView: View {
                 },
                 onRecipe: {
                     addOptionsVisible = false
-                    isRecipesPresented = true
+                    isFavoritesListPresented = true
                 },
                 onManual: {
                     addOptionsVisible = false
@@ -399,6 +400,23 @@ struct MainTabView: View {
                 paywallCoordinator: paywallCoordinator,
                 onDismiss: {
                     isManualEntryPresented = false
+                    refreshAfterSave()
+                }
+            )
+        }
+        .sheet(isPresented: $isFavoritesListPresented) {
+            FavoritesListView(
+                userRemoteID: authUser.id,
+                favoritesService: favoritesService,
+                mealSaver: mealSaver,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                onAddNew: {
+                    isFavoritesListPresented = false
+                    isManualEntryPresented = true
+                },
+                onDismiss: {
+                    isFavoritesListPresented = false
                     refreshAfterSave()
                 }
             )

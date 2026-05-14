@@ -58,7 +58,7 @@ extension PaywallTrigger {
             )
         case .favoritesUnavailable:
             return Copy(
-                headline: "Ulubione produkty — to Premium",
+                headline: "Moje przepisy — limit 5 na free",
                 body: "Zapisuj swoje stałe pozycje, dodawaj jednym tapnięciem. Zaoszczędź minuty dziennie.",
                 badge: "Ulubione"
             )

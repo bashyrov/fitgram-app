@@ -157,7 +157,7 @@ struct UpgradeSheet: View {
                 )
                 feature(
                     symbol: "star.fill",
-                    title: "Ulubione produkty",
+                    title: "Moje przepisy",
                     detail: "Dodaj jednym tapnięciem, oszczędź minuty dziennie"
                 )
                 feature(

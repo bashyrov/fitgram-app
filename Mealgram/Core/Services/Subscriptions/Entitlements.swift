@@ -71,17 +71,28 @@ final class EntitlementsStore {
 
     private let subscriptionService: any SubscriptionService
 
+    /// Optional downgrade trim callback — invoked when the tier flips
+    /// premium → free so over-cap features (e.g. > 5 favourites) get
+    /// trimmed to the new limits. Set by the composition root after
+    /// FavoritesService exists.
+    var onDowngradeFreeTier: (() -> Void)?
+
     init(subscriptionService: any SubscriptionService) {
         self.subscriptionService = subscriptionService
         self.current = subscriptionService.snapshot.isPremium ? .premium : .free
     }
 
     /// Reconciles `current` against the latest snapshot. Called after
-    /// purchase/restore/refresh.
+    /// purchase/restore/refresh. When the tier downgrades, the optional
+    /// `onDowngradeFreeTier` hook fires once so over-cap data gets
+    /// trimmed (e.g. excess "Mój przepis" rows).
     func reconcile() {
         let next: Entitlements = subscriptionService.snapshot.isPremium ? .premium : .free
-        if next != current {
-            current = next
+        guard next != current else { return }
+        let wasPremium = current.isPremium
+        current = next
+        if wasPremium && !next.isPremium {
+            onDowngradeFreeTier?()
         }
     }
 
