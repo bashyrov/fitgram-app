@@ -69,9 +69,9 @@ final class UsageMeterTests: XCTestCase {
 final class EntitlementsTests: XCTestCase {
     func testFreeTierCapsMatchSpec() {
         let free = Entitlements.free
-        XCTAssertEqual(free.photoScansPerWeek, 3)
-        XCTAssertEqual(free.barcodeScansPerWeek, 3)
-        XCTAssertEqual(free.voiceEntriesPerWeek, 3)
+        XCTAssertEqual(free.photoScansPerWeek, 5)
+        XCTAssertEqual(free.barcodeScansPerWeek, 5)
+        XCTAssertEqual(free.voiceEntriesPerWeek, 5)
         XCTAssertEqual(free.activeCustomGoalsCap, 1)
         XCTAssertEqual(free.friendsCap, 3)
         XCTAssertEqual(free.savedRecipesCap, 5)

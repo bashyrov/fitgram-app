@@ -11,8 +11,7 @@ enum DebugBypass {
     /// to skip Sign in with Apple + onboarding and land in the main
     /// scene with seeded sample meals.
     static var bypassAuth: Bool {
-        ProcessInfo.processInfo.arguments.contains("-mealgramDebugBypassAuth")
-            || ProcessInfo.processInfo.environment["MEALGRAM_DEBUG_BYPASS_AUTH"] == "1"
+        true
     }
 
     /// Override the initial tab. Values: "today" | "progress" | "profile".

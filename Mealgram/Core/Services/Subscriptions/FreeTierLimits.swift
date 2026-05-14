@@ -9,9 +9,9 @@ import Foundation
 enum FreeTierLimits {
     /// Per-week quotas (ISO weeks, Monday-anchored). UsageMeter handles
     /// the rollover.
-    static let photoScansPerWeek: Int = 3
-    static let barcodeScansPerWeek: Int = 3
-    static let voiceEntriesPerWeek: Int = 3
+    static let photoScansPerWeek: Int = 5
+    static let barcodeScansPerWeek: Int = 5
+    static let voiceEntriesPerWeek: Int = 5
     static let coachWeeklyDebriefsPerWeek: Int = 1
 
     /// Soft caps — saving a new item past the cap raises the paywall.
