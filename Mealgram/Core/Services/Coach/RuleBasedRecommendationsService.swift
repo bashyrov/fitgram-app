@@ -10,13 +10,55 @@ import Foundation
 /// onboarding results screen stays scannable.
 final class RuleBasedRecommendationsService: RecommendationsServing {
     func generate(for request: RecommendationsRequest) async throws -> Recommendations {
-        let warnings = warnings(for: request)
-        let tips = Array(tips(for: request).prefix(5))
+        Self.build(for: request)
+    }
+
+    /// Synchronous variant used by `UserProfileService` to refresh the
+    /// cached recommendations blob whenever a goal/macro/water override
+    /// changes. The rule-based path has no I/O, so calling it from a
+    /// `@MainActor` save path is fine.
+    static func buildSync(for request: RecommendationsRequest) -> Recommendations {
+        build(for: request)
+    }
+
+    /// Builds a `RecommendationsRequest` from the User row and returns
+    /// the refreshed bundle. Returns nil if the user hasn't filled in
+    /// the prerequisite biometrics yet (still on onboarding).
+    static func buildSync(for user: User) -> Recommendations? {
+        guard let height = user.heightCm,
+            let weight = user.weightKg,
+            let birth = user.birthDate
+        else { return nil }
+        let age = Calendar.current.dateComponents([.year], from: birth, to: Date()).year ?? 0
+        let request = RecommendationsRequest(
+            biologicalSex: user.biologicalSex,
+            age: age,
+            heightCm: height,
+            weightKg: weight,
+            activityLevel: user.activityLevel,
+            goal: user.goalKind,
+            paceKgPerWeek: user.goalPaceKgPerWeek,
+            dailyCalorieGoalKcal: user.dailyCalorieGoalKcal,
+            proteinGoalGrams: user.proteinGoalGrams,
+            fatGoalGrams: user.fatGoalGrams,
+            carbsGoalGrams: user.carbsGoalGrams,
+            fiberGoalGrams: user.fiberGoalGrams,
+            waterGoalMl: user.waterGoalMl,
+            dietaryPreferences: Array(user.dietaryPreferences),
+            hitSafetyFloor: user.dailyCalorieGoalKcal <= 1200
+        )
+        return build(for: request)
+    }
+
+    private static func build(for request: RecommendationsRequest) -> Recommendations {
+        let service = RuleBasedRecommendationsService()
+        let warnings = service.warnings(for: request)
+        let tips = Array(service.tips(for: request).prefix(5))
         return Recommendations(
-            summary: summaryCopy(for: request),
+            summary: service.summaryCopy(for: request),
             tips: tips,
             warnings: warnings,
-            nextSteps: nextStepsCopy(for: request),
+            nextSteps: service.nextStepsCopy(for: request),
             source: "rule_based"
         )
     }

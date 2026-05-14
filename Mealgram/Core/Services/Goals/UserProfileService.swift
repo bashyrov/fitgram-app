@@ -93,6 +93,7 @@ final class UserProfileService: UserProfileServing {
                 note: note
             )
         )
+        regenerateRecommendations(user: user)
         try context.save()
         Logger.persistence.notice("UserProfileService updated weight to \(kg, privacy: .public) kg")
     }
@@ -103,6 +104,7 @@ final class UserProfileService: UserProfileServing {
         user.activityLevel = level
         user.updatedAt = Date()
         recalculate(user: user)
+        regenerateRecommendations(user: user)
         try context.save()
     }
 
@@ -114,6 +116,7 @@ final class UserProfileService: UserProfileServing {
         user.fatGoalGrams = max(0, fat)
         user.macrosOverridden = true
         user.updatedAt = Date()
+        regenerateRecommendations(user: user)
         try context.save()
     }
 
@@ -123,6 +126,7 @@ final class UserProfileService: UserProfileServing {
         user.dailyCalorieGoalKcal = max(1000, kcal)
         user.caloriesOverridden = true
         user.updatedAt = Date()
+        regenerateRecommendations(user: user)
         try context.save()
     }
 
@@ -132,6 +136,7 @@ final class UserProfileService: UserProfileServing {
         user.waterGoalMl = max(500, ml)
         user.waterOverridden = true
         user.updatedAt = Date()
+        regenerateRecommendations(user: user)
         try context.save()
     }
 
@@ -143,6 +148,7 @@ final class UserProfileService: UserProfileServing {
         user.fiberOverridden = false
         user.waterOverridden = false
         recalculate(user: user)
+        regenerateRecommendations(user: user)
         user.updatedAt = Date()
         try context.save()
     }
@@ -178,6 +184,7 @@ final class UserProfileService: UserProfileServing {
             user.goalEstimatedEndDate = nil
         }
         recalculate(user: user)
+        regenerateRecommendations(user: user)
         user.updatedAt = Date()
         try context.save()
     }
@@ -234,6 +241,23 @@ final class UserProfileService: UserProfileServing {
         }
         if !user.waterOverridden {
             user.waterGoalMl = targets.waterGoalMl
+        }
+    }
+
+    /// Refreshes the cached `Recommendations` blob on the user row from
+    /// the current goal/macro/water snapshot. Called from every override
+    /// path so the "Porady od Oli" hero on Today never quotes a stale
+    /// kcal number after the user edits a goal. Failures are swallowed —
+    /// stale tips are better than crashing the save.
+    private func regenerateRecommendations(user: User) {
+        guard let recommendations = RuleBasedRecommendationsService.buildSync(for: user) else { return }
+        do {
+            user.latestRecommendationsJSON = try JSONEncoder().encode(recommendations)
+            user.recommendationsGeneratedAt = Date()
+        } catch {
+            Logger.persistence.error(
+                "Failed to encode regenerated recommendations: \(String(describing: error))"
+            )
         }
     }
 
