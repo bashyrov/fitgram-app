@@ -352,28 +352,7 @@ struct ProfileView: View {
     private var recommendationsCard: some View {
         if let user, let data = user.latestRecommendationsJSON,
             let rec = try? JSONDecoder().decode(Recommendations.self, from: data) {
-            Card {
-                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                    Label("Wskazówki od Oli", systemImage: "sparkles")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.accent)
-                    Text(rec.summary)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    ForEach(rec.tips.prefix(3)) { tip in
-                        VStack(alignment: .leading, spacing: 2) {
-                            HStack(spacing: 6) {
-                                Text(tip.icon)
-                                Text(tip.title)
-                                    .font(Tokens.Font.body.weight(.semibold))
-                            }
-                            Text(tip.description)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                    }
-                }
-            }
+            OlaInsightsCard(recommendations: rec, lastUpdated: user.recommendationsGeneratedAt)
         }
     }
 
