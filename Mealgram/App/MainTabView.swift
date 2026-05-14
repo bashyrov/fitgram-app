@@ -349,7 +349,12 @@ struct MainTabView: View {
                 onDismiss: {
                     isScanPresented = false
                     refreshAfterSave()
-                })
+                },
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                userRemoteID: authUser.id
+            )
         }
         .fullScreenCover(isPresented: $isBarcodePresented) {
             BarcodeRootView(
@@ -357,7 +362,12 @@ struct MainTabView: View {
                 onDismiss: {
                     isBarcodePresented = false
                     refreshAfterSave()
-                })
+                },
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                userRemoteID: authUser.id
+            )
         }
         .sheet(isPresented: $isQuickDBPresented) {
             QuickDatabaseRootView(
@@ -366,7 +376,11 @@ struct MainTabView: View {
                 onDismiss: {
                     isQuickDBPresented = false
                     refreshAfterSave()
-                }
+                },
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                userRemoteID: authUser.id
             )
         }
         .fullScreenCover(isPresented: $isVoicePresented) {
@@ -428,7 +442,11 @@ struct MainTabView: View {
                 photoStore: photoStore,
                 onDismiss: { selectedMeal = nil },
                 onChanged: { refreshAfterSave() },
-                onDeleted: { snapshot in queueUndo(snapshot) }
+                onDeleted: { snapshot in queueUndo(snapshot) },
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                userRemoteID: authUser.id
             )
         }
         .sheet(isPresented: $isWeeklyDebriefPresented) {

@@ -6,13 +6,29 @@ struct FoodDetailSheet: View {
     let food: Food
     let onSave: (FoodItem) -> Void
     let onDismiss: () -> Void
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     @State private var grams: Double
 
-    init(food: Food, onSave: @escaping (FoodItem) -> Void, onDismiss: @escaping () -> Void) {
+    init(
+        food: Food,
+        onSave: @escaping (FoodItem) -> Void,
+        onDismiss: @escaping () -> Void,
+        favoritesService: (any FavoritesServing)? = nil,
+        entitlementsStore: EntitlementsStore? = nil,
+        paywallCoordinator: PaywallCoordinator? = nil,
+        userRemoteID: String? = nil
+    ) {
         self.food = food
         self.onSave = onSave
         self.onDismiss = onDismiss
+        self.favoritesService = favoritesService
+        self.entitlementsStore = entitlementsStore
+        self.paywallCoordinator = paywallCoordinator
+        self.userRemoteID = userRemoteID
         self._grams = State(initialValue: food.defaultPortionGrams ?? 100)
     }
 
@@ -23,6 +39,7 @@ struct FoodDetailSheet: View {
                 ScrollView {
                     VStack(spacing: Tokens.Space.lg) {
                         summaryCard
+                        favoriteButton
                         portionCard
                         macroCard
                         PrimaryButton(title: "Dodaj do dziennika", systemImage: "checkmark") {
@@ -40,6 +57,33 @@ struct FoodDetailSheet: View {
                     Button("Zamknij", action: onDismiss)
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var favoriteButton: some View {
+        if let favoritesService,
+            let entitlementsStore,
+            let paywallCoordinator,
+            let userRemoteID {
+            let factor = grams / 100
+            FavoriteToggleButton(
+                payload: FavoriteToggleButton.Payload(
+                    name: food.name,
+                    quantityGrams: grams,
+                    caloriesKcal: food.caloriesKcalPer100g * factor,
+                    proteinGrams: food.proteinGramsPer100g * factor,
+                    carbsGrams: food.carbsGramsPer100g * factor,
+                    fatGrams: food.fatGramsPer100g * factor,
+                    fiberGrams: food.fiberGramsPer100g.map { $0 * factor },
+                    source: .quickDatabase,
+                    catalogFoodID: food.id
+                ),
+                userRemoteID: userRemoteID,
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator
+            )
         }
     }
 

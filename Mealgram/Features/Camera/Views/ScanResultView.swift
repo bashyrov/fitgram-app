@@ -1,14 +1,19 @@
 import SwiftUI
 
-/// Detected items + portion adjustment + save. Items can be tapped to
-/// edit, swiped to delete, or added manually via the footer. The portion
-/// slider scales totals globally.
+// Detected items + portion adjustment + save. Items can be tapped to
+// edit, swiped to delete, or added manually via the footer. The portion
+// slider scales totals globally.
+// swiftlint:disable:next type_body_length
 struct ScanResultView: View {
     let initialResult: ScanResult
     let imageData: Data?
     let onSave: (ScanResult, Double) -> Void
     let onRetake: () -> Void
     let onDismiss: () -> Void
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     @State private var result: ScanResult
     @State private var portion: Double = 1.0
@@ -19,13 +24,21 @@ struct ScanResultView: View {
         imageData: Data?,
         onSave: @escaping (ScanResult, Double) -> Void,
         onRetake: @escaping () -> Void,
-        onDismiss: @escaping () -> Void
+        onDismiss: @escaping () -> Void,
+        favoritesService: (any FavoritesServing)? = nil,
+        entitlementsStore: EntitlementsStore? = nil,
+        paywallCoordinator: PaywallCoordinator? = nil,
+        userRemoteID: String? = nil
     ) {
         self.initialResult = result
         self.imageData = imageData
         self.onSave = onSave
         self.onRetake = onRetake
         self.onDismiss = onDismiss
+        self.favoritesService = favoritesService
+        self.entitlementsStore = entitlementsStore
+        self.paywallCoordinator = paywallCoordinator
+        self.userRemoteID = userRemoteID
         self._result = State(initialValue: result)
     }
 
@@ -72,6 +85,7 @@ struct ScanResultView: View {
     private var contentPanel: some View {
         VStack(spacing: Tokens.Space.lg) {
             summaryCard
+            favoriteButton
             portionCard
             itemsCard
             Color.clear.frame(height: 120)  // breathing room for the floating CTA
@@ -202,6 +216,37 @@ struct ScanResultView: View {
 
     private var totalAdjustedGrams: Double {
         result.items.reduce(0) { $0 + $1.quantityGrams } * portion
+    }
+
+    @ViewBuilder
+    private var favoriteButton: some View {
+        if let favoritesService,
+            let entitlementsStore,
+            let paywallCoordinator,
+            let userRemoteID,
+            let first = result.items.first {
+            let name =
+                result.items.count > 1
+                    ? result.items.map(\.name).joined(separator: " + ")
+                    : first.name
+            FavoriteToggleButton(
+                payload: FavoriteToggleButton.Payload(
+                    name: name,
+                    quantityGrams: totalAdjustedGrams,
+                    caloriesKcal: result.totalCalories * portion,
+                    proteinGrams: result.totalProtein * portion,
+                    carbsGrams: result.totalCarbs * portion,
+                    fatGrams: result.totalFat * portion,
+                    fiberGrams: nil,
+                    source: .photoScan,
+                    catalogFoodID: nil
+                ),
+                userRemoteID: userRemoteID,
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator
+            )
+        }
     }
 
     private var itemsCard: some View {

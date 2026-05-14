@@ -6,6 +6,10 @@ struct QuickDatabaseRootView: View {
     @Bindable var state: QuickDatabaseState
     let mealSaver: any MealSaving
     let onDismiss: () -> Void
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     @State private var pickedFood: Food?
     @State private var isResetConfirmed = false
@@ -47,7 +51,11 @@ struct QuickDatabaseRootView: View {
                 FoodDetailSheet(
                     food: food,
                     onSave: { commit(food: food, item: $0, suggestedMealType: Self.suggestedMealType()) },
-                    onDismiss: { pickedFood = nil }
+                    onDismiss: { pickedFood = nil },
+                    favoritesService: favoritesService,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    userRemoteID: userRemoteID
                 )
             }
             .confirmationDialog(

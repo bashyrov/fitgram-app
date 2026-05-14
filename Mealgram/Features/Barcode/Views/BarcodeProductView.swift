@@ -8,6 +8,10 @@ struct BarcodeProductView: View {
     let onSave: (Double) -> Void
     let onRetake: () -> Void
     let onDismiss: () -> Void
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     @State private var portion: Double = 1.0
 
@@ -19,6 +23,7 @@ struct BarcodeProductView: View {
                 ScrollView {
                     VStack(spacing: Tokens.Space.lg) {
                         summaryCard
+                        favoriteButton
                         portionCard
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
@@ -26,6 +31,33 @@ struct BarcodeProductView: View {
                 }
                 footer
             }
+        }
+    }
+
+    @ViewBuilder
+    private var favoriteButton: some View {
+        if let favoritesService,
+            let entitlementsStore,
+            let paywallCoordinator,
+            let userRemoteID {
+            let factor = grams / 100
+            FavoriteToggleButton(
+                payload: FavoriteToggleButton.Payload(
+                    name: product.name,
+                    quantityGrams: grams,
+                    caloriesKcal: product.nutrition.caloriesKcalPer100g * factor,
+                    proteinGrams: product.nutrition.proteinPer100g * factor,
+                    carbsGrams: product.nutrition.carbsPer100g * factor,
+                    fatGrams: product.nutrition.fatPer100g * factor,
+                    fiberGrams: product.nutrition.fiberPer100g.map { $0 * factor },
+                    source: .barcode,
+                    catalogFoodID: nil
+                ),
+                userRemoteID: userRemoteID,
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator
+            )
         }
     }
 

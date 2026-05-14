@@ -7,12 +7,20 @@ struct BarcodeRootView: View {
     @State private var state: BarcodeFlowState
     private let session: BarcodeCaptureSession
     let onDismiss: () -> Void
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     init(
         captureSession: BarcodeCaptureSession = BarcodeCaptureSession(),
         lookup: any BarcodeLookupService = OpenFoodFactsLookup(),
         mealSaver: any MealSaving,
-        onDismiss: @escaping () -> Void
+        onDismiss: @escaping () -> Void,
+        favoritesService: (any FavoritesServing)? = nil,
+        entitlementsStore: EntitlementsStore? = nil,
+        paywallCoordinator: PaywallCoordinator? = nil,
+        userRemoteID: String? = nil
     ) {
         self.session = captureSession
         self._state = State(
@@ -23,6 +31,10 @@ struct BarcodeRootView: View {
             )
         )
         self.onDismiss = onDismiss
+        self.favoritesService = favoritesService
+        self.entitlementsStore = entitlementsStore
+        self.paywallCoordinator = paywallCoordinator
+        self.userRemoteID = userRemoteID
     }
 
     var body: some View {
@@ -50,7 +62,11 @@ struct BarcodeRootView: View {
                         }
                     },
                     onRetake: { state.reset() },
-                    onDismiss: dismiss
+                    onDismiss: dismiss,
+                    favoritesService: favoritesService,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    userRemoteID: userRemoteID
                 )
             case .notFound(let code):
                 ResultMessageView(

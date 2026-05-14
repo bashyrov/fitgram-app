@@ -12,6 +12,10 @@ struct MealDetailSheet: View {
     let onDismiss: () -> Void
     let onChanged: () -> Void
     var onDeleted: ((MealEntrySnapshot) -> Void)?
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     @State private var portion: Double
     @State private var consumedAt: Date
@@ -35,7 +39,11 @@ struct MealDetailSheet: View {
         photoStore: MealPhotoStore? = nil,
         onDismiss: @escaping () -> Void,
         onChanged: @escaping () -> Void,
-        onDeleted: ((MealEntrySnapshot) -> Void)? = nil
+        onDeleted: ((MealEntrySnapshot) -> Void)? = nil,
+        favoritesService: (any FavoritesServing)? = nil,
+        entitlementsStore: EntitlementsStore? = nil,
+        paywallCoordinator: PaywallCoordinator? = nil,
+        userRemoteID: String? = nil
     ) {
         self.meal = meal
         self.repository = repository
@@ -43,6 +51,10 @@ struct MealDetailSheet: View {
         self.onDismiss = onDismiss
         self.onChanged = onChanged
         self.onDeleted = onDeleted
+        self.favoritesService = favoritesService
+        self.entitlementsStore = entitlementsStore
+        self.paywallCoordinator = paywallCoordinator
+        self.userRemoteID = userRemoteID
         self._portion = State(initialValue: meal.portionMultiplier)
         self._consumedAt = State(initialValue: meal.consumedAt)
         self._rating = State(initialValue: meal.rating)
@@ -60,6 +72,7 @@ struct MealDetailSheet: View {
                             photoHeader(photo)
                         }
                         summaryCard
+                        favoriteButton
                         portionCard
                         ratingCard
                         tagsCard
@@ -256,6 +269,46 @@ struct MealDetailSheet: View {
 
     private var totalAdjustedGrams: Double {
         meal.items.reduce(0) { $0 + $1.quantityGrams } * portion
+    }
+
+    /// Save the whole meal as a single favourite template — sum macros
+    /// across items, take the first item's name (or join all) as the
+    /// favourite title. Premium-gated via FavoriteToggleButton itself.
+    @ViewBuilder
+    private var favoriteButton: some View {
+        if let favoritesService,
+            let entitlementsStore,
+            let paywallCoordinator,
+            let userRemoteID,
+            let payload = favoritePayload {
+            FavoriteToggleButton(
+                payload: payload,
+                userRemoteID: userRemoteID,
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator
+            )
+        }
+    }
+
+    private var favoritePayload: FavoriteToggleButton.Payload? {
+        guard let first = meal.items.first else { return nil }
+        let name: String =
+            meal.items.count > 1
+                ? meal.items.map(\.name).joined(separator: " + ")
+                : first.name
+        let totalGrams = meal.items.reduce(0) { $0 + $1.quantityGrams } * portion
+        return FavoriteToggleButton.Payload(
+            name: name,
+            quantityGrams: totalGrams,
+            caloriesKcal: meal.totalCaloriesKcal,
+            proteinGrams: meal.totalProteinGrams,
+            carbsGrams: meal.totalCarbsGrams,
+            fatGrams: meal.totalFatGrams,
+            fiberGrams: nil,
+            source: meal.source,
+            catalogFoodID: meal.items.count == 1 ? first.catalogFoodID : nil
+        )
     }
 
     private var tagsCard: some View {

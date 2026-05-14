@@ -7,13 +7,21 @@ struct ScanRootView: View {
     @State private var state: ScanState
     private let session: CameraCaptureSession
     let onDismiss: () -> Void
+    var favoritesService: (any FavoritesServing)?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var userRemoteID: String?
 
     init(
         captureSession: CameraCaptureSession = CameraCaptureSession(),
         detector: any FoodDetector = MockFoodDetector(),
         mealSaver: MealSaving,
         photoStore: MealPhotoStore? = nil,
-        onDismiss: @escaping () -> Void
+        onDismiss: @escaping () -> Void,
+        favoritesService: (any FavoritesServing)? = nil,
+        entitlementsStore: EntitlementsStore? = nil,
+        paywallCoordinator: PaywallCoordinator? = nil,
+        userRemoteID: String? = nil
     ) {
         self.session = captureSession
         self._state = State(
@@ -25,6 +33,10 @@ struct ScanRootView: View {
             )
         )
         self.onDismiss = onDismiss
+        self.favoritesService = favoritesService
+        self.entitlementsStore = entitlementsStore
+        self.paywallCoordinator = paywallCoordinator
+        self.userRemoteID = userRemoteID
     }
 
     var body: some View {
@@ -53,7 +65,11 @@ struct ScanRootView: View {
                         }
                     },
                     onRetake: { state.reset() },
-                    onDismiss: dismiss
+                    onDismiss: dismiss,
+                    favoritesService: favoritesService,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    userRemoteID: userRemoteID
                 )
             case .error(let message):
                 ScanErrorView(message: message, onRetry: { Task { await state.start() } }, onDismiss: dismiss)
