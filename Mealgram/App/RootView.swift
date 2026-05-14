@@ -39,6 +39,7 @@ struct RootView: View {
     let entitlementsStore: EntitlementsStore
     let usageMeter: UsageMeter
     let paywallCoordinator: PaywallCoordinator
+    let favoritesService: FavoritesService
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -77,7 +78,8 @@ struct RootView: View {
         subscriptionService: MockSubscriptionService,
         entitlementsStore: EntitlementsStore,
         usageMeter: UsageMeter,
-        paywallCoordinator: PaywallCoordinator
+        paywallCoordinator: PaywallCoordinator,
+        favoritesService: FavoritesService
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -113,6 +115,7 @@ struct RootView: View {
         self.entitlementsStore = entitlementsStore
         self.usageMeter = usageMeter
         self.paywallCoordinator = paywallCoordinator
+        self.favoritesService = favoritesService
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -195,6 +198,7 @@ struct RootView: View {
                     entitlementsStore: entitlementsStore,
                     usageMeter: usageMeter,
                     paywallCoordinator: paywallCoordinator,
+                    favoritesService: favoritesService,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
                     onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },

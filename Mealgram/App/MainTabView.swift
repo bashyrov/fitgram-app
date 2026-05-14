@@ -1,7 +1,7 @@
 import CoreSpotlight
 import SwiftUI
 
-// swiftlint:disable type_body_length
+// swiftlint:disable type_body_length file_length
 
 /// Top-level navigation shell for authenticated users. Four tabs:
 /// Today / Add (action sheet) / Progress / Profile.
@@ -31,6 +31,7 @@ struct MainTabView: View {
     let entitlementsStore: EntitlementsStore
     let usageMeter: UsageMeter
     let paywallCoordinator: PaywallCoordinator
+    let favoritesService: FavoritesService
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
     let onDeleteAccount: () -> Void
@@ -44,6 +45,7 @@ struct MainTabView: View {
     @State private var isQuickDBPresented = false
     @State private var isVoicePresented = false
     @State private var isRecipesPresented = false
+    @State private var isManualEntryPresented = false
     @State private var isWeeklyDebriefPresented = false
     @State private var weeklyDebrief: WeeklyDebrief?
     @State private var isCoachHistoryPresented = false
@@ -80,6 +82,7 @@ struct MainTabView: View {
         entitlementsStore: EntitlementsStore,
         usageMeter: UsageMeter,
         paywallCoordinator: PaywallCoordinator,
+        favoritesService: FavoritesService,
         unlockBus: AchievementUnlockBus,
         onSignOut: @escaping () -> Void,
         onDeleteAccount: @escaping () -> Void,
@@ -112,6 +115,7 @@ struct MainTabView: View {
         self.entitlementsStore = entitlementsStore
         self.usageMeter = usageMeter
         self.paywallCoordinator = paywallCoordinator
+        self.favoritesService = favoritesService
         self.unlockBus = unlockBus
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
@@ -164,6 +168,10 @@ struct MainTabView: View {
                 userRemoteID: authUser.id,
                 state: todayState,
                 customGoalsService: goalsService,
+                favoritesService: favoritesService,
+                mealSaver: mealSaver,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
                 onOpenProfile: { selectedTab = .profile },
                 onOpenScanner: { isScanPresented = true },
                 onCookSuggested: { recipe in cookSuggested(recipe) },
@@ -326,6 +334,9 @@ struct MainTabView: View {
                 isRecipesPresented = true
             }
             .accessibilityIdentifier(A11yID.Add.recipeOption)
+            Button("✍️ Wpisz ręcznie") {
+                isManualEntryPresented = true
+            }
             Button("Anuluj", role: .cancel) {}
         }
         .fullScreenCover(isPresented: $isScanPresented) {
@@ -376,6 +387,19 @@ struct MainTabView: View {
                     refreshAfterSave()
                 },
                 estimator: makeRecipeEstimator()
+            )
+        }
+        .sheet(isPresented: $isManualEntryPresented) {
+            ManualEntryView(
+                mealSaver: mealSaver,
+                userRemoteID: authUser.id,
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                onDismiss: {
+                    isManualEntryPresented = false
+                    refreshAfterSave()
+                }
             )
         }
         .sheet(item: $selectedMeal) { meal in

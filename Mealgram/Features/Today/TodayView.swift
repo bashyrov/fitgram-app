@@ -7,6 +7,10 @@ struct TodayView: View {
     let userRemoteID: String
     @Bindable var state: TodayState
     let customGoalsService: GoalsService?
+    let favoritesService: (any FavoritesServing)?
+    let mealSaver: (any MealSaving)?
+    let entitlementsStore: EntitlementsStore?
+    let paywallCoordinator: PaywallCoordinator?
     let onOpenProfile: () -> Void
     let onOpenScanner: () -> Void
     var onCookSuggested: ((Recipe) -> Void)?
@@ -104,6 +108,23 @@ struct TodayView: View {
 
                         if state.isViewingToday, let customGoalsService {
                             CustomGoalsStrip(goalsService: customGoalsService)
+                        }
+
+                        if state.isViewingToday,
+                            let favoritesService,
+                            let mealSaver,
+                            let entitlementsStore,
+                            let paywallCoordinator {
+                            FavoritesCarousel(
+                                userRemoteID: userRemoteID,
+                                favoritesService: favoritesService,
+                                mealSaver: mealSaver,
+                                entitlementsStore: entitlementsStore,
+                                paywallCoordinator: paywallCoordinator,
+                                onSaved: {
+                                    Task { await state.refresh(for: userRemoteID) }
+                                }
+                            )
                         }
 
                         if state.isViewingToday, let insight = state.coachInsights.first {
