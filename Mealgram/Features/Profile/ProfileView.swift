@@ -71,6 +71,25 @@ struct ProfileView: View {
                 ScrollView {
                     VStack(spacing: Tokens.Space.lg) {
                         identityCard
+                        subscriptionStatusCard
+                        if let user {
+                            GoalsAndTargetsCard(
+                                user: user,
+                                userProfileService: userProfileService,
+                                goalsService: goalsService,
+                                entitlementsStore: entitlementsStore,
+                                paywallCoordinator: paywallCoordinator,
+                                section: .mainGoal
+                            )
+                            GoalsAndTargetsCard(
+                                user: user,
+                                userProfileService: userProfileService,
+                                goalsService: goalsService,
+                                entitlementsStore: entitlementsStore,
+                                paywallCoordinator: paywallCoordinator,
+                                section: .dailyTargets
+                            )
+                        }
                         statsRow
                         if let statsSummary {
                             ProfileStatsCard(summary: statsSummary)
@@ -87,10 +106,10 @@ struct ProfileView: View {
                                 userProfileService: userProfileService,
                                 goalsService: goalsService,
                                 entitlementsStore: entitlementsStore,
-                                paywallCoordinator: paywallCoordinator
+                                paywallCoordinator: paywallCoordinator,
+                                section: .profileData
                             )
                         }
-                        subscriptionStatusCard
                         recommendationsCard
                         preferencesSection
                         dataSection
