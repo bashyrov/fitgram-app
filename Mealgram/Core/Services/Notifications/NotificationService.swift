@@ -35,13 +35,18 @@ struct NotificationPlan: Equatable, Sendable {
     var streakRisk: DateComponents?
     /// Generic evening wrap-up at 21:00, regardless of activity.
     var eveningSummary: DateComponents?
+    /// Goal weight reminder — fires at the user-configured time (default
+    /// 09:00) when the user has an active lose/gain goal, is Premium,
+    /// and hasn't yet logged a weigh-in today.
+    var goalWeight: DateComponents?
 }
 
 extension NotificationPlan {
     static let empty = NotificationPlan(
         morningGreeting: nil,
         streakRisk: nil,
-        eveningSummary: nil
+        eveningSummary: nil,
+        goalWeight: nil
     )
 }
 
@@ -51,9 +56,10 @@ enum NotificationID {
     static let morning = "mealgram.morning"
     static let streakRisk = "mealgram.streak.risk"
     static let evening = "mealgram.evening"
+    static let goalWeight = "mealgram.goal.weight"
 
     static var all: [String] {
-        [morning, streakRisk, evening]
+        [morning, streakRisk, evening, goalWeight]
     }
 }
 
@@ -88,6 +94,11 @@ final class NotificationService: NotificationScheduling {
         await schedule(id: NotificationID.morning, when: plan.morningGreeting, content: Self.morningContent())
         await schedule(id: NotificationID.streakRisk, when: plan.streakRisk, content: Self.streakRiskContent())
         await schedule(id: NotificationID.evening, when: plan.eveningSummary, content: Self.eveningContent())
+        await schedule(
+            id: NotificationID.goalWeight,
+            when: plan.goalWeight,
+            content: Self.goalWeightContent()
+        )
     }
 
     func notifyAchievement(title: String, body: String) async {
@@ -146,6 +157,16 @@ final class NotificationService: NotificationScheduling {
         let content = UNMutableNotificationContent()
         content.title = String(localized: "Podsumowanie dnia")
         content.body = String(localized: "Zerknij, jak minął dzień i co jeszcze warto dodać.")
+        content.sound = .default
+        return content
+    }
+
+    private static func goalWeightContent() -> UNNotificationContent {
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Waga — Twój cel")
+        content.body = String(
+            localized: "Wpisz dzisiejszą wagę — sprawdź, jak idzie cel"
+        )
         content.sound = .default
         return content
     }

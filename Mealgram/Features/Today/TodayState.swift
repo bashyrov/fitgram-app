@@ -196,12 +196,31 @@ final class TodayState {
 
     private func publishWidgetSnapshot() {
         let lastMealName = meals.first?.items.first?.name ?? ""
+        // Up to 6 most-recent meals — `meals` is already sorted by
+        // `consumedAt` descending. Prefer the meal's "primary" name
+        // (first item) and round kcal to the nearest integer so the
+        // widget can format without re-rounding.
+        let recentMeals: [WidgetSnapshot.MealRow] = meals.prefix(6).map { entry in
+            WidgetSnapshot.MealRow(
+                name: entry.items.first?.name ?? String(localized: "Posiłek"),
+                kcal: Int(entry.totalCaloriesKcal.rounded())
+            )
+        }
         let snapshot = WidgetSnapshot(
             streakLength: streak?.currentLength ?? 0,
             calorieGoalKcal: calorieGoal,
             caloriesConsumedKcal: Int(totals.calories),
             lastMealName: lastMealName,
-            updatedAt: now()
+            updatedAt: now(),
+            proteinConsumedGrams: Int(totals.protein.rounded()),
+            proteinGoalGrams: user?.proteinGoalGrams ?? 0,
+            carbsConsumedGrams: Int(totals.carbs.rounded()),
+            carbsGoalGrams: user?.carbsGoalGrams ?? 0,
+            fatConsumedGrams: Int(totals.fat.rounded()),
+            fatGoalGrams: user?.fatGoalGrams ?? 0,
+            waterMl: waterTotalMl,
+            waterGoalMl: user?.waterGoalMl ?? 0,
+            recentMeals: recentMeals
         )
         WidgetSnapshotStore.shared.write(snapshot)
         WidgetCenter.shared.reloadAllTimelines()

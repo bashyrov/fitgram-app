@@ -10,17 +10,28 @@ struct NotificationPlanner {
         var morningGreeting: Bool
         var streakRisk: Bool
         var eveningSummary: Bool
+        var goalWeight: Bool
+        /// Hour (0–23) the goal-weight reminder fires at. Defaults to 9.
+        var goalWeightHour: Int
+        /// Minute (0–59) the goal-weight reminder fires at. Defaults to 0.
+        var goalWeightMinute: Int
 
         static let `default` = Preferences(
             morningGreeting: true,
             streakRisk: true,
-            eveningSummary: true
+            eveningSummary: true,
+            goalWeight: true,
+            goalWeightHour: 9,
+            goalWeightMinute: 0
         )
 
         static let allOff = Preferences(
             morningGreeting: false,
             streakRisk: false,
-            eveningSummary: false
+            eveningSummary: false,
+            goalWeight: false,
+            goalWeightHour: 9,
+            goalWeightMinute: 0
         )
     }
 
@@ -30,6 +41,13 @@ struct NotificationPlanner {
         var hasLoggedToday: Bool
         var calendar: Calendar
         var now: Date
+        /// True when the user has an active "lose" / "gain" goal *and*
+        /// the Premium entitlement that unlocks goal tracking. Drives the
+        /// goal-weight reminder gate.
+        var hasActiveGoal: Bool = false
+        /// True when the user has already entered a weigh-in for today
+        /// (any source). Silences the goal-weight reminder.
+        var hasLoggedGoalWeightToday: Bool = false
     }
 
     static func plan(_ context: Context) -> NotificationPlan {
@@ -52,6 +70,18 @@ struct NotificationPlanner {
         // gentle "look at your day" nudge.
         if context.preferences.eveningSummary {
             plan.eveningSummary = DateComponents(hour: 21, minute: 0)
+        }
+
+        // Goal weight reminder — gated on having an active goal + Premium
+        // (caller folds both into `hasActiveGoal`). Silenced once the
+        // user has already logged a weigh-in today.
+        if context.preferences.goalWeight,
+            context.hasActiveGoal,
+            !context.hasLoggedGoalWeightToday {
+            plan.goalWeight = DateComponents(
+                hour: context.preferences.goalWeightHour,
+                minute: context.preferences.goalWeightMinute
+            )
         }
 
         return plan

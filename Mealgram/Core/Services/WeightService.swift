@@ -23,14 +23,19 @@ final class WeightService {
 
     @discardableResult
     func log(
-        _ weightKg: Double, for userRemoteID: String, note: String? = nil, at date: Date = Date()
+        _ weightKg: Double,
+        for userRemoteID: String,
+        note: String? = nil,
+        at date: Date = Date(),
+        source: WeightEntrySource = .manual
     ) throws -> WeightEntry {
         let context = ModelContext(container)
         let entry = WeightEntry(
             userRemoteID: userRemoteID,
             recordedAt: date,
             weightKg: weightKg,
-            note: note
+            note: note,
+            source: source
         )
         context.insert(entry)
         // Mirror the latest weight onto the user profile so calorie-goal
@@ -45,6 +50,77 @@ final class WeightService {
         try context.save()
         Logger.persistence.notice("Logged weight \(weightKg, format: .fixed(precision: 1)) kg")
         return entry
+    }
+
+    /// Goal-Tracker contract: at most one entry per *calendar day* for a
+    /// given user. Re-tapping today's date *updates* the existing entry
+    /// instead of inserting a duplicate. Returns the persisted row.
+    @discardableResult
+    func logOrUpdateForDay(
+        _ weightKg: Double,
+        for userRemoteID: String,
+        note: String? = nil,
+        on date: Date = Date(),
+        source: WeightEntrySource = .goalTracker,
+        calendar: Calendar = .current
+    ) throws -> WeightEntry {
+        let dayStart = calendar.startOfDay(for: date)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+            return try log(weightKg, for: userRemoteID, note: note, at: date, source: source)
+        }
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<WeightEntry>(
+            predicate: #Predicate { entry in
+                entry.userRemoteID == userRemoteID
+                    && entry.recordedAt >= dayStart
+                    && entry.recordedAt < dayEnd
+            },
+            sortBy: [SortDescriptor(\WeightEntry.recordedAt, order: .reverse)]
+        )
+        if let existing = try context.fetch(descriptor).first {
+            existing.weightKg = weightKg
+            existing.recordedAt = date
+            let trimmed = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+            existing.note = (trimmed?.isEmpty == false) ? trimmed : nil
+            existing.source = source
+            let userDescriptor = FetchDescriptor<User>(
+                predicate: #Predicate { $0.remoteID == userRemoteID }
+            )
+            if let user = try context.fetch(userDescriptor).first {
+                user.weightKg = weightKg
+                user.updatedAt = Date()
+            }
+            try context.save()
+            Logger.persistence.notice(
+                "Updated goal weigh-in \(weightKg, format: .fixed(precision: 1)) kg"
+            )
+            return existing
+        }
+        return try log(weightKg, for: userRemoteID, note: note, at: date, source: source)
+    }
+
+    /// True iff a weigh-in (from any source) was recorded for the user on
+    /// the supplied calendar day. Used by the notification planner to
+    /// silence the goal-weight reminder once the user has already logged.
+    func hasEntry(
+        for userRemoteID: String,
+        on date: Date,
+        calendar: Calendar = .current
+    ) -> Bool {
+        let dayStart = calendar.startOfDay(for: date)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+            return false
+        }
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<WeightEntry>(
+            predicate: #Predicate { entry in
+                entry.userRemoteID == userRemoteID
+                    && entry.recordedAt >= dayStart
+                    && entry.recordedAt < dayEnd
+            }
+        )
+        let count = (try? context.fetchCount(descriptor)) ?? 0
+        return count > 0
     }
 
     /// Edits an existing weight entry in place. Re-fetches by id so the

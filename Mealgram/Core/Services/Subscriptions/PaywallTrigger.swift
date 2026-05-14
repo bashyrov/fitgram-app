@@ -17,6 +17,7 @@ enum PaywallTrigger: String, Equatable, Sendable {
     case exportZip = "export_zip"
     case themePicker = "theme_picker"
     case iCloudSync = "icloud_sync"
+    case goalTracking = "goal_tracking"
     case manual = "manual"
 }
 
@@ -97,6 +98,12 @@ extension PaywallTrigger {
                 headline: "Synchronizacja przez iCloud — Premium",
                 body: "Dane między telefonem a iPadem zawsze świeże. Premium włącza iCloud sync.",
                 badge: "Sync"
+            )
+        case .goalTracking:
+            return Copy(
+                headline: "Śledzenie celu — Premium",
+                body: "Codzienna waga, wykres trendu i przypomnienie. Premium odblokowuje pełne śledzenie postępu.",
+                badge: "Cel"
             )
         case .manual:
             return Copy(

@@ -97,9 +97,27 @@ struct MealgramApp: App {
         let weightService = WeightService(container: persistence.container)
         self.weightService = weightService
         self.friendService = InMemoryFriendService()
+        self.goalTrackingService = GoalTrackingService(
+            weightService: weightService,
+            container: persistence.container
+        )
+        // SubscriptionService is single-instance — declared up front so
+        // the NotificationCoordinator can read its `isPremium` snapshot
+        // when deciding whether to schedule the goal-weight reminder.
+        // Same `subscriptionService` is later threaded through the
+        // @State properties so the UI binding stays observable.
+        let subscriptionService = MockSubscriptionService()
         self.notificationCoordinator = NotificationCoordinator(
             scheduler: NotificationService(),
-            container: persistence.container
+            container: persistence.container,
+            weightService: weightService,
+            isGoalTrackingEligible: { [persistence] userRemoteID in
+                Self.isGoalTrackingEligible(
+                    container: persistence.container,
+                    userRemoteID: userRemoteID,
+                    isPremium: subscriptionService.snapshot.isPremium
+                )
+            }
         )
         let coachService = CoachService(
             container: persistence.container,

@@ -55,7 +55,8 @@ final class HealthImporter {
                 sample.kilograms,
                 for: userRemoteID,
                 note: "Apple Health",
-                at: sample.recordedAt
+                at: sample.recordedAt,
+                source: .appleHealth
             )
             inserted += 1
         }

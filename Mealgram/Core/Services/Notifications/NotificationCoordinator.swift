@@ -11,19 +11,28 @@ final class NotificationCoordinator {
     private let container: ModelContainer
     private let calendar: Calendar
     private let now: () -> Date
+    private let weightService: WeightService?
+    /// Returns `true` when the user has an active lose / gain goal *and*
+    /// is Premium. Injected as a closure so the coordinator doesn't have
+    /// to drag the EntitlementsStore (a SwiftUI Observable) into its API.
+    private let isGoalTrackingEligible: (String) -> Bool
 
     init(
         scheduler: any NotificationScheduling,
         preferencesStore: NotificationPreferencesStore = .init(),
         container: ModelContainer,
         calendar: Calendar = .current,
-        now: @escaping () -> Date = Date.init
+        now: @escaping () -> Date = Date.init,
+        weightService: WeightService? = nil,
+        isGoalTrackingEligible: @escaping (String) -> Bool = { _ in false }
     ) {
         self.scheduler = scheduler
         self.preferencesStore = preferencesStore
         self.container = container
         self.calendar = calendar
         self.now = now
+        self.weightService = weightService
+        self.isGoalTrackingEligible = isGoalTrackingEligible
     }
 
     /// Fires a one-off achievement-unlock alert so the user notices even
@@ -42,10 +51,17 @@ final class NotificationCoordinator {
                 preferences: preferencesStore.load(),
                 hasLoggedToday: hasLoggedToday(for: userRemoteID),
                 calendar: calendar,
-                now: now()
+                now: now(),
+                hasActiveGoal: isGoalTrackingEligible(userRemoteID),
+                hasLoggedGoalWeightToday: hasLoggedGoalWeightToday(for: userRemoteID)
             )
         )
         await scheduler.reschedule(plan: plan)
+    }
+
+    private func hasLoggedGoalWeightToday(for userRemoteID: String) -> Bool {
+        guard let weightService else { return false }
+        return weightService.hasEntry(for: userRemoteID, on: now(), calendar: calendar)
     }
 
     private func hasLoggedToday(for userRemoteID: String) -> Bool {
