@@ -15,6 +15,7 @@ struct FavoritesCarousel: View {
 
     @State private var favorites: [FavoriteMeal] = []
     @State private var pendingDelete: FavoriteMeal?
+    @State private var pendingAdd: FavoriteMeal?
 
     var body: some View {
         Group {
@@ -44,6 +45,16 @@ struct FavoritesCarousel: View {
                 reload()
             }
             Button("Anuluj", role: .cancel) { pendingDelete = nil }
+        }
+        .sheet(item: $pendingAdd) { favorite in
+            FavoritePortionSheet(
+                favorite: favorite,
+                onSave: { grams in
+                    pendingAdd = nil
+                    saveWithPortion(favorite, grams: grams)
+                },
+                onDismiss: { pendingAdd = nil }
+            )
         }
     }
 
@@ -112,8 +123,17 @@ struct FavoritesCarousel: View {
 
     // MARK: - Actions
 
+    /// Tap on a favourite raises the portion picker. The user confirms
+    /// (or adjusts) grams, then `saveWithPortion(_:grams:)` actually
+    /// commits the meal. Keeps the carousel-tap reversible until the
+    /// user explicitly hits "Dodaj".
     private func quickAdd(_ favorite: FavoriteMeal) {
-        let item = favorite.foodItem()
+        Haptics.light()
+        pendingAdd = favorite
+    }
+
+    private func saveWithPortion(_ favorite: FavoriteMeal, grams: Double) {
+        let item = favorite.foodItem(quantityGrams: grams)
         let meal = MealEntry(
             mealType: inferredMealType(),
             source: favorite.sourceHint,
@@ -126,7 +146,7 @@ struct FavoritesCarousel: View {
             onSaved()
             reload()
         } catch {
-            Logger.persistence.error("Favorite quick-add failed: \(String(describing: error))")
+            Logger.persistence.error("Favorite save failed: \(String(describing: error))")
         }
     }
 

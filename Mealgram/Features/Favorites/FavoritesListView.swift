@@ -17,6 +17,7 @@ struct FavoritesListView: View {
 
     @State private var favorites: [FavoriteMeal] = []
     @State private var pendingDelete: FavoriteMeal?
+    @State private var pendingAdd: FavoriteMeal?
 
     private var capLabel: String? {
         guard let cap = entitlementsStore.current.favoritesCap else { return nil }
@@ -76,6 +77,16 @@ struct FavoritesListView: View {
                     reload()
                 }
                 Button("Anuluj", role: .cancel) { pendingDelete = nil }
+            }
+            .sheet(item: $pendingAdd) { favorite in
+                FavoritePortionSheet(
+                    favorite: favorite,
+                    onSave: { grams in
+                        pendingAdd = nil
+                        saveWithPortion(favorite, grams: grams)
+                    },
+                    onDismiss: { pendingAdd = nil }
+                )
             }
         }
         .toastSurface()
@@ -236,8 +247,15 @@ struct FavoritesListView: View {
 
     // MARK: - Actions
 
+    /// Tap raises the portion picker. `saveWithPortion` commits once
+    /// the user hits "Dodaj" with their chosen grams.
     private func quickAdd(_ favorite: FavoriteMeal) {
-        let item = favorite.foodItem()
+        Haptics.light()
+        pendingAdd = favorite
+    }
+
+    private func saveWithPortion(_ favorite: FavoriteMeal, grams: Double) {
+        let item = favorite.foodItem(quantityGrams: grams)
         let meal = MealEntry(
             mealType: inferredMealType(),
             source: favorite.sourceHint,
@@ -249,7 +267,7 @@ struct FavoritesListView: View {
             Haptics.success()
             reload()
         } catch {
-            Logger.persistence.error("Favorite list quick-add failed: \(String(describing: error))")
+            Logger.persistence.error("Favorite list save failed: \(String(describing: error))")
         }
     }
 
