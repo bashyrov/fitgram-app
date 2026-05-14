@@ -187,6 +187,7 @@ final class UserProfileService: UserProfileServing {
         regenerateRecommendations(user: user)
         user.updatedAt = Date()
         try context.save()
+        NotificationCenter.default.post(name: AppShortcutAction.mainGoalChanged, object: nil)
     }
 
     func storeRecommendations(_ recommendations: Recommendations) throws {

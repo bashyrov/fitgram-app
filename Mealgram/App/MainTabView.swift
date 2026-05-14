@@ -310,6 +310,9 @@ struct MainTabView: View {
         .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.openRecipes)) { _ in
             isRecipesPresented = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.mainGoalChanged)) { _ in
+            goalTrackingState.refresh(for: authUser.id)
+        }
         .onContinueUserActivity(CSSearchableItemActionType) { _ in
             isRecipesPresented = true
         }

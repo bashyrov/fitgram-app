@@ -12,6 +12,10 @@ enum AppShortcutAction {
     /// content listens and scrolls itself to the top — matches the
     /// platform default behaviour of iOS apps with scroll views.
     static let scrollTodayToTop = Notification.Name("mealgram.tab.scrollTodayToTop")
+    /// Posted after the user saves a goal edit in Profile so observers
+    /// (e.g. GoalTrackingState on Today) can refetch their snapshot
+    /// without waiting for the user to re-enter the tab.
+    static let mainGoalChanged = Notification.Name("mealgram.profile.mainGoalChanged")
 }
 
 /// Open the app and raise the "Add meal" action sheet.

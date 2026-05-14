@@ -192,53 +192,159 @@ struct ProfileView: View {
 
     // MARK: - Sections
 
+    /// Hero identity strip: 80pt avatar in a gradient ring, big rounded
+    /// display name, email, and a tiny "member since" chip. Backdrop
+    /// has two subtle blurred colour blobs so the card reads as a hero
+    /// instead of yet another list row.
     private var identityCard: some View {
         Card(elevation: Tokens.Shadow.float) {
-            HStack(spacing: Tokens.Space.lg) {
-                if let user {
-                    AvatarPicker(user: user, store: AvatarStore(), size: 56)
-                } else {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
-                        .frame(width: 56, height: 56)
-                        .overlay(
-                            Text(initial)
-                                .font(Tokens.Font.title2)
-                                .foregroundStyle(Tokens.Palette.primary)
-                        )
+            ZStack {
+                identityBackdrop
+                HStack(spacing: Tokens.Space.lg) {
+                    avatarHero
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(displayName)
+                            .font(.system(size: 22, weight: .heavy, design: .rounded))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        Text(emailLine)
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                            .lineLimit(1)
+                        if let memberSince {
+                            HStack(spacing: 4) {
+                                Image(systemName: "leaf.fill")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundStyle(Tokens.Palette.success)
+                                Text(memberSince)
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(Tokens.Palette.success)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(
+                                Capsule().fill(Tokens.Palette.success.opacity(0.15))
+                            )
+                            .padding(.top, 2)
+                        }
+                    }
+                    Spacer(minLength: 0)
                 }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(displayName)
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(emailLine)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: 0)
             }
         }
     }
 
+    private var avatarHero: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Tokens.Palette.primary,
+                            Tokens.Palette.accent,
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 88, height: 88)
+                .blur(radius: 0)
+            if let user {
+                AvatarPicker(user: user, store: AvatarStore(), size: 78)
+            } else {
+                Circle()
+                    .fill(Tokens.Palette.surface)
+                    .frame(width: 78, height: 78)
+                    .overlay(
+                        Text(initial)
+                            .font(.system(size: 30, weight: .heavy, design: .rounded))
+                            .foregroundStyle(Tokens.Palette.primary)
+                    )
+            }
+        }
+        .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 14, y: 6)
+    }
+
+    private var identityBackdrop: some View {
+        ZStack {
+            Circle()
+                .fill(Tokens.Palette.primary.opacity(0.18))
+                .frame(width: 160, height: 160)
+                .blur(radius: 50)
+                .offset(x: -120, y: -40)
+            Circle()
+                .fill(Tokens.Palette.accent.opacity(0.20))
+                .frame(width: 180, height: 180)
+                .blur(radius: 60)
+                .offset(x: 130, y: 50)
+        }
+        .allowsHitTesting(false)
+    }
+
+    private var memberSince: String? {
+        guard let createdAt = user?.createdAt else { return nil }
+        let months = Calendar.current.dateComponents([.month], from: createdAt, to: Date()).month ?? 0
+        if months < 1 {
+            return String(localized: "Świeży użytkownik")
+        }
+        let formatted = createdAt.formatted(.dateTime.month(.wide).year())
+        return String(localized: "Z nami od \(formatted)")
+    }
+
+    /// Stats trio — Streak / Rekord / Freeze. Each tile carries its own
+    /// tint (warm for streak, accent for record, cool for freeze) so the
+    /// row reads like a dashboard instead of three identical cards.
     private var statsRow: some View {
         HStack(spacing: Tokens.Space.md) {
-            statCard(icon: "flame.fill", value: "\(streak?.currentLength ?? 0)", label: "Streak")
-            statCard(icon: "calendar", value: "\(streak?.longestLength ?? 0)", label: "Rekord")
-            statCard(icon: "snowflake", value: "\(streak?.freezesAvailable ?? 0)", label: "Freeze")
+            statCard(
+                icon: "flame.fill",
+                value: "\(streak?.currentLength ?? 0)",
+                label: "Streak",
+                tint: Tokens.Palette.warning
+            )
+            statCard(
+                icon: "trophy.fill",
+                value: "\(streak?.longestLength ?? 0)",
+                label: "Rekord",
+                tint: Tokens.Palette.accent
+            )
+            statCard(
+                icon: "snowflake",
+                value: "\(streak?.freezesAvailable ?? 0)",
+                label: "Freeze",
+                tint: Color(red: 0.42, green: 0.68, blue: 0.95)
+            )
         }
     }
 
-    private func statCard(icon: String, value: String, label: LocalizedStringKey) -> some View {
+    private func statCard(icon: String, value: String, label: LocalizedStringKey, tint: Color) -> some View {
         Card {
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .foregroundStyle(Tokens.Palette.primary)
+            VStack(spacing: 6) {
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [tint, tint.opacity(0.6)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 36, height: 36)
+                        .shadow(color: tint.opacity(0.35), radius: 6, y: 2)
+                    Image(systemName: icon)
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(.white)
+                }
                 Text(value)
-                    .font(Tokens.Font.title3)
+                    .font(.system(size: 22, weight: .heavy, design: .rounded))
                     .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
                 Text(label)
-                    .font(Tokens.Font.caption)
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Tokens.Palette.inkMuted)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
             }
             .frame(maxWidth: .infinity)
         }
