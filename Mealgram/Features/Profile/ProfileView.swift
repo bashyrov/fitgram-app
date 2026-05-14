@@ -360,46 +360,81 @@ struct ProfileView: View {
 
     private var preferencesSection: some View {
         Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader("Preferencje")
-                actionRow(symbol: "bell", title: preferencesRowTitle, role: nil) {
-                    isEditingPreferences = true
-                }
+            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
+                sectionHeader("Preferencje", symbol: "slider.horizontal.3", tint: Tokens.Palette.primary)
+                separator
+                actionRow(
+                    symbol: "bell.fill",
+                    title: preferencesRowTitle,
+                    role: nil,
+                    action: { isEditingPreferences = true },
+                    tint: Tokens.Palette.warning
+                )
                 .disabled(user == nil)
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "lock.shield.fill", title: privacyRowTitle, role: nil) {
-                    isPrivacyPresented = true
-                }
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "wand.and.stars", title: "Kalibracja AI", role: nil) {
-                    isCalibrating = true
-                }
+                separator
+                actionRow(
+                    symbol: "lock.shield.fill",
+                    title: privacyRowTitle,
+                    role: nil,
+                    action: { isPrivacyPresented = true },
+                    tint: Tokens.Palette.accent
+                )
+                separator
+                actionRow(
+                    symbol: "wand.and.stars",
+                    title: "Kalibracja AI",
+                    role: nil,
+                    action: { isCalibrating = true },
+                    tint: Tokens.Palette.primary
+                )
                 .disabled(user == nil)
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "scalemass.fill", title: "Waga i trend", role: nil) {
-                    isWeightLogPresented = true
-                }
+                separator
+                actionRow(
+                    symbol: "scalemass.fill",
+                    title: "Waga i trend",
+                    role: nil,
+                    action: { isWeightLogPresented = true },
+                    tint: Tokens.Palette.success
+                )
                 .disabled(user == nil)
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "flag.checkered", title: challengeRowTitle, role: nil) {
-                    refreshChallenges()
-                    isChallengesPresented = true
-                }
+                separator
+                actionRow(
+                    symbol: "flag.checkered",
+                    title: challengeRowTitle,
+                    role: nil,
+                    action: {
+                        refreshChallenges()
+                        isChallengesPresented = true
+                    },
+                    tint: Color(red: 0.45, green: 0.55, blue: 0.90)
+                )
                 .disabled(user == nil)
                 if (streak?.currentLength ?? 0) > 0 {
-                    Divider().background(Tokens.Palette.separator)
-                    actionRow(symbol: "square.and.arrow.up", title: "Udostępnij serię", role: nil) {
-                        isShareStreakPresented = true
-                    }
+                    separator
+                    actionRow(
+                        symbol: "square.and.arrow.up",
+                        title: "Udostępnij serię",
+                        role: nil,
+                        action: { isShareStreakPresented = true },
+                        tint: Tokens.Palette.warning
+                    )
                 }
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "calendar", title: "Historia serii", role: nil) {
-                    isStreakCalendarPresented = true
-                }
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "arrow.counterclockwise", title: "Powtórz onboarding", role: nil) {
-                    isRestartOnboardingConfirmed = true
-                }
+                separator
+                actionRow(
+                    symbol: "calendar",
+                    title: "Historia serii",
+                    role: nil,
+                    action: { isStreakCalendarPresented = true },
+                    tint: Tokens.Palette.accent
+                )
+                separator
+                actionRow(
+                    symbol: "arrow.counterclockwise",
+                    title: "Powtórz onboarding",
+                    role: nil,
+                    action: { isRestartOnboardingConfirmed = true },
+                    tint: Tokens.Palette.inkMuted
+                )
             }
         }
         .confirmationDialog(
@@ -439,34 +474,51 @@ struct ProfileView: View {
 
     private var dataSection: some View {
         Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader("Twoje dane")
+            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
+                sectionHeader("Twoje dane", symbol: "tray.full.fill", tint: Tokens.Palette.accent)
+                separator
                 actionRow(
                     symbol: "square.and.arrow.up",
                     title: isPreparingExport ? "Przygotowujemy…" : "Pobierz eksport JSON",
-                    role: nil
-                ) {
-                    Task { await runExport() }
-                }
+                    role: nil,
+                    action: { Task { await runExport() } },
+                    tint: Tokens.Palette.primary
+                )
                 .disabled(isPreparingExport || user == nil)
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "tablecells", title: "Eksport CSV (Excel)", role: nil) {
-                    isCSVRangePresented = true
-                }
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "archivebox", title: bundleRowTitle, role: nil) {
-                    runBundleExport()
-                }
+                separator
+                actionRow(
+                    symbol: "tablecells",
+                    title: "Eksport CSV (Excel)",
+                    role: nil,
+                    action: { isCSVRangePresented = true },
+                    tint: Tokens.Palette.success
+                )
+                separator
+                actionRow(
+                    symbol: "archivebox.fill",
+                    title: bundleRowTitle,
+                    role: nil,
+                    action: { runBundleExport() },
+                    tint: Tokens.Palette.warning
+                )
                 .disabled(isPreparingBundle || user == nil)
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "magnifyingglass", title: "Szukaj w historii", role: nil) {
-                    isSearchPresented = true
-                }
+                separator
+                actionRow(
+                    symbol: "magnifyingglass",
+                    title: "Szukaj w historii",
+                    role: nil,
+                    action: { isSearchPresented = true },
+                    tint: Tokens.Palette.accent
+                )
                 if photoStore != nil {
-                    Divider().background(Tokens.Palette.separator)
-                    actionRow(symbol: "photo.stack", title: photosRowTitle, role: nil) {
-                        runOrphanPhotoSweep()
-                    }
+                    separator
+                    actionRow(
+                        symbol: "photo.stack.fill",
+                        title: photosRowTitle,
+                        role: nil,
+                        action: { runOrphanPhotoSweep() },
+                        tint: Tokens.Palette.inkMuted
+                    )
                 }
             }
         }
@@ -547,18 +599,20 @@ struct ProfileView: View {
 
     private var legalSection: some View {
         Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader("Prawo i pomoc")
+            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
+                sectionHeader("Prawo i pomoc", symbol: "doc.text.fill", tint: Tokens.Palette.success)
+                separator
                 Button {
                     isHelpPresented = true
                 } label: {
-                    legalRow(symbol: "questionmark.circle", title: "Pomoc / FAQ")
+                    legalRow(symbol: "questionmark.circle.fill", title: "Pomoc / FAQ")
                 }
                 .buttonStyle(.plain)
+                separator
                 Button {
                     isLegalPresented = true
                 } label: {
-                    legalRow(symbol: "lock.shield", title: "Prawo i prywatność")
+                    legalRow(symbol: "lock.shield.fill", title: "Prawo i prywatność")
                 }
                 .buttonStyle(.plain)
             }
@@ -567,15 +621,22 @@ struct ProfileView: View {
 
     private var accountSection: some View {
         Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader("Konto")
+            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
+                sectionHeader("Konto", symbol: "person.crop.circle.fill", tint: Tokens.Palette.inkMuted)
+                separator
                 actionRow(
-                    symbol: "rectangle.portrait.and.arrow.right", title: "Wyloguj", role: .destructive,
-                    action: onSignOut)
-                Divider().background(Tokens.Palette.separator)
-                actionRow(symbol: "trash", title: "Usuń konto", role: .destructive) {
-                    deleteConfirmation = true
-                }
+                    symbol: "rectangle.portrait.and.arrow.right",
+                    title: "Wyloguj",
+                    role: .destructive,
+                    action: onSignOut
+                )
+                separator
+                actionRow(
+                    symbol: "trash.fill",
+                    title: "Usuń konto",
+                    role: .destructive,
+                    action: { deleteConfirmation = true }
+                )
             }
         }
     }
@@ -602,10 +663,37 @@ struct ProfileView: View {
 
     // MARK: - Helpers
 
-    private func sectionHeader(_ text: LocalizedStringKey) -> some View {
-        Text(text)
-            .font(Tokens.Font.headline)
-            .foregroundStyle(Tokens.Palette.ink)
+    /// Subtle inset divider — softer than full-bleed `Divider` since
+    /// the new tinted icon chips create their own visual breaks.
+    private var separator: some View {
+        Rectangle()
+            .fill(Tokens.Palette.separator)
+            .frame(height: 0.5)
+            .padding(.leading, 48)  // align with text under icon chip
+    }
+
+    private func sectionHeader(
+        _ text: LocalizedStringKey,
+        symbol: String? = nil,
+        tint: Color = Tokens.Palette.primary
+    ) -> some View {
+        HStack(spacing: Tokens.Space.sm) {
+            if let symbol {
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.18))
+                        .frame(width: 28, height: 28)
+                    Image(systemName: symbol)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(tint)
+                }
+            }
+            Text(text)
+                .font(Tokens.Font.headline)
+                .foregroundStyle(Tokens.Palette.ink)
+            Spacer()
+        }
+        .padding(.bottom, 2)
     }
 
     private func goalRow(label: LocalizedStringKey, value: LocalizedStringKey) -> some View {
@@ -624,35 +712,62 @@ struct ProfileView: View {
         symbol: String,
         title: LocalizedStringKey,
         role: ButtonRole?,
-        action: @escaping () -> Void
+        action: @escaping () -> Void,
+        tint: Color? = nil,
+        subtitle: LocalizedStringKey? = nil
     ) -> some View {
-        Button(role: role, action: action) {
+        let resolvedTint = role == .destructive
+            ? Tokens.Palette.error
+            : (tint ?? Tokens.Palette.primary)
+        return Button(role: role, action: action) {
             HStack(spacing: Tokens.Space.md) {
-                Image(systemName: symbol)
-                    .frame(width: 22)
-                    .foregroundStyle(role == .destructive ? Tokens.Palette.error : Tokens.Palette.primary)
-                Text(title)
-                    .font(Tokens.Font.body)
+                ZStack {
+                    Circle()
+                        .fill(resolvedTint.opacity(0.15))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: symbol)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(resolvedTint)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(Tokens.Font.body)
+                        .foregroundStyle(role == .destructive ? Tokens.Palette.error : Tokens.Palette.ink)
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    }
+                }
                 Spacer()
                 Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
-            .foregroundStyle(role == .destructive ? Tokens.Palette.error : Tokens.Palette.ink)
+            .padding(.vertical, 6)
         }
+        .buttonStyle(.plain)
     }
 
     private func legalRow(symbol: String, title: LocalizedStringKey) -> some View {
         HStack(spacing: Tokens.Space.md) {
-            Image(systemName: symbol)
-                .frame(width: 22)
-                .foregroundStyle(Tokens.Palette.primary)
+            ZStack {
+                Circle()
+                    .fill(Tokens.Palette.primary.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                Image(systemName: symbol)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.primary)
+            }
             Text(title)
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.ink)
             Spacer()
             Image(systemName: "arrow.up.right")
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Tokens.Palette.inkSubtle)
         }
+        .padding(.vertical, 6)
     }
 
     private var displayName: String {
