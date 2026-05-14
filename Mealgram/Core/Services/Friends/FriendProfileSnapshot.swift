@@ -77,4 +77,17 @@ enum PositiveReactionIntent: String, Sendable, CaseIterable {
         case .congratulate: return "rosette"
         }
     }
+
+    var toastTitle: String {
+        switch self {
+        case .encourage: return "Zachęta poszła!"
+        case .celebrate: return "Gratulacje wysłane!"
+        case .congratulate: return "Brawo wysłane!"
+        }
+    }
+
+    func toastSubtitle(name: String?) -> String? {
+        guard let name, !name.isEmpty else { return nil }
+        return "\(name) zaraz dostanie powiadomienie."
+    }
 }

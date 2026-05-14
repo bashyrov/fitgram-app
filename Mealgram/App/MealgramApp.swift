@@ -41,6 +41,7 @@ struct MealgramApp: App {
     @State private var entitlementsStore: EntitlementsStore
     @State private var usageMeter: UsageMeter
     @State private var paywallCoordinator: PaywallCoordinator
+    @State private var toastCenter: ToastCenter
     private let favoritesService: FavoritesService
 
     // swiftlint:disable function_body_length
@@ -154,6 +155,7 @@ struct MealgramApp: App {
         self._entitlementsStore = State(initialValue: entitlementsStore)
         self._usageMeter = State(initialValue: UsageMeter())
         self._paywallCoordinator = State(initialValue: PaywallCoordinator())
+        self._toastCenter = State(initialValue: ToastCenter())
         self.favoritesService = favoritesService
         let seeder = FoodSeeder(container: persistence.container)
         self.foodSeeder = seeder
@@ -215,12 +217,14 @@ struct MealgramApp: App {
                 entitlementsStore: entitlementsStore,
                 usageMeter: usageMeter,
                 paywallCoordinator: paywallCoordinator,
-                favoritesService: favoritesService
+                favoritesService: favoritesService,
+                toastCenter: toastCenter
             )
             .environment(session)
             .environment(entitlementsStore)
             .environment(usageMeter)
             .environment(paywallCoordinator)
+            .environment(toastCenter)
             .modelContainer(persistenceController.container)
             .tint(Tokens.Palette.primary)
         }

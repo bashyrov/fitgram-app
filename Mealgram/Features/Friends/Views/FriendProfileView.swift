@@ -16,12 +16,13 @@ struct FriendProfileView: View {
     /// their own library.
     var onCopyRecipe: ((PublicRecipeReference) -> Void)?
 
+    @Environment(ToastCenter.self) private var toasts
+
     @State private var snapshot: FriendProfileSnapshot?
     @State private var isLoading: Bool = true
     @State private var loadError: String?
     @State private var activeTab: Tab = .achievements
     @State private var isReactionMenuOpen: Bool = false
-    @State private var feedback: String?
     @State private var isReportPresented: Bool = false
     @State private var reportReason: String = ""
     @State private var isBlockConfirmed: Bool = false
@@ -139,9 +140,6 @@ struct FriendProfileView: View {
                     case .recipes: recipesTab(snapshot)
                     case .activity: activityTab(snapshot)
                     }
-                }
-                if let feedback {
-                    feedbackCard(feedback)
                 }
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
@@ -652,7 +650,7 @@ struct FriendProfileView: View {
             if let onCopyRecipe {
                 Button {
                     onCopyRecipe(recipe)
-                    feedback = "Zapisano do mojej książki."
+                    toasts.success("Zapisano do mojej książki", message: recipe.name)
                 } label: {
                     Image(systemName: "tray.and.arrow.down.fill")
                         .font(.system(size: 16, weight: .semibold))
@@ -743,22 +741,6 @@ struct FriendProfileView: View {
         .padding(.vertical, Tokens.Space.xxl)
     }
 
-    private func feedbackCard(_ text: String) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(Tokens.Palette.primary)
-            Text(text)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-        }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.primarySoft)
-        )
-    }
-
     private var fallback: some View {
         VStack(spacing: Tokens.Space.md) {
             ZStack {
@@ -840,10 +822,10 @@ struct FriendProfileView: View {
     private func send(intent: PositiveReactionIntent) async {
         do {
             try await service.sendPositiveReaction(to: userID, from: viewerID, intent: intent)
-            feedback = "Wysłano: \(intent.label)"
+            toasts.success(intent.toastTitle, message: intent.toastSubtitle(name: snapshot?.displayName))
             Haptics.success()
         } catch {
-            feedback = "Nie udało się wysłać."
+            toasts.error("Nie udało się wysłać", message: "Spróbuj jeszcze raz za chwilę.")
         }
     }
 
@@ -857,7 +839,7 @@ struct FriendProfileView: View {
         try? await service.report(userID, reason: reportReason, as: viewerID)
         Haptics.success()
         isReportPresented = false
-        feedback = "Zgłoszenie wysłane."
+        toasts.info("Zgłoszenie wysłane", message: "Dzięki, nasz zespół moderacji się tym zajmie.")
         reportReason = ""
     }
 }

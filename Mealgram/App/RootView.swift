@@ -40,6 +40,7 @@ struct RootView: View {
     let usageMeter: UsageMeter
     let paywallCoordinator: PaywallCoordinator
     let favoritesService: FavoritesService
+    let toastCenter: ToastCenter
 
     @State private var router: AppRouter
     @State private var onboardingFlow: OnboardingFlow?
@@ -79,7 +80,8 @@ struct RootView: View {
         entitlementsStore: EntitlementsStore,
         usageMeter: UsageMeter,
         paywallCoordinator: PaywallCoordinator,
-        favoritesService: FavoritesService
+        favoritesService: FavoritesService,
+        toastCenter: ToastCenter
     ) {
         self.authService = authService
         self.userRepository = userRepository
@@ -116,6 +118,7 @@ struct RootView: View {
         self.usageMeter = usageMeter
         self.paywallCoordinator = paywallCoordinator
         self.favoritesService = favoritesService
+        self.toastCenter = toastCenter
         self._router = State(initialValue: AppRouter(userRepository: userRepository))
     }
 
@@ -128,6 +131,9 @@ struct RootView: View {
     var body: some View {
         rootContent
             .preferredColorScheme(themePreference.colorScheme)
+            .overlay(alignment: .top) {
+                ToastOverlay(center: toastCenter)
+            }
             .sheet(
                 isPresented: Binding(
                     get: { paywallCoordinator.activeTrigger != nil },
