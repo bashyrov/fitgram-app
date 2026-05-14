@@ -87,6 +87,16 @@ struct TodayView: View {
                             fatGoal: state.user?.fatGoalGrams ?? 70
                         )
 
+                        if state.isViewingToday,
+                            let user = state.user,
+                            let data = user.latestRecommendationsJSON,
+                            let recs = try? JSONDecoder().decode(Recommendations.self, from: data) {
+                            OlaInsightsHero(
+                                recommendations: recs,
+                                lastUpdated: user.recommendationsGeneratedAt
+                            )
+                        }
+
                         if state.isViewingToday {
                             WaterCard(
                                 totalMilliliters: state.waterTotalMl,

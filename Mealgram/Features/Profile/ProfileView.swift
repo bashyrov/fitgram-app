@@ -110,7 +110,6 @@ struct ProfileView: View {
                                 section: .profileData
                             )
                         }
-                        recommendationsCard
                         preferencesSection
                         dataSection
                         legalSection
@@ -345,14 +344,6 @@ struct ProfileView: View {
                 }
             }
             .buttonStyle(.plain)
-        }
-    }
-
-    @ViewBuilder
-    private var recommendationsCard: some View {
-        if let user, let data = user.latestRecommendationsJSON,
-            let rec = try? JSONDecoder().decode(Recommendations.self, from: data) {
-            OlaInsightsCard(recommendations: rec, lastUpdated: user.recommendationsGeneratedAt)
         }
     }
 
