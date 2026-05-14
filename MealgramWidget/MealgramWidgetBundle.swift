@@ -5,5 +5,8 @@ import WidgetKit
 struct MealgramWidgetBundle: WidgetBundle {
     var body: some Widget {
         StreakWidget()
+        CalorieRingWidget()
+        WaterWidget()
+        TodayMealsWidget()
     }
 }
