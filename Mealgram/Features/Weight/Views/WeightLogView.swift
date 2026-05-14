@@ -449,11 +449,11 @@ struct WeightLogView: View {
 
     private static func statusMessage(for result: HealthImporter.ImportResult) -> String {
         switch result {
-        case .unavailable: return "Apple Health niedostępne na tym urządzeniu."
-        case .denied: return "Brak zgody na dostęp do wagi z Apple Health."
-        case .imported(let count): return "Zaimportowano \(count) wpisów."
-        case .noNewSamples: return "Brak nowych wpisów."
-        case .failed(let reason): return "Nie udało się zaimportować: \(reason)"
+        case .unavailable: return String(localized: "Apple Health niedostępne na tym urządzeniu.")
+        case .denied: return String(localized: "Brak zgody na dostęp do wagi z Apple Health.")
+        case .imported(let count): return String(localized: "Zaimportowano \(count) wpisów.")
+        case .noNewSamples: return String(localized: "Brak nowych wpisów.")
+        case .failed(let reason): return String(localized: "Nie udało się zaimportować: \(reason)")
         }
     }
 }

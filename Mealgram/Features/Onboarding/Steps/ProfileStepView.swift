@@ -235,21 +235,21 @@ struct ProfileStepView: View {
 extension ActivityLevel {
     fileprivate var label: String {
         switch self {
-        case .sedentary: return "Siedzący tryb"
-        case .light: return "Lekka aktywność"
-        case .moderate: return "Umiarkowana"
-        case .active: return "Aktywny tryb"
-        case .veryActive: return "Bardzo aktywny"
+        case .sedentary: return String(localized: "Siedzący tryb")
+        case .light: return String(localized: "Lekka aktywność")
+        case .moderate: return String(localized: "Umiarkowana")
+        case .active: return String(localized: "Aktywny tryb")
+        case .veryActive: return String(localized: "Bardzo aktywny")
         }
     }
 
     fileprivate var subtitle: String {
         switch self {
-        case .sedentary: return "Praca biurowa, mało ruchu"
+        case .sedentary: return String(localized: "Praca biurowa, mało ruchu")
         case .light: return "1–2 lekkie treningi w tygodniu"
         case .moderate: return "3–4 treningi w tygodniu"
-        case .active: return "5+ treningów w tygodniu"
-        case .veryActive: return "Trening dwa razy dziennie"
+        case .active: return String(localized: "5+ treningów w tygodniu")
+        case .veryActive: return String(localized: "Trening dwa razy dziennie")
         }
     }
 

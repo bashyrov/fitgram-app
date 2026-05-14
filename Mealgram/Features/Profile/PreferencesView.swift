@@ -171,8 +171,8 @@ enum LanguageOption: String, CaseIterable, Hashable {
 
     var label: String {
         switch self {
-        case .polish: return "Polski"
-        case .english: return "English"
+        case .polish: return String(localized: "Polski")
+        case .english: return String(localized: "English")
         case .ukrainian: return "Українська"
         }
     }

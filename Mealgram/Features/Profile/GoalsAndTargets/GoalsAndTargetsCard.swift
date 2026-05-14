@@ -155,9 +155,9 @@ struct GoalsAndTargetsCard: View {
                     .replacingOccurrences(of: ".", with: ",")
             }
             return "Nabrać masy"
-        case .maintain: return "Utrzymać wagę"
-        case .healthCondition: return "Cel zdrowotny"
-        case .justTracking: return "Bez celu, tylko śledzenie"
+        case .maintain: return String(localized: "Utrzymać wagę")
+        case .healthCondition: return String(localized: "Cel zdrowotny")
+        case .justTracking: return String(localized: "Bez celu, tylko śledzenie")
         }
     }
 
@@ -596,9 +596,9 @@ struct GoalsAndTargetsCard: View {
 
     private var sexLabel: String {
         switch user.biologicalSex {
-        case .male: return "Mężczyzna"
-        case .female: return "Kobieta"
-        case .undisclosed: return "Wolę nie podawać"
+        case .male: return String(localized: "Mężczyzna")
+        case .female: return String(localized: "Kobieta")
+        case .undisclosed: return String(localized: "Wolę nie podawać")
         }
     }
 
@@ -610,11 +610,11 @@ struct GoalsAndTargetsCard: View {
 
     private var activityLabel: String {
         switch user.activityLevel {
-        case .sedentary: return "Siedzący"
-        case .light: return "Lekko aktywny"
-        case .moderate: return "Umiarkowany"
-        case .active: return "Aktywny"
-        case .veryActive: return "Bardzo aktywny"
+        case .sedentary: return String(localized: "Siedzący")
+        case .light: return String(localized: "Lekko aktywny")
+        case .moderate: return String(localized: "Umiarkowany")
+        case .active: return String(localized: "Aktywny")
+        case .veryActive: return String(localized: "Bardzo aktywny")
         }
     }
 

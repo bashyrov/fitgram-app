@@ -25,17 +25,19 @@ final class GoalTrackingService {
         self.now = now
     }
 
+    /// Single weigh-in point for charting. Lives at module scope to
+    /// satisfy SwiftLint's max-nesting rule.
+    struct WeighInPoint: Sendable, Equatable, Identifiable {
+        let id: UUID
+        let date: Date
+        let weightKg: Double
+    }
+
     /// Captures the user-facing state the GoalTrackingView needs in a
     /// single sendable struct. Pure values — no SwiftData @Model leaks
     /// out, so the view layer can hold this snapshot across refreshes
     /// without worrying about context isolation.
     struct Snapshot: Sendable, Equatable {
-        struct Point: Sendable, Equatable, Identifiable {
-            let id: UUID
-            let date: Date
-            let weightKg: Double
-        }
-
         let goalKind: GoalKind
         let startWeightKg: Double
         let currentWeightKg: Double
@@ -46,7 +48,7 @@ final class GoalTrackingService {
         /// Days between start and estimatedEndDate (inclusive of start).
         /// Nil when estimatedEndDate is missing.
         let totalDays: Int?
-        let entries: [Point]
+        let entries: [WeighInPoint]
         let isGoalReached: Bool
 
         /// 0.0 → 1.0 progress towards target. Distance covered ÷ distance
@@ -70,7 +72,7 @@ final class GoalTrackingService {
 
         /// Last 14 days of weigh-ins for the sparkline on the Today
         /// card. Sorted oldest → newest.
-        var last14Days: [Point] {
+        var last14Days: [WeighInPoint] {
             let calendar = Calendar.current
             guard let cutoff = calendar.date(byAdding: .day, value: -14, to: Date()) else {
                 return entries
@@ -131,7 +133,7 @@ final class GoalTrackingService {
         let points = goalEntries
             .sorted(by: { $0.recordedAt < $1.recordedAt })
             .map { entry in
-                Snapshot.Point(
+                WeighInPoint(
                     id: entry.id,
                     date: entry.recordedAt,
                     weightKg: entry.weightKg

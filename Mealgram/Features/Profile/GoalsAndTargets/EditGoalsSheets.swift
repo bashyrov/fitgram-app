@@ -186,21 +186,21 @@ struct EditActivitySheet: View {
 
     private func title(for level: ActivityLevel) -> String {
         switch level {
-        case .sedentary: return "Siedzący"
-        case .light: return "Lekko aktywny"
-        case .moderate: return "Umiarkowanie aktywny"
-        case .active: return "Aktywny"
-        case .veryActive: return "Bardzo aktywny"
+        case .sedentary: return String(localized: "Siedzący")
+        case .light: return String(localized: "Lekko aktywny")
+        case .moderate: return String(localized: "Umiarkowanie aktywny")
+        case .active: return String(localized: "Aktywny")
+        case .veryActive: return String(localized: "Bardzo aktywny")
         }
     }
 
     private func subtitle(for level: ActivityLevel) -> String {
         switch level {
-        case .sedentary: return "Biuro, niewiele ruchu"
-        case .light: return "Ćwiczenia 1-3× w tygodniu"
-        case .moderate: return "Ćwiczenia 3-5× w tygodniu"
-        case .active: return "Treningi 5-6× w tygodniu"
-        case .veryActive: return "Intensywne 6-7× w tygodniu"
+        case .sedentary: return String(localized: "Biuro, niewiele ruchu")
+        case .light: return String(localized: "Ćwiczenia 1-3× w tygodniu")
+        case .moderate: return String(localized: "Ćwiczenia 3-5× w tygodniu")
+        case .active: return String(localized: "Treningi 5-6× w tygodniu")
+        case .veryActive: return String(localized: "Intensywne 6-7× w tygodniu")
         }
     }
 }
@@ -705,21 +705,21 @@ struct EditMainGoalSheet: View {
 
     private func title(for goal: GoalKind) -> String {
         switch goal {
-        case .lose: return "Schudnąć"
-        case .gain: return "Nabrać masy"
-        case .maintain: return "Utrzymać wagę"
-        case .healthCondition: return "Cel zdrowotny"
-        case .justTracking: return "Tylko śledzenie"
+        case .lose: return String(localized: "Schudnąć")
+        case .gain: return String(localized: "Nabrać masy")
+        case .maintain: return String(localized: "Utrzymać wagę")
+        case .healthCondition: return String(localized: "Cel zdrowotny")
+        case .justTracking: return String(localized: "Tylko śledzenie")
         }
     }
 
     private func subtitle(for goal: GoalKind) -> String {
         switch goal {
-        case .lose: return "Łagodny deficyt"
-        case .gain: return "Większa porcja energii"
-        case .maintain: return "Bez zmiany masy"
-        case .healthCondition: return "Plan zdrowotny / dietetyk"
-        case .justTracking: return "Po prostu loguj"
+        case .lose: return String(localized: "Łagodny deficyt")
+        case .gain: return String(localized: "Większa porcja energii")
+        case .maintain: return String(localized: "Bez zmiany masy")
+        case .healthCondition: return String(localized: "Plan zdrowotny / dietetyk")
+        case .justTracking: return String(localized: "Po prostu loguj")
         }
     }
 }
