@@ -1,98 +1,138 @@
 import SwiftUI
 
-/// Hero card — calories so far today, remaining, and a soft progress ring.
+/// Editorial hero — full-width charcoal block with a giant serif number
+/// and a horizontal progress lozenge. The ring is gone; in its place a
+/// magazine-style stat layout that reads at glance: consumed / goal /
+/// remaining in three vertical columns.
 struct CalorieProgressCard: View {
     let consumed: Double
     let goal: Int
     let progress: Double
     var onTapGoal: (() -> Void)?
 
-    private var goalHit: Bool {
-        progress >= 1.0
-    }
+    private var goalHit: Bool { progress >= 1.0 }
+    private var overShoot: Bool { progress >= 1.2 }
+    private var remaining: Int { max(0, goal - Int(consumed)) }
 
-    private var ringColor: Color {
-        if progress >= 1.2 { return Tokens.Palette.error }
+    private var fillColor: Color {
+        if overShoot { return Tokens.Palette.error }
         if goalHit { return Tokens.Palette.warning }
         return Tokens.Palette.primary
     }
 
     var body: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            HStack(alignment: .center, spacing: Tokens.Space.lg) {
-                ZStack {
-                    Circle()
-                        .stroke(Tokens.Palette.surfaceMuted, lineWidth: 12)
-                    Circle()
-                        .trim(from: 0, to: max(0.001, min(1.0, progress)))
-                        .stroke(
-                            ringColor,
-                            style: StrokeStyle(lineWidth: 12, lineCap: .round)
-                        )
-                        .rotationEffect(.degrees(-90))
-                        .animation(Tokens.Motion.gentle, value: progress)
-                    VStack(spacing: 0) {
-                        Text("\(Int(consumed))")
-                            .font(Tokens.Font.counter)
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                        Text(goalHit ? "✓ \(goal) kcal" : "/ \(goal) kcal")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(goalHit ? Tokens.Palette.warning : Tokens.Palette.inkMuted)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                    }
-                    .padding(.horizontal, 18)
-                }
-                .frame(width: 156, height: 156)
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(Text("Pierścień kalorii"))
-                .accessibilityValue(
-                    Text(
-                        "\(Int(consumed)) z \(goal) kilokalorii, \(Int((progress * 100).rounded())) procent"
-                    )
+        VStack(alignment: .leading, spacing: 0) {
+            header
+            heroNumber
+            progressTrack
+            statsRow
+        }
+        .padding(Tokens.Space.xl)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
+                    .fill(Tokens.Palette.ink)
+                LinearGradient(
+                    colors: [
+                        Tokens.Palette.primary.opacity(0.18),
+                        Tokens.Palette.primary.opacity(0.0),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
                 )
-
-                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                    summaryRow(label: "Spożyte", value: "\(Int(consumed)) kcal", color: Tokens.Palette.primary)
-                    if let onTapGoal {
-                        Button {
-                            onTapGoal()
-                        } label: {
-                            summaryRow(
-                                label: "Cel — stuknij, aby zmienić",
-                                value: "\(goal) kcal",
-                                color: Tokens.Palette.primary
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        summaryRow(label: "Cel", value: "\(goal) kcal", color: Tokens.Palette.inkMuted)
-                    }
-                    summaryRow(
-                        label: "Pozostało",
-                        value: "\(max(0, goal - Int(consumed))) kcal",
-                        color: Tokens.Palette.ink
-                    )
-                }
-                Spacer(minLength: 0)
+                .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
             }
+        )
+    }
+
+    private var header: some View {
+        HStack {
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(fillColor)
+                    .frame(width: 6, height: 6)
+                Text("Dzisiaj")
+                    .eyebrowStyle()
+                    .foregroundStyle(Tokens.Palette.background.opacity(0.7))
+            }
+            Spacer()
+            Text("\(Int(progress * 100))%")
+                .font(.system(size: 13, weight: .semibold, design: .default))
+                .foregroundStyle(Tokens.Palette.background.opacity(0.8))
+        }
+        .padding(.bottom, Tokens.Space.lg)
+    }
+
+    private var heroNumber: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text("\(Int(consumed))")
+                .font(.system(size: 76, weight: .black, design: .serif))
+                .foregroundStyle(Tokens.Palette.background)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+            Text("kcal")
+                .font(.system(size: 18, weight: .medium, design: .default))
+                .foregroundStyle(Tokens.Palette.background.opacity(0.55))
+        }
+        .padding(.bottom, Tokens.Space.md)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("Spożyte \(Int(consumed)) kilokalorii"))
+    }
+
+    private var progressTrack: some View {
+        ZStack(alignment: .leading) {
+            Capsule()
+                .fill(Tokens.Palette.background.opacity(0.12))
+                .frame(height: 8)
+            GeometryReader { geo in
+                Capsule()
+                    .fill(fillColor)
+                    .frame(width: max(8, geo.size.width * CGFloat(min(progress, 1.2))))
+            }
+            .frame(height: 8)
+        }
+        .padding(.bottom, Tokens.Space.lg)
+    }
+
+    private var statsRow: some View {
+        HStack(spacing: 0) {
+            statColumn(label: "Cel", value: "\(goal)", emphasis: false)
+                .onTapGesture { onTapGoal?() }
+            divider
+            statColumn(
+                label: goalHit ? "Nadwyżka" : "Pozostało",
+                value: goalHit ? "+\(Int(consumed) - goal)" : "\(remaining)",
+                emphasis: false
+            )
+            divider
+            statColumn(
+                label: "Spożyte",
+                value: "\(Int(consumed))",
+                emphasis: true
+            )
         }
     }
 
-    private func summaryRow(
-        label: LocalizedStringKey,
-        value: LocalizedStringKey,
-        color: Color
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+    private var divider: some View {
+        Rectangle()
+            .fill(Tokens.Palette.background.opacity(0.16))
+            .frame(width: 1)
+            .padding(.vertical, 4)
+    }
+
+    private func statColumn(label: LocalizedStringKey, value: String, emphasis: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .eyebrowStyle()
+                .foregroundStyle(Tokens.Palette.background.opacity(0.55))
             Text(value)
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(color)
+                .font(.system(size: 22, weight: emphasis ? .heavy : .semibold, design: .serif))
+                .foregroundStyle(Tokens.Palette.background)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Tokens.Space.md)
     }
 }
