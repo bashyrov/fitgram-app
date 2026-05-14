@@ -13,6 +13,19 @@ struct PreferencesView: View {
     @AppStorage("preferences.morningReminderEnabled") private var morningEnabled = true
     @AppStorage("preferences.streakRiskEnabled") private var streakRiskEnabled = true
     @AppStorage("preferences.eveningReminderEnabled") private var eveningEnabled = true
+    @AppStorage("preferences.goalWeightReminderEnabled") private var goalWeightEnabled = true
+    @AppStorage("preferences.goalWeightReminderHour") private var goalWeightHour = 9
+    @AppStorage("preferences.goalWeightReminderMinute") private var goalWeightMinute = 0
+
+    private var goalReminderDate: Date {
+        let comps = DateComponents(hour: goalWeightHour, minute: goalWeightMinute)
+        return Calendar.current.date(from: comps) ?? Date()
+    }
+
+    private var goalWeightToggleLabel: String {
+        let formatted = String(format: "%02d:%02d", goalWeightHour, goalWeightMinute)
+        return String(localized: "Przypomnienie o wadze celu (\(formatted))")
+    }
     @AppStorage("preferences.usesMetric") private var usesMetric = true
     @AppStorage("preferences.friend.requestReceivedEnabled") private var friendRequestEnabled = true
     @AppStorage("preferences.friend.requestAcceptedEnabled") private var friendAcceptedEnabled = true
@@ -58,6 +71,24 @@ struct PreferencesView: View {
                                 Toggle("Poranny budzik 8:00", isOn: $morningEnabled)
                                 Toggle("Seria zagrożona 20:30", isOn: $streakRiskEnabled)
                                 Toggle("Wieczorne podsumowanie 21:00", isOn: $eveningEnabled)
+                                Toggle(goalWeightToggleLabel, isOn: $goalWeightEnabled)
+                                if goalWeightEnabled {
+                                    DatePicker(
+                                        "Godzina przypomnienia",
+                                        selection: Binding(
+                                            get: { goalReminderDate },
+                                            set: { newValue in
+                                                let comps = Calendar.current.dateComponents(
+                                                    [.hour, .minute], from: newValue
+                                                )
+                                                goalWeightHour = comps.hour ?? 9
+                                                goalWeightMinute = comps.minute ?? 0
+                                            }
+                                        ),
+                                        displayedComponents: .hourAndMinute
+                                    )
+                                    .datePickerStyle(.compact)
+                                }
                             }
                         }
 

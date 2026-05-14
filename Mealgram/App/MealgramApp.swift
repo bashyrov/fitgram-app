@@ -27,6 +27,7 @@ struct MealgramApp: App {
     private let mealRepository: MealRepository
     private let photoStore: MealPhotoStore?
     private let weightService: WeightService
+    private let goalTrackingService: GoalTrackingService
     private let heatmapService: ActivityHeatmapService
     private let challengeService: ChallengeService
     private let statsService: ProfileStatsService
@@ -161,7 +162,6 @@ struct MealgramApp: App {
             fallback: RuleBasedRecommendationsService()
         )
         self._privacyStore = State(initialValue: PrivacyStore())
-        let subscriptionService = MockSubscriptionService()
         self._subscriptionService = State(initialValue: subscriptionService)
         let entitlementsStore = EntitlementsStore(subscriptionService: subscriptionService)
         let favoritesService = FavoritesService(container: persistence.container)
@@ -198,6 +198,26 @@ struct MealgramApp: App {
     }
     // swiftlint:enable function_body_length
 
+    /// Free-function predicate evaluated by the NotificationCoordinator.
+    /// True iff the named user has an active "lose" / "gain" goal (with
+    /// a target weight + start date set) AND the supplied Premium flag
+    /// is on.
+    @MainActor
+    private static func isGoalTrackingEligible(
+        container: ModelContainer,
+        userRemoteID: String,
+        isPremium: Bool
+    ) -> Bool {
+        guard isPremium else { return false }
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<User>(
+            predicate: #Predicate { $0.remoteID == userRemoteID }
+        )
+        guard let user = try? context.fetch(descriptor).first else { return false }
+        guard user.goalKind == .lose || user.goalKind == .gain else { return false }
+        return user.goalStartDate != nil && user.goalTargetWeightKg != nil
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView(
@@ -220,6 +240,7 @@ struct MealgramApp: App {
                 mealRepository: mealRepository,
                 photoStore: photoStore,
                 weightService: weightService,
+                goalTrackingService: goalTrackingService,
                 heatmapService: heatmapService,
                 challengeService: challengeService,
                 statsService: statsService,

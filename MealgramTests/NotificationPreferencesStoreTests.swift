@@ -34,4 +34,15 @@ final class NotificationPreferencesStoreTests: XCTestCase {
         store.save(.allOff)
         XCTAssertEqual(store.load(), .allOff)
     }
+
+    func testGoalWeightTimeRoundTrips() {
+        let store = NotificationPreferencesStore(defaults: defaults)
+        var prefs = NotificationPlanner.Preferences.default
+        prefs.goalWeightHour = 7
+        prefs.goalWeightMinute = 45
+        store.save(prefs)
+        let loaded = store.load()
+        XCTAssertEqual(loaded.goalWeightHour, 7)
+        XCTAssertEqual(loaded.goalWeightMinute, 45)
+    }
 }

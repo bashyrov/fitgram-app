@@ -55,6 +55,7 @@ final class NotificationPlannerTests: XCTestCase {
             )
         )
         XCTAssertEqual(plan, .empty)
+        XCTAssertNil(plan.goalWeight)
     }
 
     func testIndividualOptOutOnlyDropsThatChannel() {
@@ -71,6 +72,65 @@ final class NotificationPlannerTests: XCTestCase {
         XCTAssertNotNil(plan.morningGreeting)
         XCTAssertNil(plan.streakRisk)
         XCTAssertNotNil(plan.eveningSummary)
+    }
+
+    func testGoalWeightFiresWhenActiveGoalAndNotLogged() {
+        let plan = NotificationPlanner.plan(
+            .init(
+                preferences: .default,
+                hasLoggedToday: false,
+                calendar: Self.utcCalendar(),
+                now: Self.date("2026-05-12T07:00:00Z"),
+                hasActiveGoal: true,
+                hasLoggedGoalWeightToday: false
+            )
+        )
+        XCTAssertEqual(plan.goalWeight, DateComponents(hour: 9, minute: 0))
+    }
+
+    func testGoalWeightSilentWhenAlreadyLoggedToday() {
+        let plan = NotificationPlanner.plan(
+            .init(
+                preferences: .default,
+                hasLoggedToday: false,
+                calendar: Self.utcCalendar(),
+                now: Self.date("2026-05-12T07:00:00Z"),
+                hasActiveGoal: true,
+                hasLoggedGoalWeightToday: true
+            )
+        )
+        XCTAssertNil(plan.goalWeight)
+    }
+
+    func testGoalWeightSilentWhenNoActiveGoal() {
+        let plan = NotificationPlanner.plan(
+            .init(
+                preferences: .default,
+                hasLoggedToday: false,
+                calendar: Self.utcCalendar(),
+                now: Self.date("2026-05-12T07:00:00Z"),
+                hasActiveGoal: false,
+                hasLoggedGoalWeightToday: false
+            )
+        )
+        XCTAssertNil(plan.goalWeight)
+    }
+
+    func testGoalWeightHonoursCustomTime() {
+        var prefs = NotificationPlanner.Preferences.default
+        prefs.goalWeightHour = 7
+        prefs.goalWeightMinute = 30
+        let plan = NotificationPlanner.plan(
+            .init(
+                preferences: prefs,
+                hasLoggedToday: false,
+                calendar: Self.utcCalendar(),
+                now: Self.date("2026-05-12T07:00:00Z"),
+                hasActiveGoal: true,
+                hasLoggedGoalWeightToday: false
+            )
+        )
+        XCTAssertEqual(plan.goalWeight, DateComponents(hour: 7, minute: 30))
     }
 
     func testEveningSummaryFiresEvenWhenLogged() {
