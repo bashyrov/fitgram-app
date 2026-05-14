@@ -1,420 +1,3879 @@
 {
   "sourceLanguage" : "pl",
-  "version" : "1.0",
   "strings" : {
-    "📦 Kod kreskowy" : {
+    "" : {
+
+    },
+    "..." : {
+
+    },
+    "/ %lld kcal" : {
+
+    },
+    "/ miesiąc" : {
+
+    },
+    "/ rok" : {
+
+    },
+    "/ rok — oszczędzasz 43%" : {
+
+    },
+    "%@ %@" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "📦 Kod kreskowy" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "📦 Barcode" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "📦 Штрихкод" } }
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
       }
+    },
+    "%@ MB" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld / %lld" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "%lld / %lld g" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld g"
+          }
+        }
+      }
+    },
+    "%lld / %lld ml" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld ml"
+          }
+        }
+      }
+    },
+    "%lld cm" : {
+
+    },
+    "%lld dni z rzędu" : {
+
+    },
+    "%lld dni za darmo" : {
+
+    },
+    "%lld elementów" : {
+
+    },
+    "%lld g" : {
+
+    },
+    "%lld g · %lld kcal" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld g · %2$lld kcal"
+          }
+        }
+      }
+    },
+    "%lld g · ×%@" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld g · ×%2$@"
+          }
+        }
+      }
+    },
+    "%lld g (%lld%%)" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld g (%2$lld%%)"
+          }
+        }
+      }
+    },
+    "%lld KB" : {
+
+    },
+    "%lld kcal" : {
+
+    },
+    "%lld kcal · ugotowane %lld×" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld kcal · ugotowane %2$lld×"
+          }
+        }
+      }
+    },
+    "%lld kcal / 100g" : {
+
+    },
+    "%lld kcal/100g" : {
+
+    },
+    "%lld kilokalorii" : {
+
+    },
+    "%lld min" : {
+
+    },
+    "%lld ml" : {
+
+    },
+    "%lld porcje" : {
+
+    },
+    "%lld posiłków" : {
+
+    },
+    "%lld skanów do tej pory" : {
+
+    },
+    "%lld składn." : {
+
+    },
+    "%lld tygodni" : {
+
+    },
+    "%lld z %lld gramów" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld z %2$lld gramów"
+          }
+        }
+      }
+    },
+    "%lld z %lld kilokalorii, %lld procent" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld z %2$lld kilokalorii, %3$lld procent"
+          }
+        }
+      }
+    },
+    "%lld z %lld przepisów" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld z %2$lld przepisów"
+          }
+        }
+      }
+    },
+    "%lld." : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "%lld%% · do %@" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld%% · do %2$@"
+          }
+        }
+      }
+    },
+    "%lld%% pewności" : {
+
+    },
+    "%lldg" : {
+
+    },
+    "× %lld" : {
+
+    },
+    "~420 kcal" : {
+
+    },
+    "−43% TANIEJ" : {
+
+    },
+    "✍️ Wpisz ręcznie" : {
+
+    },
+    "✓ %lld kcal" : {
+
+    },
+    "🍞 Węglowodany" : {
+
+    },
+    "🎙 Powiedz na głos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🎙 Say out loud"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🎙 Powiedz na głos"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🎙 Скажіть уголос"
+          }
+        }
+      }
+    },
+    "👍 Pomocne" : {
+
+    },
+    "👎 Nietrafione" : {
+
     },
     "📖 Mój przepis" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "📖 Mój przepis" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "📖 My recipe" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "📖 Мій рецепт" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📖 My recipe"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📖 Mój przepis"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📖 Мій рецепт"
+          }
+        }
+      }
+    },
+    "📦 Kod kreskowy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📦 Barcode"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📦 Kod kreskowy"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📦 Штрихкод"
+          }
+        }
       }
     },
     "📸 Zdjęcie posiłku" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "📸 Zdjęcie posiłku" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "📸 Photo of meal" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "📸 Фото страви" } }
-      }
-    },
-    "🎙 Powiedz na głos" : {
-      "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "🎙 Powiedz na głos" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "🎙 Say out loud" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "🎙 Скажіть уголос" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📸 Photo of meal"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📸 Zdjęcie posiłku"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📸 Фото страви"
+          }
+        }
       }
     },
     "🔎 Szybka baza" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "🔎 Szybka baza" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "🔎 Quick database" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "🔎 Швидка база" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔎 Quick database"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔎 Szybka baza"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔎 Швидка база"
+          }
+        }
       }
+    },
+    "🔥 %lld kcal" : {
+
+    },
+    "0" : {
+
+    },
+    "0 = zostaw bez sugestii — wybierzesz wagę przy logowaniu." : {
+
+    },
+    "1 posiłek" : {
+
+    },
+    "2" : {
+
+    },
+    "5 dni w pasie kalorii (±15 %) — bez skrajności." : {
+
+    },
+    "5 z ostatnich 7 dni w celu kalorii. To bardziej liczy się niż jeden idealny dzień." : {
+
+    },
+    "7 dni · pełne AI · brak limitów. Tap, żeby zobaczyć plany." : {
+
+    },
+    "7 dni za darmo · anuluj w sekundę" : {
+
+    },
+    "7 dni za darmo. Bez ukrytych kosztów. Anuluj jednym tapnięciem." : {
+
+    },
+    "7 dni za darmo. Bez zobowiązań. Anuluj jednym tapnięciem." : {
+
+    },
+    "8" : {
+
+    },
+    "8:00 — Cześć!" : {
+
+    },
+    "10 g" : {
+
+    },
+    "12" : {
+
+    },
+    "15" : {
+
+    },
+    "16,60 zł / mies. · 7 dni za darmo" : {
+
+    },
+    "18 g" : {
+
+    },
+    "21:00 — Podsumowanie" : {
+
+    },
+    "22 g" : {
+
+    },
+    "29 zł" : {
+
+    },
+    "30" : {
+
+    },
+    "30 dni" : {
+
+    },
+    "32 g" : {
+
+    },
+    "40" : {
+
+    },
+    "70.5" : {
+
+    },
+    "100" : {
+
+    },
+    "199 zł" : {
+
+    },
+    "250" : {
+
+    },
+    "250–8000 ml. Standard to 2000 ml." : {
+
+    },
+    "350" : {
+
+    },
+    "600 g" : {
+
+    },
+    "999 zł" : {
+
+    },
+    "1000–4500 kcal. Pełna edycja w Profilu → Cele." : {
+
+    },
+    "Akceptuj" : {
+
+    },
+    "Aktualizuj" : {
+
+    },
+    "Aktywność" : {
+
     },
     "Aktywność 90 dni" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Aktywność 90 dni" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "90-day activity" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Активність 90 днів" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "90-day activity"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktywność 90 dni"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Активність 90 днів"
+          }
+        }
       }
+    },
+    "Analizujemy…" : {
+
     },
     "Anuluj" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Anuluj" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Скасувати" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anuluj"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
+        }
       }
+    },
+    "Anuluj w każdej chwili w Ustawieniach iOS." : {
+
+    },
+    "Aparat gotowy" : {
+
+    },
+    "Aparat zablokowany" : {
+
+    },
+    "Apple Health" : {
+
+    },
+    "Atrybucje" : {
+
+    },
+    "Auto" : {
+
+    },
+    "B" : {
+
+    },
+    "Baza produktów: Open Food Facts (ODbL)." : {
+
+    },
+    "Bez celu, tylko śledzenie" : {
+
+    },
+    "Bez glutenu" : {
+
+    },
+    "Bez limitów na skany i głos" : {
+
+    },
+    "Bez nabiału" : {
+
+    },
+    "Bez wpływu na rekomendacje" : {
+
+    },
+    "Bez wyrzutów" : {
+
+    },
+    "Bezpieczna płatność przez Apple" : {
+
+    },
+    "Bezpieczna płatność przez Apple · RODO od pierwszego dnia" : {
+
+    },
+    "Bezpieczna płatność przez Apple · RODO/GDPR od pierwszego dnia" : {
+
+    },
+    "Bezpieczna prywatność domyślnie" : {
+
+    },
+    "Białko" : {
+
+    },
+    "Białko (g)" : {
+
+    },
+    "Białko na śniadanie" : {
+
+    },
+    "Białkowy ekspert" : {
+
+    },
+    "Błonnik" : {
+
+    },
+    "BMI" : {
+
+    },
+    "Brak adresu e-mail" : {
+
+    },
+    "Brak danych — dodasz je przez Edytuj." : {
+
+    },
+    "Brak dodatkowych celów" : {
+
+    },
+    "Brak historii" : {
+
+    },
+    "Brak konfiguracji serwera. Spróbuj zaktualizować aplikację." : {
+
+    },
+    "Brak ofert do wyświetlenia." : {
+
+    },
+    "Brak połączenia. Sprawdź internet i spróbuj jeszcze raz." : {
+
+    },
+    "Brak połączenia. Sprawdź internet i spróbuj ponownie." : {
+
+    },
+    "Brak posiłków dzisiaj" : {
+
+    },
+    "Brak przepisów" : {
+
+    },
+    "Brak wpisów w tym filtrze." : {
+
+    },
+    "Brak wpisów wagi" : {
+
+    },
+    "Brak wpisu" : {
+
+    },
+    "Brak znajomych. Dodaj kogoś, żeby zobaczyć jego streak i odznaki." : {
+
+    },
+    "Brakuje %lld g białka do celu. Twaróg, jajka, strączki — pasują niemal do każdego posiłku." : {
+
+    },
+    "Brawo — utrzymuj rytm, freezy pojawiają się gdy ich potrzebujesz." : {
+
     },
     "Brawo!" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Brawo!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Well done!" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Молодець!" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Well done!"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brawo!"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Молодець!"
+          }
+        }
       }
+    },
+    "Cała historia" : {
+
+    },
+    "Cały rok" : {
+
+    },
+    "Cel" : {
+
+    },
+    "Cel — stuknij, aby zmienić" : {
+
+    },
+    "cel %lld" : {
+
+    },
+    "Cel wagi" : {
+
     },
     "Cele dzienne" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Cele dzienne" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Daily goals" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Денні цілі" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily goals"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cele dzienne"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Денні цілі"
+          }
+        }
       }
+    },
+    "Cele zapisane, przypomnienia gotowe. Wpisz pierwszy posiłek — Ola podpowie resztę." : {
+
+    },
+    "Cicho — Twoi znajomi jeszcze nie dodawali nic dziś." : {
+
+    },
+    "Ciemny" : {
+
+    },
+    "Co chcesz osiągnąć?" : {
+
+    },
+    "Co dodajesz?" : {
+
+    },
+    "Co dokładnie udostępniać" : {
+
+    },
+    "Co dostajesz w Premium" : {
+
+    },
+    "Co dziś planujesz na śniadanie? Stuknij plusik, gdy będzie gotowe." : {
+
+    },
+    "Co eksportować?" : {
+
+    },
+    "Co liczy się jako dzień" : {
+
+    },
+    "Co miesiąc" : {
+
+    },
+    "Co podobnego?" : {
+
+    },
+    "Co poszło dobrze, co warto zmienić? Zostanie w historii posiłku." : {
+
     },
     "Co u Ciebie" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Co u Ciebie" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "How are you doing" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Як у тебе справи" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How are you doing"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Co u Ciebie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як у тебе справи"
+          }
+        }
       }
+    },
+    "Co u znajomych" : {
+
+    },
+    "Co usłyszeliśmy" : {
+
+    },
+    "Co widzimy" : {
+
+    },
+    "Co zapiszemy" : {
+
+    },
+    "Codzienne podsumowania zamiast 1 tygodniowo" : {
+
+    },
+    "Codzienny rytm" : {
+
     },
     "Cofnij" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Cofnij" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Undo" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Скасувати" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undo"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cofnij"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
+        }
       }
+    },
+    "Cofnij ostatnią szklankę" : {
+
+    },
+    "Coś jeszcze?" : {
+
+    },
+    "Coś nie zadziałało" : {
+
+    },
+    "Coś poszło nie tak. Spróbuj ponownie za chwilę." : {
+
+    },
+    "Cudowny tydzień" : {
+
+    },
+    "Czas trwania" : {
+
+    },
+    "Czego unikasz?" : {
+
     },
     "Cześć" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Cześć" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hi" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Привіт" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hi"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cześć"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привіт"
+          }
+        }
       }
+    },
+    "część zamień na soczewicę lub komosę" : {
+
+    },
+    "Cześć!" : {
+
+    },
+    "Częste" : {
+
+    },
+    "Dalej" : {
+
+    },
+    "Data" : {
+
+    },
+    "Data urodzenia" : {
+
+    },
+    "Dłoń" : {
+
+    },
+    "dni z rzędu" : {
+
+    },
+    "dni z wpisem" : {
+
+    },
+    "Do" : {
+
+    },
+    "Dobre tempo" : {
+
     },
     "Dobry wieczór" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dobry wieczór" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Good evening" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Доброго вечора" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good evening"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobry wieczór"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доброго вечора"
+          }
+        }
       }
+    },
+    "Docelowa waga" : {
+
     },
     "Dodaj" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати"
+          }
+        }
       }
+    },
+    "dodaj 2 łyżki mąki sojowej / białka w proszku" : {
+
+    },
+    "Dodaj cel jak \"Maraton w czerwcu\" albo \"Bez fast-food przez 30 dni\" — Mealgram pomoże Ci go pilnować." : {
+
+    },
+    "Dodaj do bazy" : {
+
+    },
+    "Dodaj do dziennika" : {
+
+    },
+    "Dodaj do ulubionych" : {
+
+    },
+    "Dodaj jednym tapnięciem, oszczędź minuty dziennie" : {
+
+    },
+    "Dodaj jeszcze jeden wpis, żeby zobaczyć trend." : {
+
+    },
+    "Dodaj mnie na Mealgram" : {
+
+    },
+    "Dodaj pierwszy wpis, żeby śledzić trend. Aktualizujemy też wagę w Twoim profilu." : {
+
+    },
+    "Dodaj porcję domyślną" : {
+
     },
     "Dodaj posiłek" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add meal" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj posiłek" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати прийом їжі" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add meal"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj posiłek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати прийом їжі"
+          }
+        }
       }
+    },
+    "Dodaj przepis" : {
+
+    },
+    "Dodaj składnik" : {
+
+    },
+    "Dodaj składnik ręcznie" : {
+
+    },
+    "Dodaj tagi typu: restauracja, treningowy, domowe." : {
+
+    },
+    "Dodaj własne danie" : {
+
+    },
+    "Dodaj wpis" : {
+
+    },
+    "Dodaj wpis wagi" : {
+
     },
     "Dodaj znajomego" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dodaj znajomego" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add friend" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Додати друга" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add friend"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj znajomego"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати друга"
+          }
+        }
       }
     },
-    "Dziś" : {
-      "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dziś" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Today" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Сьогодні" } }
-      }
+    "Dodaj znajomego, żeby porównać serie." : {
+
+    },
+    "Dodatkowe cele" : {
+
+    },
+    "Dodawaj posiłki zdjęciem, głosem albo z naszej bazy. **Bez liczenia, bez stresu.**" : {
+
+    },
+    "Dolej 250 ml" : {
+
+    },
+    "Domowy kucharz" : {
+
+    },
+    "Domyślnie" : {
+
+    },
+    "Domyślnie nie udostępniamy nic. Włącz tylko to, co naprawdę chcesz pokazać znajomym." : {
+
+    },
+    "Dopasuj AI do siebie" : {
+
+    },
+    "Duplikuj" : {
+
+    },
+    "Duplikuj na dziś" : {
+
+    },
+    "Duże osiągnięcie znajomego" : {
+
+    },
+    "Działa z większością stron — m.in. kwestiasmaku.com, hreceptu.pl, allrecipes.com." : {
+
+    },
+    "Dzięki tym danym dopasujemy cele kaloryczne i makro." : {
+
+    },
+    "Dzięki za feedback!" : {
+
+    },
+    "Dzień" : {
+
     },
     "Dzień dobry" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Dzień dobry" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Good morning" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Доброго ранку" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good morning"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dzień dobry"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доброго ранку"
+          }
+        }
       }
+    },
+    "Dzień dobry!" : {
+
+    },
+    "Dzień po dniu" : {
+
+    },
+    "dzień serii" : {
+
+    },
+    "dzień z rzędu" : {
+
+    },
+    "Dziennik dnia" : {
+
+    },
+    "Dzienny cel kalorii" : {
+
+    },
+    "Dzienny cel wody" : {
+
+    },
+    "Dziś" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dziś"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сьогодні"
+          }
+        }
+      }
+    },
+    "Dziś bogato" : {
+
     },
     "Edytuj" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Edytuj" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Редагувати" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edytuj"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редагувати"
+          }
+        }
       }
+    },
+    "Edytuj aktywność" : {
+
+    },
+    "Edytuj cel" : {
+
+    },
+    "Edytuj dane" : {
+
+    },
+    "Edytuj przepis" : {
+
+    },
+    "Edytuj składnik" : {
+
+    },
+    "Edytuj wpis" : {
+
     },
     "Eksport CSV (Excel)" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Eksport CSV (Excel)" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "CSV export (Excel)" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Експорт CSV (Excel)" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSV export (Excel)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksport CSV (Excel)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Експорт CSV (Excel)"
+          }
+        }
       }
+    },
+    "Eksport nieudany" : {
+
+    },
+    "Eksportuj" : {
+
+    },
+    "Filtr ulubionych" : {
+
+    },
+    "Freeze" : {
+
+    },
+    "Freeze ratuje przerwę" : {
+
+    },
+    "Gemini Pro AI — najdokładniejsze rozpoznawanie polskich dań" : {
+
+    },
+    "Gotów na śniadanie? Stuknij, żeby dodać posiłek." : {
+
+    },
+    "Gotów na śniadanie? Stuknij, żeby dodać." : {
+
+    },
+    "Gotowe" : {
+
+    },
+    "Gotowe — sprawdź danie" : {
+
     },
     "Hej" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Hej" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hey" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Гей" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hey"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hej"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гей"
+          }
+        }
       }
+    },
+    "hello@mealgram.pl" : {
+
+    },
+    "Historia" : {
+
     },
     "Historia Oli" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Historia Oli" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Ola's history" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Історія Olі" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola's history"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historia Oli"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Історія Olі"
+          }
+        }
       }
+    },
+    "Historia serii" : {
+
+    },
+    "https://..." : {
+
+    },
+    "i %lld więcej" : {
+
+    },
+    "Ile porcji teraz?" : {
+
+    },
+    "Imię lub username" : {
+
+    },
+    "Imperialne" : {
+
+    },
+    "Importuj" : {
+
     },
     "Importuj przepis" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Importuj przepis" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import recipe" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Імпортувати рецепт" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import recipe"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importuj przepis"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Імпортувати рецепт"
+          }
+        }
       }
+    },
+    "Importuj z Apple Health" : {
+
     },
     "Importuj z URL" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Importuj z URL" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import from URL" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Імпортувати з URL" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import from URL"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importuj z URL"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Імпортувати з URL"
+          }
+        }
       }
+    },
+    "Importuję…" : {
+
+    },
+    "Inne" : {
+
+    },
+    "Instrukcje" : {
+
     },
     "Jak chcesz dodać?" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Jak chcesz dodać?" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "How would you like to add?" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Як ви хочете додати?" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How would you like to add?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jak chcesz dodać?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як ви хочете додати?"
+          }
+        }
       }
+    },
+    "Jak chcesz nabierać?" : {
+
+    },
+    "Jak działa streak" : {
+
+    },
+    "Jak szybko?" : {
+
+    },
+    "Jaki masz cel?" : {
+
+    },
+    "Jasny" : {
+
+    },
+    "jednorazowo" : {
+
+    },
+    "Jednostki" : {
+
+    },
+    "Jesteś bliska celu. Lekka kolacja albo przekąska — i wystarczy." : {
+
+    },
+    "Jeszcze nic dziś nie dodałaś — szybki wpis utrzyma serię." : {
+
+    },
+    "Jeszcze nic dziś nie zapisałaś — dorzuć obiad, żebym mogła ułożyć dzień." : {
+
+    },
+    "Jeszcze nic nie dodałeś. Zacznij od pierwszego posiłku 🌱" : {
+
+    },
+    "Jeszcze nie ma serii" : {
+
+    },
+    "Jeszcze niezdobyte" : {
+
+    },
+    "Język" : {
+
+    },
+    "JSON, CSV, ZIP — bez ograniczeń, dla Ciebie i Twojego dietetyka" : {
+
+    },
+    "JSON, CSV, ZIP · brak limitu 30 dni" : {
+
+    },
+    "Już **2 400+ osób** śledzi swoje cele z Mealgram" : {
+
+    },
+    "Już %lld dni z rzędu z Mealgram. Spokojne tempo — to dokładnie tak, jak ma być." : {
+
+    },
+    "Już ponad cel kalorii. Wieczorem warto coś lekkiego — sałata, twaróg, owoce." : {
+
+    },
+    "Kalibracja" : {
+
+    },
+    "Kalibracja AI" : {
+
+    },
+    "Kalorie" : {
+
+    },
+    "Kalorie (kcal)" : {
+
+    },
+    "Kanapka z serem" : {
+
+    },
+    "Karta" : {
+
+    },
+    "Karta płatnicza" : {
+
+    },
+    "Karuzele Ostatnie i Częste wrócą do pierwszej konfiguracji." : {
+
+    },
+    "Kategoria" : {
+
+    },
+    "Każdy krok w osobnej linii." : {
+
+    },
+    "Każdy zalogowany posiłek z dzisiejszego dnia podtrzymuje serię." : {
+
+    },
+    "kcal" : {
+
+    },
+    "Keto" : {
+
+    },
+    "Keto 25 / 5 / 70" : {
+
+    },
+    "kg" : {
+
+    },
+    "Kobieta" : {
+
+    },
+    "Kod %@" : {
+
+    },
+    "Kod %@ nie jest jeszcze w bazie Open Food Facts. Spróbuj zeskanować inny lub dodaj ręcznie." : {
+
+    },
+    "kolacja" : {
+
+    },
+    "Kolacja" : {
+
+    },
+    "Kolorowy talerz" : {
+
+    },
+    "Konkretny cel zdrowotny" : {
+
+    },
+    "Kontakt" : {
+
+    },
+    "Konto" : {
+
+    },
+    "Konto Mealgram" : {
+
+    },
+    "Kontynuuj bez subskrypcji" : {
+
+    },
+    "Kontynuuj e-mailem" : {
+
+    },
+    "Kontynuuj z Apple" : {
+
+    },
+    "Kontynuuj z Google" : {
+
+    },
+    "Kopiuj" : {
+
+    },
+    "Korekta porcji" : {
+
+    },
+    "Korekta wróci do ×1.00, licznik skanów wyzeruje się." : {
+
+    },
+    "Krok %lld z %lld" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Krok %1$lld z %2$lld"
+          }
+        }
+      }
+    },
+    "Krótka notka rano, gdy zaczynasz dzień, i wieczorem, żeby uzupełnić wpisy." : {
+
+    },
+    "Krótki opis (opcjonalnie)" : {
+
+    },
+    "Krótki tydzień." : {
+
+    },
+    "Krótko o Tobie" : {
+
+    },
+    "Kto może zobaczyć Twój profil" : {
+
+    },
+    "Łącznie w tygodniu" : {
+
+    },
+    "Łącznie: %@ kcal" : {
+
     },
     "Ładowanie" : {
+      "extractionState" : "stale",
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Loading" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Ładowanie" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Завантаження" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ładowanie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження"
+          }
+        }
       }
+    },
+    "Łagodny deficyt, długoterminowo" : {
+
+    },
+    "lat" : {
+
+    },
+    "Lekkie przypomnienia" : {
+
+    },
+    "Liczba porcji" : {
+
+    },
+    "Lifetime" : {
+
+    },
+    "LIMITED" : {
+
+    },
+    "Linia celu pojawi się na wykresie." : {
+
+    },
+    "Lista zakupów" : {
+
+    },
+    "Lista zakupów — %@" : {
+
+    },
+    "Logowanie przez %@ nie jest jeszcze dostępne." : {
+
+    },
+    "Logowanie zostało anulowane." : {
+
+    },
+    "Łyżka, widelec — porównujemy z talerzem" : {
+
+    },
+    "Lżejsza wersja" : {
+
+    },
+    "Makro" : {
+
+    },
+    "Makro (opcjonalnie)" : {
+
+    },
+    "Mała zmiana wagi (+%@) — to normalne wahania. Spójrzmy na średnią z całego miesiąca." : {
+
     },
     "Mam już konto" : {
+      "extractionState" : "stale",
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "I already have an account" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mam już konto" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "У мене вже є акаунт" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I already have an account"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mam już konto"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У мене вже є акаунт"
+          }
+        }
       }
     },
+    "Marka (opcjonalnie)" : {
+
+    },
     "Mealgram" : {
-      "shouldTranslate" : false,
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } }
-      }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Mealgram — %@" : {
+
+    },
+    "Mealgram — %lld dni" : {
+
+    },
+    "Mealgram %@" : {
+
+    },
+    "Mealgram Premium aktywne" : {
+
+    },
+    "Metryczne" : {
+
+    },
+    "Mężczyzna" : {
+
+    },
+    "Miesięczna" : {
+
+    },
+    "Mieszany tydzień" : {
+
+    },
+    "Minutnik kuchenny" : {
+
+    },
+    "Mistrz śniadań" : {
+
+    },
+    "ml" : {
+
+    },
+    "mniej" : {
+
+    },
+    "Mniej" : {
+
+    },
+    "Mniej węgli 30 / 30 / 40" : {
+
+    },
+    "Modyfikacje przepisu" : {
+
+    },
+    "Modyfikacje: %@" : {
+
     },
     "Mój kod" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mój kod" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "My code" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Мій код" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My code"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mój kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мій код"
+          }
+        }
       }
+    },
+    "Moje przepisy" : {
+
+    },
+    "Motyw" : {
+
+    },
+    "Może później" : {
+
+    },
+    "Możesz to wszystko zmienić później w Profilu." : {
+
+    },
+    "Możesz zacząć skanować." : {
+
+    },
+    "Na pewno usunąć?" : {
+
+    },
+    "Na tej stronie nie znalazłam danych przepisu." : {
+
+    },
+    "Nabrać masy" : {
+
+    },
+    "Nadwaga" : {
+
+    },
+    "Najczęściej gotowane" : {
+
+    },
+    "Najczęściej wybierany punkt odniesienia" : {
+
+    },
+    "NAJLEPSZA OFERTA" : {
+
+    },
+    "Najnowsze" : {
+
+    },
+    "Najwyższa ocena" : {
+
+    },
+    "Napisz na hello@mealgram.pl — odpowiadamy w 24 h." : {
+
+    },
+    "Następny dzień" : {
+
+    },
+    "Naturalnie zawsze pod ręką" : {
+
+    },
+    "Nazwa" : {
+
+    },
+    "Nazwa dania" : {
+
+    },
+    "Nazwa składnika lub potrawy" : {
+
+    },
+    "Nazwa własnego celu" : {
+
+    },
+    "Nic do zmiany" : {
+
+    },
+    "Nic nie znaleziono" : {
+
+    },
+    "Nic nie znaleziono dla \"%@\"." : {
+
     },
     "Nie" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Nie" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ні" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ні"
+          }
+        }
       }
+    },
+    "Nie podaję" : {
+
+    },
+    "Nie udało się odczytać" : {
+
+    },
+    "Nie udało się pobrać ofert. Sprawdź połączenie." : {
+
+    },
+    "Nie udało się pobrać strony: %@" : {
+
+    },
+    "Nie udało się potwierdzić Twoich danych. Spróbuj jeszcze raz." : {
+
+    },
+    "Nie udało się usunąć. Spróbuj ponownie." : {
+
+    },
+    "Nie udało się zapisać profilu. Spróbuj ponownie." : {
+
+    },
+    "Nie udało się zapisać. Spróbuj ponownie." : {
+
+    },
+    "Nie udało się zduplikować. Spróbuj ponownie." : {
+
+    },
+    "Nie znalazłam wartości odżywczych na etykiecie." : {
+
+    },
+    "Nie znaleziono aktywnej subskrypcji." : {
+
+    },
+    "Nie znaleźliśmy tego kodu" : {
+
+    },
+    "Niedowaga" : {
+
+    },
+    "Nieograniczona społeczność" : {
+
+    },
+    "Nieograniczone skany AI" : {
+
+    },
+    "Nieograniczone skany zdjęć" : {
+
+    },
+    "Nieograniczone skany, AI Coach, eksporty." : {
+
+    },
+    "Niewystarczająco danych — zapisz kilka dni, żeby zobaczyć trend." : {
+
+    },
+    "Norma" : {
+
+    },
+    "Norma zmieni się: %lld → %lld kcal" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Norma zmieni się: %1$lld → %2$lld kcal"
+          }
+        }
+      }
+    },
+    "Notatka" : {
+
+    },
+    "Notatka (opcjonalnie)" : {
+
+    },
+    "Nowa odznaka: %@" : {
+
+    },
+    "Nowe zaproszenie" : {
+
+    },
+    "Nowy cel" : {
+
+    },
+    "Nowy przepis" : {
+
+    },
+    "nowy rekord życiowy!" : {
+
+    },
+    "nowy tag" : {
+
+    },
+    "np. Maraton w czerwcu" : {
+
+    },
+    "np. Naleśniki z serem" : {
+
+    },
+    "Np. współpraca z dietetykiem, choroba" : {
+
+    },
+    "obiad" : {
+
+    },
+    "Obiad" : {
+
+    },
+    "Oceń %lld gwiazdek" : {
+
+    },
+    "Ocena" : {
+
+    },
+    "Od" : {
+
+    },
+    "od %@" : {
+
+    },
+    "Od Oli" : {
+
+    },
+    "Odczytuję etykietę…" : {
+
+    },
+    "Odpowiadamy w 24 godziny w dni robocze." : {
+
+    },
+    "Odrzuć" : {
+
+    },
+    "odznak" : {
+
+    },
+    "Odznaka!" : {
+
+    },
+    "Odznaki" : {
+
+    },
+    "ogranicz o połowę albo zamień na erytrol" : {
+
+    },
+    "OK" : {
+
+    },
+    "Ola" : {
+
+    },
+    "Ola — Twój trener AI" : {
+
+    },
+    "Ola dostosowała Twój plan" : {
+
+    },
+    "Ola podsumowuje" : {
+
+    },
+    "Ola przygotowuje Twoje wskazówki…" : {
+
+    },
+    "Operacja usuwa wszystkie Twoje dane lokalne i serwerowe. Nie można cofnąć." : {
+
+    },
+    "Osiągniesz cel" : {
+
+    },
+    "Ostatnie" : {
+
+    },
+    "Ostatnie 7 dni" : {
+
+    },
+    "Ostatnie 30 dni" : {
+
+    },
+    "Ostatnio" : {
+
+    },
+    "Oszacuj" : {
+
+    },
+    "Otwiera ekran Dziś w Mealgram." : {
+
+    },
+    "Otwiera Mealgram i pokazuje opcje dodania posiłku." : {
+
+    },
+    "Otwiera podsumowanie tygodnia od Oli." : {
+
+    },
+    "Otwórz profil" : {
+
+    },
+    "Otwórz Ustawienia" : {
+
+    },
+    "Otwórz wagę" : {
+
+    },
+    "Otyłość" : {
+
+    },
+    "Pakuję bundle…" : {
+
+    },
+    "Pełna" : {
+
+    },
+    "Pełna historia + eksporty" : {
+
+    },
+    "Pełna historia w Profilu" : {
+
+    },
+    "Pełna paczka (ZIP)" : {
+
+    },
+    "Pescatariańskie" : {
+
+    },
+    "Pierogi ruskie" : {
+
+    },
+    "Pierścień kalorii" : {
+
+    },
+    "Pierwszy krok: zaloguj dzisiejsze śniadanie. Spróbuj skanu zdjęciem — to najszybszy sposób." : {
+
+    },
+    "Pierwszy krok: zaloguj swoje kolejne 3 posiłki. Po tygodniu zobaczysz pierwsze wzorce." : {
+
+    },
+    "Pioneer · raz na zawsze" : {
+
+    },
+    "Płeć" : {
+
+    },
+    "Po pierwszym podsumowaniu tygodnia wszystkie wpisy pojawią się tu." : {
+
+    },
+    "Po południu, gdy nic nie wpisałeś, pojawia się przycisk freeze. Zużywa jeden z dwóch tygodniowych zapasów." : {
+
+    },
+    "Po prostu chcę widzieć, co jem" : {
+
+    },
+    "po treningu, rano…" : {
+
+    },
+    "Pobieram…" : {
+
     },
     "Pobierz eksport JSON" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pobierz eksport JSON" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Download JSON export" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Завантажити експорт JSON" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download JSON export"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pobierz eksport JSON"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажити експорт JSON"
+          }
+        }
       }
+    },
+    "Pobierz wpisy wagi zapisane w Apple Health. Importujemy tylko nowe wpisy." : {
+
+    },
+    "Podsumowanie dnia" : {
+
+    },
+    "Podsumowanie tygodnia od Oli" : {
+
+    },
+    "Pokaż dzisiejszy posiłek" : {
+
+    },
+    "Pokaż kod znajomemu — wystarczy że go zeskanuje albo przepisze." : {
+
     },
     "Pokaż mój kod" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pokaż mój kod" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show my code" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Показати мій код" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show my code"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż mój kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показати мій код"
+          }
+        }
       }
+    },
+    "Pokaż ten dzień" : {
+
+    },
+    "Pokaż tylko zdobyte" : {
+
+    },
+    "Pół dnia za Tobą i ładnie w limicie. Lekka przekąska + kolacja domyka dzień." : {
+
+    },
+    "Polityka prywatności" : {
+
+    },
+    "Polskie smaki, polskie porcje, wsparcie po polsku" : {
+
     },
     "Pomiń" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Skip" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pomiń" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Пропустити" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pomiń"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пропустити"
+          }
+        }
       }
+    },
+    "Pomiń demo" : {
+
+    },
+    "Pomiń na razie — rozejrzę się" : {
+
+    },
+    "Pominięcie pełnej doby bez freeze cofa licznik do zera. Nic strasznego — od razu możesz zacząć nową serię." : {
+
+    },
+    "Pomoc" : {
+
+    },
+    "Pomoc / FAQ" : {
+
     },
     "Pomocne?" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pomocne?" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Helpful?" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Корисно?" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helpful?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pomocne?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Корисно?"
+          }
+        }
       }
+    },
+    "Pomożemy dostroić sugestie. Nic nie musisz wybierać." : {
+
+    },
+    "Poprzedni dzień" : {
+
+    },
+    "Pora obiadu" : {
+
+    },
+    "Poranny budzik 8:00" : {
+
+    },
+    "Porcja" : {
+
+    },
+    "Porcja (g)" : {
+
+    },
+    "Porzuć" : {
+
     },
     "Posiłek" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Posiłek" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Meal" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Страва" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meal"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posiłek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Страва"
+          }
+        }
       }
     },
     "Posiłek usunięty" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Posiłek usunięty" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Meal deleted" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Страву видалено" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meal deleted"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posiłek usunięty"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Страву видалено"
+          }
+        }
       }
+    },
+    "posiłków" : {
+
+    },
+    "Potrzebujemy aparatu" : {
+
+    },
+    "Potrzebujemy mikrofonu" : {
+
+    },
+    "Powiedz na przykład: „zjadłam zupę pomidorową i kanapkę z serem”." : {
+
+    },
+    "Powiększ zdjęcie" : {
+
+    },
+    "Powód zgłoszenia" : {
+
+    },
+    "Powtórz" : {
+
+    },
+    "Powtórz onboarding" : {
+
+    },
+    "Powtórzyć onboarding?" : {
+
+    },
+    "Poziom aktywności" : {
+
+    },
+    "Później" : {
+
+    },
+    "Pozostało" : {
+
+    },
+    "Pozwól" : {
+
+    },
+    "Pozwól na dostęp" : {
+
+    },
+    "Pozwól na mikrofon i rozpoznawanie mowy, żeby dyktować posiłki." : {
+
+    },
+    "Pozycje" : {
+
+    },
+    "Prawo i dane" : {
+
+    },
+    "Prawo i pomoc" : {
+
+    },
+    "Prawo i prywatność" : {
+
     },
     "Preferencje" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Preferencje" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Preferences" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Налаштування" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferences"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencje"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштування"
+          }
+        }
       }
+    },
+    "Premium: jednym tapnięciem dodaj swoje stałe pozycje." : {
+
     },
     "Profil" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Profil" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Profile" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Профіль" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профіль"
+          }
+        }
       }
+    },
+    "Profil → Historia serii pokazuje miesięczną kratę z każdym zalogowanym dniem." : {
+
+    },
+    "Profil i cele zapisane" : {
+
+    },
+    "Prywatność" : {
+
+    },
+    "Prywatność — wyłączone" : {
+
+    },
+    "Prywatność — z linkiem" : {
+
+    },
+    "Prywatność — znajomi" : {
+
+    },
+    "Prywatność najpierw" : {
+
+    },
+    "przekąska" : {
+
+    },
+    "Przekąska" : {
+
+    },
+    "Przeliczane z aktualnej puli kalorii — możesz dalej dostroić ręcznie." : {
+
+    },
+    "przepisów" : {
+
+    },
+    "Przepisy" : {
+
+    },
+    "Przetwarzam…" : {
+
+    },
+    "Przygotowujemy…" : {
+
+    },
+    "Przypomnienia" : {
+
+    },
+    "Przypomnienia (%lld / 3 aktywne)" : {
+
+    },
+    "Przypomnienia wyciszone" : {
+
+    },
+    "Przypomnienia, język, jednostki" : {
+
+    },
+    "Przywracanie nie powiodło się." : {
+
+    },
+    "Przywróć" : {
+
+    },
+    "Przywróć zakupy" : {
+
+    },
+    "Punkt odniesienia" : {
+
+    },
+    "Punkt odniesienia do skanu zdjęć" : {
+
+    },
+    "Pusta tablica" : {
+
+    },
+    "Pusto. Dodaj pierwszy wpis ↑" : {
+
+    },
+    "Pusty dzień" : {
+
     },
     "Razem" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Razem" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Total" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Всього" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razem"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всього"
+          }
+        }
       }
+    },
+    "Reakcja na moje osiągnięcie" : {
+
+    },
+    "Regulamin" : {
+
+    },
+    "Rejestrując się, akceptujesz Regulamin i Politykę prywatności." : {
+
+    },
+    "Rekord" : {
+
+    },
+    "Rekord serii: 🔥 %lld dni" : {
+
+    },
+    "rekord życiowy: %lld dni" : {
+
+    },
+    "Reset po cichu" : {
+
+    },
+    "Resetuj" : {
+
+    },
+    "Resetuj kalibrację" : {
+
+    },
+    "Resetuj Ostatnie / Częste" : {
+
+    },
+    "Roczna" : {
+
+    },
+    "Sałatka z kurczakiem" : {
+
+    },
+    "Schudnąć" : {
+
+    },
+    "Seria %lld dni czeka" : {
+
     },
     "Seria zagrożona" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Seria zagrożona" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Streak at risk" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Серія під загрозою" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streak at risk"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seria zagrożona"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серія під загрозою"
+          }
+        }
       }
+    },
+    "Seria zagrożona 20:30" : {
+
+    },
+    "Sesja wygasła. Zaloguj się ponownie." : {
+
+    },
+    "Skala dotyczy wszystkich pozycji w tym wpisie." : {
+
+    },
+    "Skanowanie kodu QR i deeplinki włączymy razem z backendem." : {
+
+    },
+    "Skanuj inny kod" : {
+
+    },
+    "Skanuj jeszcze raz" : {
+
+    },
+    "Skanuj talerz, AI rozpozna składniki w 5 sekund" : {
+
+    },
+    "Skanujemy posiłki z aparatu. Zdjęcia trafiają tylko do naszego AI i nigdzie poza tym." : {
+
+    },
+    "Skieruj kod kreskowy w środek ramki" : {
+
+    },
+    "Składniki" : {
+
+    },
+    "Skopiowane" : {
+
+    },
+    "Skopiuj" : {
+
+    },
+    "Skopiuj sugestię" : {
+
+    },
+    "Słupki — dziennie. Linia — średnia 7 dni." : {
+
+    },
+    "śniadanie" : {
+
+    },
+    "Śniadanie" : {
+
+    },
+    "Śniadanie zalogowane — dorzuć trochę białka (jajka, twaróg, skyr). Łatwiej trzymać sytość do obiadu." : {
+
+    },
+    "Solidny tydzień" : {
+
+    },
+    "Sortuj" : {
+
+    },
+    "Spokojnie" : {
+
+    },
+    "Spokojny dzień" : {
+
+    },
+    "Społeczność znajomych" : {
+
+    },
+    "Spożyte" : {
+
+    },
+    "Sprawdź wpis" : {
+
+    },
+    "Sprawdzam %@" : {
+
+    },
+    "Spróbuj 15 różnych produktów w tym tygodniu." : {
+
+    },
+    "Spróbuj innego dnia z większą intensywnością koloru." : {
+
+    },
+    "Spróbuj innego hasła albo wyłącz filtr kategorii." : {
+
+    },
+    "Spróbuj innego hasła." : {
+
+    },
+    "Spróbuj jeszcze raz" : {
+
+    },
+    "Spróbuj naszego skanera w trybie demo. Bez aparatu, bez kalorii — tylko klimat." : {
+
+    },
+    "Spróbuj ponownie" : {
+
+    },
+    "Spróbujmy łapać rytm" : {
+
+    },
+    "Średnia 7d" : {
+
+    },
+    "Średnio / aktywny dzień" : {
+
+    },
+    "średnio dziennie" : {
+
+    },
+    "Stabilny tydzień" : {
+
+    },
+    "Start" : {
+
+    },
+    "Statystyki" : {
+
+    },
+    "Sterują wysyłką push z naszego serwera — działają od momentu wprowadzenia konta Supabase." : {
+
+    },
+    "Stop" : {
+
+    },
+    "Stracisz znajomość, a osoba ta przestanie widzieć Twój profil." : {
+
+    },
+    "Streak" : {
+
+    },
+    "Streak %lld dni" : {
+
+    },
+    "Stuknij, aby zobaczyć jak działa streak" : {
+
+    },
+    "Stuknij, żeby zacząć mówić" : {
+
+    },
+    "Stuknij, żeby zakończyć" : {
+
+    },
+    "Stuknij, żeby zeskanować pierwszy." : {
+
+    },
+    "Stuknij, żeby zobaczyć demo" : {
+
+    },
+    "Sugerowana porcja" : {
+
+    },
+    "Sugestie do ręcznej zamiany — auto-zamiana w przygotowaniu." : {
+
+    },
+    "Świetna trajektoria" : {
+
+    },
+    "Świetne na miesięczny przegląd." : {
+
+    },
+    "Świetnie, dalej" : {
+
+    },
+    "Świetny tydzień" : {
+
+    },
+    "Symbole: SF Symbols (Apple)." : {
+
+    },
+    "Sztućce" : {
+
+    },
+    "Szukaj po imieniu albo username" : {
+
+    },
+    "Szukaj posiłku" : {
+
+    },
+    "Szukaj przepisu" : {
+
     },
     "Szukaj w historii" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Szukaj w historii" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search history" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Пошук в історії" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search history"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szukaj w historii"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук в історії"
+          }
+        }
       }
+    },
+    "Szukaj wśród wszystkich zapisanych posiłków." : {
+
+    },
+    "Szybka baza" : {
+
+    },
+    "Szybki podział makro" : {
+
+    },
+    "Szybki ponowny dodatek z karuzeli na Dziś" : {
+
+    },
+    "T" : {
+
+    },
+    "Tab" : {
+
     },
     "Tablica wyników" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Tablica wyników" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Leaderboard" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Рейтинг" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leaderboard"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tablica wyników"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рейтинг"
+          }
+        }
       }
+    },
+    "Tagi" : {
+
     },
     "Tak" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Tak" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Yes" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Так" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tak"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так"
+          }
+        }
       }
     },
-    "Tydzień" : {
+    "Tak właśnie to działa" : {
+
+    },
+    "Tak zobaczysz wyniki po realnym skanie. Wszystko da się poprawić." : {
+
+    },
+    "Te dane są wyłączone domyślnie. Włączasz je tylko jeśli świadomie chcesz je pokazać." : {
+
+    },
+    "Tempo" : {
+
+    },
+    "Ten profil nie udostępnia szczegółów." : {
+
+    },
+    "Ten przepis już pasuje do wybranego kierunku." : {
+
+    },
+    "Tłumaczenia: ChatGPT, weryfikacja: native speakers." : {
+
+    },
+    "Tłuszcz" : {
+
+    },
+    "Tłuszcz (g)" : {
+
+    },
+    "To bardzo intensywne tempo. Trwałe rezultaty przy 0,25-0,5 kg/tydzień. Skonsultuj z dietetykiem." : {
+
+    },
+    "To nie wygląda na poprawny adres URL." : {
+
+    },
+    "To pomoże nam ustawić Twoje dzienne wartości. Możesz to zmienić później." : {
+
+    },
+    "To Ty" : {
+
+    },
+    "Top produkty" : {
+
+    },
+    "Trafiaj w cel białka co najmniej w 5 dni." : {
+
+    },
+    "Trend" : {
+
+    },
+    "Trener Ola" : {
+
+    },
+    "Trener Ola — pełne podsumowania tygodnia" : {
+
+    },
+    "Trochę białka" : {
+
+    },
+    "Tu nic nie było zapisane" : {
+
+    },
+    "Twoi znajomi (%lld)" : {
+
+    },
+    "Twój identyfikator" : {
+
+    },
+    "Twój plan" : {
+
+    },
+    "Twój plan: %lld kcal dziennie, %lld g białka. Lekka nadwyżka — masa głównie z mięśni." : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Tydzień" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Week" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Тиждень" } }
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Twój plan: %1$lld kcal dziennie, %2$lld g białka. Lekka nadwyżka — masa głównie z mięśni."
+          }
+        }
       }
     },
-    "Twoje dane" : {
+    "Twój plan: %lld kcal dziennie, %lld g białka. To bezpieczne tempo na zrównoważone odchudzanie." : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Twoje dane" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your data" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ваші дані" } }
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Twój plan: %1$lld kcal dziennie, %2$lld g białka. To bezpieczne tempo na zrównoważone odchudzanie."
+          }
+        }
       }
+    },
+    "Twój plan: %lld kcal dziennie. Cel — utrzymać wagę i zbudować zdrowe nawyki." : {
+
+    },
+    "Twój plan: %lld kcal i pełna kontrola makro. Trzymamy Cię na poziomie zaleceń." : {
+
+    },
+    "Twój plan: %lld kcal jako punkt odniesienia. Loguj — odkryj, co tak naprawdę jesz." : {
+
+    },
+    "Twój przepis Mealgram" : {
+
     },
     "Twój spokojny tracker kalorii." : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your calm calorie tracker." } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Twój spokojny tracker kalorii." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Твій спокійний трекер калорій." } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your calm calorie tracker."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twój spokojny tracker kalorii."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твій спокійний трекер калорій."
+          }
+        }
       }
+    },
+    "Twój tydzień" : {
+
+    },
+    "Twoja dłoń" : {
+
+    },
+    "Twoja dzienna norma" : {
+
+    },
+    "Twoja ocena" : {
+
+    },
+    "Twoja seria %lld dni — jeszcze nic dziś nie zapisałaś. Krótki wpis wystarczy." : {
+
+    },
+    "Twoja seria czeka" : {
+
+    },
+    "Twoja waga zaktualizuje się w profilu, a my przeliczymy normy dzienne (jeśli nie są zablokowane)." : {
+
+    },
+    "Twoje cele" : {
+
+    },
+    "Twoje dane" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoje dane"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваші дані"
+          }
+        }
+      }
+    },
+    "Twoje dane zostaną — przeprowadzimy Cię tylko jeszcze raz przez ustawienia." : {
+
+    },
+    "Twoje danie" : {
+
+    },
+    "Twoje statystyki" : {
+
+    },
+    "ty" : {
+
+    },
+    "Tydzień" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tydzień"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тиждень"
+          }
+        }
+      }
+    },
+    "Tygodniowe podsumowania od Claude, dopasowane do Ciebie" : {
+
+    },
+    "Tygodniowe podsumowanie" : {
+
+    },
+    "Tylko 1000 miejsc · bez subskrypcji" : {
+
+    },
+    "Typ posiłku" : {
+
+    },
+    "Udostępnij" : {
+
+    },
+    "Udostępnij listę" : {
+
+    },
+    "Udostępnij odznakę" : {
+
     },
     "Udostępnij serię" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Udostępnij serię" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Share streak" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Поділитися серією" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share streak"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udostępnij serię"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поділитися серією"
+          }
+        }
       }
+    },
+    "Ugotowane %lld razy" : {
+
+    },
+    "Ugotowane: %lld×" : {
+
+    },
+    "Ugotuj" : {
+
+    },
+    "Ugotuj %@" : {
+
+    },
+    "Ugotuj i dodaj do dziennika" : {
+
+    },
+    "Ugotuj swój przepis przynajmniej 2 razy." : {
+
+    },
+    "Ukończ" : {
+
+    },
+    "Ukryj" : {
+
     },
     "Ukryj na dziś" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Ukryj na dziś" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hide for today" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Сховати сьогодні" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide for today"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukryj na dziś"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сховати сьогодні"
+          }
+        }
       }
+    },
+    "Ulubione" : {
+
+    },
+    "Ulubione — Premium" : {
+
+    },
+    "Ulubione — szybkie dodawanie" : {
+
+    },
+    "Ulubione produkty" : {
+
     },
     "Usuń" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Usuń" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Видалити" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити"
+          }
+        }
       }
+    },
+    "Usuń konto" : {
+
+    },
+    "Usuń posiłek" : {
+
+    },
+    "Usuń z ulubionych" : {
+
+    },
+    "Usuń zdjęcie" : {
+
+    },
+    "Usuń znajomość" : {
+
+    },
+    "Usunąć konto?" : {
+
+    },
+    "Usunąć z ulubionych?" : {
+
+    },
+    "Usunięto %lld zdjęć" : {
+
+    },
+    "Utrzymać wagę" : {
+
+    },
+    "Użyj freeze" : {
+
+    },
+    "Użyj freeze (zostało %lld), żeby utrzymać serię bez wpisu." : {
+
+    },
+    "Vision nie odpowiedział: %@" : {
+
+    },
+    "W" : {
+
+    },
+    "W ciągu 30 dni schudłaś %@. Konsekwencja popłaca — tak trzymać." : {
+
+    },
+    "W ulubionych" : {
+
+    },
+    "Waga" : {
+
+    },
+    "Waga (kg)" : {
+
+    },
+    "Waga i trend" : {
+
+    },
+    "Wartości / 100 g" : {
+
+    },
+    "Wartości / porcję" : {
+
+    },
+    "Wartości / porcję (opcjonalnie)" : {
+
+    },
+    "Wartości łącznie" : {
+
+    },
+    "Wartości makro: USDA + producent." : {
+
+    },
+    "Wartości odżywcze" : {
+
+    },
+    "Wartości przeliczone z %lld składników. Dostosuj według potrzeb." : {
+
+    },
+    "Wartości z %lld składników. Nie znaleziono w bazie: %@." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Wartości z %1$lld składników. Nie znaleziono w bazie: %2$@."
+          }
+        }
+      }
+    },
+    "Wegańskie" : {
+
+    },
+    "Wegetariańskie" : {
+
+    },
+    "Węgle" : {
+
+    },
+    "Węgle (g)" : {
+
+    },
+    "Wgląd Oli" : {
+
+    },
+    "Widelec" : {
+
+    },
+    "więcej" : {
+
+    },
+    "Więcej białka" : {
+
+    },
+    "Więcej opcji" : {
+
+    },
+    "Wieczorne podsumowanie 21:00" : {
+
+    },
+    "Wiek" : {
+
+    },
+    "Większa" : {
+
+    },
+    "Większa porcja energii i białka" : {
+
     },
     "Witaj w Mealgram!" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Witaj w Mealgram!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Welcome to Mealgram!" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ласкаво просимо в Mealgram!" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Mealgram!"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Witaj w Mealgram!"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ласкаво просимо в Mealgram!"
+          }
+        }
       }
+    },
+    "Witaj, %@!" : {
+
+    },
+    "Wklej" : {
+
+    },
+    "Wklej link do przepisu" : {
+
+    },
+    "Wklej link ze schowka" : {
+
+    },
+    "Wkrótce: Ola sama zamieni opis w wpis z kaloriami. Teraz zapisujemy placeholder." : {
+
+    },
+    "Włącz dostęp do aparatu w Ustawieniach, żebyśmy mogli skanować posiłki ze zdjęć." : {
+
+    },
+    "Włącz mikrofon + rozpoznawanie mowy w Ustawieniach, żeby dyktować posiłki." : {
+
+    },
+    "Włącz przypomnienia" : {
+
+    },
+    "Własna data" : {
+
+    },
+    "Własny zakres" : {
+
+    },
+    "Woda" : {
+
+    },
+    "Wolę nie podawać" : {
+
+    },
+    "Wolę pominąć" : {
+
+    },
+    "Wolniejsze tempo to zwykle trwalszy efekt. Możesz to zmienić później." : {
+
+    },
+    "Wpis bez nazwy" : {
+
+    },
+    "Wpis zostanie skasowany i wyleci z dziennika." : {
+
+    },
+    "Wpisany dzień" : {
+
+    },
+    "wpisów wagi" : {
+
+    },
+    "Wpisz każdy składnik w osobnej linii." : {
+
+    },
+    "Wpisz posiłek" : {
+
     },
     "Wpisz ręcznie" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wpisz ręcznie" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enter manually" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Ввести вручну" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter manually"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wpisz ręcznie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ввести вручну"
+          }
+        }
       }
+    },
+    "Wpiszmy choć jeden posiłek — nie chcemy stracić serii." : {
+
+    },
+    "Wrażliwe dane" : {
+
     },
     "Wróć" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wróć" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Back" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Назад" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wróć"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
+          }
+        }
       }
     },
+    "Wróć do dziś" : {
+
+    },
+    "Wróć do zalecanych" : {
+
+    },
+    "Wskazówki od Oli" : {
+
+    },
+    "Wspieramy, świętujemy progres — nie oceniamy potknięć" : {
+
+    },
+    "Wspierasz polskiego solo-developera" : {
+
+    },
+    "Wszystkie" : {
+
+    },
+    "Wszystkie wpisy." : {
+
+    },
+    "Wszystkie wyzwania działają równolegle. Nic nie wybierasz — każdy posiłek liczy się sam." : {
+
+    },
+    "Wszystko jest w porządku — nic nie musisz zaznaczać." : {
+
+    },
+    "Wszystko na kursie" : {
+
+    },
+    "Wszystko w jednym miejscu" : {
+
+    },
+    "Wszystko wygląda zdrowo. Nie zapominaj o wodzie — to często prosty brakujący puzzel." : {
+
+    },
+    "wybierz chleb bezglutenowy oznaczony przekreślonym kłosem" : {
+
+    },
+    "Wybierz datę" : {
+
+    },
+    "Wybierz daty Od i Do." : {
+
+    },
+    "Wybierz dzień" : {
+
+    },
+    "wybierz grecki 0 % lub skyr" : {
+
+    },
+    "Wybierz reakcję" : {
+
+    },
+    "Wybierz wielkość…" : {
+
+    },
+    "Wybierz z biblioteki" : {
+
+    },
+    "Wybierz, co najczęściej widać obok talerza. Pomoże to AI w przyszłych skanach." : {
+
+    },
+    "Wycelowuj cały talerz w środek ramki" : {
+
+    },
+    "Wyczyść" : {
+
+    },
+    "Wyczyść filtry" : {
+
+    },
+    "Wyczyść osierocone zdjęcia" : {
+
+    },
+    "Wyczyść osierocone zdjęcia (%@)" : {
+
+    },
+    "Wygląd" : {
+
+    },
+    "Wykres kołowy podziału makro" : {
+
+    },
     "Wyłączony" : {
+      "extractionState" : "stale",
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Disabled" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wyłączony" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Вимкнено" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabled"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyłączony"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вимкнено"
+          }
+        }
       }
+    },
+    "Wyloguj" : {
+
+    },
+    "Wypita woda: 💧 %@ L" : {
+
+    },
+    "Wypróbuj Mealgram Premium" : {
+
+    },
+    "Wypróbuj Premium" : {
+
+    },
+    "Wypróbuj Premium za darmo" : {
+
+    },
+    "Wyślij" : {
+
+    },
+    "Wyślij zaproszenie" : {
+
+    },
+    "Wysoko-białkowe 35 / 35 / 30" : {
+
+    },
+    "Wytrzymałościowe 20 / 55 / 25" : {
+
+    },
+    "Wyzerować Ostatnie i Częste?" : {
+
     },
     "Wyzwania tygodnia" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Wyzwania tygodnia" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Weekly challenges" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Виклики тижня" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly challenges"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyzwania tygodnia"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виклики тижня"
+          }
+        }
       }
     },
+    "Wyzwania tygodnia (%lld ukończone)" : {
+
+    },
+    "Wyzwania, ranking, reakcje — odchudzaj się razem" : {
+
+    },
+    "Wyzwanie od znajomego" : {
+
+    },
+    "Wzrost" : {
+
+    },
+    "z 7 dni w celu białka" : {
+
+    },
+    "z 7 dni w celu kalorii" : {
+
+    },
+    "Z nami od %@" : {
+
+    },
+    "Z zdjęciem" : {
+
+    },
+    "Za duże" : {
+
+    },
+    "Za małe" : {
+
+    },
+    "Za mało węglowodanów. Zostaw przynajmniej 15% na energię." : {
+
+    },
+    "Zaakceptowane zaproszenie" : {
+
+    },
+    "Zaawansowane statystyki i eksport" : {
+
+    },
+    "Zablokować tego użytkownika?" : {
+
+    },
+    "Zablokowane" : {
+
+    },
+    "Zablokuj" : {
+
+    },
+    "Zachęć / Pogratuluj" : {
+
+    },
     "Zacznij" : {
+      "extractionState" : "stale",
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Get started" } },
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zacznij" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Почати" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get started"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zacznij"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Почати"
+          }
+        }
       }
+    },
+    "Zacznij 7-dniowy okres próbny" : {
+
+    },
+    "Zacznij nagrywać" : {
+
+    },
+    "Zacznij okres próbny" : {
+
+    },
+    "Zacznijmy" : {
+
+    },
+    "Zaczynaj dzień posiłkiem — 5 śniadań w tygodniu." : {
+
     },
     "Zaczynamy" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zaczynamy" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Let's start" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Поїхали" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let's start"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaczynamy"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поїхали"
+          }
+        }
       }
+    },
+    "Zakres dat" : {
+
+    },
+    "Zakres eksportu" : {
+
+    },
+    "Zakup nie powiódł się. Spróbuj ponownie." : {
+
+    },
+    "Zaloguj posiłek, żeby zacząć liczyć dni." : {
+
+    },
+    "zamień na bułkę bezglutenową" : {
+
+    },
+    "zamień na jogurt + musztarda" : {
+
+    },
+    "zamień na jogurt grecki naturalny" : {
+
+    },
+    "zamień na jogurt kokosowy lub sojowy" : {
+
+    },
+    "zamień na makaron ryżowy / gryczany / kukurydziany" : {
+
+    },
+    "zamień na mąkę gryczaną lub bezglutenową mieszankę" : {
+
+    },
+    "zamień na mleko owsiane lub migdałowe" : {
+
+    },
+    "zamień na oliwę albo wegańską margarynę" : {
+
+    },
+    "zamień na śmietanę kokosową" : {
+
+    },
+    "zamień na tofu wędzone lub roślinną alternatywę" : {
+
+    },
+    "zamień na wędzonego kurczaka" : {
+
+    },
+    "zamień połowę na oliwę" : {
+
     },
     "Zamknij" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zamknij" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Закрити" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknij"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити"
+          }
+        }
       }
+    },
+    "Zamknij aparat" : {
+
+    },
+    "Zamknij skaner" : {
+
+    },
+    "Zanotowane — postaramy się bardziej dopasować." : {
+
+    },
+    "Zapisuj stałe posiłki i dodawaj jednym tapnięciem." : {
+
     },
     "Zapisz" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Zapisz" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Save" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Зберегти" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapisz"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберегти"
+          }
+        }
       }
+    },
+    "Zapisz pierwszy przepis, żeby szybko dodać go do dziennika kolejnym razem." : {
+
+    },
+    "Zapisz przynajmniej jeden posiłek każdego dnia w tym tygodniu." : {
+
+    },
+    "Zapisz zmiany" : {
+
+    },
+    "Zaproszenia (%lld)" : {
+
+    },
+    "Zasady, prywatność, kontakt. Linki otwierają się w bezpiecznej przeglądarce w aplikacji." : {
+
+    },
+    "Zatrzymaj nagrywanie" : {
+
+    },
+    "Zatwierdź" : {
+
+    },
+    "Zbalansowane 25 / 50 / 25" : {
+
+    },
+    "Zdjęcia, kody, głos — bez tygodniowych limitów" : {
+
+    },
+    "Zdjęcie → posiłek" : {
+
+    },
+    "Zdjęcie jest nieczytelne. Spróbuj ponownie w lepszym świetle." : {
+
+    },
+    "Zdobyte" : {
+
+    },
+    "zdobyte %@" : {
+
+    },
+    "Zdobyte %@" : {
+
+    },
+    "Zdrowe nawyki bez zmiany masy" : {
+
+    },
+    "Zerknij, jak minął dzień i co jeszcze warto dodać." : {
+
+    },
+    "Zeskanuj etykietę" : {
+
+    },
+    "Zgłoś" : {
+
+    },
+    "Zgłoszenie trafia do naszego zespołu moderacji. Nie informujemy o decyzjach." : {
+
+    },
+    "Zmień dzienny cel wody" : {
+
+    },
+    "Zmień zdjęcie profilowe" : {
+
     },
     "Znajomi" : {
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Znajomi" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Friends" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Друзі" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friends"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Znajomi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Друзі"
+          }
+        }
       }
+    },
+    "Znajomi, cele, przepisy — bez limitów" : {
+
+    },
+    "Zobacz, jak minął dzień." : {
+
+    },
+    "Zresetować kalibrację?" : {
+
+    },
+    "Zrób (fałszywe) zdjęcie" : {
+
+    },
+    "Zrób jeszcze raz" : {
+
+    },
+    "Zrób zdjęcie" : {
+
+    },
+    "Zrobione z miłością w Polsce" : {
+
+    },
+    "zwiększ porcję twarogu o 50 %" : {
+
     }
-  }
+  },
+  "version" : "1.0"
 }

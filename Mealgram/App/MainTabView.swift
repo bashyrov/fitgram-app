@@ -294,50 +294,51 @@ struct MainTabView: View {
         .onContinueUserActivity(CSSearchableItemActionType) { _ in
             isRecipesPresented = true
         }
-        .confirmationDialog(
-            "Jak chcesz dodać?",
-            isPresented: $addOptionsVisible,
-            titleVisibility: .visible
-        ) {
-            Button("📸 Zdjęcie posiłku") {
-                gatedPresent(
-                    kind: .photoScan,
-                    cap: entitlementsStore.current.photoScansPerWeek,
-                    trigger: .photoScanQuota,
-                    onAllowed: { isScanPresented = true }
-                )
-            }
-            .accessibilityIdentifier(A11yID.Add.photoOption)
-            Button("📦 Kod kreskowy") {
-                gatedPresent(
-                    kind: .barcodeScan,
-                    cap: entitlementsStore.current.barcodeScansPerWeek,
-                    trigger: .barcodeScanQuota,
-                    onAllowed: { isBarcodePresented = true }
-                )
-            }
-            .accessibilityIdentifier(A11yID.Add.barcodeOption)
-            Button("🔎 Szybka baza") {
-                isQuickDBPresented = true
-            }
-            .accessibilityIdentifier(A11yID.Add.quickDBOption)
-            Button("🎙 Powiedz na głos") {
-                gatedPresent(
-                    kind: .voiceEntry,
-                    cap: entitlementsStore.current.voiceEntriesPerWeek,
-                    trigger: .voiceEntryQuota,
-                    onAllowed: { isVoicePresented = true }
-                )
-            }
-            .accessibilityIdentifier(A11yID.Add.voiceOption)
-            Button("📖 Mój przepis") {
-                isRecipesPresented = true
-            }
-            .accessibilityIdentifier(A11yID.Add.recipeOption)
-            Button("✍️ Wpisz ręcznie") {
-                isManualEntryPresented = true
-            }
-            Button("Anuluj", role: .cancel) {}
+        .sheet(isPresented: $addOptionsVisible) {
+            AddMealSheet(
+                entitlementsStore: entitlementsStore,
+                usageMeter: usageMeter,
+                onPhotoScan: {
+                    addOptionsVisible = false
+                    gatedPresent(
+                        kind: .photoScan,
+                        cap: entitlementsStore.current.photoScansPerWeek,
+                        trigger: .photoScanQuota,
+                        onAllowed: { isScanPresented = true }
+                    )
+                },
+                onBarcode: {
+                    addOptionsVisible = false
+                    gatedPresent(
+                        kind: .barcodeScan,
+                        cap: entitlementsStore.current.barcodeScansPerWeek,
+                        trigger: .barcodeScanQuota,
+                        onAllowed: { isBarcodePresented = true }
+                    )
+                },
+                onQuickDB: {
+                    addOptionsVisible = false
+                    isQuickDBPresented = true
+                },
+                onVoice: {
+                    addOptionsVisible = false
+                    gatedPresent(
+                        kind: .voiceEntry,
+                        cap: entitlementsStore.current.voiceEntriesPerWeek,
+                        trigger: .voiceEntryQuota,
+                        onAllowed: { isVoicePresented = true }
+                    )
+                },
+                onRecipe: {
+                    addOptionsVisible = false
+                    isRecipesPresented = true
+                },
+                onManual: {
+                    addOptionsVisible = false
+                    isManualEntryPresented = true
+                },
+                onCancel: { addOptionsVisible = false }
+            )
         }
         .fullScreenCover(isPresented: $isScanPresented) {
             ScanRootView(
