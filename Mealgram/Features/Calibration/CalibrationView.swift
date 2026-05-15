@@ -194,7 +194,7 @@ struct CalibrationView: View {
 
     private func updatedLabel(_ date: Date) -> String {
         let formatter = RelativeDateTimeFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.unitsStyle = .full
         return "Ostatnio: \(formatter.localizedString(for: date, relativeTo: Date()))"
     }

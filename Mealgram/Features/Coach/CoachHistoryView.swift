@@ -35,7 +35,7 @@ struct CoachHistoryView: View {
 
     private static let weekFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.dateFormat = "d MMMM"
         return formatter
     }()

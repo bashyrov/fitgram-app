@@ -80,7 +80,7 @@ struct WeeklyDebriefView: View {
 
     private var rangeCaption: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.dateFormat = "d MMMM"
         let calendar = Calendar.current
         let to = debrief.generatedAt

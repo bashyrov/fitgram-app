@@ -324,7 +324,7 @@ struct TodayView: View {
 
     private static func dayLabel(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.dateFormat = "EEEE, d MMM"
         return formatter.string(from: date).capitalized
     }

@@ -106,7 +106,7 @@ struct AchievementDetailSheet: View {
 
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.dateFormat = "d MMMM yyyy"
         return formatter
     }()

@@ -11,7 +11,7 @@ struct WeekProgressView: View {
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         return formatter
     }()
 
@@ -66,7 +66,7 @@ struct WeekProgressView: View {
                     .frame(height: 200)
                     .chartXAxis {
                         AxisMarks(values: .stride(by: .day)) { _ in
-                            AxisValueLabel(format: .dateTime.weekday(.abbreviated).locale(Locale(identifier: "pl_PL")))
+                            AxisValueLabel(format: .dateTime.weekday(.abbreviated).locale(Locale.current))
                                 .font(Tokens.Font.caption2)
                                 .foregroundStyle(Tokens.Palette.inkMuted)
                             AxisGridLine().foregroundStyle(Tokens.Palette.separator)
@@ -159,7 +159,7 @@ struct WeekProgressView: View {
                     .chartXAxis {
                         AxisMarks(values: .stride(by: .day, count: 5)) { _ in
                             AxisValueLabel(
-                                format: .dateTime.day().month(.abbreviated).locale(Locale(identifier: "pl_PL"))
+                                format: .dateTime.day().month(.abbreviated).locale(Locale.current)
                             )
                             .font(Tokens.Font.caption2)
                             .foregroundStyle(Tokens.Palette.inkMuted)

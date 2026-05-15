@@ -7,7 +7,7 @@ struct ProfileStatsCard: View {
 
     private static let memberFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.dateFormat = "LLLL yyyy"
         return formatter
     }()
@@ -103,7 +103,7 @@ struct ProfileStatsCard: View {
         let liters = Double(milliliters) / 1000
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.minimumFractionDigits = 1
         formatter.maximumFractionDigits = 1
         return formatter.string(from: NSNumber(value: liters)) ?? "\(liters)"
@@ -114,7 +114,7 @@ struct ProfileStatsCard: View {
     private static func kcalString(_ value: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 

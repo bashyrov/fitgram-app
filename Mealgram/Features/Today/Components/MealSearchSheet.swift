@@ -13,7 +13,7 @@ struct MealSearchSheet: View {
 
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.dateFormat = "EEEE, d MMMM yyyy"
         return formatter
     }()
@@ -21,7 +21,7 @@ struct MealSearchSheet: View {
     private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         return formatter
     }()
 

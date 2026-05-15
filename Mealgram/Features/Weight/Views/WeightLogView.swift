@@ -24,7 +24,7 @@ struct WeightLogView: View {
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         return formatter
     }()
 

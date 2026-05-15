@@ -574,7 +574,7 @@ struct MealDetailSheet: View {
     private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, HH:mm"
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         return formatter
     }()
 }

@@ -9,7 +9,7 @@ struct FeedEventCard: View {
 
     private static let relative: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = Locale.current
         formatter.unitsStyle = .short
         return formatter
     }()

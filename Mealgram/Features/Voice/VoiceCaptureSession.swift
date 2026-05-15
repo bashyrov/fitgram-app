@@ -20,7 +20,7 @@ final class VoiceCaptureSession {
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
 
-    init(locale: Locale = Locale(identifier: "pl_PL")) {
+    init(locale: Locale = Locale.current) {
         self.recognizer = SFSpeechRecognizer(locale: locale)
     }
 
