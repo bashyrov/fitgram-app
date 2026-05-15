@@ -27,6 +27,15 @@ struct SettingsView: View {
     let onRestartOnboarding: () -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(LocalizationStore.self) private var localizationStore
+
+    private var activeLanguageLabel: String {
+        let code = localizationStore.locale.identifier
+        let primary = String(code.prefix(2))
+        return LocalizationStore.supportedLanguages
+            .first(where: { $0.code == primary })
+            .map { "\($0.flag)  \($0.nativeName)" } ?? primary.uppercased()
+    }
 
     @State private var sharedFile: SharedFile?
     @State private var isPreparingExport = false
@@ -148,6 +157,35 @@ struct SettingsView: View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.xs) {
                 sectionHeader("Preferencje", symbol: "slider.horizontal.3", tint: Tokens.Palette.primary)
+                separator
+                NavigationLink {
+                    LanguageSettingsView(store: localizationStore) {}
+                } label: {
+                    HStack(spacing: Tokens.Space.md) {
+                        ZStack {
+                            Circle()
+                                .fill(Color(red: 0.55, green: 0.45, blue: 0.85).opacity(0.15))
+                                .frame(width: 36, height: 36)
+                            Image(systemName: "globe")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(Color(red: 0.55, green: 0.45, blue: 0.85))
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Język aplikacji")
+                                .font(Tokens.Font.body)
+                                .foregroundStyle(Tokens.Palette.ink)
+                            Text(activeLanguageLabel)
+                                .font(Tokens.Font.caption)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Tokens.Palette.inkSubtle)
+                    }
+                    .padding(.vertical, 6)
+                }
+                .buttonStyle(.plain)
                 separator
                 actionRow(
                     symbol: "bell.fill",
