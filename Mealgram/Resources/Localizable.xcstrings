@@ -34734,6 +34734,1756 @@
           }
         }
       }
+    },
+    "Omega-3: 250 mg EPA+DHA": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omega-3: 250 mg EPA+DHA"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omega-3: 250 mg EPA+DHA"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Омега-3: 250 мг EPA+DHA"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Омега-3: 250 мг EPA+DHA"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omega-3: 250 mg EPA+DHA"
+          }
+        }
+      }
+    },
+    "WHO zaleca 250–500 mg EPA+DHA dziennie. To 2 porcje tłustych ryb (łosoś, makrela, śledź) tygodniowo lub łyżeczka oleju z alg. Wspierają mózg i serce.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO zaleca 250–500 mg EPA+DHA dziennie. To 2 porcje tłustych ryb (łosoś, makrela, śledź) tygodniowo lub łyżeczka oleju z alg. Wspierają mózg i serce."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO recommends 250–500 mg of EPA+DHA daily. That's 2 servings of oily fish (salmon, mackerel, herring) per week or a teaspoon of algae oil. Good for brain and heart."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ВООЗ рекомендує 250–500 мг EPA+DHA на день. Це 2 порції жирної риби (лосось, скумбрія, оселедець) на тиждень або ложечка олії з водоростей. Підтримують мозок і серце."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ВОЗ рекомендует 250–500 мг EPA+DHA в день. Это 2 порции жирной рыбы (лосось, скумбрия, сельдь) в неделю или чайная ложка масла из водорослей. Полезны для мозга и сердца."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La OMS recomienda 250–500 mg de EPA+DHA al día. Son 2 raciones de pescado azul (salmón, caballa, arenque) por semana o una cucharadita de aceite de algas. Buenas para cerebro y corazón."
+          }
+        }
+      }
+    },
+    "Błonnik 25-35 g/dobę": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Błonnik 25-35 g/dobę"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fibre: 25–35 g/day"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клітковина 25–35 г/добу"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клетчатка 25–35 г/сут"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fibra: 25–35 g/día"
+          }
+        }
+      }
+    },
+    "Polska średnia to 17 g. Cel: 30 g dla większości dorosłych. Najprościej: pełne ziarno zamiast białego, warzywa do każdego posiłku, owoc do przekąski.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polska średnia to 17 g. Cel: 30 g dla większości dorosłych. Najprościej: pełne ziarno zamiast białego, warzywa do każdego posiłku, owoc do przekąski."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Polish average is 17 g. Target: 30 g for most adults. Simplest path: whole grain over white, veg in every meal, fruit as a snack."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Польське середнє — 17 г. Ціль: 30 г для більшості дорослих. Найпростіше: цільне зерно замість білого, овочі до кожної страви, фрукт на перекус."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Польское среднее — 17 г. Цель: 30 г для большинства взрослых. Проще всего: цельное зерно вместо белого, овощи к каждой еде, фрукт на перекус."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La media polaca es 17 g. Objetivo: 30 g para la mayoría de adultos. Lo más simple: grano integral en vez de blanco, verdura en cada comida, fruta de snack."
+          }
+        }
+      }
+    },
+    "Sód: max 2300 mg/dobę": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sód: max 2300 mg/dobę"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sodium: max 2300 mg/day"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Натрій: макс. 2300 мг/добу"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Натрий: макс. 2300 мг/сут"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sodio: máx. 2300 mg/día"
+          }
+        }
+      }
+    },
+    "WHO mówi do 2 g sodu (5 g soli) dziennie. Średnia w Polsce to >10 g soli. Połowa sodu kryje się w pieczywie, wędlinach i serach — nie w solniczce.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO mówi do 2 g sodu (5 g soli) dziennie. Średnia w Polsce to >10 g soli. Połowa sodu kryje się w pieczywie, wędlinach i serach — nie w solniczce."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO caps sodium at 2 g (5 g of salt) per day. The Polish average is >10 g of salt. Half of sodium hides in bread, cured meats, and cheese — not in the salt shaker."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ВООЗ радить до 2 г натрію (5 г солі) на день. Польське середнє — понад 10 г солі. Половина натрію ховається в хлібі, ковбасах і сирі — не в сільничці."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ВОЗ ставит лимит 2 г натрия (5 г соли) в день. Польское среднее — больше 10 г соли. Половина натрия прячется в хлебе, колбасах и сыре — не в солонке."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La OMS limita el sodio a 2 g (5 g de sal) al día. La media polaca supera los 10 g de sal. La mitad del sodio se esconde en pan, embutidos y queso — no en el salero."
+          }
+        }
+      }
+    },
+    "Żelazo: 18 mg dla kobiet": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Żelazo: 18 mg dla kobiet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iron: 18 mg for women"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Залізо: 18 мг для жінок"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Железо: 18 мг для женщин"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hierro: 18 mg para mujeres"
+          }
+        }
+      }
+    },
+    "Kobiety w wieku rozrodczym potrzebują 18 mg żelaza dziennie, mężczyźni 10. Czerwone mięso, wątroba, soczewica + witamina C zwiększają wchłanianie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kobiety w wieku rozrodczym potrzebują 18 mg żelaza dziennie, mężczyźni 10. Czerwone mięso, wątroba, soczewica + witamina C zwiększają wchłanianie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Women of reproductive age need 18 mg of iron daily, men 10. Red meat, liver, lentils + vitamin C boost absorption."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жінкам у репродуктивному віці треба 18 мг заліза щодня, чоловікам 10. Червоне м'ясо, печінка, сочевиця + вітамін С підвищують засвоєння."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Женщинам репродуктивного возраста нужно 18 мг железа в день, мужчинам 10. Красное мясо, печень, чечевица + витамин С усиливают усвоение."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las mujeres en edad reproductiva necesitan 18 mg de hierro al día, los hombres 10. Carne roja, hígado, lentejas + vitamina C suben la absorción."
+          }
+        }
+      }
+    },
+    "Wapń: 1000 mg/dobę": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wapń: 1000 mg/dobę"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calcium: 1000 mg/day"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кальцій: 1000 мг/добу"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кальций: 1000 мг/сут"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calcio: 1000 mg/día"
+          }
+        }
+      }
+    },
+    "Szklanka mleka = 240 mg, plasterek żółtego sera = 200 mg, garść migdałów = 75 mg. Po 50 r.ż. zapotrzebowanie rośnie do 1200 mg.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szklanka mleka = 240 mg, plasterek żółtego sera = 200 mg, garść migdałów = 75 mg. Po 50 r.ż. zapotrzebowanie rośnie do 1200 mg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A glass of milk = 240 mg, a slice of hard cheese = 200 mg, a handful of almonds = 75 mg. After 50, the need rises to 1200 mg."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Склянка молока = 240 мг, скибочка твердого сиру = 200 мг, жменя мигдалю = 75 мг. Після 50 років потреба зростає до 1200 мг."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стакан молока = 240 мг, ломтик твёрдого сыра = 200 мг, горсть миндаля = 75 мг. После 50 лет потребность растёт до 1200 мг."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un vaso de leche = 240 mg, una loncha de queso curado = 200 mg, un puñado de almendras = 75 mg. Tras los 50 sube a 1200 mg."
+          }
+        }
+      }
+    },
+    "Witamina D — polski problem": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Witamina D — polski problem"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitamin D — a Polish problem"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вітамін D — польська проблема"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Витамин D — польская проблема"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitamina D — el problema polaco"
+          }
+        }
+      }
+    },
+    "Od października do marca słońce w PL nie wystarcza do syntezy. Suplementacja 2000 IU/dobę to standard. 80% Polaków ma niedobór, 20% — głęboki.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Od października do marca słońce w PL nie wystarcza do syntezy. Suplementacja 2000 IU/dobę to standard. 80% Polaków ma niedobór, 20% — głęboki."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "October–March, Polish sun isn't strong enough for synthesis. 2000 IU/day supplementation is the norm. 80% of Poles are deficient, 20% severely."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "З жовтня по березень сонце в Польщі недостатнє для синтезу. Стандарт — добавки 2000 МО/добу. 80% поляків мають дефіцит, 20% — глибокий."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С октября по март солнца в Польше не хватает для синтеза. Стандарт — добавка 2000 МЕ/сут. У 80% поляков дефицит, у 20% — глубокий."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De octubre a marzo el sol polaco no basta para la síntesis. El estándar es suplementar 2000 UI/día. El 80% de los polacos tiene déficit, el 20% severo."
+          }
+        }
+      }
+    },
+    "B12 obowiązkowo dla wegan": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B12 obowiązkowo dla wegan"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B12 is mandatory for vegans"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B12 обов'язково для веганів"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B12 обязательно для веганов"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La B12 es obligatoria para veganos"
+          }
+        }
+      }
+    },
+    "Witamina B12 w naturze tylko w produktach zwierzęcych. Weganin musi suplementować — najczęściej 1000 µg cyjanokobalaminy 2-3×/tydz.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Witamina B12 w naturze tylko w produktach zwierzęcych. Weganin musi suplementować — najczęściej 1000 µg cyjanokobalaminy 2-3×/tydz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitamin B12 occurs naturally only in animal products. A vegan must supplement — typically 1000 µg of cyanocobalamin 2–3×/week."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вітамін B12 у природі лише в продуктах тваринного походження. Веган має приймати добавку — зазвичай 1000 мкг ціанокобаламіну 2–3 рази на тиждень."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Витамин B12 в природе только в животных продуктах. Веган обязан принимать добавку — обычно 1000 мкг цианокобаламина 2–3 раза в неделю."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La vitamina B12 existe naturalmente solo en productos animales. Un vegano debe suplementarla — normalmente 1000 µg de cianocobalamina 2–3 veces/semana."
+          }
+        }
+      }
+    },
+    "Magnez 320-420 mg": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magnez 320-420 mg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magnesium 320–420 mg"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Магній 320–420 мг"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Магний 320–420 мг"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magnesio 320–420 mg"
+          }
+        }
+      }
+    },
+    "Kobiety 320, mężczyźni 420 mg. Niedobór = skurcze, bezsenność, kołatanie serca. Pestki dyni (550 mg/100 g), kakao, migdały, gorzka czekolada.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kobiety 320, mężczyźni 420 mg. Niedobór = skurcze, bezsenność, kołatanie serca. Pestki dyni (550 mg/100 g), kakao, migdały, gorzka czekolada."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Women 320, men 420 mg. Deficiency = cramps, insomnia, palpitations. Pumpkin seeds (550 mg/100 g), cocoa, almonds, dark chocolate."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жінки 320, чоловіки 420 мг. Дефіцит = судоми, безсоння, серцебиття. Гарбузове насіння (550 мг/100 г), какао, мигдаль, чорний шоколад."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Женщины 320, мужчины 420 мг. Дефицит = судороги, бессонница, сердцебиение. Тыквенные семечки (550 мг/100 г), какао, миндаль, тёмный шоколад."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mujeres 320, hombres 420 mg. Déficit = calambres, insomnio, palpitaciones. Pipas de calabaza (550 mg/100 g), cacao, almendras, chocolate negro."
+          }
+        }
+      }
+    },
+    "Cynk 8-11 mg": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cynk 8-11 mg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zinc 8–11 mg"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цинк 8–11 мг"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цинк 8–11 мг"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zinc 8–11 mg"
+          }
+        }
+      }
+    },
+    "Mężczyźni 11, kobiety 8 mg. Ostrygi królują (78 mg/100 g!), potem wątroba, pestki dyni, mięso wołowe. Wspiera odporność i syntezę testosteronu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mężczyźni 11, kobiety 8 mg. Ostrygi królują (78 mg/100 g!), potem wątroba, pestki dyni, mięso wołowe. Wspiera odporność i syntezę testosteronu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Men 11, women 8 mg. Oysters dominate (78 mg/100 g!), then liver, pumpkin seeds, beef. Supports immunity and testosterone synthesis."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чоловіки 11, жінки 8 мг. Лідирують устриці (78 мг/100 г!), далі печінка, гарбузове насіння, яловичина. Підтримує імунітет і синтез тестостерону."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мужчины 11, женщины 8 мг. Лидируют устрицы (78 мг/100 г!), затем печень, тыквенные семечки, говядина. Поддерживает иммунитет и синтез тестостерона."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hombres 11, mujeres 8 mg. Las ostras lideran (78 mg/100 g!), luego hígado, pipas de calabaza, ternera. Apoya inmunidad y síntesis de testosterona."
+          }
+        }
+      }
+    },
+    "Potas 3500 mg": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potas 3500 mg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potassium 3500 mg"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калій 3500 мг"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калий 3500 мг"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potasio 3500 mg"
+          }
+        }
+      }
+    },
+    "Cel WHO: 3.5 g dziennie. Bananów potrzeba by ~9, ale ziemniaki, fasola, awokado, pomidory też dostarczają. Pomaga obniżyć ciśnienie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cel WHO: 3.5 g dziennie. Bananów potrzeba by ~9, ale ziemniaki, fasola, awokado, pomidory też dostarczają. Pomaga obniżyć ciśnienie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO target: 3.5 g/day. That's about 9 bananas, but potatoes, beans, avocado, and tomatoes also deliver. Helps lower blood pressure."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ціль ВООЗ: 3,5 г на день. Це близько 9 бананів, але картопля, квасоля, авокадо, помідори теж дають. Допомагає знизити тиск."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цель ВОЗ: 3,5 г в день. Это около 9 бананов, но картофель, бобы, авокадо, помидоры тоже дают. Помогает снизить давление."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivo OMS: 3,5 g/día. Son unos 9 plátanos, pero también patatas, alubias, aguacate y tomates aportan mucho. Ayuda a bajar la presión."
+          }
+        }
+      }
+    },
+    "Tłuszcze nasycone < 10% kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tłuszcze nasycone < 10% kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saturated fat < 10% of kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Насичені жири < 10% ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Насыщенные жиры < 10% ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grasas saturadas < 10% kcal"
+          }
+        }
+      }
+    },
+    "Dla diety 2000 kcal to ≈22 g nasyconych. 100 g masła zawiera 51 g. Nie demonizuj, ale kontroluj — głównie z mięsa, masła, sera.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dla diety 2000 kcal to ≈22 g nasyconych. 100 g masła zawiera 51 g. Nie demonizuj, ale kontroluj — głównie z mięsa, masła, sera."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On a 2000 kcal diet that's ≈22 g of saturated fat. 100 g of butter has 51 g. Don't demonise, but watch the total — mostly from meat, butter, cheese."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для дієти 2000 ккал — це ≈22 г насичених. 100 г масла містить 51 г. Не демонізуй, але контролюй — переважно з м'яса, масла, сиру."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для диеты 2000 ккал — это ≈22 г насыщенных. 100 г масла содержит 51 г. Не демонизируй, но контролируй — в основном из мяса, масла, сыра."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En una dieta de 2000 kcal son ≈22 g de saturadas. 100 g de mantequilla tienen 51 g. No las demonices, pero contrólalas — sobre todo de carne, mantequilla, queso."
+          }
+        }
+      }
+    },
+    "Tłuszcze trans = 0": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tłuszcze trans = 0"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trans fats = 0"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Транс-жири = 0"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Транс-жиры = 0"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grasas trans = 0"
+          }
+        }
+      }
+    },
+    "Sztuczne trans (uwodornione) podnoszą LDL i obniżają HDL. UE limit 2 g/100 g tłuszczu. W praktyce: czytaj „częściowo uwodorniony” na etykiecie — omijaj.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sztuczne trans (uwodornione) podnoszą LDL i obniżają HDL. UE limit 2 g/100 g tłuszczu. W praktyce: czytaj „częściowo uwodorniony” na etykiecie — omijaj."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artificial trans fats (hydrogenated) raise LDL and lower HDL. EU caps them at 2 g/100 g of fat. Practical tip: see \"partially hydrogenated\" on the label — skip it."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Штучні транс (гідровані) підвищують ЛПНЩ і знижують ЛПВЩ. Ліміт ЄС — 2 г/100 г жиру. На практиці: бачиш «частково гідрований» на етикетці — оминай."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Искусственные транс (гидрогенизированные) повышают ЛПНП и снижают ЛПВП. Лимит ЕС — 2 г/100 г жира. На практике: видишь «частично гидрогенизированный» — обходи."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las grasas trans artificiales (hidrogenadas) suben el LDL y bajan el HDL. La UE las limita a 2 g/100 g de grasa. En la práctica: si lees \"parcialmente hidrogenado\" — evítalo."
+          }
+        }
+      }
+    },
+    "Cukry dodane < 50 g": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cukry dodane < 50 g"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added sugars < 50 g"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Додані цукри < 50 г"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавленный сахар < 50 г"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azúcares añadidos < 50 g"
+          }
+        }
+      }
+    },
+    "WHO sugeruje < 10% kcal (≈50 g), lepiej < 5% (25 g). Łyżeczka cukru = 4 g. Cola 500 ml = 53 g. Czytaj etykiety — cukier ma 60+ nazw.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO sugeruje < 10% kcal (≈50 g), lepiej < 5% (25 g). Łyżeczka cukru = 4 g. Cola 500 ml = 53 g. Czytaj etykiety — cukier ma 60+ nazw."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHO suggests < 10% of kcal (≈50 g), ideally < 5% (25 g). A teaspoon of sugar = 4 g. 500 ml of cola = 53 g. Read labels — sugar has 60+ names."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ВООЗ радить < 10% ккал (≈50 г), краще < 5% (25 г). Ложечка цукру = 4 г. Кола 500 мл = 53 г. Читай етикетки — цукор має 60+ назв."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ВОЗ советует < 10% ккал (≈50 г), лучше < 5% (25 г). Ложечка сахара = 4 г. Кола 500 мл = 53 г. Читай этикетки — у сахара 60+ названий."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La OMS sugiere < 10% de kcal (≈50 g), mejor < 5% (25 g). Una cucharadita de azúcar = 4 g. Cola 500 ml = 53 g. Lee etiquetas — el azúcar tiene 60+ nombres."
+          }
+        }
+      }
+    },
+    "Top źródła błonnika": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top źródła błonnika"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top fibre sources"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Топ-джерела клітковини"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Топ-источники клетчатки"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejores fuentes de fibra"
+          }
+        }
+      }
+    },
+    "Otręby pszenne (40 g/100 g), nasiona chia (34 g), siemię lniane (27 g), fasola (15 g), maliny (6.5 g/100 g), awokado (7 g/sztuka).": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otręby pszenne (40 g/100 g), nasiona chia (34 g), siemię lniane (27 g), fasola (15 g), maliny (6.5 g/100 g), awokado (7 g/sztuka)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wheat bran (40 g/100 g), chia seeds (34 g), flaxseed (27 g), beans (15 g), raspberries (6.5 g/100 g), avocado (7 g per fruit)."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пшеничні висівки (40 г/100 г), насіння чіа (34 г), льон (27 г), квасоля (15 г), малина (6,5 г/100 г), авокадо (7 г/шт)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пшеничные отруби (40 г/100 г), семена чиа (34 г), лён (27 г), фасоль (15 г), малина (6,5 г/100 г), авокадо (7 г/шт)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvado de trigo (40 g/100 g), chía (34 g), linaza (27 g), alubias (15 g), frambuesas (6,5 g/100 g), aguacate (7 g por pieza)."
+          }
+        }
+      }
+    },
+    "Błonnik rozpuszczalny obniża cholesterol": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Błonnik rozpuszczalny obniża cholesterol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soluble fibre lowers cholesterol"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Розчинна клітковина знижує холестерин"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Растворимая клетчатка снижает холестерин"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fibra soluble baja el colesterol"
+          }
+        }
+      }
+    },
+    "Owies, jabłka, soczewica, chia tworzą żel w jelitach, który wiąże cholesterol. 5–10 g rozpuszczalnego błonnika obniża LDL o 5–10%.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owies, jabłka, soczewica, chia tworzą żel w jelitach, który wiąże cholesterol. 5–10 g rozpuszczalnego błonnika obniża LDL o 5–10%."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oats, apples, lentils, and chia form an intestinal gel that binds cholesterol. 5–10 g of soluble fibre cuts LDL by 5–10%."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Овес, яблука, сочевиця, чіа утворюють у кишківнику гель, який зв'язує холестерин. 5–10 г розчинної клітковини знижують ЛПНЩ на 5–10%."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Овёс, яблоки, чечевица, чиа образуют в кишечнике гель, связывающий холестерин. 5–10 г растворимой клетчатки снижают ЛПНП на 5–10%."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avena, manzanas, lentejas y chía forman un gel intestinal que atrapa el colesterol. 5–10 g de fibra soluble bajan el LDL un 5–10%."
+          }
+        }
+      }
+    },
+    "Cukier z owoców ≠ cukier z coli": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cukier z owoców ≠ cukier z coli"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fruit sugar ≠ cola sugar"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цукор з фруктів ≠ цукор з коли"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сахар из фруктов ≠ сахар из колы"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azúcar de la fruta ≠ azúcar de la cola"
+          }
+        }
+      }
+    },
+    "Owoce mają błonnik, witaminy, polifenole. Fruktoza w jabłku trawi się powoli. Te same 25 g cukru w coli — szybki skok i spadek. Nie bój się owoców.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owoce mają błonnik, witaminy, polifenole. Fruktoza w jabłku trawi się powoli. Te same 25 g cukru w coli — szybki skok i spadek. Nie bój się owoców."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fruit packs fibre, vitamins, polyphenols. Apple fructose digests slowly. The same 25 g of sugar in cola — quick spike and crash. Don't fear fruit."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фрукти мають клітковину, вітаміни, поліфеноли. Фруктоза в яблуку перетравлюється повільно. Ті самі 25 г цукру в колі — швидкий стрибок і спад. Не бійся фруктів."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фрукты содержат клетчатку, витамины, полифенолы. Фруктоза в яблоке усваивается медленно. Те же 25 г сахара в коле — быстрый скачок и спад. Не бойся фруктов."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fruta lleva fibra, vitaminas, polifenoles. La fructosa de la manzana se digiere despacio. Los mismos 25 g de azúcar en cola — pico rápido y bajón. No temas a la fruta."
+          }
+        }
+      }
+    },
+    "Lampka wina ≈ 120 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lampka wina ≈ 120 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A glass of wine ≈ 120 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Келих вина ≈ 120 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бокал вина ≈ 120 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una copa de vino ≈ 120 kcal"
+          }
+        }
+      }
+    },
+    "150 ml czerwonego wytrawnego to ≈120 kcal. Słodkie wino +30%. Z perspektywy redukcji: 1 lampka = 1 godzina spaceru. Wybieraj świadomie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "150 ml czerwonego wytrawnego to ≈120 kcal. Słodkie wino +30%. Z perspektywy redukcji: 1 lampka = 1 godzina spaceru. Wybieraj świadomie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "150 ml of dry red is ≈120 kcal. Sweet wine adds +30%. In cut terms: 1 glass = 1 hour of walking. Choose consciously."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "150 мл сухого червоного — ≈120 ккал. Солодке вино +30%. У термінах редукції: 1 келих = 1 година прогулянки. Обирай свідомо."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "150 мл сухого красного — ≈120 ккал. Сладкое вино +30%. В терминах редукции: 1 бокал = 1 час прогулки. Выбирай осознанно."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "150 ml de tinto seco son ≈120 kcal. El vino dulce suma +30%. En definición: 1 copa = 1 hora de caminata. Elige con cabeza."
+          }
+        }
+      }
+    },
+    "Białko roślinne — wzajemne uzupełnianie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Białko roślinne — wzajemne uzupełnianie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plant protein — pair them up"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рослинний білок — взаємне доповнення"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Растительный белок — пары дополняют друг друга"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proteína vegetal — combina para completar"
+          }
+        }
+      }
+    },
+    "Pojedyncze rośliny rzadko mają pełen profil aminokwasów. Zboża + rośliny strączkowe (ryż + fasola, hummus + chleb) tworzą komplementarną parę.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pojedyncze rośliny rzadko mają pełen profil aminokwasów. Zboża + rośliny strączkowe (ryż + fasola, hummus + chleb) tworzą komplementarną parę."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Single plants rarely have a full amino-acid profile. Grains + legumes (rice + beans, hummus + bread) make a complementary pair."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одиночні рослини рідко мають повний профіль амінокислот. Зернові + бобові (рис + квасоля, хумус + хліб) утворюють комплементарну пару."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отдельные растения редко имеют полный профиль аминокислот. Злаки + бобовые (рис + фасоль, хумус + хлеб) — комплементарная пара."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las plantas por sí solas raramente tienen perfil completo de aminoácidos. Cereales + legumbres (arroz + alubias, hummus + pan) forman pareja complementaria."
+          }
+        }
+      }
+    },
+    "5 porcji warzyw i owoców": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 porcji warzyw i owoców"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 servings of veg and fruit"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 порцій овочів і фруктів"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 порций овощей и фруктов"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 raciones de verdura y fruta"
+          }
+        }
+      }
+    },
+    "400 g/dobę — minimum WHO. Każdy kolor to inne fitozwiązki: lykopen (czerwony), beta-karoten (pomarańczowy), antocyjany (fioletowy), chlorofil (zielony).": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400 g/dobę — minimum WHO. Każdy kolor to inne fitozwiązki: lykopen (czerwony), beta-karoten (pomarańczowy), antocyjany (fioletowy), chlorofil (zielony)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400 g/day — WHO minimum. Each colour means different phytochemicals: lycopene (red), beta-carotene (orange), anthocyanins (purple), chlorophyll (green)."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400 г/добу — мінімум ВООЗ. Кожен колір — інші фітоспоруки: лікопен (червоний), бета-каротин (помаранчевий), антоціани (фіолетовий), хлорофіл (зелений)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400 г/сут — минимум ВОЗ. Каждый цвет — свои фитосоединения: ликопин (красный), бета-каротин (оранжевый), антоцианы (фиолетовый), хлорофилл (зелёный)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400 g/día — mínimo OMS. Cada color implica fitoquímicos distintos: licopeno (rojo), betacaroteno (naranja), antocianinas (morado), clorofila (verde)."
+          }
+        }
+      }
+    },
+    "Jod 150 µg/dobę": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jod 150 µg/dobę"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iodine 150 µg/day"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Йод 150 мкг/добу"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Йод 150 мкг/сут"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yodo 150 µg/día"
+          }
+        }
+      }
+    },
+    "Sól jodowana plus ryby morskie — w PL pokrywają zapotrzebowanie u większości. Niedobór głównie u tych, co kupują „sól himalajską” bez jodu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sól jodowana plus ryby morskie — w PL pokrywają zapotrzebowanie u większości. Niedobór głównie u tych, co kupują „sól himalajską” bez jodu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iodised salt plus sea fish cover the need for most Poles. Deficiency mainly hits people who buy non-iodised \"Himalayan salt\"."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Йодована сіль плюс морська риба покривають потреби більшості в Польщі. Дефіцит здебільшого у тих, хто купує «гімалайську сіль» без йоду."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Йодированная соль плюс морская рыба покрывают потребность у большинства в Польше. Дефицит в основном у тех, кто берёт «гималайскую соль» без йода."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La sal yodada y el pescado de mar cubren la necesidad de la mayoría en Polonia. La deficiencia afecta sobre todo a quienes compran \"sal del Himalaya\" sin yodo."
+          }
+        }
+      }
+    },
+    "Cholina dla mózgu i wątroby": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cholina dla mózgu i wątroby"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choline for brain and liver"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Холін для мозку і печінки"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Холин для мозга и печени"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colina para cerebro e hígado"
+          }
+        }
+      }
+    },
+    "Norma 425–550 mg/dobę. Jajka królują — 1 żółtko = 150 mg. Także wątroba, łosoś. Ważna w ciąży i dla pracy mózgu — często niedoceniana.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Norma 425–550 mg/dobę. Jajka królują — 1 żółtko = 150 mg. Także wątroba, łosoś. Ważna w ciąży i dla pracy mózgu — często niedoceniana."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RDA 425–550 mg/day. Eggs dominate — 1 yolk = 150 mg. Also liver and salmon. Important in pregnancy and for brain function — chronically underrated."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норма 425–550 мг/добу. Лідирують яйця — 1 жовток = 150 мг. Також печінка, лосось. Важлива в вагітності і для роботи мозку — часто недооцінена."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норма 425–550 мг/сут. Лидируют яйца — 1 желток = 150 мг. Также печень, лосось. Важна при беременности и для работы мозга — часто недооценена."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CDR 425–550 mg/día. Los huevos lideran — 1 yema = 150 mg. También hígado y salmón. Importante en el embarazo y para el cerebro — muy infravalorada."
+          }
+        }
+      }
+    },
+    "Witamina C 75-90 mg": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Witamina C 75-90 mg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitamin C 75–90 mg"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вітамін C 75–90 мг"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Витамин C 75–90 мг"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vitamina C 75–90 mg"
+          }
+        }
+      }
+    },
+    "Papryka czerwona ma 4× więcej witaminy C niż cytryna. Niedobór realnie rzadki — łatwo dostarczyć z 1 porcją warzyw lub owoców. Megadawki nic nie dają.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papryka czerwona ma 4× więcej witaminy C niż cytryna. Niedobór realnie rzadki — łatwo dostarczyć z 1 porcją warzyw lub owoców. Megadawki nic nie dają."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red pepper has 4× more vitamin C than lemon. Deficiency is genuinely rare — easy to cover with one serving of veg or fruit. Megadoses do nothing."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Червоний перець має у 4 рази більше вітаміну С, ніж лимон. Дефіцит насправді рідкісний — легко покрити однією порцією овочів чи фруктів. Мегадози нічого не дають."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Красный перец содержит в 4 раза больше витамина C, чем лимон. Дефицит реально редкий — легко закрывается одной порцией овощей или фруктов. Мегадозы ничего не дают."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El pimiento rojo tiene 4× más vitamina C que el limón. La deficiencia es realmente rara — se cubre con una ración de verdura o fruta. Las megadosis no aportan nada."
+          }
+        }
+      }
+    },
+    "Selen — 2 orzechy brazylijskie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selen — 2 orzechy brazylijskie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selenium — 2 Brazil nuts"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Селен — 2 бразильські горіхи"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Селен — 2 бразильских ореха"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selenio — 2 nueces de Brasil"
+          }
+        }
+      }
+    },
+    "Norma 55 µg. Dwa orzechy brazylijskie dziennie pokrywają potrzebę. Wspiera tarczycę i odporność. Nie przesadzaj — przedawkowanie jest możliwe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Norma 55 µg. Dwa orzechy brazylijskie dziennie pokrywają potrzebę. Wspiera tarczycę i odporność. Nie przesadzaj — przedawkowanie jest możliwe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RDA 55 µg. Two Brazil nuts a day cover the need. Supports thyroid and immunity. Don't overdo it — overdose is possible."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норма 55 мкг. Два бразильські горіхи на день закривають потребу. Підтримує щитоподібну і імунітет. Не перебарщуй — передозування можливе."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норма 55 мкг. Два бразильских ореха в день закрывают потребность. Поддерживает щитовидку и иммунитет. Не перебарщивай — передозировка возможна."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CDR 55 µg. Dos nueces de Brasil al día cubren la necesidad. Apoya tiroides e inmunidad. No te pases — la sobredosis es posible."
+          }
+        }
+      }
+    },
+    "Białko w jajku = 6 g": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Białko w jajku = 6 g"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protein in one egg = 6 g"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Білок в яйці = 6 г"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Белок в яйце = 6 г"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proteína en un huevo = 6 g"
+          }
+        }
+      }
+    },
+    "Średnie jajko: 6 g białka, 70 kcal. Mleko 200 ml: 7 g. Twaróg 100 g: 18 g. Pierś z kurczaka 100 g: 23 g. Tuńczyk puszka: 25 g.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Średnie jajko: 6 g białka, 70 kcal. Mleko 200 ml: 7 g. Twaróg 100 g: 18 g. Pierś z kurczaka 100 g: 23 g. Tuńczyk puszka: 25 g."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A medium egg: 6 g protein, 70 kcal. 200 ml milk: 7 g. 100 g twaróg (Polish curd cheese): 18 g. 100 g chicken breast: 23 g. Tuna can: 25 g."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Середнє яйце: 6 г білка, 70 ккал. Молоко 200 мл: 7 г. Кисломолочний сир 100 г: 18 г. Куряча грудка 100 г: 23 г. Тунець з банки: 25 г."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Среднее яйцо: 6 г белка, 70 ккал. Молоко 200 мл: 7 г. Творог 100 г: 18 г. Куриная грудка 100 г: 23 г. Тунец из банки: 25 г."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un huevo mediano: 6 g de proteína, 70 kcal. 200 ml de leche: 7 g. 100 g de twaróg (requesón polaco): 18 g. 100 g de pechuga de pollo: 23 g. Una lata de atún: 25 g."
+          }
+        }
+      }
+    },
+    "„Detoks” to nerki i wątroba": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Detoks” to nerki i wątroba"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"Detox\" is kidneys and liver"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Детокс» — це нирки і печінка"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Детокс» — это почки и печень"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"Detox\" es riñones e hígado"
+          }
+        }
+      }
+    },
+    "Twoje ciało detoksykuje 24/7 — wątroba, nerki, jelita. Soki, posty „detox” nie dodają nic nowego. Co pomaga: błonnik, woda, sen, mniej alkoholu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twoje ciało detoksykuje 24/7 — wątroba, nerki, jelita. Soki, posty „detox” nie dodają nic nowego. Co pomaga: błonnik, woda, sen, mniej alkoholu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your body detoxes 24/7 — liver, kidneys, gut. Juices and \"detox\" fasts add nothing new. What helps: fibre, water, sleep, less alcohol."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твоє тіло детоксикує 24/7 — печінка, нирки, кишечник. Соки і «детокс»-голодування нічого не додають. Що допомагає: клітковина, вода, сон, менше алкоголю."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твоё тело детоксицирует 24/7 — печень, почки, кишечник. Соки и «детокс»-голодания ничего не добавляют. Что помогает: клетчатка, вода, сон, меньше алкоголя."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu cuerpo desintoxica 24/7 — hígado, riñones, intestino. Los zumos y los \"detox\" no aportan nada nuevo. Lo que ayuda: fibra, agua, sueño, menos alcohol."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
