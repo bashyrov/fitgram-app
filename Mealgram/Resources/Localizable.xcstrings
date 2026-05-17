@@ -38584,6 +38584,1406 @@
           }
         }
       }
+    },
+    "Wskazówka → rutyna → nagroda": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wskazówka → rutyna → nagroda"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cue → routine → reward"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Підказка → рутина → нагорода"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подсказка → рутина → награда"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Señal → rutina → recompensa"
+          }
+        }
+      }
+    },
+    "Charles Duhigg: każdy nawyk to pętla. Chcesz wymienić nawyk — zostaw wskazówkę i nagrodę, zmień samo działanie. Spacer zamiast lodówki po stresie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charles Duhigg: każdy nawyk to pętla. Chcesz wymienić nawyk — zostaw wskazówkę i nagrodę, zmień samo działanie. Spacer zamiast lodówki po stresie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charles Duhigg: every habit is a loop. To swap a habit, keep the cue and reward — change the action. A walk instead of the fridge after stress."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charles Duhigg: кожна звичка — це петля. Хочеш замінити звичку — залиш підказку й нагороду, зміни саму дію. Прогулянка замість холодильника після стресу."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charles Duhigg: каждая привычка — петля. Хочешь поменять привычку — оставь подсказку и награду, поменяй саму действие. Прогулка вместо холодильника после стресса."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charles Duhigg: cada hábito es un bucle. Para cambiar un hábito, mantén la señal y la recompensa — cambia la acción. Un paseo en vez de la nevera tras el estrés."
+          }
+        }
+      }
+    },
+    "Reguła 80/20": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reguła 80/20"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The 80/20 rule"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правило 80/20"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правило 80/20"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La regla del 80/20"
+          }
+        }
+      }
+    },
+    "80% jedzenia z minimalnie przetworzonych produktów, 20% to życie. Nie wszystko musi być „czyste” — sztywność rujnuje długofalowy sukces.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "80% jedzenia z minimalnie przetworzonych produktów, 20% to życie. Nie wszystko musi być „czyste” — sztywność rujnuje długofalowy sukces."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "80% of food from minimally processed products, 20% is life. Not everything has to be \"clean\" — rigidity wrecks long-term success."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "80% їжі з мінімально оброблених продуктів, 20% — це життя. Не все має бути «чистим» — жорсткість руйнує довгостроковий успіх."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "80% еды из минимально обработанных продуктов, 20% — это жизнь. Не всё должно быть «чистым» — жёсткость рушит долгосрочный успех."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "80% de comida mínimamente procesada, el 20% es vida. No todo tiene que ser \"limpio\" — la rigidez arruina el éxito a largo plazo."
+          }
+        }
+      }
+    },
+    "Streak działa, bo unikamy strat": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streak działa, bo unikamy strat"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streaks work because we avoid losses"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стрік працює, бо ми уникаємо втрат"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стрик работает, потому что избегаем потерь"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las rachas funcionan porque evitamos pérdidas"
+          }
+        }
+      }
+    },
+    "Mózg nienawidzi tracić bardziej, niż lubi zyskiwać. 30-dniowa seria to inwestycja, której boimy się zaprzepaścić. Dlatego streaki utrzymują rytm.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mózg nienawidzi tracić bardziej, niż lubi zyskiwać. 30-dniowa seria to inwestycja, której boimy się zaprzepaścić. Dlatego streaki utrzymują rytm."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The brain hates losing more than it likes winning. A 30-day streak is an investment we fear breaking. That's why streaks keep the rhythm."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мозок ненавидить втрачати більше, ніж любить вигравати. 30-денний стрік — це інвестиція, яку боїмося розгубити. Тому стріки тримають ритм."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мозг ненавидит терять сильнее, чем любит выигрывать. 30-дневный стрик — это инвестиция, которую страшно потерять. Поэтому стрики держат ритм."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cerebro odia perder más de lo que le gusta ganar. Una racha de 30 días es una inversión que tememos arruinar. Por eso las rachas mantienen el ritmo."
+          }
+        }
+      }
+    },
+    "Implementation intention": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Implementation intention"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Implementation intention"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Implementation intention"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Implementation intention"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intención de implementación"
+          }
+        }
+      }
+    },
+    "„O 18:00 po pracy idę 20 min spacer” skuteczniejsze niż „będę więcej chodzić”. Wpisz miejsce, czas, akcję. Badania pokazują 2x większą szansę realizacji.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„O 18:00 po pracy idę 20 min spacer” skuteczniejsze niż „będę więcej chodzić”. Wpisz miejsce, czas, akcję. Badania pokazują 2x większą szansę realizacji."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"At 6 pm after work I walk for 20 min\" beats \"I'll walk more\". Pin down the place, time, and action. Studies show a 2× higher follow-through rate."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«О 18:00 після роботи йду 20 хв пішки» ефективніше за «буду більше ходити». Запиши місце, час, дію. Дослідження показують у 2 рази вищу реалізацію."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«В 18:00 после работы иду 20 мин пешком» эффективнее «буду больше ходить». Зафиксируй место, время, действие. Исследования показывают 2-кратный шанс реализации."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"A las 18:00 tras el trabajo camino 20 min\" gana a \"voy a andar más\". Define lugar, hora, acción. Los estudios muestran 2× más probabilidad de cumplirlo."
+          }
+        }
+      }
+    },
+    "Zmień środowisko, nie siłę woli": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmień środowisko, nie siłę woli"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change environment, not willpower"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зміни середовище, а не силу волі"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Меняй среду, а не силу воли"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia el entorno, no la fuerza de voluntad"
+          }
+        }
+      }
+    },
+    "Jeśli w domu są ciasteczka — zjesz ciasteczka. Łatwiej raz nie kupić, niż codziennie odmawiać. Projektowanie środowiska bije motywację 9:1.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeśli w domu są ciasteczka — zjesz ciasteczka. Łatwiej raz nie kupić, niż codziennie odmawiać. Projektowanie środowiska bije motywację 9:1."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If there are cookies at home, you eat the cookies. Easier to not buy them once than to refuse daily. Environment design beats motivation 9:1."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Якщо вдома є печиво — ти з'їси печиво. Легше один раз не купити, ніж щодня відмовляти. Дизайн середовища б'є мотивацію 9:1."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Если дома есть печенье — ты съешь печенье. Легче один раз не купить, чем каждый день отказываться. Дизайн среды бьёт мотивацию 9:1."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si hay galletas en casa, te las comes. Más fácil no comprarlas una vez que rechazarlas a diario. Diseñar el entorno gana a la motivación 9:1."
+          }
+        }
+      }
+    },
+    "Tożsamość ważniejsza niż cel": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tożsamość ważniejsza niż cel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Identity matters more than the goal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ідентичність важливіша за ціль"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Идентичность важнее цели"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La identidad importa más que la meta"
+          }
+        }
+      }
+    },
+    "James Clear: „Jestem osobą, która ćwiczy” > „Chcę schudnąć”. Pierwsze jest stałe i karmi się każdym małym wyborem. Drugie znika po osiągnięciu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "James Clear: „Jestem osobą, która ćwiczy” > „Chcę schudnąć”. Pierwsze jest stałe i karmi się każdym małym wyborem. Drugie znika po osiągnięciu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "James Clear: \"I'm someone who trains\" > \"I want to lose weight.\" The first is durable and feeds on every small choice. The second vanishes once you hit it."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "James Clear: «Я людина, яка тренується» > «Хочу схуднути». Перше — стале і живиться кожним малим вибором. Друге зникає після досягнення."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "James Clear: «Я человек, который тренируется» > «Хочу похудеть». Первое — постоянное и кормится каждым маленьким выбором. Второе исчезает после достижения."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "James Clear: \"Soy alguien que entrena\" > \"Quiero adelgazar\". Lo primero es duradero y se alimenta de cada pequeña elección. Lo segundo desaparece al conseguirlo."
+          }
+        }
+      }
+    },
+    "Reguła 5 minut": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reguła 5 minut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The 5-minute rule"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правило 5 хвилин"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Правило 5 минут"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La regla de los 5 minutos"
+          }
+        }
+      }
+    },
+    "Nie chce ci się trenować? Zrób tylko 5 minut. W 80% przypadków zostaniesz na cały trening — start to najtrudniejsza część.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie chce ci się trenować? Zrób tylko 5 minut. W 80% przypadków zostaniesz na cały trening — start to najtrudniejsza część."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't feel like training? Do just 5 minutes. 80% of the time you'll stay for the whole session — starting is the hardest part."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не хочеш тренуватися? Зроби лише 5 хвилин. У 80% випадків залишишся на повне тренування — старт найважчий."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не хочется тренироваться? Сделай только 5 минут. В 80% случаев останешься на всю тренировку — старт самый сложный."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿No te apetece entrenar? Haz solo 5 minutos. En el 80% de los casos te quedas a todo el entrenamiento — empezar es lo más difícil."
+          }
+        }
+      }
+    },
+    "Sam tracking zmienia zachowanie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sam tracking zmienia zachowanie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tracking alone changes behaviour"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сам трекінг змінює поведінку"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сам трекинг меняет поведение"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo registrar ya cambia el comportamiento"
+          }
+        }
+      }
+    },
+    "Hawthorne effect: świadomość mierzenia poprawia wyniki. Skanowanie posiłków obniża spożycie o 5-10% bez świadomej diety. Dane mają moc.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hawthorne effect: świadomość mierzenia poprawia wyniki. Skanowanie posiłków obniża spożycie o 5-10% bez świadomej diety. Dane mają moc."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hawthorne effect: awareness of being measured improves results. Scanning meals drops intake by 5–10% with no conscious diet. Data has power."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hawthorne effect: усвідомлення вимірювання покращує результати. Сканування страв знижує споживання на 5–10% без свідомої дієти. Дані мають силу."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hawthorne effect: осознание измерения улучшает результаты. Сканирование еды снижает потребление на 5–10% без осознанной диеты. У данных есть сила."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efecto Hawthorne: saber que te miden mejora los resultados. Escanear comidas baja la ingesta un 5–10% sin dieta consciente. Los datos tienen poder."
+          }
+        }
+      }
+    },
+    "Pułapka all-or-nothing": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pułapka all-or-nothing"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The all-or-nothing trap"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пастка «все або нічого»"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ловушка «всё или ничего»"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La trampa del todo o nada"
+          }
+        }
+      }
+    },
+    "Zjadłem batona = „dzień zepsuty, dobra, dziś koniec, jutro od nowa” = +1500 kcal. Zjadłem batona = +200 kcal i koniec. Logika ratuje wynik.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zjadłem batona = „dzień zepsuty, dobra, dziś koniec, jutro od nowa” = +1500 kcal. Zjadłem batona = +200 kcal i koniec. Logika ratuje wynik."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ate a bar = \"day's ruined, fine, I'm done, restart tomorrow\" = +1500 kcal. Ate a bar = +200 kcal and that's it. Logic saves the result."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "З'їв батончик = «день зіпсований, добре, на сьогодні досить, завтра з нуля» = +1500 ккал. З'їв батончик = +200 ккал і все. Логіка рятує результат."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Съел батончик = «день испорчен, ладно, на сегодня всё, завтра с нуля» = +1500 ккал. Съел батончик = +200 ккал и точка. Логика спасает результат."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comí una barrita = \"día arruinado, vale, hoy ya, mañana de cero\" = +1500 kcal. Comí una barrita = +200 kcal y punto. La lógica salva el resultado."
+          }
+        }
+      }
+    },
+    "Konsystencja > intensywność": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konsystencja > intensywność"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consistency > intensity"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Постійність > інтенсивність"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Постоянство > интенсивность"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Constancia > intensidad"
+          }
+        }
+      }
+    },
+    "Trzy treningi tygodniowo przez rok bije półroczny obóz 6x/tydz, po którym przerwa. Ciało reaguje na bodźce powtarzane długo, nie spektakularne i krótkie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trzy treningi tygodniowo przez rok bije półroczny obóz 6x/tydz, po którym przerwa. Ciało reaguje na bodźce powtarzane długo, nie spektakularne i krótkie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three weekly sessions for a year beats a six-month 6×/week camp followed by a stop. The body responds to long, repeated stimuli — not short, dramatic ones."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Три тренування на тиждень протягом року б'ють піврічний табір 6×/тиждень із наступною перервою. Тіло реагує на довгі повторювані подразники, а не на короткі ефектні."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Три тренировки в неделю в течение года бьют полугодовой лагерь 6×/нед с последующим перерывом. Тело отвечает на длительные повторяющиеся стимулы, а не короткие эффектные."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tres entrenos semanales durante un año ganan a seis meses a 6×/semana seguidos de un parón. El cuerpo responde a estímulos largos y repetidos, no a los cortos y espectaculares."
+          }
+        }
+      }
+    },
+    "30-35 ml wody/kg": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30-35 ml wody/kg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30–35 ml of water per kg"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30–35 мл води/кг"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30–35 мл воды/кг"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30–35 ml de agua/kg"
+          }
+        }
+      }
+    },
+    "Dla 70 kg to 2.1–2.4 l. Plus 500 ml/h treningu. Kawa i herbata liczą się jak woda — odwodnienie z kofeiny to mit (przy umiarkowanych dawkach).": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dla 70 kg to 2.1–2.4 l. Plus 500 ml/h treningu. Kawa i herbata liczą się jak woda — odwodnienie z kofeiny to mit (przy umiarkowanych dawkach)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For 70 kg that's 2.1–2.4 L. Plus 500 ml per hour of training. Coffee and tea count as water — caffeine dehydration is a myth at moderate doses."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для 70 кг це 2,1–2,4 л. Плюс 500 мл за годину тренування. Кава й чай рахуються як вода — зневоднення від кофеїну — міф (за помірних доз)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для 70 кг это 2,1–2,4 л. Плюс 500 мл на час тренировки. Кофе и чай считаются как вода — обезвоживание от кофеина — миф (при умеренных дозах)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para 70 kg son 2,1–2,4 L. Más 500 ml por hora de entreno. El café y el té cuentan como agua — la deshidratación por cafeína es un mito en dosis moderadas."
+          }
+        }
+      }
+    },
+    "Kolor moczu — najlepszy test": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolor moczu — najlepszy test"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Urine colour — the best test"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Колір сечі — найкращий тест"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цвет мочи — лучший тест"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El color de la orina — el mejor test"
+          }
+        }
+      }
+    },
+    "Jasnożółty = nawodniony. Ciemny jak bursztyn = pij. Pierwszy poranny zawsze ciemniejszy. Łatwiejszy wskaźnik niż liczenie szklanek.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jasnożółty = nawodniony. Ciemny jak bursztyn = pij. Pierwszy poranny zawsze ciemniejszy. Łatwiejszy wskaźnik niż liczenie szklanek."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pale yellow = hydrated. Dark amber = drink up. The first morning one is always darker. Easier indicator than counting glasses."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Світло-жовтий = ти зволожений. Темно-бурштиновий = пий. Перший ранковий завжди темніший. Простіший показник, ніж рахувати склянки."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Светло-жёлтый = ты гидратирован. Тёмно-янтарный = пей. Первый утренний всегда темнее. Проще показатель, чем считать стаканы."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amarillo pálido = hidratado. Ámbar oscuro = bebe. La primera de la mañana siempre es más oscura. Indicador más fácil que contar vasos."
+          }
+        }
+      }
+    },
+    "Pragnienie spóźnia się o 1-2%": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pragnienie spóźnia się o 1-2%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thirst lags by 1–2%"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спрага запізнюється на 1–2%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жажда отстаёт на 1–2%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La sed se retrasa un 1–2%"
+          }
+        }
+      }
+    },
+    "Mózg czuje pragnienie po utracie 1–2% wody — już z lekkim spadkiem wydolności. Wyrobiony nawyk pij-przed-pracą bije reaktywne picie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mózg czuje pragnienie po utracie 1–2% wody — już z lekkim spadkiem wydolności. Wyrobiony nawyk pij-przed-pracą bije reaktywne picie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The brain registers thirst after losing 1–2% of water — already with a small drop in performance. A built-in \"drink-before-work\" habit beats reactive sipping."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мозок відчуває спрагу після втрати 1–2% води — вже з невеликим падінням працездатності. Звичка пити-до-роботи б'є реактивне пиття."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мозг чувствует жажду после потери 1–2% воды — уже с лёгким падением работоспособности. Привычка пить-до-работы бьёт реактивное питьё."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cerebro siente sed tras perder un 1–2% de agua — ya con una bajada leve del rendimiento. El hábito de \"beber antes del trabajo\" gana al bebido reactivo."
+          }
+        }
+      }
+    },
+    "Często „głód” to pragnienie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Często „głód” to pragnienie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Often \"hunger\" is thirst"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Часто «голод» — це спрага"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Часто «голод» — это жажда"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A menudo el \"hambre\" es sed"
+          }
+        }
+      }
+    },
+    "Hipotalamus myli sygnały głodu i pragnienia. Test: wypij szklankę wody, poczekaj 15 min. Jeśli głód zniknął — chodziło o wodę.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hipotalamus myli sygnały głodu i pragnienia. Test: wypij szklankę wody, poczekaj 15 min. Jeśli głód zniknął — chodziło o wodę."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The hypothalamus mixes up hunger and thirst signals. Test: drink a glass of water, wait 15 min. If hunger's gone — it was about water."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гіпоталамус плутає сигнали голоду й спраги. Тест: випий склянку води, почекай 15 хв. Якщо голод зник — це була вода."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гипоталамус путает сигналы голода и жажды. Тест: выпей стакан воды, подожди 15 мин. Если голод исчез — речь шла о воде."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El hipotálamo confunde señales de hambre y sed. Prueba: bebe un vaso de agua, espera 15 min. Si el hambre se va — era agua."
+          }
+        }
+      }
+    },
+    "Elektrolity po pocie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elektrolity po pocie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Electrolytes after sweat"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Електроліти після поту"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Электролиты после пота"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Electrolitos tras sudar"
+          }
+        }
+      }
+    },
+    "Litr potu = ≈700–1500 mg sodu. Po długim treningu sama woda rozcieńcza krew. Banan + szczypta soli + szklanka wody to bezpłatny izotonik.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Litr potu = ≈700–1500 mg sodu. Po długim treningu sama woda rozcieńcza krew. Banan + szczypta soli + szklanka wody to bezpłatny izotonik."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A litre of sweat = ≈700–1500 mg of sodium. After a long workout plain water dilutes the blood. Banana + a pinch of salt + a glass of water is a free isotonic."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Літр поту = ≈700–1500 мг натрію. Після довгого тренування сама вода розводить кров. Банан + дрібка солі + склянка води — безкоштовний ізотонік."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Литр пота = ≈700–1500 мг натрия. После длинной тренировки одна вода разводит кровь. Банан + щепотка соли + стакан воды — бесплатный изотоник."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un litro de sudor = ≈700–1500 mg de sodio. Tras un entreno largo, solo agua diluye la sangre. Plátano + una pizca de sal + un vaso de agua es una bebida isotónica gratis."
+          }
+        }
+      }
+    },
+    "Zimno spala — ale niewiele": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zimno spala — ale niewiele"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold burns — but not much"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Холод пече — але мало"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Холод жжёт — но немного"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El frío quema — pero poco"
+          }
+        }
+      }
+    },
+    "Brunatny tłuszcz aktywuje się w niskich temperaturach i spala 50–250 kcal/dobę. Zimny prysznic? Pomaga, ale nie zastąpi diety.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brunatny tłuszcz aktywuje się w niskich temperaturach i spala 50–250 kcal/dobę. Zimny prysznic? Pomaga, ale nie zastąpi diety."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brown fat activates in cold and burns 50–250 kcal/day. Cold shower? Helps, but won't replace the diet."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бурий жир активується на холоді й палить 50–250 ккал/добу. Холодний душ? Допомагає, але не замінить дієту."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бурый жир активируется на холоде и жжёт 50–250 ккал/сут. Холодный душ? Помогает, но не заменит диету."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La grasa parda se activa con el frío y quema 50–250 kcal/día. ¿Ducha fría? Ayuda, pero no sustituye la dieta."
+          }
+        }
+      }
+    },
+    "Ostre dania = +5% TEF": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostre dania = +5% TEF"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spicy food = +5% TEF"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гостра їжа = +5% TEF"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Острая еда = +5% TEF"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comida picante = +5% TEF"
+          }
+        }
+      }
+    },
+    "Kapsaicyna z papryczek podnosi termogenezę krótkoterminowo. Realnie 30–50 kcal/dobę. Bonus — działa lekko apetyto-tłumiąco.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapsaicyna z papryczek podnosi termogenezę krótkoterminowo. Realnie 30–50 kcal/dobę. Bonus — działa lekko apetyto-tłumiąco."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chilli capsaicin raises thermogenesis short-term. Realistically 30–50 kcal/day. Bonus — it mildly suppresses appetite."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Капсаїцин з перцю короткочасно підвищує термогенез. Реально 30–50 ккал/добу. Бонус — трохи притлумлює апетит."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Капсаицин из перца кратковременно повышает термогенез. Реально 30–50 ккал/сут. Бонус — слегка подавляет аппетит."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La capsaicina del chile sube la termogénesis a corto plazo. Realmente 30–50 kcal/día. Bonus — frena ligeramente el apetito."
+          }
+        }
+      }
+    },
+    "Zielona herbata = lekki boost": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zielona herbata = lekki boost"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Green tea = a small boost"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зелений чай = легкий буст"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зелёный чай = лёгкий буст"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Té verde = un pequeño impulso"
+          }
+        }
+      }
+    },
+    "Katechiny + L-teanina + kofeina podnoszą wydatek energetyczny o ≈70 kcal/dobę. To nie cud — to bonus do nawodnienia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katechiny + L-teanina + kofeina podnoszą wydatek energetyczny o ≈70 kcal/dobę. To nie cud — to bonus do nawodnienia."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catechins + L-theanine + caffeine bump energy expenditure by ≈70 kcal/day. Not a miracle — a hydration bonus."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Катехіни + L-теанін + кофеїн підвищують енерговитрати на ≈70 ккал/добу. Не диво — це бонус до гідратації."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Катехины + L-теанин + кофеин повышают энергозатраты на ≈70 ккал/сут. Не чудо — бонус к гидратации."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catequinas + L-teanina + cafeína suben el gasto en ≈70 kcal/día. No es un milagro — es un bonus a la hidratación."
+          }
+        }
+      }
+    },
+    "Zimna woda = 25 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zimna woda = 25 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cold water = 25 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Холодна вода = 25 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Холодная вода = 25 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agua fría = 25 kcal"
+          }
+        }
+      }
+    },
+    "500 ml chłodnej wody (4°C) zużywa ≈25 kcal na podgrzanie do temperatury ciała. 2 l/dobę = 100 kcal „darmowych”. Miłe, ale nie zbawi diety.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml chłodnej wody (4°C) zużywa ≈25 kcal na podgrzanie do temperatury ciała. 2 l/dobę = 100 kcal „darmowych”. Miłe, ale nie zbawi diety."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml of cold water (4°C) uses ≈25 kcal to warm up to body temperature. 2 L/day = 100 \"free\" kcal. Nice, but won't save the diet."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 мл холодної води (4°C) витрачає ≈25 ккал на нагрів до температури тіла. 2 л/добу = 100 «безкоштовних» ккал. Приємно, але дієту не врятує."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 мл холодной воды (4°C) тратит ≈25 ккал на прогрев до температуры тела. 2 л/сут = 100 «бесплатных» ккал. Приятно, но диету не спасёт."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml de agua fría (4°C) gastan ≈25 kcal en calentarse al cuerpo. 2 L/día = 100 kcal \"gratis\". Bonito, pero no salva la dieta."
+          }
+        }
+      }
+    },
+    "IF nie spala szybciej": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IF nie spala szybciej"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IF doesn't burn faster"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IF не палить швидше"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IF не сжигает быстрее"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El ayuno intermitente no quema más rápido"
+          }
+        }
+      }
+    },
+    "Intermittent fasting w deficycie daje takie same efekty jak klasyczna dieta. Plus: dla wielu prostsza struktura dnia. Minus: trudniej trafić w białko.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intermittent fasting w deficycie daje takie same efekty jak klasyczna dieta. Plus: dla wielu prostsza struktura dnia. Minus: trudniej trafić w białko."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intermittent fasting on a deficit gives the same results as a classic diet. Pro: simpler day structure for many. Con: harder to hit protein targets."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Інтервальне голодування у дефіциті дає такі ж результати, як класична дієта. Плюс: простіша структура дня. Мінус: складніше влучити в білок."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Интервальное голодание в дефиците даёт те же результаты, что и классическая диета. Плюс: проще структура дня. Минус: тяжелее попасть в белок."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El ayuno intermitente en déficit da los mismos resultados que una dieta clásica. Pro: estructura del día más simple para muchos. Contra: cuesta más llegar al objetivo de proteína."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
