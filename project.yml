@@ -92,6 +92,7 @@ targets:
         NSHealthShareUsageDescription: "Mealgram synchronizuje aktywność i wagę z Apple Health."
         NSHealthUpdateUsageDescription: "Mealgram zapisuje posiłki i kalorie w Apple Health."
         NSUserTrackingUsageDescription: "Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi."
+        NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: public.app-category.healthcare-fitness
     entitlements:

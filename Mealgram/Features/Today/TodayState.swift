@@ -43,6 +43,7 @@ final class TodayState {
     private let coachService: CoachService?
     private let waterService: WaterService?
     private let watchBridge: WatchSessionBridge?
+    private let liveActivityService: LiveActivityService?
     private let calendar: Calendar
     private let now: () -> Date
 
@@ -55,6 +56,7 @@ final class TodayState {
         coachService: CoachService? = nil,
         waterService: WaterService? = nil,
         watchBridge: WatchSessionBridge? = nil,
+        liveActivityService: LiveActivityService? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
@@ -66,6 +68,7 @@ final class TodayState {
         self.coachService = coachService
         self.waterService = waterService
         self.watchBridge = watchBridge
+        self.liveActivityService = liveActivityService
         self.calendar = calendar
         self.now = now
         self.viewingDate = calendar.startOfDay(for: now())
@@ -156,6 +159,7 @@ final class TodayState {
             if isViewingToday {
                 publishWidgetSnapshot()
                 publishWatchSnapshot()
+                publishLiveActivityUpdate()
             }
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
@@ -187,6 +191,7 @@ final class TodayState {
             if isViewingToday {
                 publishWidgetSnapshot()
                 publishWatchSnapshot()
+                publishLiveActivityUpdate()
             }
         }
         return logged
@@ -201,6 +206,7 @@ final class TodayState {
             if isViewingToday {
                 publishWidgetSnapshot()
                 publishWatchSnapshot()
+                publishLiveActivityUpdate()
             }
         }
         return undone
@@ -236,6 +242,39 @@ final class TodayState {
         )
         WidgetSnapshotStore.shared.write(snapshot)
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Builds the latest Live Activity content state and either starts
+    /// the activity (first time today) or updates the running one. Same
+    /// data shape as the widget snapshot — calorie + macros + water.
+    /// Runs only when viewing today (gated by callers) AND when the
+    /// user has at least one meal logged or some water — keeps the
+    /// Lock Screen clean for users who haven't engaged yet.
+    private func publishLiveActivityUpdate() {
+        guard let liveActivityService else { return }
+        let hasActivityToShow = !meals.isEmpty || waterTotalMl > 0
+        let state = MealgramActivityAttributes.ContentState(
+            kcalConsumed: Int(totals.calories.rounded()),
+            kcalGoal: calorieGoal,
+            proteinConsumed: Int(totals.protein.rounded()),
+            proteinGoal: user?.proteinGoalGrams ?? 0,
+            carbsConsumed: Int(totals.carbs.rounded()),
+            carbsGoal: user?.carbsGoalGrams ?? 0,
+            fatConsumed: Int(totals.fat.rounded()),
+            fatGoal: user?.fatGoalGrams ?? 0,
+            waterMl: waterTotalMl,
+            waterGoalMl: user?.waterGoalMl ?? 0,
+            updatedAt: now()
+        )
+        if hasActivityToShow {
+            // start() is idempotent — second call within the same day
+            // just routes to update() under the hood.
+            if liveActivityService.start(initialState: state) == false {
+                liveActivityService.update(state: state)
+            }
+        } else {
+            liveActivityService.update(state: state)
+        }
     }
 
     /// Mirrors `publishWidgetSnapshot` but for the Apple Watch

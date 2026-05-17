@@ -38,6 +38,7 @@ struct MealgramApp: App {
     private let goalsService: GoalsService
     private let recommendationsService: RecommendationsService
     private let watchBridge: WatchSessionBridge
+    private let liveActivityService: LiveActivityService
     @State private var privacyStore: PrivacyStore
     @State private var subscriptionService: MockSubscriptionService
     @State private var entitlementsStore: EntitlementsStore
@@ -132,6 +133,8 @@ struct MealgramApp: App {
         self.coachService = coachService
         let watchBridge = WatchSessionBridge()
         self.watchBridge = watchBridge
+        let liveActivityService = LiveActivityService()
+        self.liveActivityService = liveActivityService
         let watchWaterService = WaterService(container: persistence.container)
         let todayState = TodayState(
             container: persistence.container,
@@ -139,7 +142,8 @@ struct MealgramApp: App {
             recipeRepository: recipeRepository,
             coachService: coachService,
             waterService: watchWaterService,
-            watchBridge: watchBridge
+            watchBridge: watchBridge,
+            liveActivityService: liveActivityService
         )
         self.todayState = todayState
         // Watch → iPhone: pressing the +1 szklanka button on the Watch
@@ -286,6 +290,23 @@ struct MealgramApp: App {
             .id(localizationStore.locale.identifier)
             .modelContainer(persistenceController.container)
             .tint(Tokens.Palette.primary)
+            .onOpenURL { url in
+                handleDeepLink(url)
+            }
+        }
+    }
+
+    /// Routes app-scheme deep links into the right NotificationCenter
+    /// channel so MainTabView (which holds the live `authUser.id`) can
+    /// fan out to the right service. Currently only handles the Live
+    /// Activity's `mealgram://add-water` URL — extend here as more
+    /// activity buttons / widget links land.
+    private func handleDeepLink(_ url: URL) {
+        guard url.scheme == MealgramActivityDeepLink.scheme else { return }
+        if url.host == MealgramActivityDeepLink.addWaterHost {
+            NotificationCenter.default.post(
+                name: AppShortcutAction.addWaterFromActivity, object: nil
+            )
         }
     }
 }

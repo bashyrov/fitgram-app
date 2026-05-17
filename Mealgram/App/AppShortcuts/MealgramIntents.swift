@@ -16,6 +16,12 @@ enum AppShortcutAction {
     /// (e.g. GoalTrackingState on Today) can refetch their snapshot
     /// without waiting for the user to re-enter the tab.
     static let mainGoalChanged = Notification.Name("mealgram.profile.mainGoalChanged")
+    /// Posted when the user taps the "+1 szklanka" button in the Live
+    /// Activity (Dynamic Island expanded). MainTabView observes it and
+    /// routes to `TodayState.logWaterGlass` for the signed-in user —
+    /// ActivityKit forbids mutating data directly from the activity
+    /// view, so a deep-link bounce is the only path.
+    static let addWaterFromActivity = Notification.Name("mealgram.activity.addWater")
 }
 
 /// Open the app and raise the "Add meal" action sheet.

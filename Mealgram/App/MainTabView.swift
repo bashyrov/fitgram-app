@@ -313,6 +313,14 @@ struct MainTabView: View {
         .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.mainGoalChanged)) { _ in
             goalTrackingState.refresh(for: authUser.id)
         }
+        .onReceive(
+            NotificationCenter.default.publisher(for: AppShortcutAction.addWaterFromActivity)
+        ) { _ in
+            selectedTab = .today
+            Task {
+                _ = await todayState.logWaterGlass(for: authUser.id)
+            }
+        }
         .onContinueUserActivity(CSSearchableItemActionType) { _ in
             isRecipesPresented = true
         }

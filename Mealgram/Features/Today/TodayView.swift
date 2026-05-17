@@ -25,10 +25,16 @@ struct TodayView: View {
     @State private var waterGoalDraft: Int = WaterService.defaultDailyGoalMilliliters
     @State private var isCalorieGoalAlertPresented = false
     @State private var calorieGoalDraft: Int = 2100
+    @State private var isOlaTipsPresented = false
 
     @AppStorage("water.dailyGoalMl") private var waterGoalStored = WaterService.defaultDailyGoalMilliliters
 
     @Environment(\.modelContext) private var modelContext
+
+    /// Day-rotating fact picker for the "Porady od Oli" sheet. The
+    /// selector itself is cheap to construct — but parking it on the
+    /// view keeps the chosen fact stable across re-renders.
+    private let factSelector = DailyFactSelector()
 
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
@@ -113,10 +119,20 @@ struct TodayView: View {
                             let user = state.user,
                             let data = user.latestRecommendationsJSON,
                             let recs = try? JSONDecoder().decode(Recommendations.self, from: data) {
-                            OlaInsightsHero(
-                                recommendations: recs,
-                                lastUpdated: user.recommendationsGeneratedAt
-                            )
+                            // Tap the entire hero to open the full
+                            // "Porady od Oli" sheet — but keep the
+                            // in-place carousel + Następny krok visible.
+                            Button {
+                                Haptics.light()
+                                isOlaTipsPresented = true
+                            } label: {
+                                OlaInsightsHero(
+                                    recommendations: recs,
+                                    lastUpdated: user.recommendationsGeneratedAt
+                                )
+                            }
+                            .buttonStyle(PressableButtonStyle())
+                            .accessibilityLabel(Text("Otwórz porady od Oli"))
                         }
 
                         if state.isViewingToday,
@@ -213,6 +229,14 @@ struct TodayView: View {
         } message: {
             Text("250–8000 ml. Standard to 2000 ml.")
         }
+        .sheet(isPresented: $isOlaTipsPresented) {
+            OlaTipsView(
+                recommendations: currentRecommendations,
+                lastUpdated: state.user?.recommendationsGeneratedAt,
+                selector: factSelector,
+                onDismiss: { isOlaTipsPresented = false }
+            )
+        }
         .alert("Dzienny cel kalorii", isPresented: $isCalorieGoalAlertPresented) {
             TextField("kcal", value: $calorieGoalDraft, format: .number)
                 .keyboardType(.numberPad)
@@ -223,6 +247,14 @@ struct TodayView: View {
         } message: {
             Text("1000–4500 kcal. Pełna edycja w Profilu → Cele.")
         }
+    }
+
+    /// Pulls the cached Recommendations off the User row, if any.
+    /// Used to seed the "Porady od Oli" sheet — the hero card and the
+    /// sheet share the same JSON snapshot.
+    private var currentRecommendations: Recommendations? {
+        guard let data = state.user?.latestRecommendationsJSON else { return nil }
+        return try? JSONDecoder().decode(Recommendations.self, from: data)
     }
 
     private func applyCalorieGoal(_ kcal: Int) {
