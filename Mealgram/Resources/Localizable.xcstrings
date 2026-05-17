@@ -36484,6 +36484,2106 @@
           }
         }
       }
+    },
+    "Pierogi ruskie vs mięsne": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pierogi ruskie vs mięsne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruskie vs meat pierogi"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пироги «руські» vs м'ясні"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вареники «русские» vs мясные"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pierogi ruskie vs de carne"
+          }
+        }
+      }
+    },
+    "Ruskie (100 g) ≈220 kcal, mięsne ≈250, z jagodami ≈190 (ale +cukier). 6 sztuk ruskich + łyżka oliwy/cebula z masłem to typowo 600 kcal.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruskie (100 g) ≈220 kcal, mięsne ≈250, z jagodami ≈190 (ale +cukier). 6 sztuk ruskich + łyżka oliwy/cebula z masłem to typowo 600 kcal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruskie (potato-cheese, 100 g) ≈220 kcal, meat ≈250, blueberry ≈190 (but +sugar). 6 ruskie + a spoon of oil/buttered onions is typically 600 kcal."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Руські» (100 г) ≈220 ккал, м'ясні ≈250, з чорницею ≈190 (але +цукор). 6 руських + ложка олії/цибуля з маслом — типово 600 ккал."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Русские» (100 г) ≈220 ккал, мясные ≈250, с черникой ≈190 (но +сахар). 6 «русских» + ложка масла/жареный лук — обычно 600 ккал."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruskie (patata-queso, 100 g) ≈220 kcal, de carne ≈250, de arándanos ≈190 (pero +azúcar). 6 ruskie + cucharada de aceite/cebolla con mantequilla suelen ser 600 kcal."
+          }
+        }
+      }
+    },
+    "Kasza gryczana > ryż biały": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasza gryczana > ryż biały"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buckwheat groats > white rice"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гречка > білий рис"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гречка > белый рис"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trigo sarraceno > arroz blanco"
+          }
+        }
+      }
+    },
+    "Sucha gryczana: 343 kcal/100 g, 13 g białka, 10 g błonnika, IG 40. Ryż biały: 360 kcal, 7 g białka, 1 g błonnika, IG 73. Ta sama porcja, dwa różne dania.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sucha gryczana: 343 kcal/100 g, 13 g białka, 10 g błonnika, IG 40. Ryż biały: 360 kcal, 7 g białka, 1 g błonnika, IG 73. Ta sama porcja, dwa różne dania."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dry buckwheat: 343 kcal/100 g, 13 g protein, 10 g fibre, GI 40. White rice: 360 kcal, 7 g protein, 1 g fibre, GI 73. Same portion, two different meals."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Суха гречка: 343 ккал/100 г, 13 г білка, 10 г клітковини, ГІ 40. Білий рис: 360 ккал, 7 г білка, 1 г клітковини, ГІ 73. Та сама порція — дві різні страви."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сухая гречка: 343 ккал/100 г, 13 г белка, 10 г клетчатки, ГИ 40. Белый рис: 360 ккал, 7 г белка, 1 г клетчатки, ГИ 73. Та же порция — два разных блюда."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trigo sarraceno seco: 343 kcal/100 g, 13 g de proteína, 10 g de fibra, IG 40. Arroz blanco: 360 kcal, 7 g de proteína, 1 g de fibra, IG 73. La misma ración, platos distintos."
+          }
+        }
+      }
+    },
+    "Twaróg chudy — białkowy mistrz PL": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg chudy — białkowy mistrz PL"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lean twaróg — Polish protein champion"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нежирний сир — польський чемпіон білка"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обезжиренный творог — белковый чемпион ПЛ"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg desnatado — campeón polaco de proteína"
+          }
+        }
+      }
+    },
+    "100 g twarogu chudego: 95 kcal, 18 g białka, 0.4 g tłuszczu. Dla porównania pierś z kurczaka: 110 kcal, 23 g. Twaróg jest tańszy i wszechobecny.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g twarogu chudego: 95 kcal, 18 g białka, 0.4 g tłuszczu. Dla porównania pierś z kurczaka: 110 kcal, 23 g. Twaróg jest tańszy i wszechobecny."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g of lean twaróg (Polish curd cheese): 95 kcal, 18 g protein, 0.4 g fat. Compare chicken breast: 110 kcal, 23 g. Twaróg is cheaper and everywhere."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 г нежирного кисломолочного сиру: 95 ккал, 18 г білка, 0,4 г жиру. Для порівняння куряча грудка: 110 ккал, 23 г. Сир дешевший і повсюди."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 г обезжиренного творога: 95 ккал, 18 г белка, 0,4 г жира. Для сравнения куриная грудка: 110 ккал, 23 г. Творог дешевле и повсюду."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g de twaróg (requesón polaco) desnatado: 95 kcal, 18 g de proteína, 0,4 g de grasa. La pechuga de pollo: 110 kcal, 23 g. El twaróg es más barato y está en todas partes."
+          }
+        }
+      }
+    },
+    "Barszcz czerwony 35 kcal/100 ml": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barszcz czerwony 35 kcal/100 ml"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red borscht 35 kcal/100 ml"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Червоний борщ 35 ккал/100 мл"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Красный борщ 35 ккал/100 мл"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borscht rojo 35 kcal/100 ml"
+          }
+        }
+      }
+    },
+    "Czysty barszcz to bulion z buraka — sycący, niskokaloryczny, bogaty w azotany wspierające ciśnienie. Idealne przedśniadanie lub przedposiłkowe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Czysty barszcz to bulion z buraka — sycący, niskokaloryczny, bogaty w azotany wspierające ciśnienie. Idealne przedśniadanie lub przedposiłkowe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear borscht is a beet broth — filling, low-cal, rich in nitrates that support blood pressure. Perfect as a pre-breakfast or pre-meal starter."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чистий борщ — буряковий бульйон: ситний, низькокалорійний, багатий на нітрати, які підтримують тиск. Ідеально перед сніданком або перед прийомом їжі."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чистый борщ — свекольный бульон: сытный, низкокалорийный, богатый нитратами, поддерживающими давление. Идеально перед завтраком или перед едой."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El borscht clarito es un caldo de remolacha — saciante, bajo en kcal, rico en nitratos que ayudan a la tensión. Ideal antes del desayuno o como entrante."
+          }
+        }
+      }
+    },
+    "Żurek z białą kiełbasą ≈ 350 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Żurek z białą kiełbasą ≈ 350 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Żurek with white sausage ≈ 350 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журек з білою ковбасою ≈ 350 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журек с белой колбасой ≈ 350 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Żurek con salchicha blanca ≈ 350 kcal"
+          }
+        }
+      }
+    },
+    "Talerz żuru z połówką kiełbasy i jajkiem to ≈350 kcal. Sam żur bez dodatków ≈120 kcal. Dodatki robią różnicę — kontroluj.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talerz żuru z połówką kiełbasy i jajkiem to ≈350 kcal. Sam żur bez dodatków ≈120 kcal. Dodatki robią różnicę — kontroluj."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A bowl of żurek with half a sausage and an egg is ≈350 kcal. Plain żurek without toppings ≈120 kcal. The add-ons make the difference — watch them."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тарілка журеку з пів-ковбасою і яйцем — ≈350 ккал. Сам журек без добавок ≈120 ккал. Різницю роблять добавки — контролюй."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тарелка журека с пол-колбасы и яйцом — ≈350 ккал. Сам журек без добавок ≈120 ккал. Разницу делают добавки — контролируй."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un plato de żurek con media salchicha y huevo son ≈350 kcal. El żurek solo, sin toppings, ≈120 kcal. La diferencia la hacen los añadidos — vigílalos."
+          }
+        }
+      }
+    },
+    "Sernik 350 kcal/kawałek": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sernik 350 kcal/kawałek"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cheesecake 350 kcal/slice"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сирник 350 ккал/шматок"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сырник 350 ккал/кусок"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sernik (tarta de queso) 350 kcal/porción"
+          }
+        }
+      }
+    },
+    "Klasyczny krakowski 100 g to ≈320–380 kcal. Tłuszcz z twarogu i masła, cukier z lukru. Plus: dawka białka (10 g) i wapnia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasyczny krakowski 100 g to ≈320–380 kcal. Tłuszcz z twarogu i masła, cukier z lukru. Plus: dawka białka (10 g) i wapnia."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic Kraków cheesecake at 100 g is ≈320–380 kcal. Fat from twaróg and butter, sugar from glaze. Plus: a hit of protein (10 g) and calcium."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Класичний краківський 100 г — ≈320–380 ккал. Жир із сиру й масла, цукор із глазурі. Плюси: 10 г білка та кальцій."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Классический краковский 100 г — ≈320–380 ккал. Жир из творога и масла, сахар из глазури. Плюсы: 10 г белка и кальций."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El clásico sernik de Cracovia (100 g) son ≈320–380 kcal. Grasa del twaróg y la mantequilla, azúcar del glaseado. Aporta: 10 g de proteína y calcio."
+          }
+        }
+      }
+    },
+    "Schabowy panierowany +40% kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schabowy panierowany +40% kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breaded pork cutlet adds +40% kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шницель в паніровці +40% ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шницель в панировке +40% ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schabowy empanado suma +40% kcal"
+          }
+        }
+      }
+    },
+    "Schab surowy 140 kcal/100 g. Po panierce w bułce i smażeniu w smalcu/oleju — 280–320 kcal. Pieczony w piekarniku bez panierki: 180 kcal.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schab surowy 140 kcal/100 g. Po panierce w bułce i smażeniu w smalcu/oleju — 280–320 kcal. Pieczony w piekarniku bez panierki: 180 kcal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raw pork loin is 140 kcal/100 g. Breaded and fried in lard/oil — 280–320 kcal. Oven-baked without breading: 180 kcal."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сира свиняча корейка — 140 ккал/100 г. У паніровці й смаженні на смальці/олії — 280–320 ккал. Запечена в духовці без паніровки: 180 ккал."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сырая свиная корейка — 140 ккал/100 г. В панировке и жарке на смальце/масле — 280–320 ккал. Запечённая в духовке без панировки: 180 ккал."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El lomo de cerdo crudo son 140 kcal/100 g. Empanado y frito en manteca/aceite — 280–320 kcal. Al horno sin empanado: 180 kcal."
+          }
+        }
+      }
+    },
+    "Kapusta kiszona — probiotyk PL": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapusta kiszona — probiotyk PL"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauerkraut — Poland's probiotic"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Квашена капуста — польський пробіотик"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Квашеная капуста — польский пробиотик"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chucrut — el probiótico polaco"
+          }
+        }
+      }
+    },
+    "100 g kapusty kiszonej: 20 kcal, 4 g błonnika, mnóstwo laktobakterii. Wspiera mikrobiom lepiej niż drogie jogurty „probiotyczne”.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g kapusty kiszonej: 20 kcal, 4 g błonnika, mnóstwo laktobakterii. Wspiera mikrobiom lepiej niż drogie jogurty „probiotyczne”."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g of sauerkraut: 20 kcal, 4 g fibre, a load of Lactobacillus. Supports the microbiome better than pricey \"probiotic\" yoghurts."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 г квашеної капусти: 20 ккал, 4 г клітковини, маса лактобактерій. Підтримує мікробіом краще, ніж дорогі «пробіотичні» йогурти."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 г квашеной капусты: 20 ккал, 4 г клетчатки, масса лактобактерий. Поддерживает микробиом лучше дорогих «пробиотических» йогуртов."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g de chucrut: 20 kcal, 4 g de fibra, montones de Lactobacillus. Apoya el microbioma mejor que los yogures \"probióticos\" caros."
+          }
+        }
+      }
+    },
+    "Bigos to bomba białka i sodu": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bigos to bomba białka i sodu"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bigos is a protein-and-sodium bomb"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бігос — бомба білка і натрію"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бигос — бомба белка и натрия"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bigos es una bomba de proteína y sodio"
+          }
+        }
+      }
+    },
+    "Porcja bigosu (300 g): ≈420 kcal, 25 g białka, 6 g błonnika — i często 1500+ mg sodu. Pyszny, sycący, ale potem dużo wody.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porcja bigosu (300 g): ≈420 kcal, 25 g białka, 6 g błonnika — i często 1500+ mg sodu. Pyszny, sycący, ale potem dużo wody."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A serving of bigos (300 g): ≈420 kcal, 25 g protein, 6 g fibre — and often 1500+ mg of sodium. Delicious, filling, but drink water after."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Порція бігосу (300 г): ≈420 ккал, 25 г білка, 6 г клітковини — і часто 1500+ мг натрію. Смачно, ситно, але потім багато води."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Порция бигоса (300 г): ≈420 ккал, 25 г белка, 6 г клетчатки — и часто 1500+ мг натрия. Вкусно, сытно, но после много воды."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una ración de bigos (300 g): ≈420 kcal, 25 g de proteína, 6 g de fibra — y a menudo 1500+ mg de sodio. Delicioso, saciante, pero después: mucha agua."
+          }
+        }
+      }
+    },
+    "Placki ziemniaczane chłoną olej": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Placki ziemniaczane chłoną olej"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potato pancakes soak up oil"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Деруни всмоктують олію"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Драники впитывают масло"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las tortitas de patata absorben aceite"
+          }
+        }
+      }
+    },
+    "Ziemniak: 80 kcal/100 g. Placek smażony: 220 kcal/100 g — różnica to wchłonięty olej. Pieczone w piekarniku „placki” oszczędzają 150 kcal/porcję.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziemniak: 80 kcal/100 g. Placek smażony: 220 kcal/100 g — różnica to wchłonięty olej. Pieczone w piekarniku „placki” oszczędzają 150 kcal/porcję."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potato: 80 kcal/100 g. Fried pancake: 220 kcal/100 g — the difference is absorbed oil. Oven-baked \"pancakes\" save 150 kcal per serving."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Картопля: 80 ккал/100 г. Смажений деруник: 220 ккал/100 г — різниця це вбрана олія. «Деруни» в духовці економлять 150 ккал/порція."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Картофель: 80 ккал/100 г. Жареный драник: 220 ккал/100 г — разница это впитанное масло. «Драники» в духовке экономят 150 ккал/порция."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patata: 80 kcal/100 g. Tortita frita: 220 kcal/100 g — la diferencia es el aceite absorbido. Al horno ahorras 150 kcal por ración."
+          }
+        }
+      }
+    },
+    "Szarlotka vs sernik": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szarlotka vs sernik"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple pie vs cheesecake"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шарлотка vs сирник"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шарлотка vs сырник"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szarlotka vs sernik"
+          }
+        }
+      }
+    },
+    "Kawałek szarlotki 100 g: ≈230 kcal. Sernika: ≈350 kcal. Lecz sernik ma 3× więcej białka i mniej cukru. Wybór zależy od celu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kawałek szarlotki 100 g: ≈230 kcal. Sernika: ≈350 kcal. Lecz sernik ma 3× więcej białka i mniej cukru. Wybór zależy od celu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 100 g slice of szarlotka (apple pie): ≈230 kcal. Sernik (cheesecake): ≈350 kcal. But sernik has 3× more protein and less sugar. The choice depends on your goal."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шматок шарлотки 100 г: ≈230 ккал. Сирника: ≈350 ккал. Але сирник має у 3 рази більше білка і менше цукру. Вибір залежить від мети."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кусок шарлотки 100 г: ≈230 ккал. Сырника: ≈350 ккал. Но сырник содержит в 3 раза больше белка и меньше сахара. Выбор зависит от цели."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una porción de szarlotka (tarta de manzana, 100 g): ≈230 kcal. Sernik (tarta de queso): ≈350 kcal. Pero el sernik tiene 3× más proteína y menos azúcar. La elección depende de tu objetivo."
+          }
+        }
+      }
+    },
+    "Kefir = polski białkowy shake": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kefir = polski białkowy shake"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kefir = Poland's protein shake"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кефір = польський білковий шейк"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кефир = польский белковый шейк"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kéfir = el batido proteico polaco"
+          }
+        }
+      }
+    },
+    "Szklanka kefiru 2%: 90 kcal, 8 g białka, probiotyki. Idealnie przed snem — kazeina z mleka uwalnia aminokwasy przez noc.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szklanka kefiru 2%: 90 kcal, 8 g białka, probiotyki. Idealnie przed snem — kazeina z mleka uwalnia aminokwasy przez noc."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A glass of 2% kefir: 90 kcal, 8 g protein, probiotics. Perfect before bed — milk casein drip-feeds amino acids through the night."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Склянка кефіру 2%: 90 ккал, 8 г білка, пробіотики. Ідеально перед сном — казеїн з молока віддає амінокислоти всю ніч."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стакан кефира 2%: 90 ккал, 8 г белка, пробиотики. Идеально перед сном — казеин из молока подаёт аминокислоты всю ночь."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un vaso de kéfir al 2%: 90 kcal, 8 g de proteína, probióticos. Perfecto antes de dormir — la caseína de la leche libera aminoácidos toda la noche."
+          }
+        }
+      }
+    },
+    "Ogórek kiszony — 0 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogórek kiszony — 0 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pickled cucumber — 0 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Солоний огірок — 0 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Солёный огурец — 0 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pepino encurtido — 0 kcal"
+          }
+        }
+      }
+    },
+    "100 g ≈12 kcal, 0 cukru, dużo sodu i probiotyków. Świetna przekąska na redukcji. Tylko nie pij od razu litra wody z beczki.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g ≈12 kcal, 0 cukru, dużo sodu i probiotyków. Świetna przekąska na redukcji. Tylko nie pij od razu litra wody z beczki."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g ≈12 kcal, 0 sugar, lots of sodium and probiotics. Great snack on a cut. Just don't chug a litre of brine on top."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 г ≈12 ккал, 0 цукру, багато натрію та пробіотиків. Чудовий перекус на редукції. Тільки не пий одразу літр розсолу з бочки."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 г ≈12 ккал, 0 сахара, много натрия и пробиотиков. Отличный перекус на редукции. Только не пей сразу литр рассола из бочки."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 g ≈12 kcal, 0 de azúcar, mucho sodio y probióticos. Genial snack en definición. Solo no te metas un litro de salmuera del barril."
+          }
+        }
+      }
+    },
+    "Owsianka — najtańsze śniadanie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owsianka — najtańsze śniadanie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oatmeal — the cheapest breakfast"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вівсянка — найдешевший сніданок"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Овсянка — самый дешёвый завтрак"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avena — el desayuno más barato"
+          }
+        }
+      }
+    },
+    "60 g płatków owsianych: 230 kcal, 8 g białka, 7 g błonnika beta-glukan. Z mlekiem, łyżką masła orzechowego i bananem — pełnowartościowe śniadanie za 4 zł.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 g płatków owsianych: 230 kcal, 8 g białka, 7 g błonnika beta-glukan. Z mlekiem, łyżką masła orzechowego i bananem — pełnowartościowe śniadanie za 4 zł."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 g of oats: 230 kcal, 8 g protein, 7 g beta-glucan fibre. With milk, a spoon of peanut butter, and a banana — a complete breakfast for about 4 zł."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 г вівсяних пластівців: 230 ккал, 8 г білка, 7 г бета-глюкану. З молоком, ложкою арахісової пасти й бананом — повноцінний сніданок за 4 zł."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 г овсяных хлопьев: 230 ккал, 8 г белка, 7 г бета-глюкана. С молоком, ложкой арахисовой пасты и бананом — полноценный завтрак за 4 zł."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 g de copos de avena: 230 kcal, 8 g de proteína, 7 g de fibra beta-glucano. Con leche, una cucharada de mantequilla de cacahuete y un plátano — desayuno completo por unos 4 zł."
+          }
+        }
+      }
+    },
+    "Kotlet mielony — białko 18-22 g": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kotlet mielony — białko 18-22 g"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mince patty — 18–22 g of protein"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Котлета мелена — 18–22 г білка"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Котлета — 18–22 г белка"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hamburguesa casera — 18–22 g de proteína"
+          }
+        }
+      }
+    },
+    "Klasyczny mielony z wołowiny 100 g po smażeniu: ≈220 kcal, 20 g białka. Z indyka 30% mniej kalorii. Niedoceniana opcja na redukcji.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasyczny mielony z wołowiny 100 g po smażeniu: ≈220 kcal, 20 g białka. Z indyka 30% mniej kalorii. Niedoceniana opcja na redukcji."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic beef mince patty (100 g cooked): ≈220 kcal, 20 g protein. Turkey version is 30% lower in calories. Underrated cut-diet option."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Класична яловича котлета (100 г смажена): ≈220 ккал, 20 г білка. Індиче м'ясо — на 30% менше калорій. Недооцінений варіант на редукції."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Классическая говяжья котлета (100 г жареная): ≈220 ккал, 20 г белка. Индейка — на 30% меньше калорий. Недооценённый вариант на редукции."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hamburguesa clásica de ternera (100 g cocinada): ≈220 kcal, 20 g de proteína. La de pavo tiene un 30% menos de kcal. Opción infravalorada en definición."
+          }
+        }
+      }
+    },
+    "EPOC = afterburn 5-15%": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EPOC = afterburn 5-15%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EPOC = 5–15% afterburn"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EPOC = afterburn 5–15%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EPOC = afterburn 5–15%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EPOC = afterburn 5–15%"
+          }
+        }
+      }
+    },
+    "Po intensywnym treningu metabolizm pozostaje podwyższony 2–24 h. Realnie to dodatkowe 50–150 kcal — nie 500, jak głoszą marketingowcy. Ale dodaje się.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po intensywnym treningu metabolizm pozostaje podwyższony 2–24 h. Realnie to dodatkowe 50–150 kcal — nie 500, jak głoszą marketingowcy. Ale dodaje się."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After hard training the metabolism stays elevated for 2–24 h. Realistically that's an extra 50–150 kcal — not the 500 marketers claim. But it adds up."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Після інтенсивного тренування метаболізм залишається підвищеним 2–24 год. Реально це додаткові 50–150 ккал — не 500, як кажуть маркетологи. Але додається."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После интенсивной тренировки метаболизм остаётся повышенным 2–24 ч. Реально это лишние 50–150 ккал — не 500, как пишут маркетологи. Но накапливается."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras un entrenamiento duro, el metabolismo queda elevado 2–24 h. En realidad son 50–150 kcal extra — no 500, como dice el marketing. Pero suma."
+          }
+        }
+      }
+    },
+    "Siłowy > cardio dla recompu": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siłowy > cardio dla recompu"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resistance > cardio for recomp"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силовий > кардіо для recomp"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силовая > кардио для recomp"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuerza > cardio para recomposición"
+          }
+        }
+      }
+    },
+    "Trening oporowy buduje mięśnie, podnosi BMR i poprawia wrażliwość insulinową. Cardio spala kalorie tu i teraz. Optymalnie: 3 siłowe + 2 cardio tygodniowo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trening oporowy buduje mięśnie, podnosi BMR i poprawia wrażliwość insulinową. Cardio spala kalorie tu i teraz. Optymalnie: 3 siłowe + 2 cardio tygodniowo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resistance training builds muscle, raises BMR, and improves insulin sensitivity. Cardio burns calories right now. Optimal: 3 strength + 2 cardio sessions a week."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силове тренування будує м'язи, піднімає BMR і покращує чутливість до інсуліну. Кардіо палить калорії тут і тепер. Оптимально: 3 силові + 2 кардіо на тиждень."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силовая строит мышцы, поднимает BMR и улучшает чувствительность к инсулину. Кардио жжёт калории здесь и сейчас. Оптимально: 3 силовые + 2 кардио в неделю."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fuerza construye músculo, sube el BMR y mejora la sensibilidad a la insulina. El cardio quema calorías aquí y ahora. Óptimo: 3 fuerza + 2 cardio a la semana."
+          }
+        }
+      }
+    },
+    "10 000 kroków to nie magia, ale tło": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 kroków to nie magia, ale tło"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10,000 steps aren't magic — just baseline"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 кроків — не магія, а тло"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 шагов — не магия, а фон"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 pasos no son magia, son base"
+          }
+        }
+      }
+    },
+    "Magiczne „10k” pochodzi z japońskiego marketingu z 1965 r. Realne minimum dla zdrowia to 7000–8000. Każdy kolejny tysiąc obniża ryzyko śmierci o 4%.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magiczne „10k” pochodzi z japońskiego marketingu z 1965 r. Realne minimum dla zdrowia to 7000–8000. Każdy kolejny tysiąc obniża ryzyko śmierci o 4%."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The \"10k\" number comes from a 1965 Japanese marketing campaign. The real health baseline is 7,000–8,000. Each extra thousand cuts mortality risk by 4%."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Магічні «10k» — це японський маркетинг 1965 року. Реальний мінімум для здоров'я: 7000–8000. Кожна додаткова тисяча знижує ризик смерті на 4%."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Магические «10k» — это японский маркетинг 1965 г. Реальный минимум для здоровья: 7000–8000. Каждая дополнительная тысяча снижает риск смерти на 4%."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El \"10k\" viene de una campaña japonesa de 1965. La base real para salud son 7000–8000. Cada mil pasos extra bajan el riesgo de mortalidad un 4%."
+          }
+        }
+      }
+    },
+    "Zone 2 — najnudniejszy, najlepszy": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone 2 — najnudniejszy, najlepszy"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone 2 — boring but the best"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone 2 — найнудніше, найкраще"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone 2 — скучнее всего, лучше всего"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zona 2 — la más aburrida y la mejor"
+          }
+        }
+      }
+    },
+    "Cardio na 60–70% HRmax (tempo rozmowy) buduje mitochondria i bazę aerobową. Marszobieg, rower bez zadyszki. 150 min/tydz to standard.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cardio na 60–70% HRmax (tempo rozmowy) buduje mitochondria i bazę aerobową. Marszobieg, rower bez zadyszki. 150 min/tydz to standard."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cardio at 60–70% of HRmax (conversation pace) builds mitochondria and aerobic base. Brisk walk or bike without panting. 150 min/week is the standard."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кардіо на 60–70% HRmax (темп розмови) будує мітохондрії й аеробну базу. Швидка ходьба, велосипед без задишки. 150 хв/тиждень — стандарт."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кардио на 60–70% HRmax (темп разговора) строит митохондрии и аэробную базу. Быстрая ходьба, велосипед без одышки. 150 мин/нед — стандарт."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cardio al 60–70% de la FCmáx (ritmo de conversación) construye mitocondrias y base aeróbica. Caminar rápido o bici sin jadear. 150 min/semana es el estándar."
+          }
+        }
+      }
+    },
+    "HIIT — 20 min wystarczy": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HIIT — 20 min wystarczy"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HIIT — 20 minutes is enough"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HIIT — 20 хв достатньо"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HIIT — 20 мин достаточно"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HIIT — 20 min bastan"
+          }
+        }
+      }
+    },
+    "Wysoka intensywność daje 80% korzyści w 25% czasu. 4–6 sprintów po 30s z 90s odpoczynku 2×/tydz robi robotę. Tylko nie codziennie — CNS się męczy.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wysoka intensywność daje 80% korzyści w 25% czasu. 4–6 sprintów po 30s z 90s odpoczynku 2×/tydz robi robotę. Tylko nie codziennie — CNS się męczy."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High intensity gives 80% of the benefit in 25% of the time. 4–6 sprints of 30 s with 90 s rest, 2×/week, does the job. Just not every day — your CNS fries."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Висока інтенсивність дає 80% користі за 25% часу. 4–6 спринтів по 30с з 90с відпочинку 2×/тиждень — спрацьовує. Тільки не щодня — ЦНС перегорить."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Высокая интенсивность даёт 80% пользы за 25% времени. 4–6 спринтов по 30 с с 90 с отдыха 2×/нед — работает. Только не каждый день — ЦНС перегорит."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La alta intensidad da el 80% del beneficio en el 25% del tiempo. 4–6 sprints de 30 s con 90 s de descanso, 2×/semana, hace el trabajo. Solo no todos los días — el SNC se fríe."
+          }
+        }
+      }
+    },
+    "Trenuj partię 2×/tydz": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trenuj partię 2×/tydz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Train each muscle 2×/week"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренуй групу 2×/тиждень"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тренируй мышцу 2×/нед"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrena cada músculo 2×/semana"
+          }
+        }
+      }
+    },
+    "Meta Schoenfelda (2016): 2x lepsze niż 1x dla hipertrofii. Klatka, plecy, nogi — każde 2 razy w tygodniu daje optymalny wzrost.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta Schoenfelda (2016): 2x lepsze niż 1x dla hipertrofii. Klatka, plecy, nogi — każde 2 razy w tygodniu daje optymalny wzrost."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schoenfeld's 2016 meta: 2× per week beats 1× for hypertrophy. Chest, back, legs — twice a week each is optimal for growth."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метааналіз Schoenfeld (2016): 2 рази на тиждень кращі за 1 для гіпертрофії. Груди, спина, ноги — кожне 2× на тиждень — оптимальний ріст."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мета-анализ Schoenfeld (2016): 2 раза в неделю лучше 1 для гипертрофии. Грудь, спина, ноги — каждое 2× в неделю — оптимальный рост."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El metaanálisis de Schoenfeld (2016): 2× por semana mejor que 1× para hipertrofia. Pecho, espalda, piernas — cada uno dos veces a la semana es óptimo."
+          }
+        }
+      }
+    },
+    "Rozgrzewka 5-10 min": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozgrzewka 5-10 min"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warm-up 5–10 min"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Розминка 5–10 хв"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разминка 5–10 мин"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calentamiento 5–10 min"
+          }
+        }
+      }
+    },
+    "Dynamiczna mobilizacja stawów + 2-3 lekkie serie głównego ćwiczenia. Cięcie rozgrzewki = +60% ryzyka kontuzji. Nie zaoszczędzisz tu czasu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dynamiczna mobilizacja stawów + 2-3 lekkie serie głównego ćwiczenia. Cięcie rozgrzewki = +60% ryzyka kontuzji. Nie zaoszczędzisz tu czasu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dynamic joint mobility + 2–3 light sets of the main lift. Skipping the warm-up = +60% injury risk. Not the place to save time."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Динамічна мобільність суглобів + 2–3 легкі серії основної вправи. Пропустити розминку = +60% до ризику травми. Тут час не зекономиш."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Динамическая мобильность суставов + 2–3 лёгкие серии основной упражнения. Пропустить разминку = +60% к риску травмы. Здесь время не сэкономишь."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movilidad articular dinámica + 2–3 series ligeras del ejercicio principal. Saltarse el calentamiento = +60% de riesgo de lesión. No es donde recortar tiempo."
+          }
+        }
+      }
+    },
+    "Chodzenie = sekretna broń redukcji": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chodzenie = sekretna broń redukcji"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walking = the secret cut weapon"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ходьба = таємна зброя редукції"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ходьба = секретное оружие редукции"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caminar = el arma secreta de la definición"
+          }
+        }
+      }
+    },
+    "60 min spaceru = 200–300 kcal bez obciążenia stawów ani regeneracji. Łatwe do utrzymania długoterminowo. Niedoceniana broń.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 min spaceru = 200–300 kcal bez obciążenia stawów ani regeneracji. Łatwe do utrzymania długoterminowo. Niedoceniana broń."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 min of walking = 200–300 kcal with no joint stress or recovery cost. Easy to keep up long-term. An underrated weapon."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 хв прогулянки = 200–300 ккал без навантаження на суглоби чи відновлення. Легко тримати довго. Недооцінена зброя."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 мин ходьбы = 200–300 ккал без нагрузки на суставы или восстановление. Легко держать долго. Недооценённое оружие."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 min de caminata = 200–300 kcal sin estrés articular ni coste de recuperación. Fácil de mantener a largo plazo. Arma infravalorada."
+          }
+        }
+      }
+    },
+    "Muscle memory działa": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle memory działa"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle memory works"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle memory працює"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle memory работает"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La memoria muscular funciona"
+          }
+        }
+      }
+    },
+    "Mionukleony w mięśniach pozostają po treningu na lata. Powrót po przerwie odbudowuje formę 2-3× szybciej niż pierwszy raz. Nie martw się przerwami.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mionukleony w mięśniach pozostają po treningu na lata. Powrót po przerwie odbudowuje formę 2-3× szybciej niż pierwszy raz. Nie martw się przerwami."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Myonuclei stay in your muscles for years after training. Coming back after a break rebuilds form 2–3× faster than the first time. Don't fear breaks."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Міонуклеї в м'язах залишаються після тренувань на роки. Повернення після перерви відновлює форму у 2–3 рази швидше за перший раз. Не бійся перерв."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Миоядра в мышцах остаются после тренировок на годы. Возврат после перерыва восстанавливает форму в 2–3 раза быстрее, чем в первый раз. Не бойся перерывов."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los mionúcleos se quedan en el músculo durante años tras entrenar. Volver tras un parón recupera la forma 2–3× más rápido que la primera vez. No temas los descansos."
+          }
+        }
+      }
+    },
+    "Po treningu: 30 g białka": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po treningu: 30 g białka"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Post-workout: 30 g of protein"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Після тренування: 30 г білка"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После тренировки: 30 г белка"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Post-entreno: 30 g de proteína"
+          }
+        }
+      }
+    },
+    "Szklanka mleka, shake whey, pierś, jajka. Liczy się 24-godzinny bilans, ale dawka po treningu sprzyja regeneracji glikogenu i syntezy mięśniowej.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szklanka mleka, shake whey, pierś, jajka. Liczy się 24-godzinny bilans, ale dawka po treningu sprzyja regeneracji glikogenu i syntezy mięśniowej."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A glass of milk, a whey shake, chicken breast, eggs. The 24-hour balance is what matters, but a post-workout dose helps glycogen and muscle protein synthesis."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Склянка молока, шейк whey, грудка, яйця. Важить 24-годинний баланс, але порція після тренування допомагає глікогену й синтезу білка."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стакан молока, whey-шейк, грудка, яйца. Важен 24-часовой баланс, но порция после тренировки помогает гликогену и синтезу белка."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un vaso de leche, batido de whey, pechuga, huevos. Lo que cuenta es el balance de 24 h, pero la ración post-entreno ayuda al glucógeno y a la síntesis muscular."
+          }
+        }
+      }
+    },
+    "Sen < 6 h = -40% siły": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen < 6 h = -40% siły"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep <6 h = -40% strength"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сон <6 год = -40% сили"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сон <6 ч = -40% силы"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño <6 h = -40% de fuerza"
+          }
+        }
+      }
+    },
+    "Niedospana noc obniża maksymalną siłę o 10–40%, zwłaszcza w compoundach. Jeden trening lepiej odpuścić, niż wymęczyć ze złą techniką.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niedospana noc obniża maksymalną siłę o 10–40%, zwłaszcza w compoundach. Jeden trening lepiej odpuścić, niż wymęczyć ze złą techniką."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A night of bad sleep drops max strength by 10–40%, especially on compound lifts. Better to skip one session than grind through with bad form."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недоспана ніч знижує максимальну силу на 10–40%, особливо на компаундах. Краще пропустити одне тренування, ніж вимучити з поганою технікою."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недосып снижает максимальную силу на 10–40%, особенно в компаундах. Лучше пропустить одну тренировку, чем вымучить плохой техникой."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una noche mal dormida baja la fuerza máxima un 10–40%, sobre todo en compuestos. Mejor saltarse una sesión que arrastrarla con técnica mala."
+          }
+        }
+      }
+    },
+    "Przerwa 2-3 min na compoundach": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przerwa 2-3 min na compoundach"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest 2–3 min on compounds"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відпочинок 2–3 хв на компаундах"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отдых 2–3 мин на компаундах"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descanso 2–3 min en compuestos"
+          }
+        }
+      }
+    },
+    "Krótka przerwa (60s) = mniejszy wolumen, bo zmęczenie zostaje. Dla hipertrofii i siły 2–3 min między seriami daje wyższe ciężary.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krótka przerwa (60s) = mniejszy wolumen, bo zmęczenie zostaje. Dla hipertrofii i siły 2–3 min między seriami daje wyższe ciężary."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A short break (60 s) = less volume because fatigue lingers. For hypertrophy and strength, 2–3 min between sets lets you lift heavier."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коротка пауза (60с) = менший обсяг, бо втома залишається. Для гіпертрофії та сили 2–3 хв між підходами дають вищі ваги."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Короткая пауза (60 с) = меньше объём, потому что усталость остаётся. Для гипертрофии и силы 2–3 мин между подходами — выше веса."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un descanso corto (60 s) = menos volumen porque la fatiga se queda. Para hipertrofia y fuerza, 2–3 min entre series permiten mover más peso."
+          }
+        }
+      }
+    },
+    "Cardio + siłowe = zdrowie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cardio + siłowe = zdrowie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cardio + strength = health"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кардіо + силове = здоров'я"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кардио + силовая = здоровье"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cardio + fuerza = salud"
+          }
+        }
+      }
+    },
+    "Tylko siłowe = silne mięśnie, słabe serce. Tylko cardio = sprawne serce, słabe mięśnie. Klucz to mieszanka — różne adaptacje, jedno ciało.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko siłowe = silne mięśnie, słabe serce. Tylko cardio = sprawne serce, słabe mięśnie. Klucz to mieszanka — różne adaptacje, jedno ciało."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength only = strong muscle, weak heart. Cardio only = fit heart, weak muscle. The mix is the key — different adaptations, one body."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тільки силове = сильні м'язи, слабке серце. Тільки кардіо = міцне серце, слабкі м'язи. Ключ — мікс. Різні адаптації, одне тіло."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только силовая = сильные мышцы, слабое сердце. Только кардио = крепкое сердце, слабые мышцы. Ключ — смесь. Разные адаптации, одно тело."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo fuerza = músculo fuerte, corazón débil. Solo cardio = corazón en forma, músculo débil. La clave es la mezcla — adaptaciones distintas, un solo cuerpo."
+          }
+        }
+      }
+    },
+    "Notuj treningi": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notuj treningi"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log your workouts"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Веди записи тренувань"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Веди дневник тренировок"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva un diario de entrenos"
+          }
+        }
+      }
+    },
+    "Bez notatek nie ma progresji. Aplikacja, kartka — wszystko jedno. Cel: następny trening minimalnie lepszy od poprzedniego. To definicja siłowego progresu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez notatek nie ma progresji. Aplikacja, kartka — wszystko jedno. Cel: następny trening minimalnie lepszy od poprzedniego. To definicja siłowego progresu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No log = no progression. App or notebook — doesn't matter. Goal: each session minimally better than the last. That's the definition of strength progress."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без записів немає прогресу. Застосунок, аркуш — без різниці. Ціль: наступне тренування мінімально краще за попереднє. Це і є визначення прогресу."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без записей нет прогресса. Приложение, листок — без разницы. Цель: следующая тренировка минимально лучше предыдущей. Это и есть определение прогресса."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin registro no hay progresión. App o libreta — da igual. Meta: cada sesión un mínimo mejor que la anterior. Esa es la definición de progreso en fuerza."
+          }
+        }
+      }
+    },
+    "Praca biurkowa = krótkie biodro": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Praca biurkowa = krótkie biodro"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desk work = tight hip flexors"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Офісна робота = коротке стегно"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Офисная работа = укорочённые бёдра"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trabajo de oficina = cadera tensa"
+          }
+        }
+      }
+    },
+    "8 h siedzenia skraca zginacze biodra i osłabia pośladki. Codziennie 5 min mobilności biodra + plank to minimum, by uniknąć bólu krzyża za 10 lat.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 h siedzenia skraca zginacze biodra i osłabia pośladki. Codziennie 5 min mobilności biodra + plank to minimum, by uniknąć bólu krzyża za 10 lat."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 h of sitting shortens hip flexors and weakens glutes. 5 min of hip mobility + a plank daily is the minimum to avoid back pain in 10 years."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 год сидіння вкорочують згиначі стегна і послаблюють сідниці. Щодня 5 хв мобільності стегна + планка — мінімум, щоб уникнути болю спини через 10 років."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 ч сидения укорачивают сгибатели бедра и ослабляют ягодицы. Ежедневные 5 мин мобильности бедра + планка — минимум, чтобы не болела спина через 10 лет."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 h sentado acortan los flexores de cadera y debilitan los glúteos. 5 min diarios de movilidad de cadera + plank es el mínimo para no tener dolor lumbar en 10 años."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
