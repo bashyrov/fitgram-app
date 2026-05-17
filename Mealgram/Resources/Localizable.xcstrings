@@ -32984,6 +32984,1756 @@
           }
         }
       }
+    },
+    "Mały surplus = jakościowa masa": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mały surplus = jakościowa masa"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small surplus = quality mass"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Малий профіцит = якісна маса"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маленький профицит = качественная масса"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superávit pequeño = masa de calidad"
+          }
+        }
+      }
+    },
+    "+10% TDEE wystarcza, żeby budować ≈0.25 kg mięśni miesięcznie u zaawansowanych, 0.5–0.7 kg u początkujących. Większy nadwyżka = więcej tłuszczu, nie więcej mięśni.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+10% TDEE wystarcza, żeby budować ≈0.25 kg mięśni miesięcznie u zaawansowanych, 0.5–0.7 kg u początkujących. Większy nadwyżka = więcej tłuszczu, nie więcej mięśni."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+10% TDEE is enough to build ≈0.25 kg of muscle a month for advanced lifters, 0.5–0.7 kg for beginners. A bigger surplus = more fat, not more muscle."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+10% TDEE достатньо, щоб набирати ≈0,25 кг м'язів на місяць у досвідчених, 0,5–0,7 кг у початківців. Більший профіцит = більше жиру, а не м'язів."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+10% TDEE достаточно, чтобы набирать ≈0,25 кг мышц в месяц у продвинутых, 0,5–0,7 кг у новичков. Больше профицит = больше жира, а не мышц."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+10% del TDEE basta para construir ≈0,25 kg de músculo al mes en avanzados, 0,5–0,7 kg en principiantes. Más superávit = más grasa, no más músculo."
+          }
+        }
+      }
+    },
+    "1.6 g białka/kg = sweet spot": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1.6 g białka/kg = sweet spot"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1.6 g protein/kg = the sweet spot"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1,6 г білка/кг = золота середина"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1,6 г белка/кг = золотая середина"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1,6 g proteína/kg = el punto óptimo"
+          }
+        }
+      }
+    },
+    "Metaanaliza Morton (2018) z >1800 osobami: powyżej 1.6 g/kg nie ma dodatkowych zysków siły. 70 kg = 112 g. Cokolwiek wyżej to bezpieczeństwo, nie magia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metaanaliza Morton (2018) z >1800 osobami: powyżej 1.6 g/kg nie ma dodatkowych zysków siły. 70 kg = 112 g. Cokolwiek wyżej to bezpieczeństwo, nie magia."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morton's 2018 meta-analysis of 1,800+ people: above 1.6 g/kg there's no extra strength gain. 70 kg = 112 g. Anything beyond is safety margin, not magic."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метааналіз Morton (2018) із >1800 людей: понад 1,6 г/кг додаткового приросту сили немає. 70 кг = 112 г. Усе понад — це запас безпеки, не магія."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мета-анализ Morton (2018) >1800 человек: выше 1,6 г/кг дополнительной прибавки силы нет. 70 кг = 112 г. Всё сверху — запас, а не магия."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El metaanálisis de Morton (2018) con +1800 personas: por encima de 1,6 g/kg no hay ganancia extra de fuerza. 70 kg = 112 g. Más allá es margen de seguridad, no magia."
+          }
+        }
+      }
+    },
+    "Próg leucyny 2.5 g": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próg leucyny 2.5 g"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leucine threshold 2.5 g"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поріг лейцину 2,5 г"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Порог лейцина 2,5 г"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umbral de leucina 2,5 g"
+          }
+        }
+      }
+    },
+    "Synteza białek mięśniowych zaczyna się powyżej ~2.5 g leucyny w posiłku. To 25–30 g białka serwatkowego, 100 g piersi z kurczaka lub 4 jajka. Stąd „4 posiłki po 30 g”.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synteza białek mięśniowych zaczyna się powyżej ~2.5 g leucyny w posiłku. To 25–30 g białka serwatkowego, 100 g piersi z kurczaka lub 4 jajka. Stąd „4 posiłki po 30 g”."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle protein synthesis kicks in above ~2.5 g of leucine per meal. That's 25–30 g of whey, 100 g of chicken breast, or 4 eggs. Hence \"4 meals × 30 g\"."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синтез м'язових білків стартує понад ~2,5 г лейцину за прийом. Це 25–30 г сироваткового білка, 100 г курячої грудки чи 4 яйця. Звідси «4 прийоми по 30 г»."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синтез мышечных белков запускается выше ~2,5 г лейцина за приём. Это 25–30 г сывороточного белка, 100 г куриной грудки или 4 яйца. Отсюда «4 приёма по 30 г»."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La síntesis de proteínas musculares arranca por encima de ~2,5 g de leucina por comida. Eso son 25–30 g de whey, 100 g de pechuga de pollo o 4 huevos. De ahí \"4 comidas × 30 g\"."
+          }
+        }
+      }
+    },
+    "Bez treningu = tylko tłuszcz": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez treningu = tylko tłuszcz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No training = just fat"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без тренувань = тільки жир"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без тренировок = только жир"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin entrenar = solo grasa"
+          }
+        }
+      }
+    },
+    "Sam surplus kalorii bez bodźca siłowego daje wyłącznie tkankę tłuszczową. Trening progresywny to warunek konieczny, dieta tylko dopala. 3–5×/tydz.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sam surplus kalorii bez bodźca siłowego daje wyłącznie tkankę tłuszczową. Trening progresywny to warunek konieczny, dieta tylko dopala. 3–5×/tydz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A surplus alone with no strength stimulus only adds fat. Progressive training is the must-have; diet only fuels it. 3–5×/week."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сам профіцит без силового подразника дає лише жир. Прогресивне тренування — необхідна умова, дієта лише підживлює. 3–5 разів на тиждень."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Один профицит без силового стимула даёт только жир. Прогрессивная тренировка — обязательное условие, диета только подпитывает. 3–5 раз/нед."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo el superávit, sin estímulo de fuerza, da únicamente grasa. El entrenamiento progresivo es imprescindible; la dieta solo lo alimenta. 3–5×/semana."
+          }
+        }
+      }
+    },
+    "Regeneracja > więcej serii": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regeneracja > więcej serii"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovery beats more sets"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відновлення > більше підходів"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Восстановление > больше подходов"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación > más series"
+          }
+        }
+      }
+    },
+    "Hipertrofia dzieje się w spoczynku. 7–9 h snu + 48 h przerwy między tymi samymi partiami daje więcej niż dodatkowy trening. Burnout cofa wyniki o tygodnie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hipertrofia dzieje się w spoczynku. 7–9 h snu + 48 h przerwy między tymi samymi partiami daje więcej niż dodatkowy trening. Burnout cofa wyniki o tygodnie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hypertrophy happens during rest. 7–9 h of sleep + 48 h between the same muscle groups beats one extra workout. Burnout sets you back weeks."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гіпертрофія відбувається в спокої. 7–9 год сну + 48 год між тренуваннями однієї групи дають більше, ніж зайве тренування. Перетрен відкочує на тижні."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гипертрофия идёт в покое. 7–9 ч сна + 48 ч между тренировками одной группы дают больше, чем лишний день в зале. Перетрен откатывает на недели."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La hipertrofia ocurre en el descanso. 7–9 h de sueño + 48 h entre los mismos grupos da más que un entrenamiento extra. El burnout te retrasa semanas."
+          }
+        }
+      }
+    },
+    "Kreatyna — najbezpieczniejszy supl": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kreatyna — najbezpieczniejszy supl"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creatine — the safest supplement"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Креатин — найбезпечніша добавка"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Креатин — самая безопасная добавка"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creatina — el suplemento más seguro"
+          }
+        }
+      }
+    },
+    "5 g monohydratu dziennie, codziennie, bez ładowania. Daje 3–5% więcej siły i pełniejsze mięśnie. Najlepiej przebadany suplement w historii sportu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 g monohydratu dziennie, codziennie, bez ładowania. Daje 3–5% więcej siły i pełniejsze mięśnie. Najlepiej przebadany suplement w historii sportu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 g of monohydrate daily, every day, no loading phase. Adds 3–5% strength and fuller muscles. The most-studied supplement in sport history."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 г моногідрату щодня, без фази завантаження. Дає 3–5% більше сили і повніші м'язи. Найдосліджуваніша добавка в історії спорту."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 г моногидрата ежедневно, без фазы загрузки. Даёт 3–5% больше силы и более полные мышцы. Самая изученная добавка в истории спорта."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 g de monohidrato al día, todos los días, sin fase de carga. Da un 3–5% más de fuerza y músculos más llenos. El suplemento más estudiado del deporte."
+          }
+        }
+      }
+    },
+    "Okno anaboliczne to mit": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okno anaboliczne to mit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The \"anabolic window\" is a myth"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Анаболічне вікно — міф"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Анаболическое окно — миф"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La \"ventana anabólica\" es un mito"
+          }
+        }
+      }
+    },
+    "Mit „30 minut po treningu albo trening do kosza”. Realnie okno ma 4–6 h. Liczy się całkowite dobowe białko, nie sekundnik.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit „30 minut po treningu albo trening do kosza”. Realnie okno ma 4–6 h. Liczy się całkowite dobowe białko, nie sekundnik."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The myth that \"if not within 30 min of training, the workout is wasted\". Realistically the window is 4–6 h. Total daily protein matters, not a stopwatch."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Міф «30 хвилин після тренування або тренування у смітник». Реально вікно — 4–6 год. Важливе сумарне добове білко, а не секундомір."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Миф «30 минут после тренировки или тренировка в мусор». Реально окно 4–6 ч. Важен суммарный суточный белок, а не секундомер."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mito de \"si no es en los 30 min tras entrenar, el entrenamiento se desperdicia\". En realidad la ventana es de 4–6 h. Cuenta la proteína total del día, no el cronómetro."
+          }
+        }
+      }
+    },
+    "Węglowodany = paliwo siły": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Węglowodany = paliwo siły"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carbs = strength fuel"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вуглеводи = паливо сили"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Углеводы = топливо силы"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carbohidratos = combustible de la fuerza"
+          }
+        }
+      }
+    },
+    "Glikogen mięśniowy zasila ciężki trening. Zbyt niskie węglowodany (<2 g/kg) na masie obniżają wolumen treningowy o 10–15%. Ryż, kasza, owsianka — twoi przyjaciele.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glikogen mięśniowy zasila ciężki trening. Zbyt niskie węglowodany (<2 g/kg) na masie obniżają wolumen treningowy o 10–15%. Ryż, kasza, owsianka — twoi przyjaciele."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle glycogen fuels heavy training. Too few carbs (<2 g/kg) during a bulk drops training volume by 10–15%. Rice, groats, oats — your friends."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "М'язовий глікоген живить важке тренування. Замало вуглеводів (<2 г/кг) на масі знижує об'єм тренувань на 10–15%. Рис, крупа, вівсянка — твої друзі."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мышечный гликоген питает тяжёлую тренировку. Мало углеводов (<2 г/кг) на массе снижают объём тренировок на 10–15%. Рис, крупа, овсянка — твои друзья."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El glucógeno muscular alimenta el entrenamiento pesado. Pocos carbohidratos (<2 g/kg) en volumen bajan el volumen de entreno un 10–15%. Arroz, sémola, avena — tus aliados."
+          }
+        }
+      }
+    },
+    "Bombki kaloryczne": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bombki kaloryczne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calorie bombs"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калорійні бомбочки"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калорийные бомбы"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bombas calóricas"
+          }
+        }
+      }
+    },
+    "Trudno jeść 3500 kcal samymi warzywami. Pomagają: oliwa, awokado, masło orzechowe, orzechy, suszone owoce. Łyżka masła orzechowego = 100 kcal.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trudno jeść 3500 kcal samymi warzywami. Pomagają: oliwa, awokado, masło orzechowe, orzechy, suszone owoce. Łyżka masła orzechowego = 100 kcal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hard to hit 3500 kcal from veg alone. Helpers: olive oil, avocado, peanut butter, nuts, dried fruit. A spoon of peanut butter = 100 kcal."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Важко з'їсти 3500 ккал самими овочами. Допоможуть: олія, авокадо, арахісова паста, горіхи, сухофрукти. Ложка арахісової пасти = 100 ккал."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Трудно набрать 3500 ккал одними овощами. Помогут: оливковое масло, авокадо, арахисовая паста, орехи, сухофрукты. Ложка арахисовой пасты = 100 ккал."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es difícil llegar a 3500 kcal solo con verdura. Te ayudan: aceite, aguacate, mantequilla de cacahuete, frutos secos, frutas pasas. Una cucharada de mantequilla de cacahuete = 100 kcal."
+          }
+        }
+      }
+    },
+    "Shake gdy brakuje 500 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shake gdy brakuje 500 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A shake when you're 500 kcal short"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шейк, коли бракує 500 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шейк, когда не хватает 500 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batido cuando faltan 500 kcal"
+          }
+        }
+      }
+    },
+    "Płynne kalorie omijają sytość — to wada na redukcji, atut na masie. Mleko 500 ml + banan + masło orzechowe + protein = 700 kcal w 2 minuty.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Płynne kalorie omijają sytość — to wada na redukcji, atut na masie. Mleko 500 ml + banan + masło orzechowe + protein = 700 kcal w 2 minuty."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liquid calories bypass satiety — a flaw on a cut, an asset on a bulk. 500 ml milk + banana + peanut butter + protein = 700 kcal in 2 minutes."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рідкі калорії обходять ситість — мінус на редукції, плюс на масі. 500 мл молока + банан + арахісова паста + протеїн = 700 ккал за 2 хвилини."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жидкие калории обходят сытость — минус на редукции, плюс на массе. 500 мл молока + банан + арахисовая паста + протеин = 700 ккал за 2 минуты."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las calorías líquidas saltan la saciedad — un fallo en definición, una ventaja en volumen. 500 ml de leche + plátano + mantequilla de cacahuete + proteína = 700 kcal en 2 minutos."
+          }
+        }
+      }
+    },
+    "4-6 posiłków na masie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4-6 posiłków na masie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4–6 meals during a bulk"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4–6 прийомів їжі на масі"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4–6 приёмов пищи на массе"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4–6 comidas en volumen"
+          }
+        }
+      }
+    },
+    "Większe częstotliwości łatwiej obsłużyć kalorycznie i białkowo niż 3 wielkie posiłki. Każdy z 30+ g białka. Mózg lubi rytm.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Większe częstotliwości łatwiej obsłużyć kalorycznie i białkowo niż 3 wielkie posiłki. Każdy z 30+ g białka. Mózg lubi rytm."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Higher frequency is easier on calories and protein than 3 huge meals. 30+ g of protein each. The brain likes rhythm."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Часті прийоми легше тягнуть калорії й білок, ніж 3 величезні страви. Кожна по 30+ г білка. Мозок любить ритм."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Частые приёмы легче тянут калории и белок, чем 3 огромных. Каждая по 30+ г белка. Мозг любит ритм."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comer más veces facilita las calorías y la proteína frente a 3 comidas enormes. Cada una con 30+ g de proteína. El cerebro ama el ritmo."
+          }
+        }
+      }
+    },
+    "Cel: +0.25 - 0.5 kg/tydzień": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cel: +0.25 - 0.5 kg/tydzień"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target: +0.25 – 0.5 kg/week"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ціль: +0,25 – 0,5 кг/тиждень"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цель: +0,25 – 0,5 кг/неделю"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivo: +0,25 – 0,5 kg/semana"
+          }
+        }
+      }
+    },
+    "Powyżej 0.5 kg/tydz proporcje tłuszcz:mięsień psują się. Zbyt wolno (0 kg) = za mały surplus. Skoryguj kalorie co 2 tygodnie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powyżej 0.5 kg/tydz proporcje tłuszcz:mięsień psują się. Zbyt wolno (0 kg) = za mały surplus. Skoryguj kalorie co 2 tygodnie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Above 0.5 kg/week the fat-to-muscle ratio breaks down. Too slow (0 kg) = surplus too small. Tune calories every 2 weeks."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Понад 0,5 кг/тиждень пропорція жир:м'язи погіршується. Занадто повільно (0 кг) = малий профіцит. Кориguj калорії кожні 2 тижні."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свыше 0,5 кг/нед пропорция жир:мышцы портится. Слишком медленно (0 кг) = слабый профицит. Корректируй калории каждые 2 недели."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por encima de 0,5 kg/semana la proporción grasa:músculo se rompe. Demasiado lento (0 kg) = superávit insuficiente. Ajusta calorías cada 2 semanas."
+          }
+        }
+      }
+    },
+    "Progresywne przeciążenie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progresywne przeciążenie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progressive overload"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогресивне перевантаження"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогрессирующая перегрузка"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobrecarga progresiva"
+          }
+        }
+      }
+    },
+    "Bez stopniowego dodawania ciężaru lub powtórzeń mięśnie nie mają powodu rosnąć. Notuj. Cel: co tydzień więcej kilo lub powtórzeń niż tydzień wcześniej.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez stopniowego dodawania ciężaru lub powtórzeń mięśnie nie mają powodu rosnąć. Notuj. Cel: co tydzień więcej kilo lub powtórzeń niż tydzień wcześniej."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without gradually adding weight or reps, muscles have no reason to grow. Keep a log. Goal: more weight or reps every week than the week before."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без поступового додавання ваги чи повторів у м'язів немає причини рости. Веди записи. Ціль: щотижня більше кіло чи повторів, ніж тиждень тому."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без постепенного добавления веса или повторов у мышц нет причин расти. Веди дневник. Цель: каждую неделю больше кило или повторов, чем неделей раньше."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin sumar peso o repeticiones de a poco, los músculos no tienen razón para crecer. Lleva registro. Meta: cada semana más peso o más reps que la anterior."
+          }
+        }
+      }
+    },
+    "Rozłóż białko na 4 dawki": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozłóż białko na 4 dawki"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spread protein across 4 servings"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Розподіли білок на 4 порції"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Раздели белок на 4 порции"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reparte la proteína en 4 raciones"
+          }
+        }
+      }
+    },
+    "120 g w jednym posiłku trawi się tak samo jak 30 g — nadmiar nie buduje więcej mięśni. 4 dawki po 30 g aktywują syntezę 4 razy.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "120 g w jednym posiłku trawi się tak samo jak 30 g — nadmiar nie buduje więcej mięśni. 4 dawki po 30 g aktywują syntezę 4 razy."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "120 g in one meal digests the same as 30 g — the excess doesn't build extra muscle. 4 servings of 30 g trigger synthesis 4 times."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "120 г за один прийом перетравлюються так само, як 30 г — надлишок не будує більше м'язів. 4 порції по 30 г запускають синтез 4 рази."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "120 г за один приём усваиваются так же, как 30 г — излишек не строит больше мышц. 4 порции по 30 г запускают синтез 4 раза."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "120 g en una sola comida se digieren igual que 30 g — el exceso no construye más músculo. 4 raciones de 30 g disparan la síntesis 4 veces."
+          }
+        }
+      }
+    },
+    "Cykl mass / cut": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cykl mass / cut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bulk / cut cycle"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цикл маса / редукція"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цикл масса / редукция"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ciclo volumen / definición"
+          }
+        }
+      }
+    },
+    "Klasyk: 4–6 mies. lekkiej masy (+10%), potem 8–12 tyg redukcji (-15%). Daje czystą sylwetkę bez całorocznego „opuchnięcia”.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasyk: 4–6 mies. lekkiej masy (+10%), potem 8–12 tyg redukcji (-15%). Daje czystą sylwetkę bez całorocznego „opuchnięcia”."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic: 4–6 months of light bulk (+10%), then 8–12 weeks of cutting (-15%). Gives a clean physique without year-round \"puffiness\"."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Класика: 4–6 міс. легкої маси (+10%), потім 8–12 тиж редукції (-15%). Дає чисту сильуетку без цілорічної «набряклості»."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Классика: 4–6 мес. лёгкой массы (+10%), потом 8–12 нед редукции (-15%). Даёт чистый силуэт без круглогодичной «отёчности»."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clásico: 4–6 meses de volumen ligero (+10%), luego 8–12 semanas de definición (-15%). Da una figura limpia sin \"hinchazón\" todo el año."
+          }
+        }
+      }
+    },
+    "Wielostawowe robotą": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wielostawowe robotą"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compound lifts do the work"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Багатосуглобові — головна робота"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Многосуставные — главная работа"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los multiarticulares hacen el trabajo"
+          }
+        }
+      }
+    },
+    "Przysiad, martwy, wyciskanie, podciąganie — angażują 60%+ masy mięśniowej. Większy bodziec hormonalny niż izolacje. 60% objętości to powinny być compoundy.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przysiad, martwy, wyciskanie, podciąganie — angażują 60%+ masy mięśniowej. Większy bodziec hormonalny niż izolacje. 60% objętości to powinny być compoundy."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Squat, deadlift, press, pull-up — recruit 60%+ of muscle mass. Bigger hormonal stimulus than isolation. 60% of volume should be compounds."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Присід, станова, жим, підтягування — задіюють 60%+ м'язової маси. Сильніший гормональний стимул, ніж ізоляція. 60% обсягу — компаунди."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Присед, становая, жим, подтягивания — задействуют 60%+ мышечной массы. Сильнее гормональный стимул, чем изоляции. 60% объёма — компаунды."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sentadilla, peso muerto, press, dominadas — implican el 60%+ de la masa muscular. Mayor estímulo hormonal que las aislamientos. El 60% del volumen debería ser compuestos."
+          }
+        }
+      }
+    },
+    "Newbie gains: 6-12 mies.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newbie gains: 6-12 mies."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newbie gains: 6–12 months"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newbie gains: 6–12 міс."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Newbie gains: 6–12 мес."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ganancias de novato: 6–12 meses"
+          }
+        }
+      }
+    },
+    "Pierwszy rok treningu = 5–8 kg mięśni przy dobrej diecie. Potem tempo spada do 1–3 kg/rok. Wykorzystaj okno — nie marnuj go na słabą dietę.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pierwszy rok treningu = 5–8 kg mięśni przy dobrej diecie. Potem tempo spada do 1–3 kg/rok. Wykorzystaj okno — nie marnuj go na słabą dietę."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First year of training = 5–8 kg of muscle with good nutrition. After that the pace drops to 1–3 kg/year. Use that window — don't waste it on a bad diet."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перший рік тренувань = 5–8 кг м'язів за хорошого харчування. Далі темп падає до 1–3 кг/рік. Використай вікно — не марнуй на погану дієту."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первый год тренировок = 5–8 кг мышц при хорошем питании. Потом темп падает до 1–3 кг/год. Используй окно — не трать на плохую диету."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primer año de entrenamiento = 5–8 kg de músculo con buena dieta. Después el ritmo cae a 1–3 kg/año. Aprovecha esa ventana — no la malgastes con mala dieta."
+          }
+        }
+      }
+    },
+    "Trochę cardio nie szkodzi": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trochę cardio nie szkodzi"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little cardio doesn't hurt"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Трохи кардіо не зашкодить"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Немного кардио не повредит"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algo de cardio no estorba"
+          }
+        }
+      }
+    },
+    "2–3×/tydz 20 min lekkiego kardio poprawia regenerację i zdrowie serca bez „spalania mięśni”. Tylko ekstremalne biegi długodystansowe konkurują z masą.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3×/tydz 20 min lekkiego kardio poprawia regenerację i zdrowie serca bez „spalania mięśni”. Tylko ekstremalne biegi długodystansowe konkurują z masą."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3 sessions/week of 20 min light cardio boost recovery and heart health without \"burning muscle\". Only extreme long-distance running competes with mass."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3×/тиждень 20 хв легкого кардіо покращують відновлення і здоров'я серця, не «спалюючи м'язи». Лише екстремальний довгий біг конкурує з масою."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3 раза/нед 20 мин лёгкого кардио улучшают восстановление и здоровье сердца, не «сжигая мышцы». Только экстремальный длинный бег конкурирует с массой."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3 sesiones/semana de 20 min de cardio ligero mejoran la recuperación y el corazón sin \"quemar músculo\". Solo el running extremo de larga distancia compite con el volumen."
+          }
+        }
+      }
+    },
+    "3-4 l wody na masie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3-4 l wody na masie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3–4 L of water during a bulk"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3–4 л води на масі"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3–4 л воды на массе"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3–4 L de agua en volumen"
+          }
+        }
+      }
+    },
+    "Większa masa mięśniowa + większa objętość pokarmu = większa potrzeba wody. Norma 30 ml/kg, na masie raczej 35–40 ml/kg dla dobrej regeneracji.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Większa masa mięśniowa + większa objętość pokarmu = większa potrzeba wody. Norma 30 ml/kg, na masie raczej 35–40 ml/kg dla dobrej regeneracji."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More muscle mass + bigger meal volume = bigger water need. Baseline is 30 ml/kg; during a bulk aim for 35–40 ml/kg for solid recovery."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Більше м'язів + більший обсяг їжі = більша потреба у воді. Норма 30 мл/кг, на масі радше 35–40 мл/кг для гарного відновлення."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Больше мышц + больший объём еды = больше воды нужно. Норма 30 мл/кг, на массе скорее 35–40 мл/кг для нормального восстановления."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más masa muscular + más volumen de comida = más necesidad de agua. La base son 30 ml/kg; en volumen, mejor 35–40 ml/kg para una buena recuperación."
+          }
+        }
+      }
+    },
+    "Kazeina przed snem": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kazeina przed snem"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Casein before bed"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Казеїн перед сном"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Казеин перед сном"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caseína antes de dormir"
+          }
+        }
+      }
+    },
+    "Twaróg lub kazeina (≈30 g) dostarczają aminokwasów w długiej tonacji — 6–8 h. Wspierają syntezę białek w nocy, gdy nic nie jesz.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg lub kazeina (≈30 g) dostarczają aminokwasów w długiej tonacji — 6–8 h. Wspierają syntezę białek w nocy, gdy nic nie jesz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg (Polish curd cheese) or casein (≈30 g) drip-feeds amino acids over 6–8 h. Supports protein synthesis through the night while you fast."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кисломолочний сир чи казеїн (≈30 г) живлять амінокислотами 6–8 год. Підтримують синтез білка вночі, коли ти нічого не їси."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Творог или казеин (≈30 г) подают аминокислоты долгим капельным потоком 6–8 ч. Поддерживают синтез белка ночью, когда ничего не ешь."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg (requesón polaco) o caseína (≈30 g) gotean aminoácidos durante 6–8 h. Apoyan la síntesis proteica de noche cuando no comes."
+          }
+        }
+      }
+    },
+    "Średnia tygodniowa = prawda": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Średnia tygodniowa = prawda"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The weekly average is the truth"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тижневе середнє = правда"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недельная средняя = истина"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La media semanal es la verdad"
+          }
+        }
+      }
+    },
+    "Po dniu z 4000 kcal waga rano skoczy o 1.5 kg z samego pokarmu i wody. Patrz na średnią z 7 dni — wahanie ±0.5 kg jest normalne.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po dniu z 4000 kcal waga rano skoczy o 1.5 kg z samego pokarmu i wody. Patrz na średnią z 7 dni — wahanie ±0.5 kg jest normalne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After a 4000 kcal day the morning weight jumps by 1.5 kg from food and water alone. Watch the 7-day average — ±0.5 kg fluctuation is normal."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Після дня на 4000 ккал ранкова вага підскочить на 1,5 кг лише через їжу й воду. Дивися на 7-денне середнє — коливання ±0,5 кг — норма."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После дня на 4000 ккал утренний вес подскочит на 1,5 кг — это просто еда и вода. Смотри на 7-дневное среднее — колебания ±0,5 кг — норма."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras un día de 4000 kcal, el peso de la mañana sube 1,5 kg solo por comida y agua. Mira la media de 7 días — ±0,5 kg de fluctuación es normal."
+          }
+        }
+      }
+    },
+    "Najtańsze źródła białka": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najtańsze źródła białka"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cheapest protein sources"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найдешевші джерела білка"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Самые дешёвые источники белка"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fuentes de proteína más baratas"
+          }
+        }
+      }
+    },
+    "Twaróg chudy (18 g/100 g), jajka (13 g/100 g), pierś z kurczaka (23 g/100 g), soczewica (9 g/100 g po ugotowaniu), tuńczyk z puszki (25 g).": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg chudy (18 g/100 g), jajka (13 g/100 g), pierś z kurczaka (23 g/100 g), soczewica (9 g/100 g po ugotowaniu), tuńczyk z puszki (25 g)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low-fat twaróg (Polish curd cheese, 18 g/100 g), eggs (13 g), chicken breast (23 g), lentils cooked (9 g), canned tuna (25 g)."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нежирний кисломолочний сир (18 г/100 г), яйця (13 г/100 г), куряча грудка (23 г/100 г), сочевиця (9 г/100 г варена), тунець з банки (25 г)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Творог обезжиренный (18 г/100 г), яйца (13 г/100 г), куриная грудка (23 г/100 г), чечевица (9 г/100 г варёная), тунец из банки (25 г)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twaróg (requesón polaco) bajo en grasa (18 g/100 g), huevos (13 g), pechuga de pollo (23 g), lentejas cocidas (9 g), atún en lata (25 g)."
+          }
+        }
+      }
+    },
+    "Deload co 4-6 tygodni": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deload co 4-6 tygodni"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deload every 4–6 weeks"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deload кожні 4–6 тижнів"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deload каждые 4–6 недель"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deload cada 4–6 semanas"
+          }
+        }
+      }
+    },
+    "Tydzień z 50–60% wolumenu daje stawom i CNS odpocząć. Po nim sile często rośnie. To nie strata — to inwestycja w długi staż.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tydzień z 50–60% wolumenu daje stawom i CNS odpocząć. Po nim sile często rośnie. To nie strata — to inwestycja w długi staż."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A week at 50–60% volume gives joints and the nervous system a break. Strength often rises after. Not a loss — an investment in long-term progress."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тиждень із 50–60% обсягу дає суглобам і ЦНС перепочити. Після цього сила часто росте. Це не втрата — це інвестиція у довгу гру."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неделя на 50–60% объёма даёт суставам и ЦНС отдохнуть. После часто растёт сила. Не потеря — инвестиция в долгий стаж."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una semana al 50–60% del volumen permite descansar articulaciones y SNC. Después suele subir la fuerza. No es pérdida — es inversión a largo plazo."
+          }
+        }
+      }
+    },
+    "Body recomp dla początkujących": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body recomp dla początkujących"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body recomp for beginners"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body recomp для початківців"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body recomp для новичков"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recomposición corporal para principiantes"
+          }
+        }
+      }
+    },
+    "Pierwsze 6–12 mies trening + 1.6 g białka na maintenance daje jednocześnie spadek tłuszczu i wzrost mięśni. Dla zaawansowanych — niemożliwe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pierwsze 6–12 mies trening + 1.6 g białka na maintenance daje jednocześnie spadek tłuszczu i wzrost mięśni. Dla zaawansowanych — niemożliwe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the first 6–12 months, training + 1.6 g protein/kg on maintenance brings fat loss and muscle gain at the same time. For advanced lifters — impossible."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перші 6–12 міс. тренування + 1,6 г білка на підтримці дають водночас зниження жиру і ріст м'язів. Для досвідчених — неможливо."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первые 6–12 мес тренировки + 1,6 г белка на поддержании дают одновременно падение жира и рост мышц. У продвинутых — невозможно."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En los primeros 6–12 meses, entrenar + 1,6 g de proteína/kg en mantenimiento da pérdida de grasa y ganancia de músculo a la vez. Para avanzados — imposible."
+          }
+        }
+      }
+    },
+    "RIR 1-3 dla hipertrofii": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RIR 1-3 dla hipertrofii"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RIR 1–3 for hypertrophy"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RIR 1–3 для гіпертрофії"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RIR 1–3 для гипертрофии"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RIR 1–3 para hipertrofia"
+          }
+        }
+      }
+    },
+    "Zostaw 1–3 powtórzenia „w zapasie”. Trening do upadku co serię męczy CNS i obniża wolumen. Optymalna intensywność to nie maksymalna intensywność.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zostaw 1–3 powtórzenia „w zapasie”. Trening do upadku co serię męczy CNS i obniża wolumen. Optymalna intensywność to nie maksymalna intensywność."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave 1–3 reps \"in reserve\". Going to failure every set fries your CNS and cuts total volume. Optimal intensity isn't maximum intensity."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Залишай 1–3 повторення «у запасі». Тренування до відмови щосета виснажує ЦНС і знижує обсяг. Оптимальна інтенсивність — не максимальна."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оставляй 1–3 повтора «в запасе». Тренировка до отказа каждый сет жжёт ЦНС и снижает объём. Оптимальная интенсивность — не максимальная."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deja 1–3 repeticiones \"en la recámara\". Llegar al fallo cada serie machaca el SNC y baja el volumen total. La intensidad óptima no es la máxima."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
