@@ -31234,6 +31234,1756 @@
           }
         }
       }
+    },
+    "Białko najedza najmocniej": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Białko najedza najmocniej"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protein fills you up the most"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Білок ситіший за все"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Белок насыщает сильнее всего"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La proteína sacia más que nada"
+          }
+        }
+      }
+    },
+    "Spośród trzech makro, białko daje najwyższy indeks sytości. Posiłek z 30+ g białka tłumi grelinę na 3–4 h. Stąd jajecznica trzyma lepiej niż croissant.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spośród trzech makro, białko daje najwyższy indeks sytości. Posiłek z 30+ g białka tłumi grelinę na 3–4 h. Stąd jajecznica trzyma lepiej niż croissant."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Of the three macros, protein has the highest satiety index. A meal with 30+ g of protein suppresses ghrelin for 3–4 h. That's why scrambled eggs hold longer than a croissant."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "З трьох макро білок дає найвищий індекс ситості. Страва з 30+ г білка пригнічує грелін на 3–4 год. Тому яєчня тримає краще, ніж круасан."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Из трёх макро у белка самый высокий индекс сытости. Приём пищи с 30+ г белка подавляет грелин на 3–4 ч. Поэтому яичница держит дольше круассана."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De los tres macros, la proteína tiene el mayor índice de saciedad. Una comida con 30+ g de proteína suprime la grelina 3–4 h. Por eso los huevos revueltos aguantan más que un croissant."
+          }
+        }
+      }
+    },
+    "500 ml wody przed posiłkiem": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml wody przed posiłkiem"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml of water before a meal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 мл води перед їжею"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 мл воды перед едой"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml de agua antes de comer"
+          }
+        }
+      }
+    },
+    "Wypicie szklanki wody 30 min przed obiadem zmniejsza zjedzone kcal średnio o 13% (badanie Davy 2010). Bonus: poprawia trawienie i lekko podbija termogenezę.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wypicie szklanki wody 30 min przed obiadem zmniejsza zjedzone kcal średnio o 13% (badanie Davy 2010). Bonus: poprawia trawienie i lekko podbija termogenezę."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A glass of water 30 min before lunch cuts calories eaten by ~13% on average (Davy 2010). Bonus: better digestion and a small thermogenesis boost."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Склянка води за 30 хв до обіду зменшує з'їдені калорії в середньому на 13% (Davy 2010). Бонус: краще травлення і легке підвищення термогенезу."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стакан воды за 30 мин до обеда снижает съеденные ккал в среднем на 13% (Davy 2010). Бонус: лучше пищеварение и небольшой буст термогенеза."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un vaso de agua 30 min antes del almuerzo reduce las calorías consumidas un 13% de media (Davy 2010). Bonus: mejor digestión y un pequeño impulso termogénico."
+          }
+        }
+      }
+    },
+    "30 g błonnika dziennie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 g błonnika dziennie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 g of fibre a day"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 г клітковини на день"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 г клетчатки в день"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 g de fibra al día"
+          }
+        }
+      }
+    },
+    "Wysoki błonnik = wolniejsze opróżnianie żołądka i stabilniejsza glikemia. Cel 30 g/dobę dla dorosłych. Najprościej: warzywa do każdego posiłku, owoce do śniadania.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wysoki błonnik = wolniejsze opróżnianie żołądka i stabilniejsza glikemia. Cel 30 g/dobę dla dorosłych. Najprościej: warzywa do każdego posiłku, owoce do śniadania."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High fibre = slower gastric emptying and steadier glucose. Adult target: 30 g/day. Simplest: veg with every meal, fruit at breakfast."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Багато клітковини = повільніше випорожнення шлунка і стабільніший цукор. Ціль 30 г/добу для дорослих. Найпростіше: овочі до кожної страви, фрукти на сніданок."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Много клетчатки = медленнее опорожнение желудка и стабильнее глюкоза. Цель 30 г/сут для взрослых. Проще всего: овощи к каждой еде, фрукты на завтрак."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mucha fibra = vaciado gástrico más lento y glucemia más estable. Objetivo adulto: 30 g/día. Lo más simple: verduras en cada comida, fruta en el desayuno."
+          }
+        }
+      }
+    },
+    "7-8 h snu = łatwiejsza redukcja": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7-8 h snu = łatwiejsza redukcja"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7–8 h of sleep = easier cut"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7–8 год сну = легша редукція"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7–8 ч сна = проще редукция"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7–8 h de sueño = definición más fácil"
+          }
+        }
+      }
+    },
+    "Krótki sen podnosi grelinę, obniża leptynę i zwiększa łaknienie cukru. Osoby śpiące 5 h tracą 55% mniej tkanki tłuszczowej w tym samym deficycie (Nedeltcheva 2010).": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krótki sen podnosi grelinę, obniża leptynę i zwiększa łaknienie cukru. Osoby śpiące 5 h tracą 55% mniej tkanki tłuszczowej w tym samym deficycie (Nedeltcheva 2010)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short sleep raises ghrelin, lowers leptin, and ramps sugar cravings. People sleeping 5 h lose 55% less fat on the same deficit (Nedeltcheva 2010)."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Короткий сон підвищує грелін, знижує лептин і посилює тягу до солодкого. Люди, які сплять 5 год, втрачають на 55% менше жиру при тому ж дефіциті (Nedeltcheva 2010)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Короткий сон поднимает грелин, снижает лептин и усиливает тягу к сладкому. Люди, спящие 5 ч, теряют на 55% меньше жира при том же дефиците (Nedeltcheva 2010)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dormir poco sube la grelina, baja la leptina y dispara los antojos de azúcar. Quienes duermen 5 h pierden un 55% menos de grasa con el mismo déficit (Nedeltcheva 2010)."
+          }
+        }
+      }
+    },
+    "Wolne tempo = trwałe efekty": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wolne tempo = trwałe efekty"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow pace = lasting results"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повільний темп = тривалий результат"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Медленный темп = устойчивый результат"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritmo lento = resultado duradero"
+          }
+        }
+      }
+    },
+    "Spadek 0.5–0.7% masy tygodniowo chroni mięśnie i hormony. 2 kg w tydzień prawie zawsze wraca. Cierpliwość to jedyna „cheat code” odchudzania.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spadek 0.5–0.7% masy tygodniowo chroni mięśnie i hormony. 2 kg w tydzień prawie zawsze wraca. Cierpliwość to jedyna „cheat code” odchudzania."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Losing 0.5–0.7% of body mass per week protects muscle and hormones. 2 kg a week almost always comes back. Patience is the only \"cheat code\" of fat loss."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Втрата 0,5–0,7% маси на тиждень захищає м'язи і гормони. 2 кг за тиждень майже завжди повертаються. Терпіння — єдиний «чіт-код» схуднення."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потеря 0,5–0,7% массы в неделю бережёт мышцы и гормоны. 2 кг за неделю почти всегда возвращаются. Терпение — единственный «чит-код» похудения."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perder 0,5–0,7% del peso por semana protege músculo y hormonas. 2 kg por semana casi siempre vuelven. La paciencia es el único \"truco\" para adelgazar."
+          }
+        }
+      }
+    },
+    "1.6-2.2 g białka/kg na redukcji": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1.6-2.2 g białka/kg na redukcji"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1.6–2.2 g protein/kg during a cut"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1,6–2,2 г білка/кг на редукції"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1,6–2,2 г белка/кг на редукции"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1,6–2,2 g de proteína/kg en definición"
+          }
+        }
+      }
+    },
+    "Na deficycie warto trzymać białko wyżej niż na utrzymaniu — chroni mięśnie. Dla 70 kg to 110–155 g/dobę. To 4–5 porcji po 25–35 g.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na deficycie warto trzymać białko wyżej niż na utrzymaniu — chroni mięśnie. Dla 70 kg to 110–155 g/dobę. To 4–5 porcji po 25–35 g."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On a deficit keep protein higher than at maintenance — it spares muscle. For 70 kg that's 110–155 g/day. Roughly 4–5 portions of 25–35 g each."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На дефіциті тримай білок вище, ніж на підтримці — це береже м'язи. Для 70 кг це 110–155 г/добу. Це 4–5 порцій по 25–35 г."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На дефиците держи белок выше, чем на поддержании — это бережёт мышцы. Для 70 кг это 110–155 г/сут. Это 4–5 порций по 25–35 г."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En déficit, mantén la proteína más alta que en mantenimiento — protege el músculo. Para 70 kg son 110–155 g/día. Unas 4–5 raciones de 25–35 g cada una."
+          }
+        }
+      }
+    },
+    "Metoda talerza 50/25/25": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metoda talerza 50/25/25"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The 50/25/25 plate method"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метод тарілки 50/25/25"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метод тарелки 50/25/25"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Método del plato 50/25/25"
+          }
+        }
+      }
+    },
+    "Pół talerza warzywa, ¼ białko, ¼ węglowodany skrobiowe. Bez ważenia, bez aplikacji. Działa, bo automatycznie obniża gęstość kaloryczną dania o 30-40%.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pół talerza warzywa, ¼ białko, ¼ węglowodany skrobiowe. Bez ważenia, bez aplikacji. Działa, bo automatycznie obniża gęstość kaloryczną dania o 30-40%."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Half the plate veg, ¼ protein, ¼ starchy carbs. No scale, no app. It works because it automatically drops a meal's calorie density by 30–40%."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Половина тарілки овочі, ¼ білок, ¼ крохмалисті вуглеводи. Без ваги, без застосунку. Працює, бо автоматично знижує калорійну щільність страви на 30–40%."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Половина тарелки овощи, ¼ белок, ¼ крахмалистые углеводы. Без весов, без приложения. Работает, потому что автоматически снижает калорийную плотность блюда на 30–40%."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitad del plato verduras, ¼ proteína, ¼ carbohidratos con almidón. Sin báscula, sin app. Funciona porque baja la densidad calórica del plato un 30–40% sin pensarlo."
+          }
+        }
+      }
+    },
+    "Wieczór: lżej, ale jedz": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wieczór: lżej, ale jedz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evening: lighter, but do eat"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ввечері: легше, але їж"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вечером: легче, но ешь"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por la noche: ligero, pero come"
+          }
+        }
+      }
+    },
+    "Mit „nie jedz po 18” nie ma podstaw — liczy się dobowy bilans. Ale lekka kolacja z warzywami i białkiem sprzyja regeneracji. Ciężkie kolacje psują sen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit „nie jedz po 18” nie ma podstaw — liczy się dobowy bilans. Ale lekka kolacja z warzywami i białkiem sprzyja regeneracji. Ciężkie kolacje psują sen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The \"don't eat after 6 pm\" myth has no basis — daily balance is what counts. But a light dinner with veg and protein supports recovery. Heavy dinners wreck sleep."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Міф «не їж після 18» не має підстав — важливий добовий баланс. Але легка вечеря з овочами і білком підтримує відновлення. Важка вечеря псує сон."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Миф «не ешь после 18» не имеет основания — важен суточный баланс. Но лёгкий ужин с овощами и белком помогает восстановлению. Тяжёлый ужин ломает сон."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mito de \"no comer después de las 18:00\" no tiene base — lo que cuenta es el balance del día. Pero una cena ligera con verdura y proteína ayuda a recuperar. Las cenas pesadas arruinan el sueño."
+          }
+        }
+      }
+    },
+    "Ogranicz alkohol na redukcji": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogranicz alkohol na redukcji"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limit alcohol during a cut"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обмеж алкоголь на редукції"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ограничь алкоголь на редукции"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limita el alcohol en definición"
+          }
+        }
+      }
+    },
+    "Alkohol blokuje lipolizę, podnosi apetyt i obniża hamulce („pizza o północy”). 0–2 drinki tygodniowo to bezpieczna granica dla efektów redukcji.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alkohol blokuje lipolizę, podnosi apetyt i obniża hamulce („pizza o północy”). 0–2 drinki tygodniowo to bezpieczna granica dla efektów redukcji."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcohol blocks lipolysis, raises appetite, and kills your impulse brakes (\"midnight pizza\"). 0–2 drinks per week is the safe ceiling for cut results."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Алкоголь блокує ліполіз, підвищує апетит і знімає гальма («піца опівночі»). 0–2 напої на тиждень — безпечна межа для результатів редукції."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Алкоголь блокирует липолиз, поднимает аппетит и снимает тормоза («пицца в полночь»). 0–2 напитка в неделю — безопасная граница для редукции."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El alcohol bloquea la lipólisis, sube el apetito y baja la inhibición (\"pizza a medianoche\"). 0–2 copas por semana es el límite seguro para tu definición."
+          }
+        }
+      }
+    },
+    "Waga tygodniowa zamiast dziennej": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waga tygodniowa zamiast dziennej"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly weigh-in beats daily"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тижнева вага замість щоденної"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недельный вес вместо ежедневного"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pesaje semanal mejor que diario"
+          }
+        }
+      }
+    },
+    "Codzienna waga skacze ±2 kg przez wodę, sód, hormony i jelita. Średnia z 7 pomiarów porannych pokazuje realny trend. Tylko on się liczy.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codzienna waga skacze ±2 kg przez wodę, sód, hormony i jelita. Średnia z 7 pomiarów porannych pokazuje realny trend. Tylko on się liczy."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daily weight swings by ±2 kg from water, sodium, hormones, and gut. The average of 7 morning readings shows the real trend. Only that counts."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Щоденна вага стрибає на ±2 кг через воду, натрій, гормони і кишечник. Середнє з 7 ранкових вимірювань показує реальний тренд. Тільки він важить."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ежедневный вес скачет на ±2 кг от воды, натрия, гормонов и кишечника. Среднее из 7 утренних измерений показывает реальный тренд. Только он и важен."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El peso diario oscila ±2 kg por agua, sodio, hormonas y digestión. La media de 7 pesajes matinales muestra la tendencia real. Solo eso cuenta."
+          }
+        }
+      }
+    },
+    "Niedoszacowanie 30%": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niedoszacowanie 30%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30% under-reporting"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недооцінка 30%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недооценка 30%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subestimación del 30%"
+          }
+        }
+      }
+    },
+    "Badania pokazują, że dorośli o 30% niedoszacowują własne spożycie. Skanowanie posiłków pomaga rozpoznać „niewidzialne” kalorie — sosy, oliwę, „małe podjadanki”.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Badania pokazują, że dorośli o 30% niedoszacowują własne spożycie. Skanowanie posiłków pomaga rozpoznać „niewidzialne” kalorie — sosy, oliwę, „małe podjadanki”."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Research shows adults under-report intake by 30%. Scanning meals catches the \"invisible\" calories — sauces, olive oil, \"small snacks\"."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дослідження показують, що дорослі занижують споживання на 30%. Сканування страв допомагає виловити «невидимі» калорії — соуси, олію, «маленькі перекуси»."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Исследования показывают, что взрослые недооценивают свой рацион на 30%. Сканирование еды помогает поймать «невидимые» калории — соусы, оливковое масло, «маленькие перекусы»."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estudios muestran que los adultos subestiman su ingesta un 30%. Escanear las comidas atrapa las calorías \"invisibles\" — salsas, aceite, \"picoteos pequeños\"."
+          }
+        }
+      }
+    },
+    "Zamień chrupkę na chrupkę": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zamień chrupkę na chrupkę"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Swap a crunch for a crunch"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заміни хрускіт на хрускіт"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Хруст на хруст"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia un crujido por otro"
+          }
+        }
+      }
+    },
+    "Marchewka + hummus zaspokaja potrzebę chrupania za 80 kcal. Garść chipsów to 150–250 kcal. Ta sama akcja, kilkukrotna różnica.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marchewka + hummus zaspokaja potrzebę chrupania za 80 kcal. Garść chipsów to 150–250 kcal. Ta sama akcja, kilkukrotna różnica."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carrot + hummus scratches the crunch itch for 80 kcal. A handful of chips is 150–250 kcal. Same action, several-fold difference."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Морква + хумус закриває потребу хрустіти за 80 ккал. Жменя чипсів — це 150–250 ккал. Та сама дія, у кілька разів різниця."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Морковь + хумус закрывают потребность хрустеть за 80 ккал. Горсть чипсов — 150–250 ккал. То же действие, в несколько раз разница."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zanahoria + hummus calma las ganas de crujido por 80 kcal. Un puñado de patatas fritas son 150–250 kcal. La misma acción, varias veces más calorías."
+          }
+        }
+      }
+    },
+    "Kawa czarna ≈ 2 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kawa czarna ≈ 2 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Black coffee ≈ 2 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чорна кава ≈ 2 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чёрный кофе ≈ 2 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café solo ≈ 2 kcal"
+          }
+        }
+      }
+    },
+    "Espresso bez dodatków to ≈2 kcal. Każda łyżeczka cukru +20 kcal, łyżka mleka +10, syrop +60. Trzy „małe” kawy dziennie potrafią zjeść 300 kcal.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espresso bez dodatków to ≈2 kcal. Każda łyżeczka cukru +20 kcal, łyżka mleka +10, syrop +60. Trzy „małe” kawy dziennie potrafią zjeść 300 kcal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plain espresso is ≈2 kcal. Each teaspoon of sugar +20 kcal, splash of milk +10, syrup +60. Three \"small\" coffees a day can eat 300 kcal."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Еспресо без добавок — це ≈2 ккал. Кожна ложечка цукру +20 ккал, ложка молока +10, сироп +60. Три «маленькі» кави на день можуть з'їсти 300 ккал."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Эспрессо без добавок — ≈2 ккал. Каждая чайная ложка сахара +20 ккал, ложка молока +10, сироп +60. Три «маленьких» кофе в день съедают 300 ккал."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un espresso solo son ≈2 kcal. Cada cucharadita de azúcar +20 kcal, un chorrito de leche +10, sirope +60. Tres cafés \"pequeños\" al día pueden sumar 300 kcal."
+          }
+        }
+      }
+    },
+    "Warzywa najpierw": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warzywa najpierw"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veg first"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Овочі спочатку"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Овощи первыми"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las verduras primero"
+          }
+        }
+      }
+    },
+    "Zjedzenie sałatki przed daniem głównym zmniejsza całkowite kcal posiłku o 11% (Rolls). Błonnik buforuje glukozę i daje sygnał sytości zanim sięgniesz po skrobię.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zjedzenie sałatki przed daniem głównym zmniejsza całkowite kcal posiłku o 11% (Rolls). Błonnik buforuje glukozę i daje sygnał sytości zanim sięgniesz po skrobię."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eating a salad before the main course cuts total meal kcal by 11% (Rolls). Fibre buffers glucose and triggers satiety before you reach for the starch."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "З'їсти салат перед основною стравою знижує загальну калорійність на 11% (Rolls). Клітковина буферує глюкозу і дає сигнал ситості до того, як береш крохмалі."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Съесть салат перед основным блюдом снижает общую калорийность на 11% (Rolls). Клетчатка буферизует глюкозу и даёт сигнал сытости до того, как берёшь крахмал."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comer ensalada antes del plato principal recorta el total de kcal de la comida un 11% (Rolls). La fibra amortigua la glucosa y dispara la saciedad antes de que llegues al almidón."
+          }
+        }
+      }
+    },
+    "Jedz wolno — 20 min": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedz wolno — 20 min"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eat slowly — 20 minutes"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Їж повільно — 20 хв"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ешь медленно — 20 мин"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come despacio — 20 minutos"
+          }
+        }
+      }
+    },
+    "Sygnał sytości potrzebuje ~20 minut, by dotrzeć do mózgu. Posiłek zjedzony w 8 min to przejedzenie z definicji. Pomocne: odkładaj sztućce między kęsami.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sygnał sytości potrzebuje ~20 minut, by dotrzeć do mózgu. Posiłek zjedzony w 8 min to przejedzenie z definicji. Pomocne: odkładaj sztućce między kęsami."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The satiety signal needs ~20 minutes to reach the brain. A meal eaten in 8 min is overeating by definition. Tip: put down cutlery between bites."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сигнал ситості йде до мозку ~20 хв. Страва, з'їдена за 8 хв — це переїдання за визначенням. Підказка: відкладай прибори між шматками."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сигнал сытости идёт до мозга ~20 мин. Приём пищи за 8 мин — переедание по определению. Подсказка: откладывай приборы между кусками."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La señal de saciedad tarda ~20 minutos en llegar al cerebro. Comer en 8 min ya es comer de más por definición. Truco: deja los cubiertos entre bocados."
+          }
+        }
+      }
+    },
+    "Stres = wyższy kortyzol": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stres = wyższy kortyzol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stress = higher cortisol"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стрес = вищий кортизол"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стресс = выше кортизол"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estrés = más cortisol"
+          }
+        }
+      }
+    },
+    "Przewlekły stres podnosi kortyzol, który sprzyja gromadzeniu tłuszczu brzusznego i napadom na słodkie. 10 min spaceru po stresie obniża go o 21%.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przewlekły stres podnosi kortyzol, który sprzyja gromadzeniu tłuszczu brzusznego i napadom na słodkie. 10 min spaceru po stresie obniża go o 21%."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chronic stress raises cortisol, which drives belly fat and sugar binges. A 10-minute walk after stress drops it by 21%."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Хронічний стрес підвищує кортизол, який сприяє накопиченню жиру на животі і приступам на солодке. 10 хв прогулянки після стресу знижують його на 21%."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Хронический стресс поднимает кортизол, который тянет жир в живот и провоцирует тягу к сладкому. 10 мин прогулки после стресса снижают его на 21%."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El estrés crónico sube el cortisol, que favorece la grasa abdominal y los atracones de azúcar. 10 minutos de paseo tras el estrés lo bajan un 21%."
+          }
+        }
+      }
+    },
+    "Mindful eating działa": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindful eating działa"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindful eating works"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindful eating працює"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindful eating работает"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mindful eating funciona"
+          }
+        }
+      }
+    },
+    "Jedzenie bez ekranu i z uwagą na smak obniża spożycie o 7-15%. Mózg lepiej rejestruje doświadczenie, więc szybciej dochodzi do nasycenia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedzenie bez ekranu i z uwagą na smak obniża spożycie o 7-15%. Mózg lepiej rejestruje doświadczenie, więc szybciej dochodzi do nasycenia."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eating without a screen and paying attention to taste lowers intake by 7–15%. The brain registers the experience better, so satiety hits sooner."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Їсти без екрана й уважно до смаку знижує споживання на 7–15%. Мозок краще реєструє досвід, тому ситість приходить швидше."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Еда без экрана и с вниманием к вкусу снижает потребление на 7–15%. Мозг лучше регистрирует опыт, и сытость приходит быстрее."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comer sin pantalla y prestando atención al sabor baja la ingesta un 7–15%. El cerebro registra mejor la experiencia, así que la saciedad llega antes."
+          }
+        }
+      }
+    },
+    "Wysokobiałkowe śniadanie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wysokobiałkowe śniadanie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High-protein breakfast"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Високобілковий сніданок"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Высокобелковый завтрак"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desayuno alto en proteína"
+          }
+        }
+      }
+    },
+    "30+ g białka rano (jajka, twaróg, skyr) tłumi głód do obiadu i obniża „popołudniowy zjazd” na słodycze. Badania pokazują −400 kcal w skali doby.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30+ g białka rano (jajka, twaróg, skyr) tłumi głód do obiadu i obniża „popołudniowy zjazd” na słodycze. Badania pokazują −400 kcal w skali doby."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30+ g of morning protein (eggs, twaróg, skyr) quiets hunger until lunch and softens the \"afternoon sugar crash\". Studies show −400 kcal across the day."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30+ г білка вранці (яйця, кисломолочний сир, скір) приглушує голод до обіду й послаблює «післяобідній зрив» на солодке. Дослідження показують −400 ккал за добу."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30+ г белка утром (яйца, творог, скир) гасит голод до обеда и смягчает «послеобеденный срыв» на сладкое. Исследования показывают −400 ккал за сутки."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30+ g de proteína por la mañana (huevos, twaróg, skyr) calman el hambre hasta el almuerzo y suavizan el \"bajón\" de azúcar de la tarde. Los estudios muestran −400 kcal al día."
+          }
+        }
+      }
+    },
+    "Ultra-przetworzone = +500 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultra-przetworzone = +500 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultra-processed = +500 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ультра-перероблена їжа = +500 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ультра-переработанная еда = +500 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultraprocesados = +500 kcal"
+          }
+        }
+      }
+    },
+    "W randomizowanym trialu Hall (2019) dieta ultra-przetworzona dała +500 kcal/dobę i +1 kg w 2 tygodnie — przy tej samej dostępności makro. Wina struktury produktu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "W randomizowanym trialu Hall (2019) dieta ultra-przetworzona dała +500 kcal/dobę i +1 kg w 2 tygodnie — przy tej samej dostępności makro. Wina struktury produktu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Hall's 2019 randomised trial, an ultra-processed diet added +500 kcal/day and +1 kg in 2 weeks — with identical macros on offer. The product's structure is the culprit."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "У рандомізованому випробуванні Hall (2019) ультра-перероблена дієта дала +500 ккал/добу і +1 кг за 2 тижні — за тих самих макро. Винна структура продукту."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В рандомизированном испытании Hall (2019) ультра-переработанная диета дала +500 ккал/сут и +1 кг за 2 недели — при тех же макро. Виновата структура продукта."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el ensayo aleatorizado de Hall (2019), una dieta ultraprocesada sumó +500 kcal/día y +1 kg en 2 semanas — con los mismos macros disponibles. La culpa es de la estructura del producto."
+          }
+        }
+      }
+    },
+    "Waga kłamie krótkoterminowo": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waga kłamie krótkoterminowo"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The scale lies short-term"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вага бреше у короткостроковій перспективі"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Весы лгут на коротком отрезке"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La báscula miente a corto plazo"
+          }
+        }
+      }
+    },
+    "Trening siłowy zatrzymuje 1–2 kg wody w mięśniach. Sól na obiad to +1 kg następnego dnia. Cykl menstruacyjny ±2 kg. Patrz na średnie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trening siłowy zatrzymuje 1–2 kg wody w mięśniach. Sól na obiad to +1 kg następnego dnia. Cykl menstruacyjny ±2 kg. Patrz na średnie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength training holds 1–2 kg of water in muscles. Salty lunch = +1 kg the next day. Menstrual cycle ±2 kg. Watch the averages."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силове тренування затримує 1–2 кг води в м'язах. Сіль на обід = +1 кг наступного дня. Менструальний цикл ±2 кг. Дивись на середні."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Силовая тренировка задерживает 1–2 кг воды в мышцах. Солёный обед = +1 кг на следующий день. Менструальный цикл ±2 кг. Смотри на средние."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El entrenamiento de fuerza retiene 1–2 kg de agua en los músculos. Almuerzo salado = +1 kg al día siguiente. Ciclo menstrual ±2 kg. Fíjate en las medias."
+          }
+        }
+      }
+    },
+    "Co 8 tygodni — diet break": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Co 8 tygodni — diet break"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every 8 weeks — diet break"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кожні 8 тижнів — diet break"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Каждые 8 недель — diet break"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada 8 semanas — diet break"
+          }
+        }
+      }
+    },
+    "Tydzień na maintenance po 6–8 tyg redukcji to nie cofnięcie, a strategia. Hormony tarczycy i leptyna wracają. Późniejsze tempo jest szybsze.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tydzień na maintenance po 6–8 tyg redukcji to nie cofnięcie, a strategia. Hormony tarczycy i leptyna wracają. Późniejsze tempo jest szybsze."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A week at maintenance after 6–8 weeks of cutting isn't a step back — it's strategy. Thyroid hormones and leptin recover. Later pace is faster."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тиждень на підтримці після 6–8 тижнів редукції — не крок назад, а стратегія. Гормони щитоподібної і лептин відновлюються. Подальший темп швидший."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неделя на поддержании после 6–8 недель редукции — не шаг назад, а стратегия. Гормоны щитовидки и лептин восстанавливаются. Дальнейший темп быстрее."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una semana en mantenimiento tras 6–8 semanas de definición no es retroceso — es estrategia. Las hormonas tiroideas y la leptina se recuperan. El ritmo posterior es más rápido."
+          }
+        }
+      }
+    },
+    "Brokuł = 34 kcal/100 g": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brokuł = 34 kcal/100 g"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Broccoli = 34 kcal/100 g"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Броколі = 34 ккал/100 г"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Брокколи = 34 ккал/100 г"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brócoli = 34 kcal/100 g"
+          }
+        }
+      }
+    },
+    "Ogórek 12, sałata 14, brokuł 34, marchew 41. Pół kilo brokułów na obiad to 170 kcal i 6 g białka — wypełnia żołądek lepiej niż jakikolwiek baton.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogórek 12, sałata 14, brokuł 34, marchew 41. Pół kilo brokułów na obiad to 170 kcal i 6 g białka — wypełnia żołądek lepiej niż jakikolwiek baton."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cucumber 12, lettuce 14, broccoli 34, carrot 41 (kcal/100 g). Half a kilo of broccoli for lunch is 170 kcal and 6 g protein — fills the stomach better than any bar."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Огірок 12, салат 14, броколі 34, морква 41 (ккал/100 г). Півкіло броколі на обід — 170 ккал і 6 г білка — наповнює шлунок краще за будь-який батончик."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Огурец 12, салат 14, брокколи 34, морковь 41 (ккал/100 г). Полкило брокколи на обед — 170 ккал и 6 г белка — наполняет желудок лучше любого батончика."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pepino 12, lechuga 14, brócoli 34, zanahoria 41 (kcal/100 g). Medio kilo de brócoli al almuerzo son 170 kcal y 6 g de proteína — llena más que cualquier barrita."
+          }
+        }
+      }
+    },
+    "Nocne podjadanie ≠ tłuszcz": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nocne podjadanie ≠ tłuszcz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night snacking ≠ fat gain"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нічні перекуси ≠ жир"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ночные перекусы ≠ жир"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picar de noche ≠ engordar"
+          }
+        }
+      }
+    },
+    "Liczy się sumaryczny bilans, nie pora. Ale nocne podjadanie często wynika z braku białka w ciągu dnia. Domknij dzień solidną kolacją z 30 g białka.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liczy się sumaryczny bilans, nie pora. Ale nocne podjadanie często wynika z braku białka w ciągu dnia. Domknij dzień solidną kolacją z 30 g białka."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What matters is the total balance, not the clock. But night snacking usually comes from too little protein during the day. Close the day with a solid 30 g-protein dinner."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Важить підсумковий баланс, а не час доби. Але нічні перекуси часто виникають через дефіцит білка вдень. Закривай день солідною вечерею з 30 г білка."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Важен суммарный баланс, а не время. Но ночные перекусы часто из-за нехватки белка днём. Закрой день плотным ужином с 30 г белка."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo que cuenta es el balance total, no la hora. Pero picar de noche suele venir por falta de proteína durante el día. Cierra el día con una cena sólida de 30 g de proteína."
+          }
+        }
+      }
+    },
+    "Waż się rano, bez ubrań": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waż się rano, bez ubrań"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weigh in morning, no clothes"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зважуйся вранці, без одягу"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Взвешивайся утром, без одежды"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pésate por la mañana, sin ropa"
+          }
+        }
+      }
+    },
+    "Po toalecie, przed wypiciem czegokolwiek, na tej samej wadze. Powtarzalność procedury jest ważniejsza niż samo urządzenie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po toalecie, przed wypiciem czegokolwiek, na tej samej wadze. Powtarzalność procedury jest ważniejsza niż samo urządzenie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After the toilet, before drinking anything, on the same scale. The repeatability of the routine matters more than the device itself."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Після туалету, до того, як щось вип'єш, на тих самих вагах. Повторюваність процедури важливіша за сам пристрій."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После туалета, до того как что-то выпьешь, на одних и тех же весах. Повторяемость процедуры важнее самого устройства."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Después del baño, antes de beber nada, en la misma báscula. La repetibilidad del proceso importa más que el aparato."
+          }
+        }
+      }
+    },
+    "Fast food 1×/tydz to ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast food 1×/tydz to ok"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast food 1×/week is fine"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фастфуд 1×/тиждень — ок"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фастфуд 1×/нед — ок"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast food 1×/semana está bien"
+          }
+        }
+      }
+    },
+    "Big Mac + frytki to ≈900 kcal. Raz w tygodniu zmieści się w tygodniowym deficycie. Codziennie — nie. Częstotliwość, nie zakaz.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big Mac + frytki to ≈900 kcal. Raz w tygodniu zmieści się w tygodniowym deficycie. Codziennie — nie. Częstotliwość, nie zakaz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big Mac + fries is ≈900 kcal. Once a week fits inside the weekly deficit. Every day — no. Frequency, not a ban."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big Mac + картопля фрі — ≈900 ккал. Раз на тиждень вписується в тижневий дефіцит. Щодня — ні. Частота, не заборона."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big Mac + картошка фри — ≈900 ккал. Раз в неделю влезает в недельный дефицит. Каждый день — нет. Частота, а не запрет."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big Mac + patatas son ≈900 kcal. Una vez por semana cabe en el déficit semanal. Cada día — no. Es frecuencia, no prohibición."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
