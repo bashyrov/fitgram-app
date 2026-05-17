@@ -8737,7 +8737,40 @@
         }
       }
     },
-    "Język aplikacji": {},
+    "Język aplikacji": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Język aplikacji"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App language"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мова застосунку"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык приложения"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idioma de la app"
+          }
+        }
+      }
+    },
     "Kalibracja": {
       "localizations": {
         "en": {
@@ -11969,7 +12002,40 @@
         }
       }
     },
-    "Nie udało się zaimportować: %@": {},
+    "Nie udało się zaimportować: %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się zaimportować: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import failed: %@"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не вдалося імпортувати: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось импортировать: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al importar: %@"
+          }
+        }
+      }
+    },
     "Nie udało się zapisać profilu. Spróbuj ponownie.": {
       "localizations": {
         "en": {
@@ -12166,7 +12232,40 @@
         }
       }
     },
-    "Niektóre etykiety systemowe (np. okna z prośbą o pozwolenie) będą po polsku do momentu restartu telefonu.": {},
+    "Niektóre etykiety systemowe (np. okna z prośbą o pozwolenie) będą po polsku do momentu restartu telefonu.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niektóre etykiety systemowe (np. okna z prośbą o pozwolenie) będą po polsku do momentu restartu telefonu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some system labels (e.g. permission prompts) will stay in Polish until you restart the phone."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Деякі системні написи (наприклад, запити дозволу) залишаться польською до перезапуску телефона."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Некоторые системные надписи (например, запросы разрешений) останутся на польском до перезапуска телефона."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algunas etiquetas del sistema (p. ej. solicitudes de permisos) seguirán en polaco hasta que reinicies el teléfono."
+          }
+        }
+      }
+    },
     "Nieograniczona społeczność": {
       "localizations": {
         "en": {
@@ -23980,7 +24079,40 @@
         }
       }
     },
-    "Wybierz język aplikacji": {},
+    "Wybierz język aplikacji": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz język aplikacji"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick app language"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Виберіть мову застосунку"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбери язык приложения"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige el idioma de la app"
+          }
+        }
+      }
+    },
     "Wybierz najszybszy sposób na ten posiłek": {
       "localizations": {
         "en": {
@@ -25520,7 +25652,40 @@
         }
       }
     },
-    "Zaimportowano %lld wpisów.": {},
+    "Zaimportowano %lld wpisów.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaimportowano %lld wpisów."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported %lld entries."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Імпортовано %lld записів."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Импортировано %lld записей."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se importaron %lld entradas."
+          }
+        }
+      }
+    },
     "Zakres dat": {
       "localizations": {
         "en": {
@@ -26461,7 +26626,40 @@
         }
       }
     },
-    "Zmiana zachodzi od razu, bez restartu.": {},
+    "Zmiana zachodzi od razu, bez restartu.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmiana zachodzi od razu, bez restartu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The change takes effect immediately, no restart needed."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зміна набуває чинності одразу, без перезапуску."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменение применяется сразу, без перезапуска."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cambio se aplica de inmediato, sin reinicio."
+          }
+        }
+      }
+    },
     "Zmień dzienny cel wody": {
       "localizations": {
         "en": {
@@ -29283,6 +29481,1756 @@
           "stringUnit": {
             "state": "translated",
             "value": "🔥 %1$lld ккал"
+          }
+        }
+      }
+    },
+    "1 g białka = 4 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 g białka = 4 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 g of protein = 4 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 г білка = 4 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 г белка = 4 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 g de proteína = 4 kcal"
+          }
+        }
+      }
+    },
+    "Białko i węglowodany dostarczają po 4 kcal na gram, tłuszcz aż 9 kcal, a alkohol 7 kcal. To dlatego oliwa „znika” z talerza, a tłustość liczy się szybciej niż ryż. Świadomość tych liczb pozwala zgadnąć kaloryczność dania bez liczenia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Białko i węglowodany dostarczają po 4 kcal na gram, tłuszcz aż 9 kcal, a alkohol 7 kcal. To dlatego oliwa „znika” z talerza, a tłustość liczy się szybciej niż ryż. Świadomość tych liczb pozwala zgadnąć kaloryczność dania bez liczenia."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protein and carbs each provide 4 kcal per gram, fat hits 9 kcal, and alcohol 7 kcal. That's why olive oil \"disappears\" off the plate while fat counts faster than rice. Knowing these numbers lets you guess a dish's calories without counting."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Білок і вуглеводи дають по 4 ккал на грам, жир аж 9 ккал, а алкоголь 7 ккал. Тому олія «зникає» з тарілки, а жирність рахується швидше за рис. Знання цих цифр дозволяє вгадати калорійність страви без підрахунків."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Белок и углеводы дают по 4 ккал на грамм, жир аж 9 ккал, а алкоголь 7 ккал. Поэтому оливковое масло «исчезает» с тарелки, а жирность считается быстрее, чем рис. Знание этих цифр позволяет угадать калорийность блюда без подсчёта."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La proteína y los carbohidratos aportan 4 kcal por gramo, la grasa hasta 9 kcal y el alcohol 7 kcal. Por eso el aceite de oliva \"desaparece\" del plato y la grasa cuenta más rápido que el arroz. Conocer estos números te deja adivinar las calorías sin contar."
+          }
+        }
+      }
+    },
+    "TDEE = BMR + ruch": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE = BMR + ruch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE = BMR + movement"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE = BMR + рух"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE = BMR + движение"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE = BMR + movimiento"
+          }
+        }
+      }
+    },
+    "TDEE to całkowite dobowe zapotrzebowanie. Składa się z BMR (60–70%), termogenezy posiłków (≈10%) i aktywności fizycznej z NEAT. Praca biurowa potrafi obciąć TDEE o 300–500 kcal względem pracy fizycznej, nawet bez treningu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE to całkowite dobowe zapotrzebowanie. Składa się z BMR (60–70%), termogenezy posiłków (≈10%) i aktywności fizycznej z NEAT. Praca biurowa potrafi obciąć TDEE o 300–500 kcal względem pracy fizycznej, nawet bez treningu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE is total daily energy expenditure. It's BMR (60–70%), meal thermogenesis (≈10%), and physical activity with NEAT. Desk work can cut TDEE by 300–500 kcal vs. manual labour even without training."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE — це загальна добова потреба. Це BMR (60–70%), термогенез їжі (≈10%) і фізична активність із NEAT. Офісна робота може скоротити TDEE на 300–500 ккал порівняно з фізичною працею навіть без тренувань."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE — это полная суточная потребность. Это BMR (60–70%), термогенез пищи (≈10%) и физическая активность с NEAT. Офисная работа способна срезать TDEE на 300–500 ккал по сравнению с физическим трудом даже без тренировок."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TDEE es el gasto energético diario total. Lo forman el BMR (60–70%), la termogénesis de los alimentos (≈10%) y la actividad física con NEAT. El trabajo de oficina puede recortar el TDEE en 300–500 kcal frente al trabajo físico, incluso sin entrenar."
+          }
+        }
+      }
+    },
+    "BMR po Mifflin-St Jeor": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BMR po Mifflin-St Jeor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BMR per Mifflin-St Jeor"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BMR за Mifflin-St Jeor"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BMR по Mifflin-St Jeor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BMR según Mifflin-St Jeor"
+          }
+        }
+      }
+    },
+    "Najczęściej używany wzór: 10×waga(kg) + 6.25×wzrost(cm) − 5×wiek + 5 (M) lub −161 (K). Dla 70-kg, 175 cm, 30-letniego mężczyzny wychodzi ≈1670 kcal. To kalorie, których ciało potrzebuje, gdy tylko leżysz.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najczęściej używany wzór: 10×waga(kg) + 6.25×wzrost(cm) − 5×wiek + 5 (M) lub −161 (K). Dla 70-kg, 175 cm, 30-letniego mężczyzny wychodzi ≈1670 kcal. To kalorie, których ciało potrzebuje, gdy tylko leżysz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most-used formula: 10×weight(kg) + 6.25×height(cm) − 5×age + 5 (M) or −161 (F). For a 70-kg, 175 cm, 30-year-old man you get ≈1670 kcal. That's the calories your body burns just lying still."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найпоширеніша формула: 10×вага(кг) + 6.25×зріст(см) − 5×вік + 5 (Ч) або −161 (Ж). Для 70-кг, 175 см, 30-річного чоловіка виходить ≈1670 ккал. Це калорії, які тіло витрачає просто лежачи."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Самая популярная формула: 10×вес(кг) + 6.25×рост(см) − 5×возраст + 5 (М) или −161 (Ж). Для 70-кг, 175 см, 30-летнего мужчины выходит ≈1670 ккал. Это калории, которые тело тратит, просто лёжа."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fórmula más usada: 10×peso(kg) + 6,25×altura(cm) − 5×edad + 5 (H) o −161 (M). Para un hombre de 70 kg, 175 cm y 30 años da ≈1670 kcal. Son las calorías que tu cuerpo quema solo estando tumbado."
+          }
+        }
+      }
+    },
+    "NEAT może zmienić wynik o 2000 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NEAT może zmienić wynik o 2000 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NEAT can shift the result by 2000 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NEAT може змінити результат на 2000 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NEAT может сдвинуть результат на 2000 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El NEAT puede cambiar el resultado en 2000 kcal"
+          }
+        }
+      }
+    },
+    "Aktywność spontaniczna — chodzenie po mieszkaniu, gestykulacja, wstawanie od biurka — to NEAT. U dwóch osób o tym samym treningu różnica w NEAT bywa rzędu 2000 kcal tygodniowo. Stąd „chudnący przez kręcenie się w fotelu”.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktywność spontaniczna — chodzenie po mieszkaniu, gestykulacja, wstawanie od biurka — to NEAT. U dwóch osób o tym samym treningu różnica w NEAT bywa rzędu 2000 kcal tygodniowo. Stąd „chudnący przez kręcenie się w fotelu”."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spontaneous activity — walking around the flat, gesturing, getting up from the desk — is NEAT. Between two people on the same training plan, NEAT can differ by 2000 kcal weekly. Hence \"losing weight by fidgeting in a chair\"."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спонтанна активність — ходьба по квартирі, жести, вставання з-за столу — це NEAT. У двох людей з однаковим тренуванням різниця в NEAT буває близько 2000 ккал на тиждень. Звідси «худнуть від крутіння у кріслі»."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спонтанная активность — ходьба по квартире, жестикуляция, вставание из-за стола — это NEAT. У двух людей с одинаковой тренировкой разница в NEAT бывает около 2000 ккал в неделю. Отсюда «худеют, ёрзая в кресле»."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La actividad espontánea — caminar por casa, gesticular, levantarte del escritorio — es el NEAT. Entre dos personas con el mismo entrenamiento, el NEAT puede diferir 2000 kcal semanales. De ahí \"adelgazar moviéndote en la silla\"."
+          }
+        }
+      }
+    },
+    "Gęstość kaloryczna — klucz do sytości": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gęstość kaloryczna — klucz do sytości"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calorie density — the key to satiety"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калорійна щільність — ключ до ситості"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калорийная плотность — ключ к сытости"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Densidad calórica — la clave de la saciedad"
+          }
+        }
+      }
+    },
+    "1 kg surowych warzyw ma 200–400 kcal, 1 kg orzechów ≈6000 kcal. Te same „300 kcal” na talerzu to albo wielki bowl warzyw, albo garść migdałów. Ucząc się gęstości łatwiej oszukać żołądek.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg surowych warzyw ma 200–400 kcal, 1 kg orzechów ≈6000 kcal. Te same „300 kcal” na talerzu to albo wielki bowl warzyw, albo garść migdałów. Ucząc się gęstości łatwiej oszukać żołądek."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg of raw veg has 200–400 kcal, 1 kg of nuts ≈6000 kcal. The same \"300 kcal\" on a plate is either a giant bowl of veg or a handful of almonds. Learning density makes it easier to trick your stomach."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 кг сирих овочів має 200–400 ккал, 1 кг горіхів ≈6000 ккал. Ті самі «300 ккал» на тарілці — це або велика миска овочів, або жменя мигдалю. Вивчивши щільність, легше обдурити шлунок."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 кг сырых овощей — 200–400 ккал, 1 кг орехов ≈6000 ккал. Те же «300 ккал» на тарелке — либо большая миска овощей, либо горсть миндаля. Зная плотность, легче обмануть желудок."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg de verduras crudas tiene 200–400 kcal, 1 kg de frutos secos ≈6000 kcal. Las mismas \"300 kcal\" en el plato son un bol enorme de verduras o un puñado de almendras. Aprender la densidad ayuda a engañar al estómago."
+          }
+        }
+      }
+    },
+    "Płynne kalorie znikają": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Płynne kalorie znikają"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liquid calories slip past you"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рідкі калорії зникають"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жидкие калории проскальзывают"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las calorías líquidas pasan inadvertidas"
+          }
+        }
+      }
+    },
+    "Sok jabłkowy 250 ml to ≈120 kcal — tyle co całe jabłko, ale bez błonnika i sytości. Mózg słabo rejestruje kalorie z napojów; latte z syropem potrafi „dorzucić” 300 kcal niezauważenie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sok jabłkowy 250 ml to ≈120 kcal — tyle co całe jabłko, ale bez błonnika i sytości. Mózg słabo rejestruje kalorie z napojów; latte z syropem potrafi „dorzucić” 300 kcal niezauważenie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "250 ml of apple juice is ≈120 kcal — same as a whole apple but without the fibre and the fullness. The brain barely registers calories from drinks; a syrup latte can sneak in 300 kcal unnoticed."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "250 мл яблучного соку — це ≈120 ккал — стільки ж, як ціле яблуко, але без клітковини й ситості. Мозок погано реєструє калорії з напоїв; лате з сиропом може непомітно додати 300 ккал."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "250 мл яблочного сока — ≈120 ккал — столько же, сколько целое яблоко, но без клетчатки и сытости. Мозг плохо считает калории из напитков; латте с сиропом легко добавит 300 ккал незаметно."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "250 ml de zumo de manzana son ≈120 kcal — lo mismo que una manzana entera, pero sin fibra ni saciedad. El cerebro registra mal las calorías de las bebidas; un latte con sirope puede colar 300 kcal sin que lo notes."
+          }
+        }
+      }
+    },
+    "0.5 kg tłuszczu ≈ 3500 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0.5 kg tłuszczu ≈ 3500 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0.5 kg of fat ≈ 3500 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0,5 кг жиру ≈ 3500 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0,5 кг жира ≈ 3500 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0,5 kg de grasa ≈ 3500 kcal"
+          }
+        }
+      }
+    },
+    "Klasyczna heurystyka: 1 lb (0.45 kg) tłuszczu = 3500 kcal deficytu. Realna utrata jest niższa — ciało adaptuje się przez spadek NEAT i BMR. Dobre tempo: 0.5% masy ciała tygodniowo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasyczna heurystyka: 1 lb (0.45 kg) tłuszczu = 3500 kcal deficytu. Realna utrata jest niższa — ciało adaptuje się przez spadek NEAT i BMR. Dobre tempo: 0.5% masy ciała tygodniowo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic rule of thumb: 1 lb (0.45 kg) of fat = 3500 kcal of deficit. Real loss is lower — the body adapts via lower NEAT and BMR. Good pace: 0.5% body mass per week."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Класичне правило: 1 фунт (0,45 кг) жиру = 3500 ккал дефіциту. Реальна втрата менша — тіло адаптується через зниження NEAT і BMR. Гарний темп: 0,5% маси тіла на тиждень."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Классическое правило: 1 фунт (0,45 кг) жира = 3500 ккал дефицита. Реальная потеря меньше — тело адаптируется через снижение NEAT и BMR. Хороший темп: 0,5% массы тела в неделю."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regla clásica: 1 lb (0,45 kg) de grasa = 3500 kcal de déficit. La pérdida real es menor — el cuerpo se adapta bajando NEAT y BMR. Buen ritmo: 0,5% del peso corporal por semana."
+          }
+        }
+      }
+    },
+    "Bezpieczny deficyt 15-25%": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezpieczny deficyt 15-25%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safe deficit: 15–25%"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Безпечний дефіцит 15–25%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Безопасный дефицит 15–25%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déficit seguro: 15–25%"
+          }
+        }
+      }
+    },
+    "Deficyt 15–25% TDEE daje dobre tempo bez bólu. Większy zaczyna zjadać masę mięśniową, włosy i sen. Im niższy procent tkanki, tym mniejszy deficyt warto trzymać.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deficyt 15–25% TDEE daje dobre tempo bez bólu. Większy zaczyna zjadać masę mięśniową, włosy i sen. Im niższy procent tkanki, tym mniejszy deficyt warto trzymać."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 15–25% TDEE deficit gives good pace without suffering. Bigger starts to eat muscle mass, hair, and sleep. The leaner you get, the smaller the deficit you should keep."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дефіцит 15–25% TDEE дає хороший темп без болю. Більший починає з'їдати м'язи, волосся і сон. Чим нижчий відсоток жиру, тим менший дефіцит варто тримати."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дефицит 15–25% от TDEE даёт хороший темп без боли. Больший начинает съедать мышцы, волосы и сон. Чем ниже процент жира, тем меньший дефицит стоит держать."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un déficit del 15–25% del TDEE da buen ritmo sin sufrir. Mayor empieza a comerse músculo, pelo y sueño. Cuanto más bajo el porcentaje de grasa, menor el déficit que conviene mantener."
+          }
+        }
+      }
+    },
+    "Termogeniczność białka 25%": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termogeniczność białka 25%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protein thermic effect: 25%"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Термогенність білка 25%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Термогенность белка 25%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efecto térmico de la proteína: 25%"
+          }
+        }
+      }
+    },
+    "Trawienie samo zjada kalorie — to TEF. Białko marnuje 20–30% energii na obróbkę, węglowodany 5–10%, tłuszcze 0–3%. Dlatego dieta z 30% białka daje „darmowe” ~100 kcal dziennie.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trawienie samo zjada kalorie — to TEF. Białko marnuje 20–30% energii na obróbkę, węglowodany 5–10%, tłuszcze 0–3%. Dlatego dieta z 30% białka daje „darmowe” ~100 kcal dziennie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Digestion burns calories on its own — that's TEF. Protein loses 20–30% of its energy to processing, carbs 5–10%, fats 0–3%. That's why a 30%-protein diet gives you \"free\" ~100 kcal a day."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Травлення саме спалює калорії — це TEF. Білок втрачає 20–30% енергії на обробку, вуглеводи 5–10%, жири 0–3%. Тому дієта з 30% білка дає «безкоштовні» ~100 ккал на день."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пищеварение само сжигает калории — это TEF. Белок теряет 20–30% энергии на обработку, углеводы 5–10%, жиры 0–3%. Поэтому диета с 30% белка даёт «бесплатные» ~100 ккал в день."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La digestión quema calorías por sí sola — es el TEF. La proteína pierde un 20–30% de su energía al procesarse, los carbohidratos 5–10%, las grasas 0–3%. Por eso una dieta con 30% de proteína da ~100 kcal \"gratis\" al día."
+          }
+        }
+      }
+    },
+    "Etykiety mają ±20% tolerancji": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etykiety mają ±20% tolerancji"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Labels carry ±20% tolerance"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Етикетки мають ±20% похибки"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На этикетках допуск ±20%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las etiquetas tienen un margen de ±20%"
+          }
+        }
+      }
+    },
+    "Unijna norma pozwala na ±20% odchylenia od deklaracji energetycznej. Realna kaloryczność batona „150 kcal” to często 130–180 kcal. Nie liczy się co do 1 kcal, ale trendy tygodniowe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unijna norma pozwala na ±20% odchylenia od deklaracji energetycznej. Realna kaloryczność batona „150 kcal” to często 130–180 kcal. Nie liczy się co do 1 kcal, ale trendy tygodniowe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EU rules allow ±20% deviation from the declared energy. A \"150 kcal\" bar is often really 130–180 kcal. Don't chase single-kcal accuracy — chase weekly trends."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норми ЄС дозволяють ±20% відхилення від заявленої енергетичної цінності. Реальна калорійність батончика «150 ккал» — часто 130–180 ккал. Рахувати до однієї ккал не варто, дивись на тижневі тренди."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нормы ЕС допускают отклонение ±20% от заявленной энергетической ценности. Реальная калорийность батончика «150 ккал» — часто 130–180 ккал. Не гонись за точностью в 1 ккал — смотри на недельные тренды."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La normativa de la UE permite una desviación de ±20% sobre la energía declarada. Una barrita de \"150 kcal\" suele ser 130–180 kcal en realidad. No persigas la precisión de 1 kcal — busca tendencias semanales."
+          }
+        }
+      }
+    },
+    "Kalorie zmieniają się przy gotowaniu": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalorie zmieniają się przy gotowaniu"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calories shift when you cook"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калорії змінюються при готуванні"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Калории меняются при готовке"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las calorías cambian al cocinar"
+          }
+        }
+      }
+    },
+    "Sucha kasza ma ≈350 kcal/100 g, ugotowana ≈110 kcal/100 g — pochłonęła wodę. Mięso w piekarniku traci wodę i kalorie na gram rosną. Ważenie surowych lub ugotowanych musi być konsekwentne.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sucha kasza ma ≈350 kcal/100 g, ugotowana ≈110 kcal/100 g — pochłonęła wodę. Mięso w piekarniku traci wodę i kalorie na gram rosną. Ważenie surowych lub ugotowanych musi być konsekwentne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dry groats are ≈350 kcal/100 g; cooked ≈110 kcal/100 g — they soaked up water. Meat in the oven loses water and kcal per gram rises. Weigh raw or cooked, just be consistent."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Суха крупа має ≈350 ккал/100 г, варена ≈110 ккал/100 г — увібрала воду. М'ясо у духовці втрачає воду й калорійність на грам зростає. Зважуй сире чи готове — головне послідовно."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сухая крупа — ≈350 ккал/100 г, варёная ≈110 ккал/100 г — она впитала воду. Мясо в духовке теряет воду, и ккал на грамм растёт. Взвешивай сырое или готовое, главное — последовательно."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La sémola en seco tiene ≈350 kcal/100 g; cocida ≈110 kcal/100 g — ha absorbido agua. La carne al horno pierde agua y las kcal por gramo suben. Pesa en crudo o cocido, pero sé constante."
+          }
+        }
+      }
+    },
+    "Piwo 500 ml ≈ 240 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piwo 500 ml ≈ 240 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml of beer ≈ 240 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пиво 500 мл ≈ 240 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пиво 500 мл ≈ 240 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 ml de cerveza ≈ 240 kcal"
+          }
+        }
+      }
+    },
+    "Standardowe piwo lager ma ≈48 kcal/100 ml, czyli 240 kcal za puszkę. Plus alkohol blokuje spalanie tłuszczu — wątroba metabolizuje go priorytetowo. Dwa piwa potrafią zatrzymać redukcję na 36 h.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standardowe piwo lager ma ≈48 kcal/100 ml, czyli 240 kcal za puszkę. Plus alkohol blokuje spalanie tłuszczu — wątroba metabolizuje go priorytetowo. Dwa piwa potrafią zatrzymać redukcję na 36 h."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A standard lager is ≈48 kcal/100 ml — that's 240 kcal per can. Plus alcohol blocks fat-burning — the liver processes it first. Two beers can halt a cut for 36 h."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стандартний лагер має ≈48 ккал/100 мл, тобто 240 ккал за бляшанку. Плюс алкоголь блокує спалювання жиру — печінка обробляє його в першу чергу. Два пива можуть зупинити редукцію на 36 год."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стандартный лагер — ≈48 ккал/100 мл, то есть 240 ккал за банку. Плюс алкоголь блокирует сжигание жира — печень метаболизирует его в первую очередь. Два пива могут остановить редукцию на 36 ч."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una lager estándar tiene ≈48 kcal/100 ml — 240 kcal por lata. Y el alcohol bloquea la quema de grasa — el hígado lo procesa primero. Dos cervezas pueden parar la fase de definición durante 36 h."
+          }
+        }
+      }
+    },
+    "Łyżka oliwy = 120 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Łyżka oliwy = 120 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A spoon of olive oil = 120 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ложка оливкової олії = 120 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ложка оливкового масла = 120 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una cucharada de aceite de oliva = 120 kcal"
+          }
+        }
+      }
+    },
+    "Jedna łyżka stołowa oliwy to ≈14 ml i 120 kcal. „Skropienie” sałatki to zwykle 2–3 łyżki, czyli +250–360 kcal. Stąd zdrowa sałatka potrafi mieć więcej kcal niż frytki.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedna łyżka stołowa oliwy to ≈14 ml i 120 kcal. „Skropienie” sałatki to zwykle 2–3 łyżki, czyli +250–360 kcal. Stąd zdrowa sałatka potrafi mieć więcej kcal niż frytki."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One tablespoon of olive oil is ≈14 ml and 120 kcal. \"Drizzling\" a salad usually means 2–3 spoons — that's +250–360 kcal. A healthy salad can carry more kcal than fries."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одна столова ложка оливкової олії — це ≈14 мл і 120 ккал. «Збризнути» салат — це зазвичай 2–3 ложки, тобто +250–360 ккал. Тому здоровий салат може мати більше ккал, ніж фрі."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одна столовая ложка оливкового масла — ≈14 мл и 120 ккал. «Сбрызнуть» салат — обычно 2–3 ложки, то есть +250–360 ккал. Поэтому здоровый салат может содержать больше ккал, чем картошка фри."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una cucharada de aceite de oliva son ≈14 ml y 120 kcal. \"Rociar\" una ensalada suele ser 2–3 cucharadas — eso es +250–360 kcal. Una ensalada \"sana\" puede tener más kcal que las patatas fritas."
+          }
+        }
+      }
+    },
+    "10 000 kroków ≈ 350 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 kroków ≈ 350 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10,000 steps ≈ 350 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 кроків ≈ 350 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 шагов ≈ 350 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 000 pasos ≈ 350 kcal"
+          }
+        }
+      }
+    },
+    "Dla 70-kg osoby 10 tys. kroków spala ≈300–400 kcal — w zależności od tempa i terenu. To skromne, ale stałe. Tygodniowo daje +2000 kcal deficytu praktycznie bez zmęczenia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dla 70-kg osoby 10 tys. kroków spala ≈300–400 kcal — w zależności od tempa i terenu. To skromne, ale stałe. Tygodniowo daje +2000 kcal deficytu praktycznie bez zmęczenia."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For a 70-kg person 10k steps burns ≈300–400 kcal — depending on pace and terrain. Modest but steady. Weekly that's +2000 kcal of deficit with practically no fatigue."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для людини 70 кг 10 тис. кроків спалює ≈300–400 ккал — залежно від темпу й рельєфу. Скромно, але стабільно. За тиждень це +2000 ккал дефіциту майже без втоми."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для человека 70 кг 10 тыс. шагов сжигают ≈300–400 ккал — в зависимости от темпа и рельефа. Скромно, но стабильно. За неделю это +2000 ккал дефицита почти без усталости."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para una persona de 70 kg, 10 000 pasos queman ≈300–400 kcal — según el ritmo y el terreno. Modesto pero constante. A la semana son +2000 kcal de déficit casi sin fatiga."
+          }
+        }
+      }
+    },
+    "Surplus 200-300 kcal wystarczy": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surplus 200-300 kcal wystarczy"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200–300 kcal surplus is enough"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профіцит 200–300 ккал достатньо"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Профицита 200–300 ккал достаточно"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un superávit de 200–300 kcal basta"
+          }
+        }
+      }
+    },
+    "Do budowy masy mięśniowej wystarczy +10–15% TDEE. Większy surplus dokłada głównie tłuszcz, nie mięśnie. Tempo 0.25–0.5% masy tygodniowo to dobry znak.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do budowy masy mięśniowej wystarczy +10–15% TDEE. Większy surplus dokłada głównie tłuszcz, nie mięśnie. Tempo 0.25–0.5% masy tygodniowo to dobry znak."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For muscle growth, +10–15% TDEE is plenty. A bigger surplus mostly adds fat, not muscle. A pace of 0.25–0.5% body mass per week is a good sign."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для нарощування м'язів достатньо +10–15% TDEE. Більший профіцит додає переважно жир, а не м'язи. Темп 0,25–0,5% маси на тиждень — добрий знак."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для роста мышц достаточно +10–15% TDEE. Больший профицит добавляет в основном жир, а не мышцы. Темп 0,25–0,5% массы в неделю — хороший знак."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para ganar músculo, basta con +10–15% del TDEE. Un superávit mayor añade sobre todo grasa, no músculo. Un ritmo del 0,25–0,5% del peso por semana es buena señal."
+          }
+        }
+      }
+    },
+    "Weekend potrafi zjeść tygodniowy deficyt": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekend potrafi zjeść tygodniowy deficyt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A weekend can eat your weekly deficit"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вихідні можуть з'їсти тижневий дефіцит"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выходные могут съесть недельный дефицит"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un fin de semana se come el déficit semanal"
+          }
+        }
+      }
+    },
+    "5 dni po -400 kcal = -2000 kcal. Dwa dni po +1000 kcal = +2000 kcal. Bilans zerowy. Dlatego waga „nie spada”, mimo idealnego poniedziałku.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 dni po -400 kcal = -2000 kcal. Dwa dni po +1000 kcal = +2000 kcal. Bilans zerowy. Dlatego waga „nie spada”, mimo idealnego poniedziałku."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 days at -400 kcal = -2000 kcal. Two days at +1000 kcal = +2000 kcal. Net zero. That's why the scale \"won't budge\" despite a perfect Monday."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 днів по -400 ккал = -2000 ккал. Два дні по +1000 ккал = +2000 ккал. Баланс нульовий. Тому вага «не падає», незважаючи на ідеальний понеділок."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 дней по -400 ккал = -2000 ккал. Два дня по +1000 ккал = +2000 ккал. Баланс нулевой. Поэтому вес «не падает», несмотря на идеальный понедельник."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 días a -400 kcal = -2000 kcal. Dos días a +1000 kcal = +2000 kcal. Balance cero. Por eso la báscula \"no baja\" pese al lunes perfecto."
+          }
+        }
+      }
+    },
+    "Znajdź maintenance przed dietą": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znajdź maintenance przed dietą"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find maintenance before dieting"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Знайди maintenance перед дієтою"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найди maintenance перед диетой"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encuentra tu mantenimiento antes de la dieta"
+          }
+        }
+      }
+    },
+    "Zanim zaczniesz redukować, jedz 2-3 tygodnie na oszacowanym TDEE i waż się rano. Stabilna waga = trafiłeś. Z tej liczby odejmij 15–20% — to baza redukcji.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zanim zaczniesz redukować, jedz 2-3 tygodnie na oszacowanym TDEE i waż się rano. Stabilna waga = trafiłeś. Z tej liczby odejmij 15–20% — to baza redukcji."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before cutting, eat at your estimated TDEE for 2–3 weeks and weigh yourself each morning. Stable weight = you nailed it. Subtract 15–20% from that number — that's your cut baseline."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перш ніж сідати на редукцію, їж 2–3 тижні на оцінюваному TDEE і зважуйся вранці. Стабільна вага = влучив. Від цієї цифри відніми 15–20% — це база редукції."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перед редукцией поешь 2–3 недели на оценённом TDEE и взвешивайся утром. Стабильный вес = попал. От этой цифры отними 15–20% — это база редукции."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antes de bajar, come 2–3 semanas en tu TDEE estimado y pésate por la mañana. Peso estable = acertaste. Resta un 15–20% a esa cifra — esa es tu base de definición."
+          }
+        }
+      }
+    },
+    "Łatwiej zjeść niż wybiegać": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Łatwiej zjeść niż wybiegać"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Easier to eat than to outrun"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Легше з'їсти, ніж побігти"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Легче съесть, чем пробежать"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más fácil comer que correrlo"
+          }
+        }
+      }
+    },
+    "30 min biegu spala ≈300 kcal. Pączek z lukrem to 350 kcal — 35 minut deficytu zniknie w 90 sekund. Dieta robi 80% wyniku, ruch 20% (i 100% zdrowia).": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 min biegu spala ≈300 kcal. Pączek z lukrem to 350 kcal — 35 minut deficytu zniknie w 90 sekund. Dieta robi 80% wyniku, ruch 20% (i 100% zdrowia)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 min of running burns ≈300 kcal. A glazed doughnut is 350 kcal — 35 minutes of deficit gone in 90 seconds. Diet does 80% of the result, movement 20% (and 100% of the health)."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 хв бігу спалює ≈300 ккал. Пончик у глазурі — 350 ккал — 35 хвилин дефіциту зникнуть за 90 секунд. Дієта дає 80% результату, рух — 20% (і 100% здоров'я)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 мин бега сжигают ≈300 ккал. Пончик в глазури — 350 ккал — 35 минут дефицита исчезнут за 90 секунд. Диета даёт 80% результата, движение — 20% (и 100% здоровья)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 min de carrera queman ≈300 kcal. Una rosquilla glaseada son 350 kcal — 35 minutos de déficit desaparecen en 90 segundos. La dieta da el 80% del resultado, el movimiento el 20% (y el 100% de la salud)."
+          }
+        }
+      }
+    },
+    "Niedosypianie = +385 kcal": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niedosypianie = +385 kcal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep loss = +385 kcal"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недосипання = +385 ккал"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недосып = +385 ккал"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dormir poco = +385 kcal"
+          }
+        }
+      }
+    },
+    "Metaanaliza z 2022 (King's College London) pokazała, że osoby śpiące <6 h jedzą średnio o 385 kcal więcej dziennie. Głównie z węglowodanów. Sen to pierwsza interwencja redukcyjna.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metaanaliza z 2022 (King's College London) pokazała, że osoby śpiące <6 h jedzą średnio o 385 kcal więcej dziennie. Głównie z węglowodanów. Sen to pierwsza interwencja redukcyjna."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 2022 meta-analysis (King's College London) showed people sleeping <6 h eat 385 kcal more on average per day. Mostly carbs. Sleep is the first weight-loss intervention."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метааналіз 2022 (King's College London) показав: люди, які сплять <6 год, з'їдають у середньому на 385 ккал більше на день. В основному з вуглеводів. Сон — перше втручання для зниження ваги."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мета-анализ 2022 (King's College London) показал: люди, спящие <6 ч, едят в среднем на 385 ккал больше в день. В основном из углеводов. Сон — первая мера для похудения."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un metaanálisis de 2022 (King's College London) mostró que quienes duermen <6 h comen 385 kcal más al día de media. Sobre todo hidratos. El sueño es la primera intervención para perder peso."
+          }
+        }
+      }
+    },
+    "Błonnik blokuje część kalorii": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Błonnik blokuje część kalorii"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fibre blocks some calories"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клітковина блокує частину калорій"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клетчатка блокирует часть калорий"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fibra bloquea parte de las calorías"
+          }
+        }
+      }
+    },
+    "Pokarmy bogate w błonnik mają realne kalorie niższe niż etykieta — część glukozy nie jest wchłaniana. Dieta z 35 g błonnika dziennie „gubi” ≈100 kcal więcej niż 15 g.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokarmy bogate w błonnik mają realne kalorie niższe niż etykieta — część glukozy nie jest wchłaniana. Dieta z 35 g błonnika dziennie „gubi” ≈100 kcal więcej niż 15 g."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High-fibre foods have real calories below the label — some glucose isn't absorbed. A diet with 35 g fibre/day \"loses\" ≈100 kcal more than one with 15 g."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Багаті клітковиною продукти насправді мають менше калорій, ніж зазначено — частина глюкози не засвоюється. Дієта з 35 г клітковини на день «втрачає» ≈100 ккал більше, ніж з 15 г."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Богатая клетчаткой еда содержит меньше реальных калорий, чем на этикетке — часть глюкозы не всасывается. Диета с 35 г клетчатки в день «теряет» ≈100 ккал больше, чем с 15 г."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los alimentos ricos en fibra tienen menos calorías reales de las que dice la etiqueta — parte de la glucosa no se absorbe. Una dieta con 35 g de fibra al día \"pierde\" ≈100 kcal más que una con 15 g."
+          }
+        }
+      }
+    },
+    "Activity factor 1.2-1.9": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity factor 1.2-1.9"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity factor 1.2–1.9"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity factor 1.2–1.9"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity factor 1,2–1,9"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Factor de actividad 1,2–1,9"
+          }
+        }
+      }
+    },
+    "Mnożnik do BMR: 1.2 (siedzący), 1.375 (lekko), 1.55 (umiarkowanie), 1.725 (mocno), 1.9 (sportowo). Większość ludzi przeszacowuje — zacznij od niższego.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mnożnik do BMR: 1.2 (siedzący), 1.375 (lekko), 1.55 (umiarkowanie), 1.725 (mocno), 1.9 (sportowo). Większość ludzi przeszacowuje — zacznij od niższego."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BMR multiplier: 1.2 (sedentary), 1.375 (light), 1.55 (moderate), 1.725 (hard), 1.9 (athlete). Most people overshoot — start at the lower end."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Множник до BMR: 1,2 (сидячий), 1,375 (легкий), 1,55 (помірний), 1,725 (важкий), 1,9 (спортивний). Більшість переоцінює — починай із нижчого."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Множитель к BMR: 1,2 (сидячий), 1,375 (лёгкий), 1,55 (умеренный), 1,725 (тяжёлый), 1,9 (спортивный). Большинство переоценивает — начни с нижнего."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multiplicador del BMR: 1,2 (sedentario), 1,375 (ligero), 1,55 (moderado), 1,725 (intenso), 1,9 (atleta). La mayoría sobreestima — empieza por el más bajo."
+          }
+        }
+      }
+    },
+    "1 kg mięśni = +13 kcal/dobę": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg mięśni = +13 kcal/dobę"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg of muscle = +13 kcal/day"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 кг м'язів = +13 ккал/добу"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 кг мышц = +13 ккал/сут"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 kg de músculo = +13 kcal/día"
+          }
+        }
+      }
+    },
+    "Mityczne „mięśnie spalają 100 kcal” to przesada. Realnie 1 kg mięśnia w spoczynku to ≈13 kcal/dobę. Większa masa pomaga, ale przez TDEE z treningu, nie BMR.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mityczne „mięśnie spalają 100 kcal” to przesada. Realnie 1 kg mięśnia w spoczynku to ≈13 kcal/dobę. Większa masa pomaga, ale przez TDEE z treningu, nie BMR."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The myth that \"muscle burns 100 kcal\" is overblown. Real number: 1 kg of muscle at rest is ≈13 kcal/day. More mass helps, but via training TDEE, not BMR."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Міф «м'язи спалюють 100 ккал» — перебільшення. Реально 1 кг м'язів у спокої — це ≈13 ккал/добу. Більша маса допомагає, але через TDEE від тренувань, не BMR."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Миф «мышцы сжигают 100 ккал» — преувеличение. На деле 1 кг мышц в покое — ≈13 ккал/сут. Большая масса помогает, но через тренировочный TDEE, а не BMR."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mito de que \"el músculo quema 100 kcal\" es exagerado. En realidad, 1 kg de músculo en reposo son ≈13 kcal/día. Más masa ayuda, pero por TDEE del entrenamiento, no por el BMR."
+          }
+        }
+      }
+    },
+    "Refeed dnia po deficycie": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refeed dnia po deficycie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refeed day after a deficit"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refeed-день після дефіциту"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refeed-день после дефицита"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día de refeed tras el déficit"
+          }
+        }
+      }
+    },
+    "Po 6–8 tygodniach redukcji jeden dzień na maintenance lub lekkim surplusie podnosi leptynę i tarczycę. Wbrew pozorom nie zatrzymuje, a wspiera redukcję.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po 6–8 tygodniach redukcji jeden dzień na maintenance lub lekkim surplusie podnosi leptynę i tarczycę. Wbrew pozorom nie zatrzymuje, a wspiera redukcję."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After 6–8 weeks of cutting, one day at maintenance or slight surplus lifts leptin and thyroid. Counter-intuitive, but it supports the cut rather than stalling it."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Після 6–8 тижнів редукції один день на підтримці чи легкому профіциті піднімає лептин і щитоподібну. На диво, не зупиняє, а підтримує редукцію."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После 6–8 недель редукции один день на поддержке или лёгком профиците поднимает лептин и щитовидку. Вопреки ощущениям, не тормозит, а помогает редукции."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras 6–8 semanas de definición, un día en mantenimiento o ligero superávit sube leptina y tiroides. Contraintuitivo, pero apoya la definición en lugar de frenarla."
+          }
+        }
+      }
+    },
+    "Alkohol jest pierwszy w kolejce": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alkohol jest pierwszy w kolejce"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcohol cuts the queue"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Алкоголь — перший у черзі"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Алкоголь — первый в очереди"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El alcohol va el primero"
+          }
+        }
+      }
+    },
+    "Wątroba metabolizuje etanol jako priorytet, bo to toksyna. Tłuszcz i węglowodany czekają — i przy wysokim wieczornym jedzeniu lądują w zapasach. Dwa drinki blokują spalanie na 12 h.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wątroba metabolizuje etanol jako priorytet, bo to toksyna. Tłuszcz i węglowodany czekają — i przy wysokim wieczornym jedzeniu lądują w zapasach. Dwa drinki blokują spalanie na 12 h."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The liver processes ethanol first because it's a toxin. Fat and carbs wait — and on big evening meals they end up in storage. Two drinks block fat-burning for 12 h."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Печінка обробляє етанол першим, бо це токсин. Жир і вуглеводи чекають — і при ситній вечері осідають у запасах. Два напої блокують спалювання на 12 год."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Печень обрабатывает этанол первым — это токсин. Жир и углеводы ждут — и при плотном ужине уходят в запасы. Два напитка блокируют сжигание на 12 ч."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El hígado procesa primero el etanol porque es una toxina. Grasa y carbohidratos esperan — y con una cena copiosa acaban en las reservas. Dos copas bloquean la quema durante 12 h."
+          }
+        }
+      }
+    },
+    "Adaptacja metaboliczna ≈ 10-15%": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaptacja metaboliczna ≈ 10-15%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metabolic adaptation ≈ 10–15%"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метаболічна адаптація ≈ 10–15%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метаболическая адаптация ≈ 10–15%"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaptación metabólica ≈ 10–15%"
+          }
+        }
+      }
+    },
+    "Długa redukcja obniża TDEE o 10–15% poza modelem — ciało broni masy. To nie „popsuty metabolizm”, tylko sprytna fizjologia. Diet break co 8 tygodni resetuje sygnały.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Długa redukcja obniża TDEE o 10–15% poza modelem — ciało broni masy. To nie „popsuty metabolizm”, tylko sprytna fizjologia. Diet break co 8 tygodni resetuje sygnały."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A long cut lowers TDEE by 10–15% beyond what models predict — the body defends mass. It's not a \"broken metabolism\" — it's smart physiology. A diet break every 8 weeks resets the signals."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тривала редукція знижує TDEE на 10–15% поза моделлю — тіло захищає масу. Це не «зламаний метаболізм», а розумна фізіологія. Diet break кожні 8 тижнів скидає сигнали."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Долгая редукция снижает TDEE на 10–15% сверх модели — тело защищает массу. Это не «сломанный метаболизм», а умная физиология. Diet break раз в 8 недель сбрасывает сигналы."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una definición larga baja el TDEE un 10–15% más allá de lo que predice el modelo — el cuerpo defiende su masa. No es un \"metabolismo roto\" — es fisiología inteligente. Un diet break cada 8 semanas resetea las señales."
           }
         }
       }
