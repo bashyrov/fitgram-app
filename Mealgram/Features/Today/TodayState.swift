@@ -42,6 +42,7 @@ final class TodayState {
     private let culturalDismissals: CulturalEventDismissalStore
     private let coachService: CoachService?
     private let waterService: WaterService?
+    private let watchBridge: WatchSessionBridge?
     private let calendar: Calendar
     private let now: () -> Date
 
@@ -53,6 +54,7 @@ final class TodayState {
         culturalDismissals: CulturalEventDismissalStore = CulturalEventDismissalStore(),
         coachService: CoachService? = nil,
         waterService: WaterService? = nil,
+        watchBridge: WatchSessionBridge? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
     ) {
@@ -63,6 +65,7 @@ final class TodayState {
         self.culturalDismissals = culturalDismissals
         self.coachService = coachService
         self.waterService = waterService
+        self.watchBridge = watchBridge
         self.calendar = calendar
         self.now = now
         self.viewingDate = calendar.startOfDay(for: now())
@@ -149,9 +152,10 @@ final class TodayState {
             self.waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
             self.loadError = nil
             // Widget snapshot is "today" only — never publish a stale
-            // historical day to the home-screen widget.
+            // historical day to the home-screen widget or Watch face.
             if isViewingToday {
                 publishWidgetSnapshot()
+                publishWatchSnapshot()
             }
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
@@ -180,6 +184,10 @@ final class TodayState {
             )) != nil
         if logged {
             waterTotalMl = waterService.totalToday(for: userRemoteID)
+            if isViewingToday {
+                publishWidgetSnapshot()
+                publishWatchSnapshot()
+            }
         }
         return logged
     }
@@ -190,6 +198,10 @@ final class TodayState {
         let undone = (try? waterService.undoLast(for: userRemoteID)) != nil
         if undone {
             waterTotalMl = waterService.totalToday(for: userRemoteID)
+            if isViewingToday {
+                publishWidgetSnapshot()
+                publishWatchSnapshot()
+            }
         }
         return undone
     }
@@ -224,6 +236,24 @@ final class TodayState {
         )
         WidgetSnapshotStore.shared.write(snapshot)
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Mirrors `publishWidgetSnapshot` but for the Apple Watch
+    /// companion. Sent as application context — "current state,
+    /// replace previous" — which is the right WCSession primitive
+    /// for a small idempotent payload.
+    private func publishWatchSnapshot() {
+        guard let watchBridge else { return }
+        let snapshot = WatchSnapshot(
+            kcalConsumed: Int(totals.calories.rounded()),
+            kcalGoal: calorieGoal,
+            proteinConsumed: Int(totals.protein.rounded()),
+            proteinGoal: user?.proteinGoalGrams ?? 0,
+            waterMl: waterTotalMl,
+            waterGoalMl: user?.waterGoalMl ?? 0,
+            updatedAt: now()
+        )
+        watchBridge.publish(snapshot)
     }
 
     var greeting: LocalizedStringKey {

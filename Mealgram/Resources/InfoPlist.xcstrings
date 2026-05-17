@@ -1,86 +1,298 @@
 {
   "sourceLanguage" : "pl",
-  "version" : "1.0",
   "strings" : {
     "CFBundleDisplayName" : {
       "extractionState" : "manual",
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mealgram"
+          }
+        }
       }
     },
     "NSCameraUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram uses the camera to recognise your meals from photos." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram використовує камеру, щоб розпізнавати ваші страви на фото." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram использует камеру, чтобы распознавать твои блюда на фото." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram usa la cámara para reconocer tus comidas en fotos." } }
-      }
-    },
-    "NSPhotoLibraryUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram needs access to your photo library to analyse meals from existing pictures." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram потрібен доступ до фото, щоб аналізувати страви з бібліотеки." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram нужен доступ к фото, чтобы анализировать блюда из библиотеки." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram necesita acceso a tu fototeca para analizar comidas de imágenes existentes." } }
-      }
-    },
-    "NSMicrophoneUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram używa mikrofonu do szybkiego dodawania posiłków głosem." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram uses the microphone for quickly adding meals by voice." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram використовує мікрофон, щоб швидко додавати страви голосом." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram использует микрофон для быстрого добавления приёмов пищи голосом." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram usa el micrófono para añadir comidas rápidamente por voz." } }
-      }
-    },
-    "NSSpeechRecognitionUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram uses speech recognition to turn your voice into a meal entry." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram використовує розпізнавання мовлення, щоб перетворювати ваші слова на запис страви." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram использует распознавание речи, чтобы превратить твой голос в запись о приёме пищи." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram usa el reconocimiento de voz para convertir lo que dices en una comida registrada." } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram uses the camera to recognise your meals from photos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram usa la cámara para reconocer tus comidas en fotos."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram использует камеру, чтобы распознавать твои блюда на фото."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram використовує камеру, щоб розпізнавати ваші страви на фото."
+          }
+        }
       }
     },
     "NSHealthShareUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram synchronizuje aktywność i wagę z Apple Health." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram syncs your activity and weight with Apple Health." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram синхронізує активність і вагу з Apple Health." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram синхронизирует активность и вес с Apple Health." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram sincroniza tu actividad y peso con Apple Health." } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram syncs your activity and weight with Apple Health."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram sincroniza tu actividad y peso con Apple Health."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram synchronizuje aktywność i wagę z Apple Health."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram синхронизирует активность и вес с Apple Health."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram синхронізує активність і вагу з Apple Health."
+          }
+        }
       }
     },
     "NSHealthUpdateUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram zapisuje posiłki i kalorie w Apple Health." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram saves meals and calories to Apple Health." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram зберігає страви та калорії в Apple Health." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram сохраняет приёмы пищи и калории в Apple Health." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mealgram guarda comidas y calorías en Apple Health." } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram saves meals and calories to Apple Health."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram guarda comidas y calorías en Apple Health."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram zapisuje posiłki i kalorie w Apple Health."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram сохраняет приёмы пищи и калории в Apple Health."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram зберігає страви та калорії в Apple Health."
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram uses the microphone for quickly adding meals by voice."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram usa el micrófono para añadir comidas rápidamente por voz."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram używa mikrofonu do szybkiego dodawania posiłków głosem."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram использует микрофон для быстрого добавления приёмов пищи голосом."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram використовує мікрофон, щоб швидко додавати страви голосом."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram needs access to your photo library to analyse meals from existing pictures."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram necesita acceso a tu fototeca para analizar comidas de imágenes existentes."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram нужен доступ к фото, чтобы анализировать блюда из библиотеки."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram потрібен доступ до фото, щоб аналізувати страви з бібліотеки."
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram uses speech recognition to turn your voice into a meal entry."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram usa el reconocimiento de voz para convertir lo que dices en una comida registrada."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram использует распознавание речи, чтобы превратить твой голос в запись о приёме пищи."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealgram використовує розпізнавання мовлення, щоб перетворювати ваші слова на запис страви."
+          }
+        }
       }
     },
     "NSUserTrackingUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
-        "pl" : { "stringUnit" : { "state" : "translated", "value" : "Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Allow tracking to receive personalised suggestions." } },
-        "uk" : { "stringUnit" : { "state" : "translated", "value" : "Дозволь відстеження, щоб отримувати персональні підказки." } },
-        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Разреши отслеживание, чтобы получать персональные подсказки." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Permite el seguimiento para recibir sugerencias personalizadas." } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow tracking to receive personalised suggestions."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite el seguimiento para recibir sugerencias personalizadas."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разреши отслеживание, чтобы получать персональные подсказки."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дозволь відстеження, щоб отримувати персональні підказки."
+          }
+        }
       }
     }
-  }
+  },
+  "version" : "1.0"
 }
