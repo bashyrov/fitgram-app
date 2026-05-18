@@ -3,9 +3,11 @@ import SwiftUI
 
 // swiftlint:disable file_length
 
-// Rich friend profile sheet — hero header + 4 tabs (Achievements /
-// Stats / Recipes / Activity). Renders only the fields the owner's
-// privacy settings permit (the service is responsible for filtering).
+// Rich friend-profile sheet — gradient hero, animated pill tab bar, and
+// four content tabs (Statystyki / Cele / Aktywność / Reakcje). The
+// service is responsible for honouring the owner's privacy settings; the
+// UI just renders whatever fields survive the snapshot. Per-tab content
+// lives in `FriendProfileView+*Tab.swift` extension files.
 // swiftlint:disable:next type_body_length
 struct FriendProfileView: View {
     let userID: String
@@ -15,35 +17,40 @@ struct FriendProfileView: View {
     /// Optional — when present, lets the user save a top-recipe to
     /// their own library.
     var onCopyRecipe: ((PublicRecipeReference) -> Void)?
+    /// Optional — when present, the bottom action bar exposes a
+    /// destructive "Usuń znajomość" CTA.
+    var onUnfriend: (() -> Void)?
 
-    @Environment(ToastCenter.self) private var toasts
+    @Environment(ToastCenter.self) var toasts
+    @Namespace private var tabIndicator
 
-    @State private var snapshot: FriendProfileSnapshot?
+    @State var snapshot: FriendProfileSnapshot?
     @State private var isLoading: Bool = true
     @State private var loadError: String?
-    @State private var activeTab: Tab = .achievements
+    @State private var activeTab: Tab = .stats
     @State private var isReportPresented: Bool = false
     @State private var reportReason: String = ""
     @State private var isBlockConfirmed: Bool = false
+    @State private var isUnfriendConfirmed: Bool = false
 
     enum Tab: Hashable, CaseIterable {
-        case achievements, stats, recipes, activity
+        case stats, goals, activity, reactions
 
         var label: LocalizedStringKey {
             switch self {
-            case .achievements: return "Odznaki"
             case .stats: return "Statystyki"
-            case .recipes: return "Przepisy"
+            case .goals: return "Cele"
             case .activity: return "Aktywność"
+            case .reactions: return "Reakcje"
             }
         }
 
         var symbol: String {
             switch self {
-            case .achievements: return "rosette"
             case .stats: return "chart.bar.fill"
-            case .recipes: return "book.closed.fill"
+            case .goals: return "target"
             case .activity: return "bolt.fill"
+            case .reactions: return "hand.thumbsup.fill"
             }
         }
     }
@@ -61,77 +68,94 @@ struct FriendProfileView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: onDismiss) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Tokens.Palette.surfaceMuted))
-                    }
-                    .accessibilityLabel(Text("Zamknij"))
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button(role: .destructive) {
-                            isBlockConfirmed = true
-                        } label: {
-                            Label("Zablokuj", systemImage: "hand.raised.fill")
-                        }
-                        Button(role: .destructive) {
-                            isReportPresented = true
-                        } label: {
-                            Label("Zgłoś", systemImage: "exclamationmark.bubble.fill")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Tokens.Palette.surfaceMuted))
-                    }
-                }
-            }
+            .toolbar { toolbarContent }
             .task { await load() }
             .confirmationDialog(
                 "Zablokować tego użytkownika?",
                 isPresented: $isBlockConfirmed,
                 titleVisibility: .visible
             ) {
-                Button("Zablokuj", role: .destructive) {
-                    Task { await block() }
-                }
+                Button("Zablokuj", role: .destructive) { Task { await block() } }
                 Button("Anuluj", role: .cancel) {}
             } message: {
                 Text("Stracisz znajomość, a osoba ta przestanie widzieć Twój profil.")
             }
-            .sheet(isPresented: $isReportPresented) {
-                reportSheet
+            .confirmationDialog(
+                "Usunąć znajomość?",
+                isPresented: $isUnfriendConfirmed,
+                titleVisibility: .visible
+            ) {
+                Button("Usuń znajomość", role: .destructive) {
+                    onUnfriend?()
+                    onDismiss()
+                }
+                Button("Anuluj", role: .cancel) {}
+            } message: {
+                Text("Możesz w każdej chwili wysłać nowe zaproszenie.")
             }
+            .sheet(isPresented: $isReportPresented) { reportSheet }
         }
         .toastSurface()
     }
 
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .frame(width: 32, height: 32)
+                    .background(Circle().fill(Tokens.Palette.surfaceMuted))
+            }
+            .accessibilityLabel(Text("Zamknij"))
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                Button(role: .destructive) {
+                    isBlockConfirmed = true
+                } label: {
+                    Label("Zablokuj", systemImage: "hand.raised.fill")
+                }
+                Button(role: .destructive) {
+                    isReportPresented = true
+                } label: {
+                    Label("Zgłoś", systemImage: "exclamationmark.bubble.fill")
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .frame(width: 32, height: 32)
+                    .background(Circle().fill(Tokens.Palette.surfaceMuted))
+            }
+            .accessibilityLabel(Text("Więcej"))
+        }
+    }
+
     @ViewBuilder
     private func content(_ snapshot: FriendProfileSnapshot) -> some View {
-        ScrollView {
-            VStack(spacing: Tokens.Space.lg) {
-                hero(snapshot)
-                actionRow
-                statsChips(snapshot)
-                tabBar
-                Group {
-                    switch activeTab {
-                    case .achievements: achievementsTab(snapshot)
-                    case .stats: statsTab(snapshot)
-                    case .recipes: recipesTab(snapshot)
-                    case .activity: activityTab(snapshot)
+        ZStack(alignment: .bottom) {
+            ScrollView {
+                VStack(spacing: Tokens.Space.lg) {
+                    hero(snapshot)
+                    tabBar
+                    Group {
+                        switch activeTab {
+                        case .stats: statsTab(snapshot)
+                        case .goals: goalsTab(snapshot)
+                        case .activity: activityTab(snapshot)
+                        case .reactions: reactionsTab(snapshot)
+                        }
                     }
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    .animation(Tokens.Motion.gentle, value: activeTab)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, Tokens.Space.sm)
+                .padding(.bottom, Tokens.Space.xxxl + Tokens.Space.huge)
             }
-            .padding(.horizontal, Tokens.Space.screenPadding)
-            .padding(.bottom, Tokens.Space.xxxl)
+            actionBar
         }
     }
 
@@ -140,23 +164,18 @@ struct FriendProfileView: View {
     @ViewBuilder
     private func hero(_ snapshot: FriendProfileSnapshot) -> some View {
         ZStack {
-            // Soft ambient gradient backdrop
-            LinearGradient(
-                colors: [Tokens.Palette.primary.opacity(0.18), Tokens.Palette.accent.opacity(0.10)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-
-            VStack(spacing: Tokens.Space.sm) {
-                avatarPuck(snapshot)
-                VStack(spacing: 4) {
+            heroBackdrop
+            VStack(spacing: Tokens.Space.md) {
+                avatarHero(snapshot)
+                VStack(spacing: 2) {
                     Text(snapshot.displayName)
-                        .font(Tokens.Font.title2)
+                        .font(.system(size: 26, weight: .heavy, design: .rounded))
                         .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                     if let username = snapshot.username {
-                        Text(username)
-                            .font(Tokens.Font.footnote)
+                        Text(usernameDisplay(username))
+                            .font(.system(size: 14, weight: .medium, design: .rounded))
                             .foregroundStyle(Tokens.Palette.inkMuted)
                     }
                 }
@@ -166,18 +185,12 @@ struct FriendProfileView: View {
                         .foregroundStyle(Tokens.Palette.ink)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, Tokens.Space.md)
+                        .padding(.top, 2)
                 }
-                if let since = snapshot.memberSinceDate {
-                    HStack(spacing: 4) {
-                        Image(systemName: "calendar")
-                            .font(.system(size: 11))
-                        Text("Z nami od \(since.formatted(.dateTime.month(.wide).year()))")
-                            .font(Tokens.Font.caption)
-                    }
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                }
+                heroChips(snapshot)
                 if !snapshot.hasAnyShared {
                     privacyHint
+                        .padding(.top, Tokens.Space.xs)
                 }
             }
             .padding(.vertical, Tokens.Space.xl)
@@ -186,31 +199,161 @@ struct FriendProfileView: View {
         }
     }
 
-    private func avatarPuck(_ snapshot: FriendProfileSnapshot) -> some View {
+    private var heroBackdrop: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
+                .fill(Tokens.Palette.surface)
+                .mealgramShadow(Tokens.Shadow.card)
+            Circle()
+                .fill(Tokens.Palette.primary.opacity(0.22))
+                .frame(width: 180, height: 180)
+                .blur(radius: 60)
+                .offset(x: -120, y: -60)
+            Circle()
+                .fill(Tokens.Palette.accent.opacity(0.22))
+                .frame(width: 200, height: 200)
+                .blur(radius: 70)
+                .offset(x: 130, y: 70)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
+        .allowsHitTesting(false)
+    }
+
+    private func avatarHero(_ snapshot: FriendProfileSnapshot) -> some View {
         ZStack {
             Circle()
                 .fill(
                     LinearGradient(
-                        colors: [
-                            Tokens.Palette.primary.opacity(0.85),
-                            Tokens.Palette.primary,
-                        ],
+                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
-                .frame(width: 96, height: 96)
-                .shadow(color: Tokens.Palette.primary.opacity(0.4), radius: 18, y: 8)
+                .frame(width: 112, height: 112)
+                .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 22, y: 10)
+            Circle()
+                .fill(Tokens.Palette.surface)
+                .frame(width: 102, height: 102)
             Text(initial(for: snapshot.displayName))
-                .font(.system(size: 40, weight: .semibold, design: .rounded))
-                .foregroundStyle(.white)
+                .font(.system(size: 46, weight: .heavy, design: .rounded))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
         }
+    }
+
+    private func usernameDisplay(_ username: String) -> String {
+        username.hasPrefix("@") ? username : "@\(username)"
     }
 
     private func initial(for name: String) -> String {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         guard let first = trimmed.first else { return "?" }
         return String(first).uppercased()
+    }
+
+    @ViewBuilder
+    private func heroChips(_ snapshot: FriendProfileSnapshot) -> some View {
+        let chips = heroChipItems(snapshot)
+        if !chips.isEmpty {
+            FlowLayout(spacing: Tokens.Space.xs) {
+                ForEach(chips, id: \.id) { chip in
+                    heroChip(chip)
+                }
+            }
+            .padding(.top, Tokens.Space.xs)
+        }
+    }
+
+    private struct HeroChip: Identifiable {
+        let id: String
+        let symbol: String
+        let text: String
+        let tint: Color
+        let isProminent: Bool
+    }
+
+    private func heroChipItems(_ snapshot: FriendProfileSnapshot) -> [HeroChip] {
+        var items: [HeroChip] = []
+        if let streak = snapshot.currentStreak, streak > 0 {
+            items.append(
+                HeroChip(
+                    id: "streak",
+                    symbol: "flame.fill",
+                    text: String(localized: "\(streak) dni z rzędu"),
+                    tint: Tokens.Palette.warning,
+                    isProminent: true
+                )
+            )
+        }
+        if let since = snapshot.memberSinceDate {
+            let formatted = since.formatted(.dateTime.month(.wide).year())
+            items.append(
+                HeroChip(
+                    id: "member",
+                    symbol: "leaf.fill",
+                    text: String(localized: "Mealgram-er od \(formatted)"),
+                    tint: Tokens.Palette.success,
+                    isProminent: false
+                )
+            )
+            items.append(
+                HeroChip(
+                    id: "friend",
+                    symbol: "person.2.fill",
+                    text: String(localized: "Znajomi od \(formatted)"),
+                    tint: Tokens.Palette.primary,
+                    isProminent: false
+                )
+            )
+        }
+        if let level = snapshot.level {
+            items.append(
+                HeroChip(
+                    id: "level",
+                    symbol: "star.fill",
+                    text: "Lvl \(level.number) · \(level.label)",
+                    tint: Tokens.Palette.accent,
+                    isProminent: false
+                )
+            )
+        }
+        return items
+    }
+
+    private func heroChip(_ chip: HeroChip) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: chip.symbol)
+                .font(.system(size: 10, weight: .bold))
+            Text(chip.text)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+        }
+        .foregroundStyle(chip.isProminent ? Color.white : chip.tint)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(
+            Capsule()
+                .fill(
+                    chip.isProminent
+                        ? AnyShapeStyle(
+                            LinearGradient(
+                                colors: [chip.tint, chip.tint.opacity(0.85)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        : AnyShapeStyle(chip.tint.opacity(0.16))
+                )
+        )
+        .shadow(
+            color: chip.isProminent ? chip.tint.opacity(0.35) : .clear,
+            radius: chip.isProminent ? 6 : 0,
+            y: 2
+        )
     }
 
     private var privacyHint: some View {
@@ -222,505 +365,161 @@ struct FriendProfileView: View {
         .foregroundStyle(Tokens.Palette.inkMuted)
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
-        .background(
-            Capsule().fill(Tokens.Palette.background.opacity(0.6))
-        )
-        .padding(.top, 4)
+        .background(Capsule().fill(Tokens.Palette.background.opacity(0.6)))
     }
 
-    // MARK: - Action row
-
-    private var actionRow: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            primaryActionButton(
-                label: "Pogratuluj",
-                symbol: "party.popper.fill",
-                tint: Tokens.Palette.accent
-            ) {
-                Task { await send(intent: .celebrate) }
-            }
-            secondaryActionButton(
-                label: "Brawo",
-                symbol: "rosette",
-                tint: Tokens.Palette.warning
-            ) {
-                Task { await send(intent: .congratulate) }
-            }
-        }
-    }
-
-    private func primaryActionButton(
-        label: LocalizedStringKey,
-        symbol: String,
-        tint: Color,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: symbol)
-                    .font(.system(size: 14, weight: .semibold))
-                Text(label)
-                    .font(Tokens.Font.bodyEmphasized)
-            }
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [tint, tint.opacity(0.85)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .shadow(color: tint.opacity(0.35), radius: 10, y: 4)
-            )
-        }
-        .buttonStyle(PressableButtonStyle())
-    }
-
-    private func secondaryActionButton(
-        label: LocalizedStringKey,
-        symbol: String,
-        tint: Color,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: symbol)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(tint)
-                Text(label)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-                    .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
-            )
-        }
-        .buttonStyle(PressableButtonStyle())
-    }
-
-    // MARK: - Stats chips
-
-    @ViewBuilder
-    private func statsChips(_ snapshot: FriendProfileSnapshot) -> some View {
-        let items = statsChipItems(snapshot)
-        if !items.isEmpty {
-            HStack(spacing: Tokens.Space.sm) {
-                ForEach(items, id: \.label) { item in
-                    statChip(item)
-                }
-            }
-        }
-    }
-
-    private struct StatChipItem {
-        let symbol: String
-        let value: String
-        let label: String
-        let tint: Color
-    }
-
-    private func statsChipItems(_ snapshot: FriendProfileSnapshot) -> [StatChipItem] {
-        var items: [StatChipItem] = []
-        if let streak = snapshot.currentStreak {
-            items.append(
-                StatChipItem(
-                    symbol: "flame.fill",
-                    value: "\(streak)",
-                    label: "Dni",
-                    tint: Tokens.Palette.warning
-                )
-            )
-        }
-        if let level = snapshot.level {
-            items.append(
-                StatChipItem(
-                    symbol: "star.fill",
-                    value: "Lvl \(level.number)",
-                    label: level.label,
-                    tint: Tokens.Palette.primary
-                )
-            )
-        }
-        if let goal = snapshot.goalLabel {
-            items.append(
-                StatChipItem(
-                    symbol: "target",
-                    value: goal,
-                    label: "Cel",
-                    tint: Tokens.Palette.accent
-                )
-            )
-        }
-        return items
-    }
-
-    private func statChip(_ item: StatChipItem) -> some View {
-        VStack(spacing: 4) {
-            ZStack {
-                Circle()
-                    .fill(item.tint.opacity(0.18))
-                    .frame(width: 32, height: 32)
-                Image(systemName: item.symbol)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(item.tint)
-            }
-            Text(item.value)
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-                .lineLimit(1)
-                .minimumScaleFactor(0.55)
-                .truncationMode(.tail)
-            Text(item.label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Tokens.Space.sm)
-        .padding(.vertical, Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
-        )
-    }
-
-    // MARK: - Tab bar (custom pill style)
+    // MARK: - Custom segmented pill tab bar
 
     private var tabBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Tokens.Space.xs) {
-                ForEach(Tab.allCases, id: \.self) { tab in
-                    tabPill(tab)
-                }
+        HStack(spacing: 4) {
+            ForEach(Tab.allCases, id: \.self) { tab in
+                tabPill(tab)
             }
-            .padding(2)
         }
+        .padding(4)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
+                .fill(Tokens.Palette.surfaceMuted)
+        )
     }
 
     private func tabPill(_ tab: Tab) -> some View {
         let isActive = activeTab == tab
         return Button {
             withAnimation(Tokens.Motion.gentle) { activeTab = tab }
+            Haptics.selection()
         } label: {
-            HStack(spacing: 6) {
+            HStack(spacing: 5) {
                 Image(systemName: tab.symbol)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 12, weight: .bold))
                 Text(tab.label)
-                    .font(Tokens.Font.footnote.weight(.semibold))
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
-            .foregroundStyle(isActive ? .white : Tokens.Palette.ink)
-            .padding(.horizontal, Tokens.Space.md)
-            .padding(.vertical, Tokens.Space.sm)
+            .foregroundStyle(isActive ? Color.white : Tokens.Palette.inkMuted)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 9)
             .background(
-                Capsule()
-                    .fill(
-                        isActive
-                            ? AnyShapeStyle(
+                ZStack {
+                    if isActive {
+                        Capsule()
+                            .fill(
                                 LinearGradient(
-                                    colors: [Tokens.Palette.primary, Tokens.Palette.primary.opacity(0.85)],
+                                    colors: [Tokens.Palette.primary, Tokens.Palette.accent],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
                             )
-                            : AnyShapeStyle(Tokens.Palette.surface)
-                    )
-                    .shadow(
-                        color: isActive ? Tokens.Palette.primary.opacity(0.25) : .black.opacity(0.04),
-                        radius: isActive ? 8 : 4,
-                        y: 2
-                    )
+                            .matchedGeometryEffect(id: "indicator", in: tabIndicator)
+                            .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 10, y: 4)
+                    }
+                }
             )
         }
-        .buttonStyle(PressableButtonStyle())
+        .buttonStyle(.pressable)
+        .accessibilityLabel(Text(tab.label))
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 
-    // MARK: - Tabs
+    // MARK: - Bottom action bar
 
-    @ViewBuilder
-    private func achievementsTab(_ snapshot: FriendProfileSnapshot) -> some View {
-        if let achievements = snapshot.achievements, !achievements.isEmpty {
-            LazyVGrid(
-                columns: [
-                    GridItem(.flexible(), spacing: Tokens.Space.sm),
-                    GridItem(.flexible(), spacing: Tokens.Space.sm),
-                    GridItem(.flexible(), spacing: Tokens.Space.sm),
-                ],
-                spacing: Tokens.Space.sm
-            ) {
-                ForEach(achievements, id: \.id) { ach in
-                    achievementTile(ach)
+    private var actionBar: some View {
+        HStack(spacing: Tokens.Space.sm) {
+            Button {
+                Task { await send(intent: .encourage) }
+            } label: {
+                HStack(spacing: 6) {
+                    Text("Zachęć")
+                        .font(Tokens.Font.bodyEmphasized)
+                    Text(verbatim: "👋")
                 }
-            }
-        } else {
-            placeholder(symbol: "rosette", text: "Brak odznak do pokazania")
-        }
-    }
-
-    private func achievementTile(_ achievement: Achievement) -> some View {
-        VStack(spacing: 6) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.warning.opacity(0.85), Tokens.Palette.warning],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 52, height: 52)
-                    .shadow(color: Tokens.Palette.warning.opacity(0.4), radius: 10, y: 4)
-                Image(systemName: "rosette")
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            Text(achievement.title)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.ink)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .minimumScaleFactor(0.8)
-        }
-        .padding(Tokens.Space.sm)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
-        )
-    }
-
-    @ViewBuilder
-    private func statsTab(_ snapshot: FriendProfileSnapshot) -> some View {
-        if let stats = snapshot.weeklyStats {
-            VStack(spacing: Tokens.Space.sm) {
-                HStack(spacing: Tokens.Space.sm) {
-                    bigStatTile(
-                        emoji: "🔥",
-                        value: "\(stats.averageDailyKcal)",
-                        unit: "kcal",
-                        label: "Średnia dzienna",
-                        tint: Tokens.Palette.warning
-                    )
-                    bigStatTile(
-                        emoji: "🎯",
-                        value: "\(stats.daysHitGoal)",
-                        unit: "/ 7",
-                        label: "Dni z celem",
-                        tint: Tokens.Palette.primary
-                    )
-                }
-                bigStatTile(
-                    emoji: "📸",
-                    value: "\(stats.totalScans)",
-                    unit: "",
-                    label: "Skanów w tygodniu",
-                    tint: Tokens.Palette.accent
-                )
+                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                if !stats.topFoods.isEmpty {
-                    topFoodsCard(stats.topFoods)
-                }
+                .padding(.vertical, 14)
+                .background(
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 14, y: 6)
+                )
             }
-        } else {
-            placeholder(symbol: "chart.bar.fill", text: "Statystyki nie są udostępniane")
-        }
-    }
+            .buttonStyle(.pressable)
+            .accessibilityLabel(Text("Zachęć"))
 
-    private func bigStatTile(
-        emoji: String,
-        value: String,
-        unit: String,
-        label: String,
-        tint: Color
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(emoji)
-                    .font(.system(size: 22))
-                Spacer()
-            }
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(value)
-                    .font(Tokens.Font.title)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(unit)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-        }
-        .padding(Tokens.Space.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(tint.opacity(0.12))
-        )
-    }
-
-    private func topFoodsCard(_ foods: [String]) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Label("Top produkty", systemImage: "fork.knife")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                ForEach(Array(foods.enumerated()), id: \.offset) { idx, food in
-                    HStack(spacing: Tokens.Space.sm) {
-                        Text("\(idx + 1).")
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .frame(width: 24, alignment: .leading)
-                        Text(food)
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Spacer()
-                    }
-                    if idx < foods.count - 1 {
-                        Rectangle()
-                            .fill(Tokens.Palette.separator)
-                            .frame(height: 0.5)
-                            .padding(.leading, 24)
-                    }
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func recipesTab(_ snapshot: FriendProfileSnapshot) -> some View {
-        if let recipes = snapshot.topRecipes, !recipes.isEmpty {
-            VStack(spacing: Tokens.Space.sm) {
-                ForEach(recipes) { recipe in
-                    recipeRow(recipe)
-                }
-            }
-        } else {
-            placeholder(symbol: "book.closed.fill", text: "Przepisy nie są udostępniane")
-        }
-    }
-
-    private func recipeRow(_ recipe: PublicRecipeReference) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.success.opacity(0.18))
-                    .frame(width: 44, height: 44)
-                Image(systemName: "book.closed.fill")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.success)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(recipe.name)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .lineLimit(1)
-                if let kcal = recipe.kcalPerServing {
-                    Text("\(kcal) kcal · ugotowane \(recipe.cookCount)×")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-            }
-            Spacer()
-            if let onCopyRecipe {
+            if onUnfriend != nil {
                 Button {
-                    onCopyRecipe(recipe)
-                    toasts.success("Zapisano do mojej książki", message: recipe.name)
+                    isUnfriendConfirmed = true
                 } label: {
-                    Image(systemName: "tray.and.arrow.down.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .frame(width: 36, height: 36)
-                        .background(Circle().fill(Tokens.Palette.primarySoft))
+                    Image(systemName: "person.crop.circle.badge.minus")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(Tokens.Palette.error)
+                        .frame(width: 48, height: 48)
+                        .background(
+                            Circle()
+                                .fill(Tokens.Palette.surface)
+                                .overlay(Circle().stroke(Tokens.Palette.error.opacity(0.4), lineWidth: 1))
+                        )
+                        .mealgramShadow(Tokens.Shadow.card)
                 }
+                .buttonStyle(.pressable)
+                .accessibilityLabel(Text("Usuń znajomość"))
             }
         }
-        .padding(Tokens.Space.md)
+        .padding(.horizontal, Tokens.Space.screenPadding)
+        .padding(.bottom, Tokens.Space.md)
+        .padding(.top, Tokens.Space.sm)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+            LinearGradient(
+                colors: [
+                    Tokens.Palette.background.opacity(0),
+                    Tokens.Palette.background.opacity(0.92),
+                    Tokens.Palette.background,
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .allowsHitTesting(false)
+            .ignoresSafeArea(edges: .bottom)
         )
-    }
-
-    @ViewBuilder
-    private func activityTab(_ snapshot: FriendProfileSnapshot) -> some View {
-        if let events = snapshot.recentEvents, !events.isEmpty {
-            VStack(spacing: Tokens.Space.sm) {
-                ForEach(events) { event in
-                    eventRow(event)
-                }
-            }
-        } else {
-            placeholder(symbol: "bolt.fill", text: "Brak aktywności do pokazania")
-        }
-    }
-
-    private func eventRow(_ event: FeedEvent) -> some View {
-        let tint = eventTint(event.kind)
-        return HStack(alignment: .top, spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(tint.opacity(0.18))
-                    .frame(width: 40, height: 40)
-                Image(systemName: eventSymbol(event.kind))
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(tint)
-            }
-            VStack(alignment: .leading, spacing: 4) {
-                Text(event.payload)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(event.createdAt.formatted(.relative(presentation: .named)))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer()
-        }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
-        )
-    }
-
-    private func eventTint(_ kind: FeedEventKind) -> Color {
-        switch kind {
-        case .streakMilestone: return Tokens.Palette.warning
-        case .achievementEarned: return Tokens.Palette.accent
-        case .recipeCooked: return Tokens.Palette.success
-        case .challengeWon: return Tokens.Palette.primary
-        case .joined: return Tokens.Palette.inkMuted
-        }
     }
 
     // MARK: - Empty + feedback
 
-    private func placeholder(symbol: String, text: LocalizedStringKey) -> some View {
+    func placeholder(
+        symbol: String,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey
+    ) -> some View {
         VStack(spacing: Tokens.Space.md) {
             ZStack {
                 Circle()
-                    .fill(Tokens.Palette.surfaceMuted)
-                    .frame(width: 64, height: 64)
+                    .fill(
+                        LinearGradient(
+                            colors: [Tokens.Palette.primary.opacity(0.18), Tokens.Palette.accent.opacity(0.18)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 84, height: 84)
                 Image(systemName: symbol)
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                    .font(.system(size: 32, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.inkMuted)
             }
-            Text(text)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
+            VStack(spacing: 4) {
+                Text(title)
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(subtitle)
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, Tokens.Space.xxl)
@@ -736,7 +535,7 @@ struct FriendProfileView: View {
                     .font(.system(size: 32))
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
-            Text(loadError ?? "Profil niedostępny.")
+            Text(loadError ?? String(localized: "Profil niedostępny."))
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.inkMuted)
         }
@@ -783,28 +582,18 @@ struct FriendProfileView: View {
 
     // MARK: - Actions
 
-    private func eventSymbol(_ kind: FeedEventKind) -> String {
-        switch kind {
-        case .streakMilestone: return "flame.fill"
-        case .achievementEarned: return "rosette"
-        case .recipeCooked: return "book.closed.fill"
-        case .challengeWon: return "trophy.fill"
-        case .joined: return "person.crop.circle.badge.checkmark"
-        }
-    }
-
     private func load() async {
         isLoading = true
         do {
             snapshot = try await service.snapshot(forUserID: userID, viewer: viewerID)
         } catch {
-            loadError = "Nie udało się załadować profilu."
+            loadError = String(localized: "Nie udało się załadować profilu.")
             Logger.persistence.error("Snapshot load failed: \(String(describing: error))")
         }
         isLoading = false
     }
 
-    private func send(intent: PositiveReactionIntent) async {
+    func send(intent: PositiveReactionIntent) async {
         do {
             try await service.sendPositiveReaction(to: userID, from: viewerID, intent: intent)
             toasts.success(intent.toastTitle, message: intent.toastSubtitle(name: snapshot?.displayName))

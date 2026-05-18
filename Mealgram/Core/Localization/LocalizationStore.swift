@@ -84,7 +84,7 @@ final class LocalizationStore {
                 return primary
             }
         }
-        return "pl"
+        return "en"
     }
 }
 

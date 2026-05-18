@@ -69,5 +69,23 @@ enum ActivityHeatmap {
     struct Snapshot: Equatable, Sendable {
         let cells: [Cell]
         let generatedAt: Date
+
+        /// Longest consecutive run of "did the user log anything" days in
+        /// the 90-day window. Used by the Profile heatmap caption
+        /// ("Najlepszy tydzień: N dni z rzędu"). Pure derived property —
+        /// scans the cells once, O(n).
+        var longestActiveRun: Int {
+            var best = 0
+            var current = 0
+            for cell in cells {
+                if cell.totalKcal > 0 {
+                    current += 1
+                    if current > best { best = current }
+                } else {
+                    current = 0
+                }
+            }
+            return best
+        }
     }
 }

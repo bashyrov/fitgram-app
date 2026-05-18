@@ -46,7 +46,19 @@ struct MealgramApp: App {
     @State private var paywallCoordinator: PaywallCoordinator
     @State private var toastCenter: ToastCenter
     @State private var localizationStore: LocalizationStore
+    @State private var whatsNewEntry: IdentifiableWhatsNewEntry?
     private let favoritesService: FavoritesService
+
+    /// UserDefaults key for the last-seen MARKETING_VERSION. Bumping
+    /// CFBundleShortVersionString and rerunning the app triggers the
+    /// WhatsNewSheet exactly once per version.
+    private static let lastSeenVersionKey = "whatsnew.lastSeenVersion"
+
+    /// Reads CFBundleShortVersionString from the running bundle.
+    /// Defaults to "0.0.0" if missing (only on broken builds).
+    private static func runningShortVersion() -> String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+    }
 
     // swiftlint:disable function_body_length
     init() {
@@ -292,6 +304,20 @@ struct MealgramApp: App {
             .tint(Tokens.Palette.primary)
             .onOpenURL { url in
                 handleDeepLink(url)
+            }
+            .sheet(item: $whatsNewEntry) { wrapper in
+                WhatsNewSheet(entry: wrapper.entry) {
+                    UserDefaults.standard.set(wrapper.entry.version, forKey: Self.lastSeenVersionKey)
+                    whatsNewEntry = nil
+                }
+            }
+            .task {
+                let running = Self.runningShortVersion()
+                let lastSeen = UserDefaults.standard.string(forKey: Self.lastSeenVersionKey)
+                whatsNewEntry = WhatsNewCatalog.entryToPresent(
+                    runningVersion: running,
+                    lastSeen: lastSeen
+                )?.toIdentifiable()
             }
         }
     }

@@ -24,11 +24,33 @@ struct ActivityHeatmapCard: View {
                     legend
                 }
                 grid
-                Text(captionRange)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                HStack(alignment: .firstTextBaseline) {
+                    Text(captionRange)
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                    Spacer()
+                    if snapshot.longestActiveRun >= 2 {
+                        HStack(spacing: 4) {
+                            Image(systemName: "flame.fill")
+                                .font(.system(size: 10, weight: .bold))
+                            Text(bestRunLabel)
+                                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        }
+                        .foregroundStyle(Tokens.Palette.warning)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(
+                            Capsule().fill(Tokens.Palette.warning.opacity(0.15))
+                        )
+                    }
+                }
             }
         }
+    }
+
+    private var bestRunLabel: String {
+        let count = snapshot.longestActiveRun
+        return String(localized: "Najlepszy: \(count) dni z rzędu")
     }
 
     private var grid: some View {

@@ -7,6 +7,18 @@ struct FlowLayout: Layout {
     var horizontalSpacing: CGFloat = 6
     var verticalSpacing: CGFloat = 6
 
+    /// Convenience init — sets both axes to the same spacing value. Useful
+    /// for hero chip rows where the gap is uniform.
+    init(horizontalSpacing: CGFloat = 6, verticalSpacing: CGFloat = 6) {
+        self.horizontalSpacing = horizontalSpacing
+        self.verticalSpacing = verticalSpacing
+    }
+
+    init(spacing: CGFloat) {
+        self.horizontalSpacing = spacing
+        self.verticalSpacing = spacing
+    }
+
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let rows = layoutRows(proposal: proposal, subviews: subviews)
         let width = rows.maxWidth
