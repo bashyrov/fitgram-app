@@ -6,15 +6,13 @@ import SwiftData
 /// Milestone 2.8 lands.
 @Model
 final class Achievement {
-    var id: UUID
-    var userRemoteID: String
-
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
     /// Stable identifier ("streak.7", "scan.first", "protein.30days").
-    var kind: String
-    var earnedAt: Date
-    var title: String
-    var details: String
-
+    var kind: String = ""
+    var earnedAt: Date = Date()
+    var title: String = ""
+    var details: String = ""
     init(
         id: UUID = UUID(),
         userRemoteID: String,

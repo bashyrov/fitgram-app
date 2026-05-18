@@ -6,14 +6,12 @@ import SwiftData
 /// hold "streak freezes" (a premium item).
 @Model
 final class Streak {
-    var id: UUID
-    var userRemoteID: String
-
-    var currentLength: Int
-    var longestLength: Int
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
+    var currentLength: Int = 0
+    var longestLength: Int = 0
     var lastLoggedDate: Date?
-    var freezesAvailable: Int
-
+    var freezesAvailable: Int = 0
     init(
         id: UUID = UUID(),
         userRemoteID: String,

@@ -6,15 +6,13 @@ import SwiftData
 /// so historical data remains stable when the catalog updates later.
 @Model
 final class FoodItem {
-    var id: UUID
-
-    var name: String
-    var quantityGrams: Double
-
-    var caloriesKcal: Double
-    var proteinGrams: Double
-    var carbsGrams: Double
-    var fatGrams: Double
+    var id: UUID = UUID()
+    var name: String = ""
+    var quantityGrams: Double = 0
+    var caloriesKcal: Double = 0
+    var proteinGrams: Double = 0
+    var carbsGrams: Double = 0
+    var fatGrams: Double = 0
     var fiberGrams: Double?
 
     /// Soft pointer to the catalog row this item was derived from. Optional

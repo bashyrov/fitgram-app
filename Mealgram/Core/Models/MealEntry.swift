@@ -7,13 +7,12 @@ import SwiftData
 /// separately editable entries while still summing to one calorie total.
 @Model
 final class MealEntry {
-    var id: UUID
+    var id: UUID = UUID()
     var remoteID: String?
 
-    var consumedAt: Date
-    var mealTypeRaw: String
-    var sourceRaw: String
-
+    var consumedAt: Date = Date()
+    var mealTypeRaw: String = ""
+    var sourceRaw: String = ""
     var notes: String?
     var photoFilename: String?
     /// Free-form tags the user attaches (post-workout, restaurant,
@@ -23,18 +22,16 @@ final class MealEntry {
     var tags: [String] = []
     /// User-applied portion multiplier (1.0 = original detection). Stored
     /// separately so we can show the AI's raw output vs. the user's edit.
-    var portionMultiplier: Double
+    var portionMultiplier: Double = 0
     /// Optional 1-5 rating for how much the user enjoyed the meal. Nil
     /// until they actively rate. Default-nil keeps existing rows valid
     /// post lightweight migration.
     var rating: Int?
 
     @Relationship(deleteRule: .cascade, inverse: \FoodItem.meal)
-    var items: [FoodItem]
-
-    var createdAt: Date
-    var updatedAt: Date
-
+    var items: [FoodItem] = []
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     init(
         id: UUID = UUID(),
         consumedAt: Date = Date(),

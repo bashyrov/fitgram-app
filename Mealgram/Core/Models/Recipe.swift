@@ -6,42 +6,39 @@ import SwiftData
 /// cook (the AI recalculation engine in Phase 3 will read & write here).
 @Model
 final class Recipe {
-    var id: UUID
+    var id: UUID = UUID()
     var remoteID: String?
 
-    var title: String
+    var title: String = ""
     var summary: String?
     var sourceURLString: String?
     var imageFilename: String?
 
-    var servings: Int
+    var servings: Int = 0
     var prepMinutes: Int?
     var cookMinutes: Int?
 
     /// Markdown-ish step list, one entry per step.
-    var instructions: [String]
+    var instructions: [String] = []
     /// Free-text adjustments ("mniej masła, podwójna porcja kurczaka"), one
     /// per cook session. Phase 3 fills these into a separate modification
     /// engine — for now this is just a string list.
-    var modifications: [String]
-
+    var modifications: [String] = []
     var caloriesPerServing: Double?
     var proteinPerServing: Double?
     var carbsPerServing: Double?
     var fatPerServing: Double?
 
-    var cookCount: Int
+    var cookCount: Int = 0
     var rating: Double?
     /// User favorited the recipe. Defaults false so SwiftData lightweight
     /// migration keeps existing rows valid.
     var isFavorite: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \RecipeIngredient.recipe)
-    var ingredients: [RecipeIngredient]
-
-    var createdAt: Date
-    var updatedAt: Date
-
+    var ingredients: [RecipeIngredient] = []
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     init(
         id: UUID = UUID(),
         title: String,

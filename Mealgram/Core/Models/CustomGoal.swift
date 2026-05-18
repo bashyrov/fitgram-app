@@ -12,18 +12,17 @@ import SwiftData
 /// (always "list active goals for user").
 @Model
 final class CustomGoal {
-    var id: UUID
-    var userRemoteID: String
-    var name: String
-    var startDate: Date
-    var endDate: Date
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
+    var name: String = ""
+    var startDate: Date = Date()
+    var endDate: Date = Date()
     /// Encoded `[CustomGoalTarget]` — never nil, may be empty array
     /// data while the user is in the middle of building.
-    var targetsJSON: Data
+    var targetsJSON: Data = Data("[]".utf8)
     var reminderTypeRaw: String?
-    var statusRaw: String
-    var createdAt: Date
-
+    var statusRaw: String = ""
+    var createdAt: Date = Date()
     init(
         id: UUID = UUID(),
         userRemoteID: String,
@@ -92,7 +91,7 @@ struct CustomGoalTarget: Codable, Equatable, Sendable, Identifiable {
     /// - noFastFoodDays → days
     /// - maxCaloriesDaily → kcal
     /// - custom → free-form (paired with `customName` for UI)
-    var value: Double
+    var value: Double = 0
     var customName: String?
 }
 

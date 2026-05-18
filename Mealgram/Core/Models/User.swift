@@ -7,34 +7,31 @@ import SwiftData
 /// re-authenticates with a new identity.
 @Model
 final class User {
-    var id: UUID
-    var remoteID: String
+    var id: UUID = UUID()
+    var remoteID: String = ""
     var email: String?
     var displayName: String?
-    var providerKindRaw: String
+    var providerKindRaw: String = ""
     var avatarFilename: String?
 
-    var createdAt: Date
-    var updatedAt: Date
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     var onboardingCompletedAt: Date?
 
-    var locale: String
-    var timeZoneIdentifier: String
-
+    var locale: String = ""
+    var timeZoneIdentifier: String = ""
     // Profile
     var birthDate: Date?
-    var biologicalSexRaw: String
+    var biologicalSexRaw: String = ""
     var heightCm: Int?
     var weightKg: Double?
-    var activityLevelRaw: String
-    var goalKindRaw: String
-
+    var activityLevelRaw: String = ""
+    var goalKindRaw: String = ""
     // Targets (server-recomputed but cached for offline display)
-    var dailyCalorieGoalKcal: Int
-    var proteinGoalGrams: Int
-    var carbsGoalGrams: Int
-    var fatGoalGrams: Int
-
+    var dailyCalorieGoalKcal: Int = 0
+    var proteinGoalGrams: Int = 0
+    var carbsGoalGrams: Int = 0
+    var fatGoalGrams: Int = 0
     /// Extended targets — all default-initialised so SwiftData lightweight
     /// migration fills them in for existing rows without bumping schema.
     var fiberGoalGrams: Int = 30

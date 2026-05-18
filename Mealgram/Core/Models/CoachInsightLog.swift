@@ -8,19 +8,17 @@ import SwiftData
 /// copy survives even if the rules later change wording.
 @Model
 final class CoachInsightLog {
-    var id: UUID
-    var userRemoteID: String
-
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
     /// Monday 00:00 of the ISO week the debrief covers.
-    var weekStartAt: Date
+    var weekStartAt: Date = Date()
     /// When the snapshot was created (within `weekStartAt + 7 days`).
-    var generatedAt: Date
-
-    var headline: String
+    var generatedAt: Date = Date()
+    var headline: String = ""
     /// JSON-encoded `[StoredInsight]` (see `CoachInsightLogStore`).
-    var insightsJSON: String
+    var insightsJSON: String = ""
     /// JSON-encoded `[StoredStat]`.
-    var statsJSON: String
+    var statsJSON: String = ""
     /// User feedback on the week — nil = not asked, true = thumbs up,
     /// false = thumbs down. Added in a lightweight migration (optional
     /// column = no schema version bump needed).

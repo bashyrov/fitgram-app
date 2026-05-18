@@ -9,31 +9,30 @@ import SwiftData
 /// `FoodItem`, never here.
 @Model
 final class Food {
-    var id: UUID
+    var id: UUID = UUID()
     var remoteID: String?
 
     /// Default Polish name; the localizations payload (JSON-encoded) carries
     /// other languages. Storing JSON for now keeps the schema simple — we
     /// move to a dedicated relationship if querying by other locales is ever
     /// needed.
-    var name: String
+    var name: String = ""
     var localizationsJSON: String?
     var brand: String?
     var restaurantName: String?
 
-    var categoryRaw: String
-    var caloriesKcalPer100g: Double
-    var proteinGramsPer100g: Double
-    var carbsGramsPer100g: Double
-    var fatGramsPer100g: Double
+    var categoryRaw: String = ""
+    var caloriesKcalPer100g: Double = 0
+    var proteinGramsPer100g: Double = 0
+    var carbsGramsPer100g: Double = 0
+    var fatGramsPer100g: Double = 0
     var fiberGramsPer100g: Double?
 
     var defaultPortionGrams: Double?
     var barcode: String?
     var imageURLString: String?
-    var verified: Bool
-    var createdAt: Date
-
+    var verified: Bool = false
+    var createdAt: Date = Date()
     /// How many times the local user has picked this row from Quick DB.
     /// Drives the "Częste" carousel — defaults to 0 for newly-seeded rows
     /// and lightweight-migrates cleanly because SwiftData fills new

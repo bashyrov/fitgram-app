@@ -29,12 +29,12 @@ final class PersistenceController {
         if inMemory {
             configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         } else {
-            // Auto-sync via CloudKit's private database. SwiftData uses
-            // the container ID derived from the bundle identifier
-            // (iCloud.app.mealgram.ios.bashyrov, declared in the
-            // entitlement). Multi-device users on the same Apple ID see
-            // their meals / weight / recipes / favourites converge
-            // automatically — no per-feature wiring needed.
+            // Auto-sync via CloudKit's private database. Every
+            // non-optional attribute now ships a default (UUID(), "",
+            // 0, Date(), false, []) so CloudKit's schema validation
+            // passes on first load. Multi-device users on the same
+            // Apple ID see meals / weight / recipes / favourites
+            // converge automatically.
             configuration = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: false,

@@ -8,32 +8,28 @@ import SwiftData
 /// for the saved portion so re-add is deterministic — no live join.
 @Model
 final class FavoriteMeal {
-    var id: UUID
-    var userRemoteID: String
-
-    var name: String
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
+    var name: String = ""
     /// Default portion in grams this favourite re-adds at. Editable
     /// before save when the user taps to re-add.
-    var defaultQuantityGrams: Double
-
-    var caloriesKcal: Double
-    var proteinGrams: Double
-    var carbsGrams: Double
-    var fatGrams: Double
+    var defaultQuantityGrams: Double = 0
+    var caloriesKcal: Double = 0
+    var proteinGrams: Double = 0
+    var carbsGrams: Double = 0
+    var fatGrams: Double = 0
     var fiberGrams: Double?
 
     /// Where the favourite was first captured — drives a small chip
     /// icon in the carousel ("📦 Open Food Facts", "📸 ze skanu", etc.).
-    var sourceHintRaw: String
-
+    var sourceHintRaw: String = ""
     /// Optional catalog backlink. Set when the favourite was created
     /// from a Quick DB row; nil for manual / scan / barcode origins.
     var catalogFoodID: UUID?
 
-    var useCount: Int
+    var useCount: Int = 0
     var lastUsedAt: Date?
-    var createdAt: Date
-
+    var createdAt: Date = Date()
     init(
         id: UUID = UUID(),
         userRemoteID: String,

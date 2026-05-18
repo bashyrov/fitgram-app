@@ -6,9 +6,8 @@ import SwiftData
 /// catalog match in a later pass.
 @Model
 final class RecipeIngredient {
-    var id: UUID
-
-    var name: String
+    var id: UUID = UUID()
+    var name: String = ""
     var quantityText: String?
     var quantityGrams: Double?
     var note: String?

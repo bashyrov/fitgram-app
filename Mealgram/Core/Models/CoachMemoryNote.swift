@@ -8,21 +8,20 @@ import SwiftData
 /// schema migrates cleanly when the LLM lands.
 @Model
 final class CoachMemoryNote {
-    var id: UUID
-    var userRemoteID: String
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
     /// Short summary, e.g. "Trenuje siłowo 3× w tygodniu" or
     /// "Pomija obiad w środy". Free-form text the coach will reference
     /// in future prompts.
-    var summary: String
+    var summary: String = ""
     /// One of `CoachMemoryKind.rawValue` — keeps the schema flat while
     /// letting the engine reason about which slot a note belongs to.
-    var kindRaw: String
+    var kindRaw: String = ""
     /// 0…1 confidence in the observation; coach can downgrade with new
     /// signals (or upgrade with reinforcement).
-    var confidence: Double
-    var createdAt: Date
-    var updatedAt: Date
-
+    var confidence: Double = 0
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     init(
         id: UUID = UUID(),
         userRemoteID: String,

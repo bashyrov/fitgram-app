@@ -6,10 +6,10 @@ import SwiftData
 /// drag this simple flow into its weight class.
 @Model
 final class WeightEntry {
-    var id: UUID
-    var userRemoteID: String
-    var recordedAt: Date
-    var weightKg: Double
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
+    var recordedAt: Date = Date()
+    var weightKg: Double = 0
     var note: String?
 
     /// Provenance of the weigh-in. Defaults to `.manual` so SwiftData

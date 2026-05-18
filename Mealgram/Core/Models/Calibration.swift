@@ -7,15 +7,13 @@ import SwiftData
 /// the schema is stable.
 @Model
 final class Calibration {
-    var id: UUID
-    var userRemoteID: String
-
-    var referenceObjectRaw: String
+    var id: UUID = UUID()
+    var userRemoteID: String = ""
+    var referenceObjectRaw: String = ""
     /// >1 means the model tends to *over*-estimate and the value scales results down.
-    var portionAdjustmentFactor: Double
-    var sampleCount: Int
-    var lastUpdated: Date
-
+    var portionAdjustmentFactor: Double = 0
+    var sampleCount: Int = 0
+    var lastUpdated: Date = Date()
     init(
         id: UUID = UUID(),
         userRemoteID: String,
