@@ -25,22 +25,18 @@ final class PersistenceController {
 
     init(inMemory: Bool) throws {
         let schema = Schema(versionedSchema: MealgramSchemaV1.self)
-        let configuration: ModelConfiguration
-        if inMemory {
-            configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        } else {
-            // Auto-sync via CloudKit's private database. Every
-            // non-optional attribute now ships a default (UUID(), "",
-            // 0, Date(), false, []) so CloudKit's schema validation
-            // passes on first load. Multi-device users on the same
-            // Apple ID see meals / weight / recipes / favourites
-            // converge automatically.
-            configuration = ModelConfiguration(
-                schema: schema,
-                isStoredInMemoryOnly: false,
-                cloudKitDatabase: .automatic
-            )
-        }
+        // CloudKit sync is off until the to-many relationships
+        // (MealEntry.items, Recipe.ingredients) are migrated from
+        // `[T]` to `[T]?`. SwiftData + CloudKit requires *optional*
+        // to-many relationships specifically — defaults are not
+        // enough. That migration touches ~68 callsites across the
+        // app, so it goes in its own commit. Until then, the app
+        // runs as local-only with all the existing UI and data.
+        let configuration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: inMemory,
+            cloudKitDatabase: .none
+        )
         self.container = try ModelContainer(for: schema, configurations: [configuration])
     }
 
