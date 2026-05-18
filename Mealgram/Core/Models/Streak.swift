@@ -6,7 +6,7 @@ import SwiftData
 /// hold "streak freezes" (a premium item).
 @Model
 final class Streak {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
 
     var currentLength: Int

@@ -8,7 +8,7 @@ import SwiftData
 /// for the saved portion so re-add is deterministic — no live join.
 @Model
 final class FavoriteMeal {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
 
     var name: String

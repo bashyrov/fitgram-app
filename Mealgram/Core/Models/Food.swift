@@ -9,7 +9,7 @@ import SwiftData
 /// `FoodItem`, never here.
 @Model
 final class Food {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var remoteID: String?
 
     /// Default Polish name; the localizations payload (JSON-encoded) carries

@@ -7,7 +7,7 @@ import SwiftData
 /// separately editable entries while still summing to one calorie total.
 @Model
 final class MealEntry {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var remoteID: String?
 
     var consumedAt: Date

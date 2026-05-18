@@ -84,6 +84,8 @@ targets:
           - UIInterfaceOrientationLandscapeRight
         UIRequiredDeviceCapabilities:
           - arm64
+        UIBackgroundModes:
+          - remote-notification
         UIUserInterfaceStyle: Automatic
         NSCameraUsageDescription: "Mealgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach."
         NSPhotoLibraryUsageDescription: "Mealgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki."
@@ -97,7 +99,16 @@ targets:
         LSApplicationCategoryType: public.app-category.healthcare-fitness
     entitlements:
       path: Mealgram/Supporting/Mealgram.entitlements
-      properties: {}
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.app.mealgram.ios.bashyrov
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.ubiquity-container-identifiers:
+          - iCloud.app.mealgram.ios.bashyrov
+        com.apple.security.application-groups:
+          - group.app.mealgram.shared
+        aps-environment: development
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov
@@ -119,6 +130,11 @@ targets:
     sources:
       - path: MealgramWidget
       - path: Shared
+    entitlements:
+      path: MealgramWidget/MealgramWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.app.mealgram.shared
     info:
       path: MealgramWidget/Info.plist
       properties:
@@ -136,6 +152,7 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: MealgramWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: MealgramWidget/MealgramWidget.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
 
   MealgramWatch:

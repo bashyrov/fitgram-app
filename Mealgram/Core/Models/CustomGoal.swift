@@ -12,7 +12,7 @@ import SwiftData
 /// (always "list active goals for user").
 @Model
 final class CustomGoal {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
     var name: String
     var startDate: Date

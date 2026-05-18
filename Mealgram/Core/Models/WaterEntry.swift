@@ -6,7 +6,7 @@ import SwiftData
 /// pattern as WeightEntry + Streak.
 @Model
 final class WaterEntry {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
     var recordedAt: Date
     var milliliters: Int

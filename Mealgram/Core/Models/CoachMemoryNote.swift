@@ -8,7 +8,7 @@ import SwiftData
 /// schema migrates cleanly when the LLM lands.
 @Model
 final class CoachMemoryNote {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
     /// Short summary, e.g. "Trenuje siłowo 3× w tygodniu" or
     /// "Pomija obiad w środy". Free-form text the coach will reference

@@ -25,10 +25,22 @@ final class PersistenceController {
 
     init(inMemory: Bool) throws {
         let schema = Schema(versionedSchema: MealgramSchemaV1.self)
-        let configuration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: inMemory
-        )
+        let configuration: ModelConfiguration
+        if inMemory {
+            configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        } else {
+            // Auto-sync via CloudKit's private database. SwiftData uses
+            // the container ID derived from the bundle identifier
+            // (iCloud.app.mealgram.ios.bashyrov, declared in the
+            // entitlement). Multi-device users on the same Apple ID see
+            // their meals / weight / recipes / favourites converge
+            // automatically — no per-feature wiring needed.
+            configuration = ModelConfiguration(
+                schema: schema,
+                isStoredInMemoryOnly: false,
+                cloudKitDatabase: .automatic
+            )
+        }
         self.container = try ModelContainer(for: schema, configurations: [configuration])
     }
 

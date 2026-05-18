@@ -7,7 +7,7 @@ import SwiftData
 /// the schema is stable.
 @Model
 final class Calibration {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
 
     var referenceObjectRaw: String

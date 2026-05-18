@@ -8,7 +8,7 @@ import SwiftData
 /// copy survives even if the rules later change wording.
 @Model
 final class CoachInsightLog {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
 
     /// Monday 00:00 of the ISO week the debrief covers.

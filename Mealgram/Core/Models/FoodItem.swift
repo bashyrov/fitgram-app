@@ -6,7 +6,7 @@ import SwiftData
 /// so historical data remains stable when the catalog updates later.
 @Model
 final class FoodItem {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
 
     var name: String
     var quantityGrams: Double

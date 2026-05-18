@@ -7,7 +7,7 @@ import SwiftData
 /// re-authenticates with a new identity.
 @Model
 final class User {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var remoteID: String
     var email: String?
     var displayName: String?

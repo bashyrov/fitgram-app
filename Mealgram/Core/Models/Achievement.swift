@@ -6,7 +6,7 @@ import SwiftData
 /// Milestone 2.8 lands.
 @Model
 final class Achievement {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
 
     /// Stable identifier ("streak.7", "scan.first", "protein.30days").

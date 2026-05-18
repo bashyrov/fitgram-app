@@ -6,7 +6,7 @@ import SwiftData
 /// cook (the AI recalculation engine in Phase 3 will read & write here).
 @Model
 final class Recipe {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var remoteID: String?
 
     var title: String

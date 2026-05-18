@@ -6,7 +6,7 @@ import SwiftData
 /// drag this simple flow into its weight class.
 @Model
 final class WeightEntry {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var userRemoteID: String
     var recordedAt: Date
     var weightKg: Double
