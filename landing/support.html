@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomoc — Mealgram</title>
+<meta name="description" content="Pomoc i FAQ aplikacji Mealgram. Kontakt: hello@mealgram.pl">
+<link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #84CC16;
+  --primary-dark: #65A30D;
+  --accent: #FB7185;
+  --ink: #1C1917;
+  --ink-muted: #57534E;
+  --ink-subtle: #A8A29E;
+  --bg: #FAFAF9;
+  --bg-soft: #F5F5F4;
+  --primary-soft: #ECFCCB;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+a { color: var(--primary-dark); }
+
+header {
+  background: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 16px 0;
+}
+.nav { display: flex; align-items: center; justify-content: space-between; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 18px; color: var(--ink); text-decoration: none; }
+.brand img { width: 32px; height: 32px; border-radius: 8px; }
+.back { color: var(--ink-muted); text-decoration: none; font-weight: 500; font-size: 14px; }
+
+main { padding: 60px 0 100px; }
+h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.lead { font-size: 18px; color: var(--ink-muted); margin-bottom: 40px; }
+
+.contact-card {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border-radius: 24px;
+  padding: 36px;
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.contact-card .emoji { font-size: 56px; }
+.contact-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+.contact-card p { color: rgba(255,255,255,0.85); }
+.contact-card a {
+  display: inline-block;
+  margin-top: 16px;
+  background: white;
+  color: var(--ink);
+  padding: 12px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-top: 48px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+details {
+  background: white;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow .2s;
+}
+details:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+details[open] { box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+summary {
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: '+';
+  font-size: 24px;
+  color: var(--ink-subtle);
+  font-weight: 300;
+  transition: transform .2s;
+}
+details[open] summary::after { transform: rotate(45deg); }
+details p, details ul { margin-top: 14px; color: var(--ink-muted); font-size: 15px; }
+details ul { padding-left: 20px; }
+details li { margin-bottom: 6px; }
+details a { color: var(--primary-dark); }
+
+footer {
+  background: var(--ink);
+  color: #A8A29E;
+  padding: 32px 0;
+  text-align: center;
+  font-size: 13px;
+}
+footer a { color: white; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="/" class="brand">
+      <img src="/assets/icon.png" alt="Mealgram">
+      <span>Mealgram</span>
+    </a>
+    <a href="/" class="back">← Powrót</a>
+  </div>
+</header>
+
+<main>
+<div class="container">
+  <h1>Pomoc i FAQ</h1>
+  <p class="lead">Wszystko czego potrzebujesz, żeby ruszyć z Mealgramem. Czego nie ma poniżej — napisz, odpowiemy w 24 godziny.</p>
+
+  <div class="contact-card">
+    <div class="emoji">📩</div>
+    <div style="flex: 1; min-width: 200px;">
+      <h2>Kontakt</h2>
+      <p>Pisz po polsku, angielsku, ukraińsku albo rosyjsku — odpowiadamy w ciągu 24 godzin w dni robocze.</p>
+      <a href="mailto:hello@mealgram.pl">hello@mealgram.pl</a>
+    </div>
+  </div>
+
+  <h2>Najczęstsze pytania</h2>
+
+  <details>
+    <summary>Czy Mealgram jest darmowy?</summary>
+    <p>Tak. Podstawowa wersja Mealgrama jest w pełni darmowa — logowanie posiłków, śledzenie kalorii, makro, woda, achievements, streak. <strong>Premium</strong> ($3.99/mies. lub 199 zł/rok z 7-dniowym darmowym okresem próbnym) odblokowuje śledzenie celu wagi, codzienne AI-podsumowania, eksport pełnej historii i nieograniczone skany.</p>
+  </details>
+
+  <details>
+    <summary>Jak działa skanowanie zdjęciem?</summary>
+    <p>Tap na ikonę aparatu w "+Dodaj" → kieruj kamerę na cały talerz → AI rozpoznaje składniki w 5-10 sekund.</p>
+    <p>Najlepsze wyniki: dobre oświetlenie, talerz w środku ramki, widoczna proporcja porcji (sztućce w kadrze pomagają).</p>
+  </details>
+
+  <details>
+    <summary>Czy Mealgram działa offline?</summary>
+    <p>Tak — wszystkie podstawowe funkcje działają bez internetu: logowanie ręczne, kody kreskowe, Szybka Baza (160+ polskich dań), widgety, Apple Watch.</p>
+    <p>Internet potrzebny tylko do: skanowania AI (zdjęcia → Gemini), Open Food Facts (kody kreskowe), iCloud sync między urządzeniami.</p>
+  </details>
+
+  <details>
+    <summary>Jak zsynchronizować dane między iPhone a iPad?</summary>
+    <p>Mealgram używa <strong>iCloud Drive</strong>. Sprawdź:</p>
+    <ul>
+      <li>Na obu urządzeniach zalogowany ten sam <strong>Apple ID</strong></li>
+      <li>iCloud Drive włączony: Ustawienia → [Twoje imię] → iCloud → iCloud Drive</li>
+      <li>Mealgram zaznaczony w "Apps using iCloud"</li>
+    </ul>
+    <p>Pierwsza synchronizacja może zająć 30-60 sekund. Dane konwergują automatycznie — żaden ręczny krok nie jest potrzebny.</p>
+  </details>
+
+  <details>
+    <summary>Jak zmienić język aplikacji?</summary>
+    <p>W aplikacji: <strong>Profil → ⚙️ Ustawienia → Język aplikacji</strong> — wybierz Polski / English / Українська / Русский / Español. Zmiana zachodzi natychmiast, bez restartu.</p>
+    <p>Niektóre systemowe okna (np. zapytania o pozwolenie aparatu) zostaną po polsku do restartu telefonu — to ograniczenie iOS, nie nasze.</p>
+  </details>
+
+  <details>
+    <summary>Jak anulować subskrypcję Premium?</summary>
+    <p>Subskrypcją zarządza Apple:</p>
+    <ul>
+      <li>Otwórz <strong>App Store → ikona profilu → Subskrypcje</strong></li>
+      <li>Wybierz <strong>Mealgram Premium</strong></li>
+      <li>Stuknij <strong>Anuluj subskrypcję</strong></li>
+    </ul>
+    <p>Premium zostaje aktywny do końca opłaconego okresu. Bez prób przekonania, bez 5 ekranów odbijania — Apple zaprojektowali to porządnie.</p>
+  </details>
+
+  <details>
+    <summary>Jak usunąć konto i wszystkie dane?</summary>
+    <p>W aplikacji: <strong>Profil → ⚙️ Ustawienia → Konto → Usuń konto</strong>. Usunie się lokalna baza danych + dane w iCloud (jeśli były).</p>
+    <p>Alternatywa: po prostu odinstaluj Mealgrama — wszystkie lokalne dane zostaną usunięte przez iOS, dane w iCloud usuniesz w <strong>Ustawienia → [Twoje imię] → iCloud → Manage Storage → Mealgram → Delete</strong>.</p>
+  </details>
+
+  <details>
+    <summary>Mealgram zawiesza się / nie uruchamia. Co robić?</summary>
+    <ol style="padding-left: 24px;">
+      <li>Wymuś zamknięcie: swipe w górę z paska gestów, zamknij Mealgram</li>
+      <li>Restart iPhone (hold power + volume down → suwak)</li>
+      <li>Odinstaluj i zainstaluj ponownie (lokalne dane stracisz, iCloud przywróci po zalogowaniu)</li>
+      <li>Jeśli nadal się zawiesza: napisz na <a href="mailto:hello@mealgram.pl">hello@mealgram.pl</a> z modelem iPhone'a + wersją iOS</li>
+    </ol>
+  </details>
+
+  <details>
+    <summary>Czy mogę użyć Mealgrama na iPad?</summary>
+    <p>Tak — Mealgram jest uniwersalną aplikacją. Po pobraniu na iPad dane synchronizują się przez iCloud, więc kontynuujesz tam gdzie skończyłeś na iPhone. Layout dostosowuje się do większego ekranu.</p>
+  </details>
+
+  <details>
+    <summary>Apple Watch — jak ją skonfigurować?</summary>
+    <p>Po zainstalowaniu Mealgrama na iPhone:</p>
+    <ol style="padding-left: 24px;">
+      <li>Otwórz aplikację <strong>Watch</strong> na iPhone</li>
+      <li>Scroll do <strong>Available Apps</strong> → znajdź Mealgram</li>
+      <li>Tap <strong>Install</strong></li>
+    </ol>
+    <p>Na zegarku zobaczysz 3 kolorowe pierścienie (kalorie / białko / woda) + przycisk "+1 szklanka". Dane synchronizują się przez WatchConnectivity.</p>
+  </details>
+
+  <details>
+    <summary>Widget na home screen pokazuje nieaktualne dane</summary>
+    <p>Widgety odświeżają się co ~30 minut zgodnie z polityką iOS. Możesz wymusić odświeżenie:</p>
+    <ol style="padding-left: 24px;">
+      <li>Otwórz Mealgrama i dodaj posiłek (lub wyjdź i wróć — wyzwala refresh)</li>
+      <li>Lub: zatrzymaj nacisk na widget → Edit Widget → wybierz inny i z powrotem</li>
+    </ol>
+  </details>
+
+  <details>
+    <summary>Czy Mealgram dzieli się moimi danymi z dietetykami / lekarzami?</summary>
+    <p>Nigdy. Twoje dane są wyłącznie u Ciebie. Ale możesz <strong>sam</strong> wyeksportować je w czytelnych formatach:</p>
+    <ul>
+      <li><strong>Profil → Twoje dane → Pobierz eksport JSON</strong> — pełna historia</li>
+      <li><strong>Eksport CSV (Excel)</strong> — czytelne w Excelu, idealne dla dietetyka</li>
+      <li><strong>Pełna paczka ZIP</strong> — JSON + CSV + wszystkie zdjęcia posiłków</li>
+    </ul>
+    <p>Po pobraniu pliku możesz go wysłać komu chcesz e-mailem, AirDropem, czy wydrukować.</p>
+  </details>
+
+  <details>
+    <summary>Sugestia / błąd / życzenie?</summary>
+    <p>Wszystkie pomysły są mile widziane. Najlepiej:</p>
+    <ul>
+      <li><strong>E-mail:</strong> <a href="mailto:hello@mealgram.pl?subject=Sugestia%20do%20Mealgrama">hello@mealgram.pl</a></li>
+      <li>W tytule: "Sugestia: ..." lub "Bug: ..."</li>
+      <li>Jeśli bug — dodaj screenshot lub krótki opis kroków</li>
+    </ul>
+    <p>Mealgram jest tworzony przez jednego dewelopera — Twoje uwagi <strong>bezpośrednio</strong> trafiają do osoby, która pisze kod. Bez 5 warstw supportu.</p>
+  </details>
+
+</div>
+</main>
+
+<footer>
+  © 2026 Mealgram · <a href="/">Strona główna</a> · <a href="/privacy.html">Prywatność</a>
+</footer>
+
+</body>
+</html>
