@@ -1,0 +1,92 @@
+# Mealgram fastlane — App Store + TestFlight automation.
+#
+# Auth: uses App Store Connect API key. Generate one at
+# https://appstoreconnect.apple.com/access/api → "+" → role "App Manager".
+# Download the .p8 file once (Apple won't let you re-download), store it
+# safely. Then create a `.env.fastlane` file at repo root (gitignored)
+# with:
+#   APP_STORE_CONNECT_API_KEY_ID=ABCDEFGHIJ
+#   APP_STORE_CONNECT_API_ISSUER_ID=00000000-0000-0000-0000-000000000000
+#   APP_STORE_CONNECT_API_KEY_PATH=~/Library/Keys/AuthKey_ABCDEFGHIJ.p8
+
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    Dotenv.load(File.expand_path("../../.env.fastlane", __FILE__))
+  end
+
+  desc "Bump build number based on TestFlight latest + 1"
+  lane :bump_build do
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"])
+    )
+    latest = latest_testflight_build_number(
+      api_key: api_key,
+      app_identifier: "app.mealgram.ios.bashyrov"
+    )
+    new_build = latest + 1
+    increment_build_number(
+      build_number: new_build,
+      xcodeproj: "Mealgram.xcodeproj"
+    )
+    UI.success "Bumped build number → #{new_build}"
+  end
+
+  desc "Build a Release archive and upload to TestFlight"
+  lane :beta do
+    sh("cd .. && make generate")
+    bump_build
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"])
+    )
+    build_app(
+      project: "Mealgram.xcodeproj",
+      scheme: "Mealgram",
+      configuration: "Release",
+      export_method: "app-store",
+      include_bitcode: false,
+      include_symbols: true,
+      clean: true,
+      output_directory: "build",
+      output_name: "Mealgram.ipa"
+    )
+    upload_to_testflight(
+      api_key: api_key,
+      app_identifier: "app.mealgram.ios.bashyrov",
+      ipa: "build/Mealgram.ipa",
+      skip_waiting_for_build_processing: false,
+      changelog: File.read("metadata/changelog.txt").strip
+    )
+    UI.success "Uploaded to TestFlight."
+  end
+
+  desc "Submit current TestFlight build for App Store review"
+  lane :release do
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"])
+    )
+    deliver(
+      api_key: api_key,
+      app_identifier: "app.mealgram.ios.bashyrov",
+      submit_for_review: true,
+      automatic_release: false,
+      force: true,
+      skip_screenshots: false,
+      skip_metadata: false,
+      skip_app_version_update: false,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false,
+        content_rights_contains_third_party_content: false
+      }
+    )
+    UI.success "Submitted for App Store review."
+  end
+end

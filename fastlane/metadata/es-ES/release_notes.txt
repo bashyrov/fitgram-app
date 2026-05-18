@@ -1,0 +1,7 @@
+Primera versión de Mealgram — gracias por estar desde el día 1.
+
+— Escaneo de fotos, códigos de barras y voz
+— Coach Ola recuerda tus objetivos
+— Sincronización iCloud entre iPhone, iPad y Apple Watch
+— 5 idiomas: polaco, inglés, ucraniano, ruso, español
+— Live Activity con anillo de calorías

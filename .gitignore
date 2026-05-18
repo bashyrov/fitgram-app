@@ -60,3 +60,4 @@ fastlane/test_output
 *.gcno
 *.gcda
 coverage/
+.env.fastlane
