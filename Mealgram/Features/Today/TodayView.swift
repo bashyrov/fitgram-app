@@ -115,6 +115,22 @@ struct TodayView: View {
 
                         goalTrackingSlot
 
+                        // "Ciekawostka dnia" block — one rotating fact
+                        // per calendar day, always visible (free +
+                        // Premium). Tap opens the full Ola tips sheet
+                        // on the Ciekawostki segment for browsing more.
+                        if state.isViewingToday,
+                            let fact = factSelector.factForToday() {
+                            Button {
+                                Haptics.light()
+                                isOlaTipsPresented = true
+                            } label: {
+                                FactCard(fact: fact, highlighted: true)
+                            }
+                            .buttonStyle(PressableButtonStyle())
+                            .accessibilityLabel(Text("Otwórz Ciekawostki"))
+                        }
+
                         if state.isViewingToday,
                             let user = state.user,
                             let data = user.latestRecommendationsJSON,
@@ -160,10 +176,6 @@ struct TodayView: View {
                                     { handler(insight) }
                                 }
                             )
-                        }
-
-                        if state.isViewingToday, let onOpenWeeklyDebrief {
-                            WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
                         }
 
                         if state.isViewingToday, let upcoming = state.upcomingEvent {
@@ -268,26 +280,40 @@ struct TodayView: View {
     }
 
     /// Goal Tracking card. Three exclusive outcomes:
-    /// 1. User has lose/gain goal + Premium → show GoalTrackingCard.
-    /// 2. User has lose/gain goal but no Premium → show upsell card.
-    /// 3. Otherwise → nothing.
+    /// 1. User has lose/gain goal + Premium → full card with AI tips.
+    /// 2. User has lose/gain goal but no Premium → blurred peek card
+    ///    (header sharp, body teasing); tap opens paywall.
+    /// 3. User has no structured lose/gain goal → nothing.
     @ViewBuilder
     private var goalTrackingSlot: some View {
         if state.isViewingToday, let user = state.user, shouldShowGoalSlot(for: user) {
             if entitlementsStore?.current.isPremium == true,
                 let goalTrackingState,
                 let snapshot = goalTrackingState.snapshot {
-                GoalTrackingCard(snapshot: snapshot) {
+                GoalTrackingCard(snapshot: snapshot, tips: goalTipsForUser(user)) {
                     Haptics.light()
                     onOpenGoalTracking?()
                 }
             } else if entitlementsStore?.current.isPremium != true {
-                GoalTrackingUpsellCard {
+                GoalTrackingPeekCard(
+                    currentWeightKg: user.weightKg,
+                    targetWeightKg: user.goalTargetWeightKg
+                ) {
                     Haptics.light()
                     paywallCoordinator?.present(.goalTracking)
                 }
             }
         }
+    }
+
+    /// First 3 tips from the cached `Recommendations` payload — they're
+    /// already tailored to the user's goal kind, calorie/macro targets,
+    /// dietary prefs, and current weight via the rule-based generator.
+    private func goalTipsForUser(_ user: User) -> [RecommendationTip] {
+        guard let data = user.latestRecommendationsJSON,
+            let recs = try? JSONDecoder().decode(Recommendations.self, from: data)
+        else { return [] }
+        return Array(recs.tips.prefix(3))
     }
 
     private func shouldShowGoalSlot(for user: User) -> Bool {

@@ -195,7 +195,6 @@ struct MainTabView: View {
                 },
                 onCookSuggested: { recipe in cookSuggested(recipe) },
                 onCoachAction: { kind in handleCoachAction(kind) },
-                onOpenWeeklyDebrief: { presentWeeklyDebrief() },
                 onSelectMeal: { meal in selectedMeal = meal },
                 onDismissInsight: { insight in
                     coachService.dismiss(insight: insight)
@@ -216,7 +215,11 @@ struct MainTabView: View {
                 }
                 .tag(Tab.add)
 
-            WeekProgressView(userRemoteID: authUser.id, state: progressState)
+            WeekProgressView(
+                userRemoteID: authUser.id,
+                state: progressState,
+                onOpenWeeklyDebrief: { presentWeeklyDebrief() }
+            )
                 .tabItem {
                     Label("Tydzień", systemImage: "chart.bar.fill")
                 }

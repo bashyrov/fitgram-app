@@ -73,7 +73,11 @@ struct UpgradeSheet: View {
                         legalNote
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .padding(.top, Tokens.Space.lg)
+                    // Bottom padding clears the floating Primary CTA so
+                    // the legal "Bezpieczna płatność..." line is fully
+                    // readable when the user scrolls to the end.
+                    .padding(.bottom, 130)
                 }
                 VStack {
                     Spacer()

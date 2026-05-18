@@ -7,6 +7,9 @@ import SwiftUI
 struct WeekProgressView: View {
     let userRemoteID: String
     @Bindable var state: ProgressState
+    /// "Itogi tygodnia od Oli" entry — Premium feature raised from the
+    /// Week tab. Optional so tests can omit it.
+    var onOpenWeeklyDebrief: (() -> Void)?
 
     private static let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -22,6 +25,9 @@ struct WeekProgressView: View {
                 VStack(spacing: Tokens.Space.lg) {
                     chartCard
                     statsRow
+                    if let onOpenWeeklyDebrief {
+                        WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
+                    }
                     monthlyChartCard
                     breakdownCard
                 }
