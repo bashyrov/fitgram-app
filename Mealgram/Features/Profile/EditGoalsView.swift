@@ -13,6 +13,7 @@ struct EditGoalsView: View {
     @State private var protein: Int
     @State private var carbs: Int
     @State private var fat: Int
+    @State private var saveError: String?
 
     init(user: User, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -30,28 +31,39 @@ struct EditGoalsView: View {
                 ScrollView {
                     VStack(spacing: Tokens.Space.lg) {
                         Card {
-                            stepper(label: "Kalorie (kcal)", value: $calories, step: 50, range: 1000...4500)
+                            stepper(label: "Calories (kcal)", value: $calories, step: 50, range: 1000...4500)
                         }
                         Card {
                             VStack(spacing: Tokens.Space.md) {
-                                stepper(label: "Białko (g)", value: $protein, step: 5, range: 30...300)
-                                stepper(label: "Węgle (g)", value: $carbs, step: 5, range: 50...500)
-                                stepper(label: "Tłuszcz (g)", value: $fat, step: 5, range: 20...200)
+                                stepper(label: "Protein (g)", value: $protein, step: 5, range: 30...300)
+                                stepper(label: "Carbs (g)", value: $carbs, step: 5, range: 50...500)
+                                stepper(label: "Fat (g)", value: $fat, step: 5, range: 20...200)
                             }
                         }
                         macroPresetsCard
-                        PrimaryButton(title: "Zapisz", systemImage: "checkmark") { save() }
+                        PrimaryButton(title: "Save", systemImage: "checkmark") { save() }
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Cele dzienne"))
+            .navigationTitle(Text("Daily goals"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
+            }
+            .alert(
+                "Nie udało się zapisać zmian",
+                isPresented: Binding(
+                    get: { saveError != nil },
+                    set: { if !$0 { saveError = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { saveError = nil }
+            } message: {
+                Text(saveError ?? L("Couldn't save. Try again."))
             }
         }
     }
@@ -120,12 +132,28 @@ struct EditGoalsView: View {
     }
 
     private func save() {
+        let previousCalories = user.dailyCalorieGoalKcal
+        let previousProtein = user.proteinGoalGrams
+        let previousCarbs = user.carbsGoalGrams
+        let previousFat = user.fatGoalGrams
+        let previousUpdatedAt = user.updatedAt
         user.dailyCalorieGoalKcal = max(0, calories)
         user.proteinGoalGrams = max(0, protein)
         user.carbsGoalGrams = max(0, carbs)
         user.fatGoalGrams = max(0, fat)
         user.updatedAt = Date()
-        try? modelContext.save()
-        onDismiss()
+        do {
+            try modelContext.save()
+            NotificationCenter.default.post(name: AppShortcutAction.mainGoalChanged, object: nil)
+            onDismiss()
+        } catch {
+            user.dailyCalorieGoalKcal = previousCalories
+            user.proteinGoalGrams = previousProtein
+            user.carbsGoalGrams = previousCarbs
+            user.fatGoalGrams = previousFat
+            user.updatedAt = previousUpdatedAt
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 }

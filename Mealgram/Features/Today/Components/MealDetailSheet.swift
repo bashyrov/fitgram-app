@@ -91,7 +91,7 @@ struct MealDetailSheet: View {
                         } label: {
                             HStack(spacing: Tokens.Space.sm) {
                                 Image(systemName: "doc.on.doc")
-                                Text("Duplikuj na dziś")
+                                Text("Duplicate to today")
                             }
                             .font(Tokens.Font.bodyEmphasized)
                             .foregroundStyle(Tokens.Palette.primary)
@@ -125,7 +125,7 @@ struct MealDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
             .confirmationDialog(
@@ -134,7 +134,7 @@ struct MealDetailSheet: View {
                 titleVisibility: .visible
             ) {
                 Button("Usuń posiłek", role: .destructive) { delete() }
-                Button("Anuluj", role: .cancel) {}
+                Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Wpis zostanie skasowany i wyleci z dziennika.")
             }
@@ -187,7 +187,7 @@ struct MealDetailSheet: View {
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     if rating != nil {
-                        Button("Wyczyść") {
+                        Button("Clear") {
                             rating = nil
                             Haptics.light()
                         }
@@ -207,7 +207,7 @@ struct MealDetailSheet: View {
                                 .foregroundStyle(filled ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(Text("Oceń \(star) gwiazdek"))
+                        .accessibilityLabel(Text(String.localizedStringWithFormat(L("Oceń %lld gwiazdek"), star)))
                     }
                     Spacer()
                 }
@@ -227,13 +227,13 @@ struct MealDetailSheet: View {
                 .labelsHidden()
                 .datePickerStyle(.compact)
                 .tint(Tokens.Palette.primary)
-                Text("\(Int(adjustedCalories)) kcal")
+                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(adjustedCalories)))
                     .font(Tokens.Font.counter)
                     .foregroundStyle(Tokens.Palette.primary)
                 HStack(spacing: Tokens.Space.lg) {
-                    macroPill(label: "Białko", grams: adjustedProtein)
-                    macroPill(label: "Węgle", grams: adjustedCarbs)
-                    macroPill(label: "Tłuszcz", grams: adjustedFat)
+                    macroPill(label: "Protein", grams: adjustedProtein)
+                    macroPill(label: "Carbs", grams: adjustedCarbs)
+                    macroPill(label: "Fat", grams: adjustedFat)
                 }
             }
         }
@@ -248,7 +248,7 @@ struct MealDetailSheet: View {
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("\(Int(totalAdjustedGrams)) g")
+                        Text(String.localizedStringWithFormat(L("%lld g"), Int(totalAdjustedGrams)))
                             .font(Tokens.Font.title3)
                             .foregroundStyle(Tokens.Palette.primary)
                             .lineLimit(1)
@@ -280,7 +280,8 @@ struct MealDetailSheet: View {
             let entitlementsStore,
             let paywallCoordinator,
             let userRemoteID,
-            let payload = favoritePayload {
+            let payload = favoritePayload
+        {
             FavoriteToggleButton(
                 payload: payload,
                 userRemoteID: userRemoteID,
@@ -295,8 +296,8 @@ struct MealDetailSheet: View {
         guard let first = meal.items.first else { return nil }
         let name: String =
             meal.items.count > 1
-                ? meal.items.map(\.name).joined(separator: " + ")
-                : first.name
+            ? meal.items.map(\.name).joined(separator: " + ")
+            : first.name
         let totalGrams = meal.items.reduce(0) { $0 + $1.quantityGrams } * portion
         return FavoriteToggleButton.Payload(
             name: name,
@@ -314,7 +315,7 @@ struct MealDetailSheet: View {
     private var tagsCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Tagi")
+                Text("Tags")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 if tags.isEmpty {
@@ -426,7 +427,7 @@ struct MealDetailSheet: View {
     private var notesCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Notatka")
+                Text("Note")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 TextEditor(text: $notes)
@@ -467,12 +468,12 @@ struct MealDetailSheet: View {
                 Text(item.name)
                     .font(Tokens.Font.body)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("\(Int(item.quantityGrams)) g")
+                Text(String.localizedStringWithFormat(L("%lld g"), Int(item.quantityGrams)))
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
             Spacer()
-            Text("\(Int(item.caloriesKcal * portion)) kcal")
+            Text(String.localizedStringWithFormat(L("%lld kcal"), Int(item.caloriesKcal * portion)))
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(Tokens.Palette.ink)
         }
@@ -480,7 +481,7 @@ struct MealDetailSheet: View {
 
     private func macroPill(label: LocalizedStringKey, grams: Double) -> some View {
         VStack(spacing: 2) {
-            Text("\(Int(grams)) g")
+            Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(Tokens.Palette.primary)
             Text(label)
@@ -506,7 +507,7 @@ struct MealDetailSheet: View {
             onChanged()
             onDismiss()
         } catch {
-            errorMessage = String(localized: "Nie udało się zapisać. Spróbuj ponownie.")
+            errorMessage = L("Nie udało się zapisać. Spróbuj ponownie.")
         }
     }
 
@@ -517,7 +518,7 @@ struct MealDetailSheet: View {
             onChanged()
             onDismiss()
         } catch {
-            errorMessage = String(localized: "Nie udało się zduplikować. Spróbuj ponownie.")
+            errorMessage = L("Nie udało się zduplikować. Spróbuj ponownie.")
         }
     }
 
@@ -543,7 +544,7 @@ struct MealDetailSheet: View {
             onChanged()
             onDismiss()
         } catch {
-            errorMessage = String(localized: "Nie udało się usunąć. Spróbuj ponownie.")
+            errorMessage = L("Nie udało się usunąć. Spróbuj ponownie.")
         }
     }
 
@@ -564,18 +565,20 @@ struct MealDetailSheet: View {
 
     private var mealTypeLabel: LocalizedStringKey {
         switch meal.mealType {
-        case .breakfast: return "Śniadanie"
-        case .lunch: return "Obiad"
-        case .dinner: return "Kolacja"
-        case .snack: return "Przekąska"
+        case .breakfast: return "Breakfast"
+        case .lunch: return "Lunch"
+        case .dinner: return "Dinner"
+        case .snack: return "Snack"
         }
     }
 
-    private static let timeFormatter: DateFormatter = {
+    private static var timeFormatter: DateFormatter {
+
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, HH:mm"
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         return formatter
-    }()
+    
+}
 }
 // swiftlint:enable type_body_length

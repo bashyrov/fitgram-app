@@ -60,7 +60,7 @@ extension ScanResult {
             ],
             suggestedMealType: .lunch,
             confidence: 0.89,
-            rawAINotes: "Bezpieczny przykład danej domowej."
+            rawAINotes: "Safe example of a home dish."
         )
     }
 }

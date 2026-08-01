@@ -23,7 +23,7 @@ struct OpenFoodFactsLookup: BarcodeLookupService {
     func lookup(barcode: String) async throws -> BarcodeProduct {
         let url = baseURL.appending(path: "api/v2/product/\(barcode).json")
         var request = URLRequest(url: url)
-        request.setValue("Mealgram/0.1 (https://mealgram.pl)", forHTTPHeaderField: "User-Agent")
+        request.setValue("Mealgram/0.1 (https://mealgram.xyz)", forHTTPHeaderField: "User-Agent")
         request.timeoutInterval = 10
 
         let data: Data

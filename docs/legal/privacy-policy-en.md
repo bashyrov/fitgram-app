@@ -3,13 +3,13 @@
 **Version:** 1.0
 **Effective date:** 2026-06-01
 **Controller:** [YOUR_BUSINESS_NAME], NIP [NIP], REGON [REGON], address [ADDRESS], Poland
-**Contact:** hello@mealgram.pl
+**Contact:** hello@mealgram.xyz
 
 ## 1. Who is the data controller
 
 The controller of personal data collected through the Mealgram application (the "App") is [YOUR_BUSINESS_NAME] based in [CITY], Poland, NIP [NIP].
 
-For privacy-related inquiries please contact us at **hello@mealgram.pl**.
+For privacy-related inquiries please contact us at **hello@mealgram.xyz**.
 
 ## 2. What data we collect
 
@@ -119,11 +119,11 @@ All our processors comply with GDPR.
 
 You have the right to:
 
-1. **Access your data** — JSON/CSV/ZIP export available in Profile → "Full bundle (ZIP)" or on request to hello@mealgram.pl
+1. **Access your data** — JSON/CSV/ZIP export available in Profile → "Full bundle (ZIP)" or on request to hello@mealgram.xyz
 2. **Rectify your data** — edit in-app or contact us
-3. **Erasure** ("right to be forgotten") — Profile → "Delete account", or hello@mealgram.pl. We process within 30 days
-4. **Restrict processing** — write to hello@mealgram.pl
-5. **Object to processing** — write to hello@mealgram.pl
+3. **Erasure** ("right to be forgotten") — Profile → "Delete account", or hello@mealgram.xyz. We process within 30 days
+4. **Restrict processing** — write to hello@mealgram.xyz
+5. **Object to processing** — write to hello@mealgram.xyz
 6. **Data portability** — JSON export contains all data in a readable format
 7. **Withdraw consent** at any time — without affecting processing before withdrawal
 8. **Lodge a complaint** with the supervisory authority — Polish Personal Data Protection Office (UODO), ul. Stawki 2, 00-193 Warszawa, [uodo.gov.pl](https://uodo.gov.pl)
@@ -161,11 +161,11 @@ We may update this policy. We will notify you of material changes:
 - by email (if you left an address)
 - with 30 days' notice before changes take effect
 
-The current version is always available at [mealgram.pl/privacy](https://mealgram.pl/privacy) and in-app at Profile → Help / Privacy Policy.
+The current version is always available at [mealgram.xyz/privacy](https://mealgram.xyz/privacy) and in-app at Profile → Help / Privacy Policy.
 
 ## 12. Contact
 
-Email: **hello@mealgram.pl**
+Email: **hello@mealgram.xyz**
 Postal address: [YOUR_ADDRESS]
 Data Protection Officer (DPO): not appointed (sole proprietorship)
 

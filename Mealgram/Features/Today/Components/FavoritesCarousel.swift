@@ -11,6 +11,8 @@ struct FavoritesCarousel: View {
     let mealSaver: any MealSaving
     let entitlementsStore: EntitlementsStore
     let paywallCoordinator: PaywallCoordinator
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
     let onSaved: () -> Void
 
     @State private var favorites: [FavoriteMeal] = []
@@ -39,21 +41,25 @@ struct FavoritesCarousel: View {
             titleVisibility: .visible,
             presenting: pendingDelete
         ) { favorite in
-            Button("Usuń", role: .destructive) {
+            Button("Delete", role: .destructive) {
                 try? favoritesService.remove(id: favorite.id)
                 pendingDelete = nil
                 reload()
             }
-            Button("Anuluj", role: .cancel) { pendingDelete = nil }
+            Button("Cancel", role: .cancel) { pendingDelete = nil }
         }
         .sheet(item: $pendingAdd) { favorite in
             FavoritePortionSheet(
                 favorite: favorite,
-                onSave: { grams in
+                onSave: { items in
                     pendingAdd = nil
-                    saveWithPortion(favorite, grams: grams)
+                    saveWithItems(favorite, items: items)
                 },
-                onDismiss: { pendingAdd = nil }
+                onDismiss: { pendingAdd = nil },
+                mealAnalyzer: mealAnalyzer,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                usageMeter: usageMeter
             )
         }
     }
@@ -63,7 +69,7 @@ struct FavoritesCarousel: View {
     private var activeCarousel: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             HStack {
-                Label("Moje przepisy", systemImage: "star.fill")
+                Label("My recipes", systemImage: "star.fill")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Spacer()
@@ -124,20 +130,19 @@ struct FavoritesCarousel: View {
     // MARK: - Actions
 
     /// Tap on a favourite raises the portion picker. The user confirms
-    /// (or adjusts) grams, then `saveWithPortion(_:grams:)` actually
+    /// (or adjusts) grams, then `saveWithItems(_:items:)` actually
     /// commits the meal. Keeps the carousel-tap reversible until the
-    /// user explicitly hits "Dodaj".
+    /// user explicitly hits "Add".
     private func quickAdd(_ favorite: FavoriteMeal) {
         Haptics.light()
         pendingAdd = favorite
     }
 
-    private func saveWithPortion(_ favorite: FavoriteMeal, grams: Double) {
-        let item = favorite.foodItem(quantityGrams: grams)
+    private func saveWithItems(_ favorite: FavoriteMeal, items: [FoodItem]) {
         let meal = MealEntry(
             mealType: inferredMealType(),
             source: favorite.sourceHint,
-            items: [item]
+            items: items
         )
         do {
             try mealSaver.save(meal: meal)
@@ -209,8 +214,10 @@ private struct FavoriteMiniCard: View {
     private var portionLabel: String {
         let grams = Int(favorite.defaultQuantityGrams)
         if favorite.useCount > 0 {
-            return "\(grams) g · użyte \(favorite.useCount)×"
+            let format = L("%lld g · użyte %lld×")
+            return String.localizedStringWithFormat(format, grams, favorite.useCount)
         }
-        return "\(grams) g"
+        let format = L("%lld g")
+        return String.localizedStringWithFormat(format, grams)
     }
 }

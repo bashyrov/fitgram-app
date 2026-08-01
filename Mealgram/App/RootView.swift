@@ -36,7 +36,7 @@ struct RootView: View {
     let goalsService: GoalsService
     let recommendationsService: RecommendationsService
     let privacyStore: PrivacyStore
-    let subscriptionService: MockSubscriptionService
+    let subscriptionService: any SubscriptionService
     let entitlementsStore: EntitlementsStore
     let usageMeter: UsageMeter
     let paywallCoordinator: PaywallCoordinator
@@ -78,7 +78,7 @@ struct RootView: View {
         goalsService: GoalsService,
         recommendationsService: RecommendationsService,
         privacyStore: PrivacyStore,
-        subscriptionService: MockSubscriptionService,
+        subscriptionService: any SubscriptionService,
         entitlementsStore: EntitlementsStore,
         usageMeter: UsageMeter,
         paywallCoordinator: PaywallCoordinator,
@@ -212,9 +212,11 @@ struct RootView: View {
                     favoritesService: favoritesService,
                     unlockBus: unlockBus,
                     onSignOut: { Task { await authService.signOut() } },
-                    onDeleteAccount: { Task { try? await accountDeletionService.deleteAccount() } },
+                    onDeleteAccount: {
+                        try await accountDeletionService.deleteAccount()
+                    },
                     onRestartOnboarding: {
-                        try? userRepository.resetOnboarding(forRemoteID: authUser.id)
+                        try userRepository.resetOnboarding(forRemoteID: authUser.id)
                         onboardingFlow = nil
                         router.restartOnboarding()
                     },
@@ -256,7 +258,10 @@ struct RootView: View {
 
     @ViewBuilder
     private func onboardingScene(for authUser: AuthUser) -> some View {
-        OnboardingView(flow: freshFlow(for: authUser))
+        OnboardingView(
+            flow: freshFlow(for: authUser),
+            subscriptionService: subscriptionService
+        )
     }
 
     private var phaseKey: String {
@@ -322,7 +327,12 @@ private struct ChainedMealSaver: MealSaving {
             try? calibrationService.recordSample(forUser: userRemoteID)
         }
         try? streakService.registerLog(for: userRemoteID)
-        if let unlocks = try? achievementService.evaluate(forUser: userRemoteID), !unlocks.isEmpty {
+        if let unlocks = try? achievementService.evaluateAfterSaving(
+            meal: meal,
+            forUser: userRemoteID
+        ),
+            !unlocks.isEmpty
+        {
             unlockBus.push(unlocks)
             Haptics.medium()
             Task {
@@ -332,6 +342,14 @@ private struct ChainedMealSaver: MealSaving {
             }
         }
         Task { await notificationCoordinator.rescheduleAll(for: userRemoteID) }
+        // Broadcast — TodayState + ProgressState listen and refresh.
+        // Belt-and-braces guard for paths that bypass the sheet onDismiss
+        // (e.g., a save that completes after the sheet is already gone).
+        NotificationCenter.default.post(
+            name: Notification.Name("MealgramMealSaved"),
+            object: nil,
+            userInfo: ["userRemoteID": userRemoteID]
+        )
     }
 
     /// Bumps the relevant weekly counter when an AI-backed entry path

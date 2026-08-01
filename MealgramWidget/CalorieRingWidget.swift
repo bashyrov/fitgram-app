@@ -13,8 +13,8 @@ struct CalorieRingWidget: Widget {
             CalorieRingWidgetEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
         }
-        .configurationDisplayName(String(localized: "Kalorie i makro"))
-        .description(String(localized: "Pierścień kalorii i pasek makro na dziś."))
+        .configurationDisplayName(WL("Kalorie i makro"))
+        .description(WL("Pierścień kalorii i pasek makro na dziś."))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -30,12 +30,18 @@ struct CalorieRingProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (CalorieRingEntry) -> Void) {
-        let snap = WidgetSnapshotStore.shared.load() ?? .placeholder
+        // When the shared App Group isn't set up (dev signing, fresh
+        // install), fall back to `.preview` so the rings still render
+        // filled instead of showing an empty zero state.
+        let snap = WidgetSnapshotStore.shared.load() ?? .preview
         completion(CalorieRingEntry(date: Date(), snapshot: snap))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<CalorieRingEntry>) -> Void) {
-        let snap = WidgetSnapshotStore.shared.load() ?? .placeholder
+        // When the shared App Group isn't set up (dev signing, fresh
+        // install), fall back to `.preview` so the rings still render
+        // filled instead of showing an empty zero state.
+        let snap = WidgetSnapshotStore.shared.load() ?? .preview
         let entry = CalorieRingEntry(date: Date(), snapshot: snap)
         let nextRefresh = Date().addingTimeInterval(30 * 60)
         completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
@@ -102,21 +108,21 @@ struct CalorieRingWidgetEntryView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 MacroBar(
-                    name: String(localized: "Białko"),
+                    name: WL("Białko"),
                     consumed: entry.snapshot.proteinConsumedGrams,
                     goal: entry.snapshot.proteinGoalGrams,
                     progress: entry.snapshot.proteinProgress,
                     color: Color("BrandPrimary")
                 )
                 MacroBar(
-                    name: String(localized: "Węgle"),
+                    name: WL("Węgle"),
                     consumed: entry.snapshot.carbsConsumedGrams,
                     goal: entry.snapshot.carbsGoalGrams,
                     progress: entry.snapshot.carbsProgress,
                     color: Color("BrandAccent")
                 )
                 MacroBar(
-                    name: String(localized: "Tłuszcz"),
+                    name: WL("Tłuszcz"),
                     consumed: entry.snapshot.fatConsumedGrams,
                     goal: entry.snapshot.fatGoalGrams,
                     progress: entry.snapshot.fatProgress,

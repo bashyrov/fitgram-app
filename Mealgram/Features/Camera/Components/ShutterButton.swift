@@ -27,7 +27,7 @@ struct ShutterButton: View {
         }
         .buttonStyle(ShutterPressStyle())
         .disabled(isBusy)
-        .accessibilityLabel(Text("Zrób zdjęcie"))
+        .accessibilityLabel(Text("Take a photo"))
     }
 }
 

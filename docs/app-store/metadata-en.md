@@ -85,9 +85,9 @@ VoiceOver, Dynamic Type, reduce motion — fully supported.
 
 ▸ CONTACT
 
-Questions? hello@mealgram.pl
-Privacy policy: mealgram.pl/privacy
-Terms: mealgram.pl/terms
+Questions? hello@mealgram.xyz
+Privacy policy: mealgram.xyz/privacy
+Terms: mealgram.xyz/terms
 
 Mealgram — because dieting isn't a prison, it's a rhythm.
 ```
@@ -108,5 +108,5 @@ Version 1.0 — first public release of Mealgram!
 • JSON / CSV / ZIP export
 • Full privacy — everything local
 
-Thanks for being among the early users! Email hello@mealgram.pl if anything is missing.
+Thanks for being among the early users! Email hello@mealgram.xyz if anything is missing.
 ```

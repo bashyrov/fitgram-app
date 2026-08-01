@@ -77,14 +77,14 @@ final class UserProfileService: UserProfileServing {
         user.weightKg = kg
         user.updatedAt = Date()
         recalculate(user: user)
-        if let pace = user.goalPaceKgPerWeek,
-            let target = user.goalTargetWeightKg,
-            pace > 0 {
-            user.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
-                currentWeightKg: kg,
-                targetWeightKg: target,
-                paceKgPerWeek: pace
-            )
+        if let pace = user.goalPaceKgPerWeek, let target = user.goalTargetWeightKg {
+            if pace > 0 {
+                user.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
+                    currentWeightKg: kg,
+                    targetWeightKg: target,
+                    paceKgPerWeek: pace
+                )
+            }
         }
         context.insert(
             WeightEntry(
@@ -118,6 +118,7 @@ final class UserProfileService: UserProfileServing {
         user.updatedAt = Date()
         regenerateRecommendations(user: user)
         try context.save()
+        notifyGoalsChanged()
     }
 
     func overrideCalories(_ kcal: Int) throws {
@@ -128,6 +129,7 @@ final class UserProfileService: UserProfileServing {
         user.updatedAt = Date()
         regenerateRecommendations(user: user)
         try context.save()
+        notifyGoalsChanged()
     }
 
     func overrideWater(_ ml: Int) throws {
@@ -138,6 +140,7 @@ final class UserProfileService: UserProfileServing {
         user.updatedAt = Date()
         regenerateRecommendations(user: user)
         try context.save()
+        notifyGoalsChanged()
     }
 
     func resetTargetsToRecommended() throws {
@@ -151,6 +154,7 @@ final class UserProfileService: UserProfileServing {
         regenerateRecommendations(user: user)
         user.updatedAt = Date()
         try context.save()
+        notifyGoalsChanged()
     }
 
     func updateMainGoal(
@@ -165,15 +169,14 @@ final class UserProfileService: UserProfileServing {
             user.goalPaceKgPerWeek = paceKgPerWeek
             user.goalTargetWeightKg = targetWeightKg
             user.goalStartDate = Date()
-            if let pace = paceKgPerWeek,
-                let target = targetWeightKg,
-                let current = user.weightKg,
-                pace > 0 {
-                user.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
-                    currentWeightKg: current,
-                    targetWeightKg: target,
-                    paceKgPerWeek: pace
-                )
+            if let pace = paceKgPerWeek, let target = targetWeightKg, let current = user.weightKg {
+                if pace > 0 {
+                    user.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
+                        currentWeightKg: current,
+                        targetWeightKg: target,
+                        paceKgPerWeek: pace
+                    )
+                }
             } else {
                 user.goalEstimatedEndDate = nil
             }
@@ -187,7 +190,7 @@ final class UserProfileService: UserProfileServing {
         regenerateRecommendations(user: user)
         user.updatedAt = Date()
         try context.save()
-        NotificationCenter.default.post(name: AppShortcutAction.mainGoalChanged, object: nil)
+        notifyGoalsChanged()
     }
 
     func storeRecommendations(_ recommendations: Recommendations) throws {
@@ -250,6 +253,16 @@ final class UserProfileService: UserProfileServing {
     /// path so the "Porady od Oli" hero on Today never quotes a stale
     /// kcal number after the user edits a goal. Failures are swallowed —
     /// stale tips are better than crashing the save.
+    /// Public hook called when the user changes the in-app language so the
+    /// cached Coach copy rebuilds in the new locale on the next render.
+    func refreshRecommendationsForUser(remoteID: String) throws {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<User>(predicate: #Predicate { $0.remoteID == remoteID })
+        guard let user = try context.fetch(descriptor).first else { return }
+        regenerateRecommendations(user: user)
+        try context.save()
+    }
+
     private func regenerateRecommendations(user: User) {
         guard let recommendations = RuleBasedRecommendationsService.buildSync(for: user) else { return }
         do {
@@ -260,6 +273,10 @@ final class UserProfileService: UserProfileServing {
                 "Failed to encode regenerated recommendations: \(String(describing: error))"
             )
         }
+    }
+
+    private func notifyGoalsChanged() {
+        NotificationCenter.default.post(name: AppShortcutAction.mainGoalChanged, object: nil)
     }
 
     private func fetchUser(in context: ModelContext) throws -> User {

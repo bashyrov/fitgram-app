@@ -43,7 +43,7 @@ struct RecipeImportSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }
@@ -122,14 +122,14 @@ struct RecipeImportSheet: View {
         } catch let error as RecipeURLImporter.ImportError {
             switch error {
             case .invalidURL:
-                errorMessage = String(localized: "To nie wygląda na poprawny adres URL.")
+                errorMessage = L("That doesn't look like a valid URL.")
             case .fetchFailed(let reason):
-                errorMessage = String(localized: "Nie udało się pobrać strony: \(reason)")
+                errorMessage = String.localizedStringWithFormat(L("Couldn't fetch the page: %@"), reason)
             case .noRecipeFound:
-                errorMessage = String(localized: "Na tej stronie nie znalazłam danych przepisu.")
+                errorMessage = L("I couldn't find recipe data on that page.")
             }
         } catch {
-            errorMessage = String(describing: error)
+            errorMessage = String.localizedStringWithFormat(L("Something went wrong: %@"), String(describing: error))
         }
     }
 }

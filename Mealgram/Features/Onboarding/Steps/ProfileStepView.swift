@@ -10,11 +10,11 @@ struct ProfileStepView: View {
 
     var body: some View {
         OnboardingStepScaffold(
-            title: "Krótko o Tobie",
-            subtitle: "Dzięki tym danym dopasujemy cele kaloryczne i makro.",
-            primaryTitle: "Dalej",
+            title: "About you",
+            subtitle: "These details help us tailor your calorie and macro targets.",
+            primaryTitle: "Next",
             primarySystemImage: "arrow.right",
-            secondaryTitle: "Wolę pominąć",
+            secondaryTitle: "Prefer to skip",
             secondaryAction: onContinue,
             onPrimary: {
                 commit()
@@ -22,13 +22,13 @@ struct ProfileStepView: View {
             },
             content: {
                 VStack(alignment: .leading, spacing: Tokens.Space.xl) {
-                    section("Płeć") {
+                    section("Sex") {
                         biologicalSexCards
                     }
-                    section("Wiek") {
+                    section("Age") {
                         ageCard
                     }
-                    section("Wzrost") {
+                    section("Height") {
                         sliderCard(
                             config: SliderConfig(
                                 symbol: "ruler",
@@ -41,7 +41,7 @@ struct ProfileStepView: View {
                             binding: $heightCm
                         )
                     }
-                    section("Waga") {
+                    section("Weight") {
                         sliderCard(
                             config: SliderConfig(
                                 symbol: "scalemass",
@@ -54,7 +54,7 @@ struct ProfileStepView: View {
                             binding: $weightKg
                         )
                     }
-                    section("Poziom aktywności") {
+                    section("Activity level") {
                         activityCards
                     }
                 }
@@ -80,23 +80,23 @@ struct ProfileStepView: View {
     private var biologicalSexCards: some View {
         VStack(spacing: Tokens.Space.sm) {
             OnboardingChoiceCard(
-                symbol: "figure.dress",
-                title: "Kobieta",
+                symbol: "figure.stand.dress",
+                title: "Female",
                 subtitle: "",
                 isSelected: profile.biologicalSex == .female,
                 action: { profile.biologicalSex = .female }
             )
             OnboardingChoiceCard(
-                symbol: "figure",
-                title: "Mężczyzna",
+                symbol: "figure.stand",
+                title: "Male",
                 subtitle: "",
                 isSelected: profile.biologicalSex == .male,
                 action: { profile.biologicalSex = .male }
             )
             OnboardingChoiceCard(
-                symbol: "ellipsis.circle",
-                title: "Nie podaję",
-                subtitle: "Bez wpływu na rekomendacje",
+                symbol: "person.fill.questionmark",
+                title: "Prefer not to say",
+                subtitle: "No impact on recommendations",
                 isSelected: profile.biologicalSex == .undisclosed,
                 action: { profile.biologicalSex = .undisclosed }
             )
@@ -235,21 +235,21 @@ struct ProfileStepView: View {
 extension ActivityLevel {
     fileprivate var label: String {
         switch self {
-        case .sedentary: return String(localized: "Siedzący tryb")
-        case .light: return String(localized: "Lekka aktywność")
-        case .moderate: return String(localized: "Umiarkowana")
-        case .active: return String(localized: "Aktywny tryb")
-        case .veryActive: return String(localized: "Bardzo aktywny")
+        case .sedentary: return L("Sedentary")
+        case .light: return L("Light activity")
+        case .moderate: return L("Umiarkowana")
+        case .active: return L("Aktywny tryb")
+        case .veryActive: return L("Very active")
         }
     }
 
     fileprivate var subtitle: String {
         switch self {
-        case .sedentary: return String(localized: "Praca biurowa, mało ruchu")
-        case .light: return "1–2 lekkie treningi w tygodniu"
-        case .moderate: return "3–4 treningi w tygodniu"
-        case .active: return String(localized: "5+ treningów w tygodniu")
-        case .veryActive: return String(localized: "Trening dwa razy dziennie")
+        case .sedentary: return L("Office work, little movement")
+        case .light: return L("1–2 lekkie treningi w tygodniu")
+        case .moderate: return L("3–4 treningi w tygodniu")
+        case .active: return L("5+ workouts a week")
+        case .veryActive: return L("Trening dwa razy dziennie")
         }
     }
 

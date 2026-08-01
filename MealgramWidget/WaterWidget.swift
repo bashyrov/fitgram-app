@@ -11,8 +11,8 @@ struct WaterWidget: Widget {
             WaterWidgetEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
         }
-        .configurationDisplayName(String(localized: "Woda"))
-        .description(String(localized: "Pokaż, ile wody wypito i ile zostało do celu."))
+        .configurationDisplayName(WL("Woda"))
+        .description(WL("Pokaż, ile wody wypito i ile zostało do celu."))
         .supportedFamilies([.systemSmall])
     }
 }
@@ -28,12 +28,12 @@ struct WaterProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WaterEntry) -> Void) {
-        let snap = WidgetSnapshotStore.shared.load() ?? .placeholder
+        let snap = WidgetSnapshotStore.shared.load() ?? .preview
         completion(WaterEntry(date: Date(), snapshot: snap))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<WaterEntry>) -> Void) {
-        let snap = WidgetSnapshotStore.shared.load() ?? .placeholder
+        let snap = WidgetSnapshotStore.shared.load() ?? .preview
         let entry = WaterEntry(date: Date(), snapshot: snap)
         let nextRefresh = Date().addingTimeInterval(30 * 60)
         completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
@@ -65,7 +65,7 @@ struct WaterWidgetEntryView: View {
                         .font(.caption.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
-                Text(String(localized: "Woda"))
+                Text(WL("Woda"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                     .padding(.top, 2)

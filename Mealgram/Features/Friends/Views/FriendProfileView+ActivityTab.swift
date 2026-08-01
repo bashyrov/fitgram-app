@@ -67,17 +67,18 @@ extension FriendProfileView {
                     .foregroundStyle(tint)
                     .textCase(.uppercase)
                     .tracking(0.4)
-                Text(event.payload)
+                Text(LocalizedStringKey(event.payload))
                     .font(Tokens.Font.body)
                     .foregroundStyle(Tokens.Palette.ink)
             }
             .padding(Tokens.Space.md)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
+                RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82))
             )
-            .mealgramShadow(Tokens.Shadow.card)
+            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(.white.opacity(0.34), lineWidth: 1))
+            .shadow(color: tint.opacity(0.08), radius: 14, y: 8)
             .padding(.bottom, Tokens.Space.md)
             .padding(.top, Tokens.Space.xs)
         }

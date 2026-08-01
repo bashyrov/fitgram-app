@@ -76,7 +76,7 @@ struct CookTimerCard: View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(Tokens.Palette.warning)
-            Text("Gotowe — sprawdź danie")
+            Text("Done — review the dish")
                 .font(Tokens.Font.subheadline)
                 .foregroundStyle(Tokens.Palette.inkMuted)
         }

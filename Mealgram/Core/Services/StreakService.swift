@@ -9,6 +9,7 @@ final class StreakService {
     private let container: ModelContainer
     private let now: () -> Date
     private let calendar: Calendar
+    private let freezePolicy: StreakFreezePolicy
 
     init(
         container: ModelContainer,
@@ -18,6 +19,7 @@ final class StreakService {
         self.container = container
         self.now = now
         self.calendar = calendar
+        self.freezePolicy = StreakFreezePolicy(calendar: calendar)
     }
 
     /// Returns (and persists if needed) the streak row for the given user.
@@ -28,6 +30,9 @@ final class StreakService {
             predicate: #Predicate { $0.userRemoteID == userRemoteID }
         )
         if let existing = try context.fetch(descriptor).first {
+            if freezePolicy.reconcile(existing, now: now()) || freezePolicy.awardEarnedFreezes(existing) {
+                try context.save()
+            }
             return existing
         }
         let fresh = Streak(userRemoteID: userRemoteID)
@@ -73,6 +78,7 @@ final class StreakService {
             streak.longestLength = max(streak.longestLength, 1)
             streak.lastLoggedDate = now()
         }
+        freezePolicy.awardEarnedFreezes(streak)
         try context.save()
     }
 
@@ -85,12 +91,36 @@ final class StreakService {
         let descriptor = FetchDescriptor<Streak>(
             predicate: #Predicate { $0.userRemoteID == userRemoteID }
         )
-        guard let streak = try context.fetch(descriptor).first, streak.freezesAvailable > 0 else {
+        let currentDate = now()
+        guard let streak = try context.fetch(descriptor).first else {
+            return false
+        }
+        freezePolicy.reconcile(streak, now: currentDate)
+        guard
+            freezePolicy.canUseFreeze(
+                streak: streak,
+                now: currentDate,
+                hasLoggedToday: hasLoggedToday(context: context, on: currentDate)
+            )
+        else {
             return false
         }
         streak.freezesAvailable -= 1
-        streak.lastLoggedDate = now()
+        streak.lastFreezeDate = currentDate
+        streak.lastLoggedDate = currentDate
         try context.save()
         return true
+    }
+
+    private func hasLoggedToday(context: ModelContext, on date: Date) -> Bool {
+        let dayStart = calendar.startOfDay(for: date)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return false }
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { entry in
+                entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
+            }
+        )
+        let count = (try? context.fetchCount(descriptor)) ?? 0
+        return count > 0
     }
 }

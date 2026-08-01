@@ -20,9 +20,9 @@ enum ThemePreference: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .auto: return String(localized: "Auto")
-        case .light: return String(localized: "Jasny")
-        case .dark: return String(localized: "Ciemny")
+        case .auto: return L("Auto")
+        case .light: return L("Jasny")
+        case .dark: return L("Ciemny")
         }
     }
 }

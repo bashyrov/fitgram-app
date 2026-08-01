@@ -42,7 +42,8 @@ final class PrivacyStore {
         self.defaults = defaults
         self.storageKey = storageKey
         if let data = defaults.data(forKey: storageKey),
-            let decoded = try? JSONDecoder().decode(PrivacySettings.self, from: data) {
+            let decoded = try? JSONDecoder().decode(PrivacySettings.self, from: data)
+        {
             self.current = decoded
         } else {
             self.current = .default

@@ -89,9 +89,10 @@ final class GoalCalculatorTests: XCTestCase {
 
     func testActivityScalesTdee() {
         let sedentary = GoalCalculator.calculate(from: input(activity: .sedentary))?.dailyCalorieGoalKcal ?? 0
-        let veryActive = GoalCalculator.calculate(
-            from: input(activity: .veryActive)
-        )?.dailyCalorieGoalKcal ?? 0
+        let veryActive =
+            GoalCalculator.calculate(
+                from: input(activity: .veryActive)
+            )?.dailyCalorieGoalKcal ?? 0
         XCTAssertTrue(veryActive > sedentary)
     }
 
@@ -124,8 +125,10 @@ final class GoalCalculatorTests: XCTestCase {
     }
 
     func testPaceOneKgGainsAround1100() throws {
-        let paced = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(weight: 80, sex: .male, goal: .gain, pace: 1.0)))
-        let maintain = try XCTUnwrap(GoalCalculator.calculateTargets(from: input(weight: 80, sex: .male, goal: .maintain)))
+        let paced = try XCTUnwrap(
+            GoalCalculator.calculateTargets(from: input(weight: 80, sex: .male, goal: .gain, pace: 1.0)))
+        let maintain = try XCTUnwrap(
+            GoalCalculator.calculateTargets(from: input(weight: 80, sex: .male, goal: .maintain)))
         XCTAssertEqual(paced.dailyCalorieGoalKcal - maintain.dailyCalorieGoalKcal, 1100, accuracy: 10)
     }
 
@@ -271,9 +274,10 @@ final class GoalCalculatorTests: XCTestCase {
     }
 
     func testMaximumPhysiologicalInputs() throws {
-        let out = try XCTUnwrap(GoalCalculator.calculateTargets(
-            from: input(height: 220, weight: 200, age: 100, sex: .male, activity: .veryActive)
-        ))
+        let out = try XCTUnwrap(
+            GoalCalculator.calculateTargets(
+                from: input(height: 220, weight: 200, age: 100, sex: .male, activity: .veryActive)
+            ))
         XCTAssertGreaterThan(out.dailyCalorieGoalKcal, 3000)
     }
 

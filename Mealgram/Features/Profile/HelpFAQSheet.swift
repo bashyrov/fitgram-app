@@ -13,58 +13,32 @@ struct HelpFAQSheet: View {
 
     private let items: [FAQItem] = [
         FAQItem(
-            question: "Czym Mealgram różni się od innych liczników kalorii?",
-            answer: """
-                Skupiamy się na spokojnym tempie — Ola podpowiada w tle, a streak \
-                + odznaki utrzymują motywację bez surowego liczenia każdej kalorii.
-                """
+            question: L("How is Mealgram different from other calorie counters?"),
+            answer: L("Skupiamy się na spokojnym tempie — Ola podpowiada w tle, a streak + odznaki utrzymują motywację bez surowego liczenia każdej kalorii.")
         ),
         FAQItem(
-            question: "Skąd biorą się wartości odżywcze w Szybkiej bazie?",
-            answer: """
-                Polska baza (78+ pozycji) opiera się na publicznych źródłach \
-                USDA + producent (gdzie znamy markę). Kody kreskowe ciągniemy z \
-                Open Food Facts.
-                """
+            question: L("Skąd biorą się wartości odżywcze w Szybkiej bazie?"),
+            answer: L("Polska baza (78+ pozycji) opiera się na publicznych źródłach USDA + producent (gdzie znamy markę). Kody kreskowe ciągniemy z Open Food Facts.")
         ),
         FAQItem(
-            question: "Jak działa ocena AI ze zdjęcia?",
-            answer: """
-                Wysyłamy zdjęcie przez nasz proxy do Gemini, które rozpoznaje \
-                składniki + szacuje porcje. Nigdy nie zostawiamy zdjęcia poza \
-                Twoim telefonem ani naszym proxy — bez handlu z firmami trzecimi.
-                """
+            question: L("How does AI photo analysis work?"),
+            answer: L("Wysyłamy zdjęcie przez nasz proxy do Gemini, które rozpoznaje składniki + szacuje porcje. Nigdy nie zostawiamy zdjęcia poza Twoim telefonem ani naszym proxy — bez handlu z firmami trzecimi.")
         ),
         FAQItem(
-            question: "Dlaczego streak resetuje się po jednym dniu przerwy?",
-            answer: """
-                Streak to nawyk codzienny. Możesz użyć "freeze", żeby utrzymać \
-                serię (przycisk pojawia się po południu, gdy jeszcze nic nie \
-                wpisałeś). Freeze odnawiają się co tydzień.
-                """
+            question: L("Why does the streak reset after one missed day?"),
+            answer: L("Streak to nawyk codzienny. Możesz użyć \"freeze\", żeby utrzymać serię (przycisk pojawia się po południu, gdy jeszcze nic nie wpisałeś). Freeze odnawiają się co tydzień.")
         ),
         FAQItem(
-            question: "Jak usunąć konto?",
-            answer: """
-                Profil → Konto → Usuń konto. Wszystkie lokalne dane znikają \
-                natychmiast; serwerowe (gdy ruszy backend) — w ciągu 72 godzin.
-                """
+            question: L("How do I delete my account?"),
+            answer: L("Profil → Konto → Usuń konto. Wszystkie lokalne dane znikają natychmiast; serwerowe (gdy ruszy backend) — w ciągu 72 godzin.")
         ),
         FAQItem(
-            question: "Mealgram nie poznaje mojego dania — co robić?",
-            answer: """
-                Stuknij ołówek przy pozycji, którą rozpoznał, i poprawiaj na \
-                bieżąco. Twoja kalibracja AI uczy się porcji w czasie. \
-                Dodanie ręczne też zawsze działa.
-                """
+            question: L("Mealgram nie poznaje mojego dania — co robić?"),
+            answer: L("Stuknij ołówek przy pozycji, którą rozpoznał, i poprawiaj na bieżąco. Twoja kalibracja AI uczy się porcji w czasie. Dodanie ręczne też zawsze działa.")
         ),
         FAQItem(
-            question: "Czy moje dane są bezpieczne?",
-            answer: """
-                Tak. Wszystko lokalnie w SwiftData. Eksport JSON + CSV w \
-                każdej chwili (Profil → Twoje dane). RODO-zgodnie — nawet \
-                bez konta na serwerze, nikt poza Tobą ich nie widzi.
-                """
+            question: L("Is my data safe?"),
+            answer: L("Tak. Wszystko lokalnie w SwiftData. Eksport JSON + CSV w każdej chwili (Profil → Twoje dane). RODO-zgodnie — nawet bez konta na serwerze, nikt poza Tobą ich nie widzi.")
         ),
     ]
 
@@ -83,11 +57,11 @@ struct HelpFAQSheet: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Pomoc"))
+            .navigationTitle(Text("Help"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -110,10 +84,10 @@ struct HelpFAQSheet: View {
     private var contactCard: some View {
         Card(background: Tokens.Palette.primarySoft) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Coś jeszcze?")
+                Text("Anything else?")
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("Napisz na hello@mealgram.pl — odpowiadamy w 24 h.")
+                Text("Napisz na hello@mealgram.xyz — odpowiadamy w 24 h.")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }

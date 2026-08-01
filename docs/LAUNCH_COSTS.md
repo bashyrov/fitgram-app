@@ -24,9 +24,9 @@ Apple Dev costs renew annually ($99). Everything else is provider pay-as-you-go.
 - Buy: https://developer.apple.com/programs/
 - Renews annually; missing payment = app pulled from store + capability revoke
 
-### Domain `mealgram.pl`
+### Domain `mealgram.xyz`
 - ~80 zł / year via OVH/nazwa.pl
-- Needed for: Universal Links (replace `mealgram://friend/<id>` deep links with `https://mealgram.pl/u/<id>`), branded email (`hello@mealgram.pl`), web landing
+- Needed for: Universal Links (replace `mealgram://friend/<id>` deep links with `https://mealgram.xyz/u/<id>`), branded email (`hello@mealgram.xyz`), web landing
 - Optional for TestFlight, required for App Store submission (Apple wants a privacy URL)
 
 ### Polish JDG / sp. z o.o.
@@ -214,7 +214,7 @@ This is why Mealgram can run with **zero per-user infrastructure cost** for ever
 
 1. **Buy Apple Developer Program** — $99
    - Without this, none of the rest matters
-2. **Buy domain `mealgram.pl`** — ~80 zł
+2. **Buy domain `mealgram.xyz`** — ~80 zł
    - Needed for App Store privacy URL + email
 3. **Register JDG** — ZUS Ulga na start ~150 zł/mo first 6 months
    - Needed to receive Apple payouts

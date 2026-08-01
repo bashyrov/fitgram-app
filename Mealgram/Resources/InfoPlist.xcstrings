@@ -188,6 +188,18 @@
         }
       }
     },
+    "NSPhotoLibraryAddUsageDescription" : {
+      "comment" : "Privacy - Photo Library Additions Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mealgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
+          }
+        }
+      }
+    },
     "NSPhotoLibraryUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -254,41 +266,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mealgram використовує розпізнавання мовлення, щоб перетворювати ваші слова на запис страви."
-          }
-        }
-      }
-    },
-    "NSUserTrackingUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allow tracking to receive personalised suggestions."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permite el seguimiento para recibir sugerencias personalizadas."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разреши отслеживание, чтобы получать персональные подсказки."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дозволь відстеження, щоб отримувати персональні підказки."
           }
         }
       }

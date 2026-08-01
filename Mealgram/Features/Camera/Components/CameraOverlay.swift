@@ -26,7 +26,7 @@ struct CameraOverlay: View {
 
                 VStack {
                     Spacer()
-                    Text("Wycelowuj cały talerz w środek ramki")
+                    Text("Aim the whole plate into the center of the frame")
                         .font(.system(.footnote, design: .rounded, weight: .medium))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 14)

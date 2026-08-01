@@ -52,8 +52,8 @@ struct EmptyState: View {
     EmptyState(
         symbol: "fork.knife",
         title: "Nic jeszcze dziś",
-        message: "Dodaj pierwsze danie zdjęciem, głosem albo z naszej bazy.",
-        action: .init(title: "Dodaj posiłek", perform: {})
+        message: "Add your first meal by photo, voice or from our database.",
+        action: .init(title: "Add meal", perform: {})
     )
     .background(Tokens.Palette.background)
 }

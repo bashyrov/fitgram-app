@@ -11,6 +11,8 @@ struct ScanRootView: View {
     var entitlementsStore: EntitlementsStore?
     var paywallCoordinator: PaywallCoordinator?
     var userRemoteID: String?
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
 
     init(
         captureSession: CameraCaptureSession = CameraCaptureSession(),
@@ -21,7 +23,9 @@ struct ScanRootView: View {
         favoritesService: (any FavoritesServing)? = nil,
         entitlementsStore: EntitlementsStore? = nil,
         paywallCoordinator: PaywallCoordinator? = nil,
-        userRemoteID: String? = nil
+        userRemoteID: String? = nil,
+        mealAnalyzer: MealTextAnalysisService? = nil,
+        usageMeter: UsageMeter? = nil
     ) {
         self.session = captureSession
         self._state = State(
@@ -37,6 +41,8 @@ struct ScanRootView: View {
         self.entitlementsStore = entitlementsStore
         self.paywallCoordinator = paywallCoordinator
         self.userRemoteID = userRemoteID
+        self.mealAnalyzer = mealAnalyzer
+        self.usageMeter = usageMeter
     }
 
     var body: some View {
@@ -69,7 +75,9 @@ struct ScanRootView: View {
                     favoritesService: favoritesService,
                     entitlementsStore: entitlementsStore,
                     paywallCoordinator: paywallCoordinator,
-                    userRemoteID: userRemoteID
+                    userRemoteID: userRemoteID,
+                    mealAnalyzer: mealAnalyzer,
+                    usageMeter: usageMeter
                 )
             case .error(let message):
                 ScanErrorView(message: message, onRetry: { Task { await state.start() } }, onDismiss: dismiss)
@@ -85,12 +93,8 @@ struct ScanRootView: View {
     }
 
     private var splash: some View {
-        ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
-            ProgressView()
-                .progressViewStyle(.circular)
-                .tint(Tokens.Palette.primary)
-        }
+        LoadingHero(title: "Preparing the camera…")
+            .ignoresSafeArea()
     }
 
     private func dismiss() {
@@ -123,12 +127,12 @@ private struct ScanErrorView: View {
                 Spacer()
                 EmptyState(
                     symbol: "exclamationmark.triangle.fill",
-                    title: "Coś nie zadziałało",
+                    title: "Something went wrong",
                     message: LocalizedStringKey(message),
-                    action: .init(title: "Spróbuj jeszcze raz", perform: onRetry)
+                    action: .init(title: "Try again", perform: onRetry)
                 )
                 Spacer()
-                SecondaryButton(title: "Zamknij", systemImage: "xmark", action: onDismiss)
+                SecondaryButton(title: "Close", systemImage: "xmark", action: onDismiss)
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.bottom, Tokens.Space.xl)
             }

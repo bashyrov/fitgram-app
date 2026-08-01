@@ -22,16 +22,13 @@ struct AvatarStore: Sendable {
     }
 
     /// Compresses + writes the supplied image. Old avatar file (if any) is
-    /// deleted in the same call so the directory doesn't accumulate
-    /// orphans. Returns the new filename suitable for User.avatarFilename.
+    /// deleted only after the new file is written so a failed write never
+    /// leaves the model pointing at a missing avatar.
     @discardableResult
     func save(_ image: UIImage, previous: String?) throws -> String {
         let resized = Self.resize(image, maxDimension: 512)
         guard let data = resized.jpegData(compressionQuality: 0.85) else {
             throw AvatarError.encodingFailed
-        }
-        if let previous {
-            try? FileManager.default.removeItem(at: directory.appending(path: previous))
         }
         let filename = "avatar-\(UUID().uuidString).jpg"
         do {
@@ -39,6 +36,9 @@ struct AvatarStore: Sendable {
         } catch {
             Logger.persistence.error("Avatar write failed: \(String(describing: error))")
             throw AvatarError.writeFailed
+        }
+        if let previous {
+            try? FileManager.default.removeItem(at: directory.appending(path: previous))
         }
         return filename
     }

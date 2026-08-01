@@ -36,7 +36,8 @@ final class OnboardingFlowTests: XCTestCase {
         // Goal defaults to .maintain so the pace step gets auto-skipped.
         XCTAssertEqual(flow.currentStep, .welcome)
         for expected in [
-            OnboardingFlow.Step.goal,
+            OnboardingFlow.Step.account,
+            .goal,
             .profile,
             .dietary,
             .firstScan,
@@ -158,10 +159,10 @@ final class OnboardingFlowTests: XCTestCase {
         var authUser = AuthUser(id: "u-3", email: nil, displayName: nil, provider: .apple)
         _ = try repository.ensureUser(for: authUser)
 
-        authUser = AuthUser(id: "u-3", email: "later@mealgram.pl", displayName: "Marek", provider: .apple)
+        authUser = AuthUser(id: "u-3", email: "later@mealgram.xyz", displayName: "Marek", provider: .apple)
         let updated = try repository.ensureUser(for: authUser)
 
-        XCTAssertEqual(updated.email, "later@mealgram.pl")
+        XCTAssertEqual(updated.email, "later@mealgram.xyz")
         XCTAssertEqual(updated.displayName, "Marek")
     }
 }

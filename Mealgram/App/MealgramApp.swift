@@ -40,13 +40,14 @@ struct MealgramApp: App {
     private let watchBridge: WatchSessionBridge
     private let liveActivityService: LiveActivityService
     @State private var privacyStore: PrivacyStore
-    @State private var subscriptionService: MockSubscriptionService
+    @State private var subscriptionService: any SubscriptionService
     @State private var entitlementsStore: EntitlementsStore
     @State private var usageMeter: UsageMeter
     @State private var paywallCoordinator: PaywallCoordinator
     @State private var toastCenter: ToastCenter
     @State private var localizationStore: LocalizationStore
     @State private var whatsNewEntry: IdentifiableWhatsNewEntry?
+    @State private var isSplashing = true
     private let favoritesService: FavoritesService
 
     /// UserDefaults key for the last-seen MARKETING_VERSION. Bumping
@@ -112,7 +113,7 @@ struct MealgramApp: App {
         self.statsService = ProfileStatsService(container: persistence.container)
         let weightService = WeightService(container: persistence.container)
         self.weightService = weightService
-        self.friendService = InMemoryFriendService()
+        self.friendService = SupabaseFriendService() ?? InMemoryFriendService()
         self.goalTrackingService = GoalTrackingService(
             weightService: weightService,
             container: persistence.container
@@ -122,7 +123,15 @@ struct MealgramApp: App {
         // when deciding whether to schedule the goal-weight reminder.
         // Same `subscriptionService` is later threaded through the
         // @State properties so the UI binding stays observable.
-        let subscriptionService = MockSubscriptionService()
+        //
+        // The provider is picked at boot from `AppConfig.isPaymentsEnabled`
+        // — flip the build setting and the next launch wires the real
+        // StoreKit2-backed service. Existing user data (favorites,
+        // recipes, etc.) is preserved; only display caps activate.
+        let subscriptionService: any SubscriptionService =
+            AppConfig.isPaymentsEnabled
+            ? StoreKitSubscriptionService()
+            : MockSubscriptionService()
         self.notificationCoordinator = NotificationCoordinator(
             scheduler: NotificationService(),
             container: persistence.container,
@@ -135,10 +144,23 @@ struct MealgramApp: App {
                 )
             }
         )
+        // Coach Ola insights: Worker → Gemini when the Worker URL is wired,
+        // otherwise the rule-based fallback runs alone. Both surfaces (daily
+        // Today insight + Weekly Debrief) go through the same generator,
+        // and the fallback runs transparently if the Worker errors.
+        let coachGenerator: any CoachInsightGenerator =
+            AppConfig.workerBaseURL.map { base in
+                WorkerCoachInsightGenerator(
+                    baseURL: base,
+                    client: URLSessionAPIClient(baseURL: base, interceptors: [TimeZoneInterceptor(), LoggingInterceptor()]),
+                    fallback: RuleBasedCoach()
+                ) as any CoachInsightGenerator
+            } ?? RuleBasedCoach()
         let coachService = CoachService(
             container: persistence.container,
             streakService: streakService,
             weightService: weightService,
+            generator: coachGenerator,
             logStore: CoachInsightLogStore(container: persistence.container),
             dismissalStore: CoachDismissalStore()
         )
@@ -186,7 +208,7 @@ struct MealgramApp: App {
         let workerPrimary: (any RecommendationsServing)? = AppConfig.workerBaseURL.map { base in
             WorkerRecommendationsService(
                 baseURL: base,
-                client: URLSessionAPIClient(baseURL: base, interceptors: [LoggingInterceptor()])
+                client: URLSessionAPIClient(baseURL: base, interceptors: [TimeZoneInterceptor(), LoggingInterceptor()])
             )
         }
         self.recommendationsService = RecommendationsService(
@@ -197,11 +219,11 @@ struct MealgramApp: App {
         self._subscriptionService = State(initialValue: subscriptionService)
         let entitlementsStore = EntitlementsStore(subscriptionService: subscriptionService)
         let favoritesService = FavoritesService(container: persistence.container)
-        // Premium → free downgrade trims "Mój przepis" back to the cap.
-        entitlementsStore.onDowngradeFreeTier = { [favoritesService, session] in
-            guard let remoteID = session.currentRemoteID else { return }
-            try? favoritesService.trimToCap(userID: remoteID, cap: FreeTierLimits.favorites)
-        }
+        // Soft cap on downgrade: data stays in DB intact, the list UI only
+        // displays the top-N most recent favourites + an upsell card.
+        // Nothing is destroyed, so re-subscribing surfaces the original
+        // collection untouched.
+        entitlementsStore.onDowngradeFreeTier = {}
         self._entitlementsStore = State(initialValue: entitlementsStore)
         self._usageMeter = State(initialValue: UsageMeter())
         self._paywallCoordinator = State(initialValue: PaywallCoordinator())
@@ -253,86 +275,122 @@ struct MealgramApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(
-                authService: authService,
-                userRepository: userRepository,
-                mealSaver: mealSaver,
-                todayState: todayState,
-                streakService: streakService,
-                accountDeletionService: accountDeletionService,
-                exportService: exportService,
-                csvExportService: csvExportService,
-                bundleExportService: bundleExportService,
-                mealSearchService: mealSearchService,
-                streakCalendarService: streakCalendarService,
-                achievementService: achievementService,
-                calibrationService: calibrationService,
-                foodCatalog: foodCatalog,
-                progressState: progressState,
-                recipeRepository: recipeRepository,
-                mealRepository: mealRepository,
-                photoStore: photoStore,
-                weightService: weightService,
-                goalTrackingService: goalTrackingService,
-                heatmapService: heatmapService,
-                challengeService: challengeService,
-                statsService: statsService,
-                friendService: friendService,
-                coachService: coachService,
-                notificationCoordinator: notificationCoordinator,
-                unlockBus: unlockBus,
-                userProfileService: userProfileService,
-                goalsService: goalsService,
-                recommendationsService: recommendationsService,
-                privacyStore: privacyStore,
-                subscriptionService: subscriptionService,
-                entitlementsStore: entitlementsStore,
-                usageMeter: usageMeter,
-                paywallCoordinator: paywallCoordinator,
-                favoritesService: favoritesService,
-                toastCenter: toastCenter
-            )
-            .environment(session)
-            .environment(entitlementsStore)
-            .environment(usageMeter)
-            .environment(paywallCoordinator)
-            .environment(toastCenter)
-            .environment(localizationStore)
-            .environment(\.locale, localizationStore.locale)
-            .id(localizationStore.locale.identifier)
-            .modelContainer(persistenceController.container)
-            .tint(Tokens.Palette.primary)
-            .onOpenURL { url in
-                handleDeepLink(url)
-            }
-            .sheet(item: $whatsNewEntry) { wrapper in
-                WhatsNewSheet(entry: wrapper.entry) {
-                    UserDefaults.standard.set(wrapper.entry.version, forKey: Self.lastSeenVersionKey)
-                    whatsNewEntry = nil
+            ZStack {
+                rootStack
+                if isSplashing {
+                    SplashScreen { isSplashing = false }
+                        .transition(AnyTransition.opacity)
+                        .zIndex(10)
                 }
             }
-            .task {
-                let running = Self.runningShortVersion()
-                let lastSeen = UserDefaults.standard.string(forKey: Self.lastSeenVersionKey)
-                whatsNewEntry = WhatsNewCatalog.entryToPresent(
-                    runningVersion: running,
-                    lastSeen: lastSeen
-                )?.toIdentifiable()
+            .animation(.easeOut(duration: 0.3), value: isSplashing)
+        }
+    }
+
+    @ViewBuilder
+    private var rootStack: some View {
+        RootView(
+            authService: authService,
+            userRepository: userRepository,
+            mealSaver: mealSaver,
+            todayState: todayState,
+            streakService: streakService,
+            accountDeletionService: accountDeletionService,
+            exportService: exportService,
+            csvExportService: csvExportService,
+            bundleExportService: bundleExportService,
+            mealSearchService: mealSearchService,
+            streakCalendarService: streakCalendarService,
+            achievementService: achievementService,
+            calibrationService: calibrationService,
+            foodCatalog: foodCatalog,
+            progressState: progressState,
+            recipeRepository: recipeRepository,
+            mealRepository: mealRepository,
+            photoStore: photoStore,
+            weightService: weightService,
+            goalTrackingService: goalTrackingService,
+            heatmapService: heatmapService,
+            challengeService: challengeService,
+            statsService: statsService,
+            friendService: friendService,
+            coachService: coachService,
+            notificationCoordinator: notificationCoordinator,
+            unlockBus: unlockBus,
+            userProfileService: userProfileService,
+            goalsService: goalsService,
+            recommendationsService: recommendationsService,
+            privacyStore: privacyStore,
+            subscriptionService: subscriptionService,
+            entitlementsStore: entitlementsStore,
+            usageMeter: usageMeter,
+            paywallCoordinator: paywallCoordinator,
+            favoritesService: favoritesService,
+            toastCenter: toastCenter
+        )
+        .environment(session)
+        .environment(entitlementsStore)
+        .environment(usageMeter)
+        .environment(paywallCoordinator)
+        .environment(toastCenter)
+        .environment(localizationStore)
+        .environment(\.locale, localizationStore.locale)
+        .id(localizationStore.locale.identifier)
+        .modelContainer(persistenceController.container)
+        .tint(Tokens.Palette.primary)
+        .onOpenURL { url in
+            handleDeepLink(url)
+        }
+        .sheet(item: $whatsNewEntry) { wrapper in
+            WhatsNewSheet(entry: wrapper.entry) {
+                UserDefaults.standard.set(wrapper.entry.version, forKey: Self.lastSeenVersionKey)
+                whatsNewEntry = nil
             }
+        }
+        .task {
+            let running = Self.runningShortVersion()
+            let lastSeen = UserDefaults.standard.string(forKey: Self.lastSeenVersionKey)
+            whatsNewEntry = WhatsNewCatalog.entryToPresent(
+                runningVersion: running,
+                lastSeen: lastSeen
+            )?.toIdentifiable()
         }
     }
 
     /// Routes app-scheme deep links into the right NotificationCenter
     /// channel so MainTabView (which holds the live `authUser.id`) can
-    /// fan out to the right service. Currently only handles the Live
-    /// Activity's `mealgram://add-water` URL — extend here as more
-    /// activity buttons / widget links land.
+    /// fan out to the right service. Currently handles:
+    ///   - mealgram://add-water           (Live Activity button)
+    ///   - mealgram://auth/callback#…     (Supabase email magic link)
+    ///   - mealgram://auth/google?…       (Google OAuth callback)
     private func handleDeepLink(_ url: URL) {
         guard url.scheme == MealgramActivityDeepLink.scheme else { return }
+        if url.host == "tab" {
+            let name = url.pathComponents.dropFirst().first ?? ""
+            NotificationCenter.default.post(
+                name: Notification.Name("MealgramDebugSwitchTab"),
+                object: nil,
+                userInfo: ["tab": name]
+            )
+            return
+        }
         if url.host == MealgramActivityDeepLink.addWaterHost {
             NotificationCenter.default.post(
                 name: AppShortcutAction.addWaterFromActivity, object: nil
             )
+            return
+        }
+        if url.host == "auth", url.path == "/callback" {
+            Task { await authService.completeEmailSignIn(callbackURL: url) }
+            return
+        }
+        if url.host == "auth", url.path == "/google" {
+            NotificationCenter.default.post(
+                name: Notification.Name("MealgramGoogleAuthCallback"),
+                object: nil,
+                userInfo: ["url": url]
+            )
+            return
         }
     }
 }

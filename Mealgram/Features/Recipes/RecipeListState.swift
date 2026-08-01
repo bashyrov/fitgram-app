@@ -13,10 +13,10 @@ final class RecipeListState {
 
         var label: String {
             switch self {
-            case .recent: return String(localized: "Najnowsze")
-            case .nameAsc: return String(localized: "Nazwa")
-            case .cookedCount: return String(localized: "Najczęściej gotowane")
-            case .ratingDesc: return String(localized: "Najwyższa ocena")
+            case .recent: return L("Newest")
+            case .nameAsc: return L("Nazwa")
+            case .cookedCount: return L("Most cooked")
+            case .ratingDesc: return L("Najwyższa ocena")
             }
         }
     }

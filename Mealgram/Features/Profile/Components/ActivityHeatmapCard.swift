@@ -6,18 +6,19 @@ struct ActivityHeatmapCard: View {
     let snapshot: ActivityHeatmap.Snapshot
     var onSelectDay: ((Date) -> Void)?
 
-    private static let dayFormatter: DateFormatter = {
+    private static var dayFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "d MMM"
         return formatter
-    }()
-
+    
+}
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                 HStack {
-                    Text("Aktywność 90 dni")
+                    Text("90-day activity")
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
@@ -50,7 +51,7 @@ struct ActivityHeatmapCard: View {
 
     private var bestRunLabel: String {
         let count = snapshot.longestActiveRun
-        return String(localized: "Najlepszy: \(count) dni z rzędu")
+        return String.localizedStringWithFormat(L("Best: %lld days in a row"), count)
     }
 
     private var grid: some View {

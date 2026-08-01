@@ -73,10 +73,12 @@ final class MealCSVExportService {
 
     // MARK: - Helpers
 
+    // CSV column headers are kept in English so the exported file stays
+    // portable across locales and parseable by spreadsheet tools.
     private static let header = [
-        "data", "godzina", "typ", "źródło", "pozycja",
-        "gramy", "porcja_multiplier", "kcal", "białko_g", "węgle_g", "tłuszcz_g",
-        "ocena", "tagi",
+        "date", "time", "type", "source", "item",
+        "grams", "portion_multiplier", "kcal", "protein_g", "carbs_g", "fat_g",
+        "rating", "tags",
     ].joined(separator: ",")
 
     private func row(meal: MealEntry, item: FoodItem) -> String {
@@ -119,25 +121,29 @@ final class MealCSVExportService {
         return String(format: "%.2f", value)
     }
 
-    private static let dateFormatter: DateFormatter = {
+    private static var dateFormatter: DateFormatter {
+
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
-    }()
+    
+}
+    private static var timeFormatter: DateFormatter {
 
-    private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
-    }()
+    
+}
+    private static var fileTimestamp: DateFormatter {
 
-    private static let fileTimestamp: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd-HHmmss"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter
-    }()
+    
+}
 }

@@ -22,6 +22,8 @@ final class APIErrorTests: XCTestCase {
             .transport(.timedOut),
             .http(status: 500, body: nil),
             .http(status: 503, body: nil),
+            .http(status: 502, body: nil),
+            .http(status: 429, body: nil),
             .unauthorized,
             .decoding(reason: "type mismatch"),
             .unknown(reason: "boom"),
@@ -29,5 +31,19 @@ final class APIErrorTests: XCTestCase {
         for kase in cases {
             XCTAssertFalse(kase.userMessage.isEmpty)
         }
+    }
+
+    func testRateLimitGetsDedicatedUserMessage() {
+        XCTAssertEqual(
+            APIError.http(status: 429, body: nil).userMessage,
+            L("AI odpocznie do jutra. Dzienny limit bezpieczeństwa został wykorzystany.")
+        )
+    }
+
+    func testAIUnavailableGetsDedicatedUserMessage() {
+        XCTAssertEqual(
+            APIError.http(status: 502, body: nil).userMessage,
+            L("AI chwilowo nie odpowiada. Możesz dodać posiłek ręcznie.")
+        )
     }
 }

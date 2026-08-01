@@ -1,6 +1,6 @@
 import Foundation
 
-/// Weekly snapshot Ola hands back when the user opens the "Co u Ciebie"
+/// Weekly snapshot Ola hands back when the user opens the "How you're doing"
 /// sheet from Today. Combines the same `CoachInsight` engine output with
 /// derived stats so the view doesn't have to do arithmetic.
 enum WeeklyDebriefStatKind: String, Sendable {
@@ -26,38 +26,42 @@ struct WeeklyDebrief: Equatable, Sendable {
 }
 
 extension WeeklyDebrief {
-    static func from(context: CoachContext, generator: any CoachInsightGenerator, now: Date) -> WeeklyDebrief {
-        let insights = generator.generate(for: context)
+    static func from(
+        context: CoachContext,
+        generator: any CoachInsightGenerator,
+        now: Date
+    ) async -> WeeklyDebrief {
+        let aiResult = await generator.generateWeekly(for: context)
         return WeeklyDebrief(
             generatedAt: now,
-            headline: headline(for: context),
+            headline: aiResult.headline ?? headline(for: context),
             stats: stats(for: context),
-            insights: insights
+            insights: aiResult.insights
         )
     }
 
     private static func headline(for context: CoachContext) -> String {
         switch context.week.daysWithinCalorieGoal {
         case 6...:
-            return String(localized: "Cudowny tydzień")
+            return L("Wonderful week")
         case 4...5:
-            return String(localized: "Solidny tydzień")
+            return L("Solid week")
         case 2...3:
-            return String(localized: "Mieszany tydzień")
+            return L("Mixed week")
         default:
-            return String(localized: "Spróbujmy łapać rytm")
+            return L("Let's catch the rhythm")
         }
     }
 
     private static func stats(for context: CoachContext) -> [Stat] {
         let calorieAvg = average(context.week.dailyCalorieAverages)
-        let proteinCaption = String(localized: "z 7 dni w celu białka")
-        let calorieCaption = String(localized: "z 7 dni w celu kalorii")
+        let proteinCaption = L("of 7 days hitting protein")
+        let calorieCaption = L("of 7 days in calorie target")
         return [
             Stat(
                 kind: .avgCalories,
                 value: "\(Int(calorieAvg)) kcal",
-                caption: String(localized: "średnio dziennie")
+                caption: L("średnio dziennie")
             ),
             Stat(
                 kind: .calorieDaysOnTarget,
@@ -72,12 +76,12 @@ extension WeeklyDebrief {
             Stat(
                 kind: .daysLogged,
                 value: "\(context.week.daysWithAnyEntry)",
-                caption: String(localized: "dni z wpisem")
+                caption: L("days with entries")
             ),
             Stat(
                 kind: .currentStreak,
                 value: "\(context.streak.current)",
-                caption: String(localized: "dzień serii")
+                caption: L("day of streak")
             ),
         ]
     }

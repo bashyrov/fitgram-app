@@ -83,7 +83,8 @@ final class DailyFactSelectorTests: XCTestCase {
         var seenIds: Set<String> = []
         for offset in 0..<7 {
             guard let next = cal.date(byAdding: .day, value: offset, to: baseDate),
-                let fact = selector.fact(for: next) else { continue }
+                let fact = selector.fact(for: next)
+            else { continue }
             seenIds.insert(fact.id)
         }
         XCTAssertGreaterThan(seenIds.count, 1, "Daily selector must rotate across the week")

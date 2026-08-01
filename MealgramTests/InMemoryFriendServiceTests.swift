@@ -145,7 +145,7 @@ final class InMemoryFriendServiceTests: XCTestCase {
         do {
             _ = try await service.snapshot(forUserID: "friend-ola", viewer: me)
             XCTFail("Snapshot should fail for blocked user")
-        } catch FriendError.notFound { /* expected */ }
+        } catch FriendError.notFound { /* expected */  }
         let friends = try await service.friends(of: me)
         XCTAssertFalse(friends.contains { $0.id == "friend-ola" })
     }

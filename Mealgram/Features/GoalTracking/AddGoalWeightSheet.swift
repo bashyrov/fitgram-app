@@ -58,17 +58,14 @@ struct AddGoalWeightSheet: View {
                                     }
                                 }
                                 Text(
-                                    String(
-                                        localized:
-                                            "Aktualizujemy też Twoją wagę w profilu."
-                                    )
+                                    L("We'll update your weight in the profile too.")
                                 )
                                 .font(Tokens.Font.caption)
                                 .foregroundStyle(Tokens.Palette.inkSubtle)
                             }
                         }
                         PrimaryButton(
-                            title: "Zapisz",
+                            title: "Save",
                             systemImage: "checkmark",
                             isEnabled: parsed != nil,
                             action: commit
@@ -82,7 +79,7 @@ struct AddGoalWeightSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }

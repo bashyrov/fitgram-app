@@ -20,23 +20,25 @@ struct VoiceMealParser {
 
     /// Multi-item entry point — splits the transcript on Polish
     /// connectives ("i", "oraz", "plus") and commas, parses each segment
-    /// independently, drops empty fragments. Always returns at least
-    /// one item.
+    /// independently and drops empty fragments. Empty / non-food speech
+    /// returns no items so the UI can ask the user to try again instead
+    /// of inventing a generic meal.
     func parseMultiple(_ transcript: String) -> [FoodItem] {
         let cleaned = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !cleaned.isEmpty else { return [parse("")] }
+        guard Self.hasRecognizableFoodText(cleaned) else { return [] }
         let segments = Self.split(cleaned)
         let items = segments.map { parse($0) }
-            .filter { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }
-        return items.isEmpty ? [parse(cleaned)] : items
+            .filter(Self.isUsableParsedItem)
+        return items.isEmpty ? [parse(cleaned)].filter(Self.isUsableParsedItem) : items
     }
 
     /// Splits `"jajka 2 i tost z masłem oraz kawa"` into
     /// `["jajka 2", "tost z masłem", "kawa"]`. Lowercase, then matches
-    /// `\bi\b`, `\boraz\b`, `\bplus\b`, and commas as separators.
+    /// `\bi\b`, `\boraz\b`, `\bplus\b`, and commas as separators. Decimal
+    /// commas stay inside numbers, so "0,5 kg ryżu" remains one segment.
     static func split(_ transcript: String) -> [String] {
         let lower = transcript.lowercased()
-        let pattern = #"\s*(,|\bi\b|\boraz\b|\bplus\b)\s*"#
+        let pattern = #"\s*((?<!\d),(?!\d)|\bi\b|\boraz\b|\bplus\b)\s*"#
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
             return [transcript]
         }
@@ -57,7 +59,6 @@ struct VoiceMealParser {
         return pieces.isEmpty ? [transcript] : pieces
     }
 
-    /// Always produces at least one item, even for unparseable transcripts.
     /// Returns the catalog-match flag so callers know whether to trust
     /// the macro numbers.
     func parse(_ transcript: String) -> FoodItem {
@@ -78,9 +79,10 @@ struct VoiceMealParser {
             name
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .whitespaces)
-            .filter { !$0.isEmpty }
+            .filter { !$0.isEmpty && !Self.leadingMealWords.contains($0) }
             .joined(separator: " ")
         if name.isEmpty { name = cleaned }
+        name = Self.aliases[name] ?? name
 
         // Try to match the residual name against the catalog. Same
         // approach as the recipe estimator: exact lowercase first, then
@@ -116,10 +118,35 @@ struct VoiceMealParser {
 
     static func placeholder(name: String) -> FoodItem {
         FoodItem(
-            name: name.isEmpty ? String(localized: "Posiłek") : name,
+            name: name.isEmpty ? L("Posiłek") : name,
             quantityGrams: 100,
             caloriesKcal: 0
         )
+    }
+
+    static func hasRecognizableFoodText(_ transcript: String) -> Bool {
+        let cleaned = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else { return false }
+        var residual = cleaned.lowercased()
+        for pattern in allPatterns {
+            residual = residual.replacingOccurrences(of: pattern, with: " ", options: .regularExpression)
+        }
+
+        let tokens =
+            residual
+            .split(whereSeparator: { !$0.isLetter })
+            .map(String.init)
+            .filter { token in
+                let folded = fold(token)
+                return folded.count >= 2 && !leadingMealWords.contains(folded) && !fillerWords.contains(folded)
+            }
+        return !tokens.isEmpty
+    }
+
+    static func isUsableParsedItem(_ item: FoodItem) -> Bool {
+        let folded = fold(item.name.trimmingCharacters(in: .whitespacesAndNewlines))
+        guard !folded.isEmpty, folded != fold(L("Posiłek")) else { return false }
+        return hasRecognizableFoodText(item.name)
     }
 
     // MARK: - Extraction
@@ -129,6 +156,7 @@ struct VoiceMealParser {
     /// digit suffixes.
     private static let allPatterns = [
         #"(\d+(?:[\.,]\d+)?)\s*(kalorii|kalorie|kcal|kal)\b"#,
+        #"(\d+(?:[\.,]\d+)?)\s*(kilogram(?:ów|y)?|kilograma|kg)\b"#,
         #"(\d+(?:[\.,]\d+)?)\s*(gram(?:ów|y)?|grama|gr|g)\b"#,
     ]
 
@@ -138,8 +166,12 @@ struct VoiceMealParser {
     }
 
     static func extractGrams(from text: String) -> Double? {
-        let pattern = #"(\d+(?:[\.,]\d+)?)\s*(gram(?:ów|y)?|grama|gr|g)\b"#
-        return extractDouble(from: text, pattern: pattern)
+        let gramPattern = #"(\d+(?:[\.,]\d+)?)\s*(gram(?:ów|y)?|grama|gr|g)\b"#
+        if let grams = extractDouble(from: text, pattern: gramPattern) {
+            return grams
+        }
+        let kilogramPattern = #"(\d+(?:[\.,]\d+)?)\s*(kilogram(?:ów|y)?|kilograma|kg)\b"#
+        return extractDouble(from: text, pattern: kilogramPattern).map { $0 * 1000 }
     }
 
     private static func extractDouble(from text: String, pattern: String) -> Double? {
@@ -158,17 +190,25 @@ struct VoiceMealParser {
     // MARK: - Catalog matching
 
     static func bestMatch(for name: String, in catalog: [Food]) -> Food? {
-        let cleaned = name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanedRaw = name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleaned = Self.aliases[cleanedRaw] ?? cleanedRaw
         guard !cleaned.isEmpty else { return nil }
         if let exact = catalog.first(where: { $0.name.lowercased() == cleaned }) {
             return exact
+        }
+        let folded = Self.fold(cleaned)
+        if let foldedExact = catalog.first(where: { Self.fold($0.name.lowercased()) == folded }) {
+            return foldedExact
         }
         let tokens = Self.tokenize(cleaned)
         guard !tokens.isEmpty else { return nil }
         var bestScore = 0
         var best: Food?
         for food in catalog {
-            let foodTokens = Self.tokenize(food.name.lowercased())
+            var foodTokens: Set<String> = []
+            for n in food.allSearchableNames {
+                foodTokens.formUnion(Self.tokenize(n.lowercased()))
+            }
             let shared = tokens.intersection(foodTokens).count
             if shared > bestScore {
                 bestScore = shared
@@ -180,9 +220,31 @@ struct VoiceMealParser {
 
     private static func tokenize(_ text: String) -> Set<String> {
         Set(
-            text.split(whereSeparator: { !$0.isLetter })
+            Self.fold(text).split(whereSeparator: { !$0.isLetter })
                 .map(String.init)
                 .filter { $0.count >= 4 }
         )
+    }
+
+    private static let leadingMealWords: Set<String> = [
+        "zjadlem", "zjadłem", "zjadlam", "zjadłam", "zjadl", "zjadł", "zjadla", "zjadła",
+        "jadlem", "jadłem", "jadlam", "jadłam", "snie", "śnię", "zjem", "mam",
+    ]
+
+    private static let fillerWords: Set<String> = [
+        "posilek", "posiłek", "jedzenie", "danie", "cos", "coś", "nic", "test", "halo", "hej",
+    ]
+
+    private static let aliases: [String: String] = [
+        "ryzu": "ryż",
+        "ryżu": "ryż",
+        "sera": "ser",
+        "seru": "ser",
+        "kurczaka": "kurczak",
+        "piersi z kurczaka": "pierś z kurczaka",
+    ]
+
+    private static func fold(_ text: String) -> String {
+        text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale(identifier: "pl_PL"))
     }
 }

@@ -50,4 +50,7 @@ struct CoachContext: Equatable, Sendable {
     var weight: Weight
     var hourOfDay: Int  // 0...23, local time of the request
     var hasOngoingCulturalEvent: Bool
+    /// Opaque user id. Travels to the Worker so the admin AI-usage
+    /// dashboard can attribute cost per user. Empty/nil → "anonymous".
+    var userRemoteID: String?
 }

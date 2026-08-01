@@ -6,6 +6,17 @@ final class WeeklyDebriefTests: XCTestCase {
     private static let now = Date(timeIntervalSince1970: 1_715_500_000)
     private let generator = RuleBasedCoach()
 
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
+    }
+
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "app.language")
+        super.tearDown()
+    }
+
     private func context(
         weekCalorieDays: Int,
         weekProteinDays: Int = 0,
@@ -42,34 +53,34 @@ final class WeeklyDebriefTests: XCTestCase {
         )
     }
 
-    func testHeadlineEscalatesWithCalorieDays() {
-        let cudowny = WeeklyDebrief.from(
+    func testHeadlineEscalatesWithCalorieDays() async {
+        let cudowny = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 6),
             generator: generator, now: Self.now
         )
         XCTAssertEqual(cudowny.headline, "Cudowny tydzień")
 
-        let solidny = WeeklyDebrief.from(
+        let solidny = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 4),
             generator: generator, now: Self.now
         )
         XCTAssertEqual(solidny.headline, "Solidny tydzień")
 
-        let mieszany = WeeklyDebrief.from(
+        let mieszany = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 2),
             generator: generator, now: Self.now
         )
         XCTAssertEqual(mieszany.headline, "Mieszany tydzień")
 
-        let rytm = WeeklyDebrief.from(
+        let rytm = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 1),
             generator: generator, now: Self.now
         )
         XCTAssertEqual(rytm.headline, "Spróbujmy łapać rytm")
     }
 
-    func testStatsContainAllFiveKinds() {
-        let debrief = WeeklyDebrief.from(
+    func testStatsContainAllFiveKinds() async {
+        let debrief = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 4, weekProteinDays: 2, daysLogged: 6, streakCurrent: 3),
             generator: generator, now: Self.now
         )
@@ -77,9 +88,9 @@ final class WeeklyDebriefTests: XCTestCase {
         XCTAssertEqual(kinds, Set(WeeklyDebriefStatKind.allKinds))
     }
 
-    func testAverageCaloriesUsesWeekArray() {
+    func testAverageCaloriesUsesWeekArray() async {
         let values: [Double] = [2000, 1800, 1600, 2200, 1900, 1700, 2000]
-        let debrief = WeeklyDebrief.from(
+        let debrief = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 5, dailyCalories: values),
             generator: generator, now: Self.now
         )
@@ -90,8 +101,8 @@ final class WeeklyDebriefTests: XCTestCase {
         XCTAssertEqual(stat.value, "\(Int(avg)) kcal")
     }
 
-    func testInsightsPopulatedFromGenerator() {
-        let debrief = WeeklyDebrief.from(
+    func testInsightsPopulatedFromGenerator() async {
+        let debrief = await WeeklyDebrief.from(
             context: context(weekCalorieDays: 6, streakCurrent: 7),
             generator: generator, now: Self.now
         )

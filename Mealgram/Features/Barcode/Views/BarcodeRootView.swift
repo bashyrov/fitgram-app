@@ -11,6 +11,8 @@ struct BarcodeRootView: View {
     var entitlementsStore: EntitlementsStore?
     var paywallCoordinator: PaywallCoordinator?
     var userRemoteID: String?
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
 
     init(
         captureSession: BarcodeCaptureSession = BarcodeCaptureSession(),
@@ -20,7 +22,9 @@ struct BarcodeRootView: View {
         favoritesService: (any FavoritesServing)? = nil,
         entitlementsStore: EntitlementsStore? = nil,
         paywallCoordinator: PaywallCoordinator? = nil,
-        userRemoteID: String? = nil
+        userRemoteID: String? = nil,
+        mealAnalyzer: MealTextAnalysisService? = nil,
+        usageMeter: UsageMeter? = nil
     ) {
         self.session = captureSession
         self._state = State(
@@ -35,6 +39,8 @@ struct BarcodeRootView: View {
         self.entitlementsStore = entitlementsStore
         self.paywallCoordinator = paywallCoordinator
         self.userRemoteID = userRemoteID
+        self.mealAnalyzer = mealAnalyzer
+        self.usageMeter = usageMeter
     }
 
     var body: some View {
@@ -53,9 +59,9 @@ struct BarcodeRootView: View {
             case .result(let product):
                 BarcodeProductView(
                     product: product,
-                    onSave: { portion in
+                    onSave: { items in
                         do {
-                            try state.commit(result: product, portionMultiplier: portion)
+                            try state.commit(items: items)
                             dismiss()
                         } catch {
                             state.reset()
@@ -66,7 +72,9 @@ struct BarcodeRootView: View {
                     favoritesService: favoritesService,
                     entitlementsStore: entitlementsStore,
                     paywallCoordinator: paywallCoordinator,
-                    userRemoteID: userRemoteID
+                    userRemoteID: userRemoteID,
+                    mealAnalyzer: mealAnalyzer,
+                    usageMeter: usageMeter
                 )
             case .notFound(let code):
                 ResultMessageView(
@@ -81,9 +89,9 @@ struct BarcodeRootView: View {
             case .error(let message):
                 ResultMessageView(
                     symbol: "exclamationmark.triangle.fill",
-                    title: "Coś nie zadziałało",
+                    title: "Something went wrong",
                     message: LocalizedStringKey(message),
-                    primaryTitle: "Spróbuj ponownie",
+                    primaryTitle: "Try again",
                     onPrimary: { Task { await state.start() } },
                     onDismiss: dismiss
                 )
@@ -141,7 +149,7 @@ private struct ResultMessageView: View {
                     action: .init(title: primaryTitle, perform: onPrimary)
                 )
                 Spacer()
-                SecondaryButton(title: "Zamknij", systemImage: "xmark", action: onDismiss)
+                SecondaryButton(title: "Close", systemImage: "xmark", action: onDismiss)
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.bottom, Tokens.Space.xl)
             }

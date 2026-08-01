@@ -70,14 +70,14 @@ struct RecipeFormSheet: View {
                         Card {
                             VStack(spacing: Tokens.Space.md) {
                                 field(label: "Nazwa", placeholder: "Pierogi ruskie", text: $title)
-                                field(label: "Krótki opis (opcjonalnie)", placeholder: "...", text: $summary)
+                                field(label: "Short description (optional)", placeholder: "...", text: $summary)
                                 field(
                                     label: "Liczba porcji", placeholder: "2", text: $servingsText, keyboard: .numberPad)
                             }
                         }
                         Card {
                             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                                Text("Składniki")
+                                Text("Ingredients")
                                     .font(Tokens.Font.headline)
                                     .foregroundStyle(Tokens.Palette.ink)
                                 Text("Wpisz każdy składnik w osobnej linii.")
@@ -96,10 +96,10 @@ struct RecipeFormSheet: View {
                         }
                         Card {
                             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                                Text("Instrukcje")
+                                Text("Instructions")
                                     .font(Tokens.Font.headline)
                                     .foregroundStyle(Tokens.Palette.ink)
-                                Text("Każdy krok w osobnej linii.")
+                                Text("Each step on a separate line.")
                                     .font(Tokens.Font.footnote)
                                     .foregroundStyle(Tokens.Palette.inkMuted)
                                 TextEditor(text: $instructionsText)
@@ -143,21 +143,21 @@ struct RecipeFormSheet: View {
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
                                 field(
-                                    label: "Kalorie", placeholder: "350", text: $caloriesPerServingText,
+                                    label: "Calories", placeholder: "350", text: $caloriesPerServingText,
                                     keyboard: .decimalPad)
                                 field(
-                                    label: "Białko (g)", placeholder: "15", text: $proteinPerServingText,
+                                    label: "Protein (g)", placeholder: "15", text: $proteinPerServingText,
                                     keyboard: .decimalPad)
                                 field(
-                                    label: "Węgle (g)", placeholder: "40", text: $carbsPerServingText,
+                                    label: "Carbs (g)", placeholder: "40", text: $carbsPerServingText,
                                     keyboard: .decimalPad)
                                 field(
-                                    label: "Tłuszcz (g)", placeholder: "12", text: $fatPerServingText,
+                                    label: "Fat (g)", placeholder: "12", text: $fatPerServingText,
                                     keyboard: .decimalPad)
                             }
                         }
                         PrimaryButton(
-                            title: mode.isAdding ? "Dodaj przepis" : "Zapisz",
+                            title: mode.isAdding ? "Add recipe" : "Save",
                             systemImage: "checkmark",
                             isEnabled: isValid,
                             action: commit
@@ -171,7 +171,7 @@ struct RecipeFormSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }
@@ -232,15 +232,9 @@ struct RecipeFormSheet: View {
         carbsPerServingText = Self.format(estimate.perServingCarbs)
         fatPerServingText = Self.format(estimate.perServingFat)
         if estimate.unmatched.isEmpty {
-            estimateNote = String(
-                localized:
-                    "Wartości przeliczone z \(estimate.matched) składników. Dostosuj według potrzeb."
-            )
+            estimateNote = String.localizedStringWithFormat(L("Values computed from %lld ingredients. Adjust as needed."), estimate.matched)
         } else {
-            estimateNote = String(
-                localized:
-                    "Wartości z \(estimate.matched) składników. Nie znaleziono w bazie: \(estimate.unmatched.joined(separator: ", "))."
-            )
+            estimateNote = String.localizedStringWithFormat(L("Values from %lld ingredients. Not found in database: %@."), estimate.matched, estimate.unmatched.joined(separator: ", "))
         }
     }
 

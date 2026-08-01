@@ -17,11 +17,14 @@ struct WorkerFoodDetector: FoodDetector {
             imageData: imageData,
             suggestedMealType: suggestedMealType
         )
+        // Auth is optional on the Worker side — production users with a
+        // Supabase JWT get attributed in the AI usage dashboard, but
+        // DebugBypass + the pre-signin onboarding demo still reach Gemini.
         let endpoint = Endpoint(
             path: "/api/v1/scan-food",
             method: .post,
             body: .multipart(boundary: boundary, data: body),
-            requiresAuth: true,
+            requiresAuth: false,
             timeout: 30
         )
 
@@ -61,6 +64,16 @@ struct WorkerFoodDetector: FoodDetector {
             )
             body.appendUTF8("\(mealType.rawValue)\(lineBreak)")
         }
+
+        // Locale so the Worker prompts Gemini to return dish names in
+        // the user's language (UA/RU/PL/ES/EN). Falls back to English when
+        // the system locale doesn't expose a language code.
+        let locale = LocalizationStore.currentLanguageCode()
+        body.appendUTF8("--\(boundary)\(lineBreak)")
+        body.appendUTF8(
+            "Content-Disposition: form-data; name=\"locale\"\(lineBreak)\(lineBreak)"
+        )
+        body.appendUTF8("\(locale)\(lineBreak)")
 
         body.appendUTF8("--\(boundary)--\(lineBreak)")
         return body

@@ -1,1 +1,1 @@
-calorias,contador calorias,dieta,perder peso,coach IA,cocina polaca,macros,peso,salud,fitness,entreno,nutricion
+calorías,contador,dieta,perder peso,AI,cocina polaca,macros,peso,salud,fitness

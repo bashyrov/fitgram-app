@@ -20,7 +20,7 @@ struct CelebrationStepView: View {
                 Spacer()
                 heroBadge
                 headline
-                checklist
+                planCard
                     .padding(.top, Tokens.Space.md)
                 Spacer()
                 PrimaryButton(title: "Zaczynamy", systemImage: "arrow.right") {
@@ -62,17 +62,31 @@ struct CelebrationStepView: View {
         ZStack {
             Circle()
                 .fill(
-                    LinearGradient(
+                    AngularGradient(
                         colors: [
-                            Tokens.Palette.primary.opacity(0.85),
+                            .white.opacity(0.92),
+                            Tokens.Palette.primary,
+                            Tokens.Palette.accent,
+                            Tokens.Palette.warning.opacity(0.86),
+                            .white.opacity(0.72),
                             Tokens.Palette.primary,
                         ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+                        center: .center,
+                        angle: .degrees(-40)
                     )
                 )
                 .frame(width: 160, height: 160)
                 .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 28, y: 14)
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 126, height: 126)
+                .overlay(Circle().stroke(.white.opacity(0.7), lineWidth: 1))
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 80, weight: .semibold))
                 .foregroundStyle(.white)
@@ -87,7 +101,7 @@ struct CelebrationStepView: View {
                 .font(Tokens.Font.title)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Tokens.Palette.ink)
-            Text("Cele zapisane, przypomnienia gotowe. Wpisz pierwszy posiłek — Ola podpowie resztę.")
+            Text("Zebraliśmy Twoje dane i przygotowaliśmy spokojny start: cel, makro, wodę i rytm dnia.")
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .multilineTextAlignment(.center)
@@ -95,13 +109,39 @@ struct CelebrationStepView: View {
         }
     }
 
-    private var checklist: some View {
+    private var planCard: some View {
         VStack(spacing: Tokens.Space.sm) {
-            checkRow("Profil i cele zapisane", delay: 0)
-            checkRow("Ola dostosowała Twój plan", delay: 0.1)
-            checkRow("Bezpieczna prywatność domyślnie", delay: 0.2)
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Twój plan jest gotowy")
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text("Możesz zacząć od pierwszego posiłku.")
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "sparkles")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(Tokens.Palette.warning)
+            }
+            Divider().opacity(0.42)
+            checkRow("Cel kalorii i makro zapisane", delay: 0)
+            checkRow("Ola przygotowała pierwsze wskazówki", delay: 0.1)
+            checkRow("Przypomnienia i streak są gotowe", delay: 0.2)
         }
-        .padding(.horizontal, Tokens.Space.xl)
+        .padding(Tokens.Space.lg)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .background(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(Tokens.Palette.surface.opacity(0.82))
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .strokeBorder(.white.opacity(0.48), lineWidth: 1)
+        }
+        .shadow(color: Tokens.Palette.primary.opacity(0.14), radius: 22, y: 12)
+        .padding(.horizontal, Tokens.Space.screenPadding)
     }
 
     private func checkRow(_ text: LocalizedStringKey, delay: Double) -> some View {
@@ -127,9 +167,9 @@ struct CelebrationStepView: View {
 
     private var welcomeHeadline: String {
         if let displayName, !displayName.isEmpty {
-            return String(localized: "Witaj, \(displayName)!")
+            return String.localizedStringWithFormat(L("Plan gotowy, %@"), displayName)
         }
-        return String(localized: "Witaj w Mealgram!")
+        return L("Twój plan jest gotowy")
     }
 }
 

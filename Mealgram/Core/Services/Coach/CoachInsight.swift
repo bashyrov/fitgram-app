@@ -19,7 +19,7 @@ struct CoachInsight: Equatable, Sendable, Identifiable {
     let tone: Tone
     let headline: String
     let body: String
-    /// Optional CTA — e.g. "Dodaj posiłek" linking to the scanner.
+    /// Optional CTA — e.g. "Add meal" linking to the scanner.
     let actionTitle: String?
     let actionKind: ActionKind?
 

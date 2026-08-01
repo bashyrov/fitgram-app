@@ -27,7 +27,7 @@ struct CalibrationView: View {
                         if let calibration {
                             sampleCountCard(calibration)
                         }
-                        PrimaryButton(title: "Zapisz", systemImage: "checkmark", action: save)
+                        PrimaryButton(title: "Save", systemImage: "checkmark", action: save)
                         Button(role: .destructive) {
                             isResetConfirmed = true
                         } label: {
@@ -52,7 +52,7 @@ struct CalibrationView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
             .confirmationDialog(
@@ -60,10 +60,10 @@ struct CalibrationView: View {
                 isPresented: $isResetConfirmed,
                 titleVisibility: .visible
             ) {
-                Button("Resetuj", role: .destructive, action: reset)
-                Button("Anuluj", role: .cancel) {}
+                Button("Reset", role: .destructive, action: reset)
+                Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Korekta wróci do ×1.00, licznik skanów wyzeruje się.")
+                Text("Calibration resets to ×1.00, scan counter clears.")
             }
         }
     }
@@ -82,7 +82,7 @@ struct CalibrationView: View {
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(
                         "Jeśli widzisz, że wpisy są zwykle za duże albo za małe, przesuń suwak."
-                            + " Pomożemy AI lepiej oceniać Twoje porcje."
+                            + " We'll help AI assess your portions better."
                     )
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
@@ -137,7 +137,7 @@ struct CalibrationView: View {
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Picker("Punkt odniesienia", selection: $draftReference) {
                     Text("Karta").tag(ReferenceObjectKind.creditCard)
-                    Text("Dłoń").tag(ReferenceObjectKind.eatingHand)
+                    Text("Hand").tag(ReferenceObjectKind.eatingHand)
                     Text("Widelec").tag(ReferenceObjectKind.fork)
                     Text("Inne").tag(ReferenceObjectKind.generic)
                 }
@@ -152,7 +152,7 @@ struct CalibrationView: View {
                 Image(systemName: "chart.bar.xaxis")
                     .foregroundStyle(Tokens.Palette.primary)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("\(calibration.sampleCount) skanów do tej pory")
+                    Text(String.localizedStringWithFormat(L("%lld skanów do tej pory"), calibration.sampleCount))
                         .font(Tokens.Font.body)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(updatedLabel(calibration.lastUpdated))

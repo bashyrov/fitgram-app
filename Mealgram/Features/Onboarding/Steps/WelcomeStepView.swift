@@ -4,6 +4,8 @@ struct WelcomeStepView: View {
     let onContinue: () -> Void
     var onSkip: (() -> Void)?
 
+    @State private var appeared = false
+
     var body: some View {
         ZStack {
             backdrop
@@ -16,20 +18,23 @@ struct WelcomeStepView: View {
                     Spacer(minLength: Tokens.Space.lg)
                 }
                 .padding(.vertical, Tokens.Space.lg)
+                // Reserve room for the floating bottom CTA so the last
+                // highlight isn't hidden under it.
+                .padding(.bottom, 120)
             }
             VStack {
                 Spacer()
                 VStack(spacing: Tokens.Space.sm) {
                     PrimaryButton(title: "Zacznijmy", systemImage: "arrow.right", action: onContinue)
                         .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
-                    if let onSkip {
-                        Button("Pomiń na razie — rozejrzę się", action: onSkip)
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
                 .padding(.bottom, Tokens.Space.xl)
+            }
+        }
+        .onAppear {
+            withAnimation(Tokens.Motion.gentle.delay(0.12)) {
+                appeared = true
             }
         }
     }
@@ -60,37 +65,93 @@ struct WelcomeStepView: View {
     // MARK: - Hero
 
     private var hero: some View {
-        VStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primary.opacity(0.85),
-                                Tokens.Palette.primary,
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 168, height: 168)
-                    .shadow(color: Tokens.Palette.primary.opacity(0.4), radius: 30, x: 0, y: 12)
-                Image(systemName: "leaf.fill")
-                    .font(.system(size: 70, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .rotationEffect(.degrees(-12))
-            }
+        VStack(spacing: Tokens.Space.xl) {
+            onboardingDevicePreview
+                .opacity(appeared ? 1 : 0)
+                .offset(y: appeared ? 0 : 18)
+                .scaleEffect(appeared ? 1 : 0.96)
             VStack(spacing: Tokens.Space.sm) {
-                Text("Cześć!")
+                Text("Mealgram")
                     .font(Tokens.Font.display)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("Dodawaj posiłki zdjęciem, głosem albo z naszej bazy. **Bez liczenia, bez stresu.**")
+                Text("Twój spokojny plan jedzenia, zdjęć i makro — bez liczenia w głowie.")
                     .font(Tokens.Font.body)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, Tokens.Space.xl)
             }
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 12)
         }
+    }
+
+    private var onboardingDevicePreview: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 38, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .frame(width: 220, height: 300)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 38, style: .continuous)
+                        .strokeBorder(.white.opacity(0.62), lineWidth: 1)
+                }
+                .shadow(color: Tokens.Palette.primary.opacity(0.24), radius: 32, y: 18)
+
+            VStack(spacing: Tokens.Space.md) {
+                Capsule()
+                    .fill(Tokens.Palette.ink.opacity(0.14))
+                    .frame(width: 58, height: 5)
+                    .padding(.top, Tokens.Space.md)
+
+                ZStack {
+                    Circle()
+                        .stroke(.white.opacity(0.7), lineWidth: 12)
+                    Circle()
+                        .trim(from: 0, to: 0.72)
+                        .stroke(Tokens.Palette.primary, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    Image(systemName: "fork.knife")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundStyle(Tokens.Palette.primary)
+                        .frame(width: 68, height: 68)
+                        .background(.regularMaterial, in: Circle())
+                }
+                .frame(width: 122, height: 122)
+
+                VStack(spacing: 8) {
+                    previewBar(width: 136, color: Tokens.Palette.primary)
+                    previewBar(width: 112, color: Tokens.Palette.warning)
+                    previewBar(width: 126, color: Tokens.Palette.accent)
+                }
+
+                HStack(spacing: 8) {
+                    previewChip(symbol: "camera.fill", color: Tokens.Palette.primary)
+                    previewChip(symbol: "waveform", color: Tokens.Palette.warning)
+                    previewChip(symbol: "sparkles", color: Tokens.Palette.accent)
+                }
+                Spacer(minLength: Tokens.Space.md)
+            }
+            .padding(Tokens.Space.md)
+        }
+    }
+
+    private func previewBar(width: CGFloat, color: Color) -> some View {
+        Capsule()
+            .fill(color.opacity(0.22))
+            .frame(width: width, height: 8)
+            .overlay(alignment: .leading) {
+                Capsule()
+                    .fill(color)
+                    .frame(width: width * 0.68, height: 8)
+            }
+    }
+
+    private func previewChip(symbol: String, color: Color) -> some View {
+        Image(systemName: symbol)
+            .font(.system(size: 14, weight: .bold))
+            .foregroundStyle(color)
+            .frame(width: 38, height: 38)
+            .background(.regularMaterial, in: Circle())
+            .overlay(Circle().stroke(.white.opacity(0.5), lineWidth: 0.7))
     }
 }
 
@@ -106,20 +167,20 @@ private struct FeatureHighlights: View {
     private let highlights: [Highlight] = [
         .init(
             symbol: "camera.fill",
-            title: "Zdjęcie → posiłek",
-            subtitle: "Skanuj talerz, AI rozpozna składniki w 5 sekund",
+            title: "Photo → meal",
+            subtitle: "Skan talerza, a potem wybór ogólnie albo składniki",
             tint: Tokens.Palette.primary
         ),
         .init(
             symbol: "sparkles",
-            title: "Trener Ola",
-            subtitle: "Polskie smaki, polskie porcje, wsparcie po polsku",
+            title: "Coach Ola",
+            subtitle: "Porady dopasowane do celu, języka i rytmu dnia",
             tint: Tokens.Palette.accent
         ),
         .init(
             symbol: "flame.fill",
-            title: "Bez wyrzutów",
-            subtitle: "Wspieramy, świętujemy progres — nie oceniamy potknięć",
+            title: "Plan bez presji",
+            subtitle: "Streak, freeze i przypomnienia pomagają wrócić do rytmu",
             tint: Tokens.Palette.warning
         ),
     ]

@@ -9,6 +9,7 @@ struct AuthView: View {
     let authService: AuthService
 
     @State private var errorBannerVisible = false
+    @State private var isEmailSheetPresented = false
 
     var body: some View {
         ZStack {
@@ -29,6 +30,12 @@ struct AuthView: View {
         .animation(Tokens.Motion.gentle, value: session.lastError)
         .onChange(of: session.lastError) { _, newValue in
             errorBannerVisible = newValue != nil
+        }
+        .sheet(isPresented: $isEmailSheetPresented) {
+            EmailSignInSheet(authService: authService) {
+                isEmailSheetPresented = false
+            }
+            .presentationDetents([.medium, .large])
         }
     }
 
@@ -90,7 +97,7 @@ struct AuthView: View {
                 title: "Kontynuuj e-mailem",
                 systemImage: "envelope.fill"
             ) {
-                Task { await authService.signIn(with: .email) }
+                isEmailSheetPresented = true
             }
             .accessibilityIdentifier(A11yID.Auth.emailButton)
         }

@@ -1,0 +1,101 @@
+{
+  "identifier" : "B4AE2C9B-3F3D-4A4A-9F0B-2C8C3F1B8F4F",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "L55G3V9NJ3",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 0,
+    "_locale" : "en_PL",
+    "_storefront" : "POL",
+    "_storeKitErrors" : [],
+    "_billingIssuesEnabled" : false,
+    "_billingRetryEnabled" : false,
+    "_renewalRate" : 1
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "AB45F9C0-5A1A-4B12-9D7E-2EF7F9A1B4C2",
+      "localizations" : [
+        {
+          "description" : "Premium subscription with unlimited AI scans, full Coach Ola, complete history.",
+          "displayName" : "Mealgram Premium",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Subskrypcja Premium z bezlimitowymi skanami AI, pełną asystą Oli, kompletną historią.",
+          "displayName" : "Mealgram Premium",
+          "locale" : "pl_PL"
+        }
+      ],
+      "name" : "Mealgram Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "6.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "ABCDEF01",
+          "introductoryOffer" : {
+            "internalID" : "INTROFLAT01",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P7D"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited AI scans, full Coach Ola, complete history, premium themes.",
+              "displayName" : "Premium Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Bezlimitowe skany AI, pełna Ola, cała historia, motywy Premium.",
+              "displayName" : "Premium Miesięczny",
+              "locale" : "pl_PL"
+            }
+          ],
+          "productID" : "mealgram_premium_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Monthly",
+          "subscriptionGroupID" : "AB45F9C0-5A1A-4B12-9D7E-2EF7F9A1B4C2",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "39.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "ABCDEF02",
+          "introductoryOffer" : {
+            "internalID" : "INTROFLAT02",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P7D"
+          },
+          "localizations" : [
+            {
+              "description" : "Best value — unlimited everything for the year.",
+              "displayName" : "Premium Yearly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Najlepsza cena — wszystko bez limitu na cały rok.",
+              "displayName" : "Premium Roczny",
+              "locale" : "pl_PL"
+            }
+          ],
+          "productID" : "mealgram_premium_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium Yearly",
+          "subscriptionGroupID" : "AB45F9C0-5A1A-4B12-9D7E-2EF7F9A1B4C2",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

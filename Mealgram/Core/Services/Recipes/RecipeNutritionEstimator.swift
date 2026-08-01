@@ -74,20 +74,26 @@ struct RecipeNutritionEstimator {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else { return nil }
 
-        // Exact name match wins.
-        if let exact = catalog.first(where: { $0.name.lowercased() == cleaned }) {
+        // Exact name match wins (any language).
+        if let exact = catalog.first(where: { food in
+            food.allSearchableNames.contains { $0.lowercased() == cleaned }
+        }) {
             return exact
         }
 
         // Otherwise, find any catalog row whose name shares the most
-        // significant tokens (length ≥ 4) with the ingredient. This handles
-        // "Kurczak z piersi" matching "Kurczak grillowany".
+        // significant tokens (length ≥ 4) with the ingredient. Pool tokens
+        // from every localization so a recipe written in any language still
+        // matches.
         let tokens = Self.tokenize(cleaned)
         guard !tokens.isEmpty else { return nil }
         var bestScore = 0
         var best: Food?
         for food in catalog {
-            let foodTokens = Self.tokenize(food.name.lowercased())
+            var foodTokens: Set<String> = []
+            for n in food.allSearchableNames {
+                foodTokens.formUnion(Self.tokenize(n.lowercased()))
+            }
             let shared = tokens.intersection(foodTokens).count
             if shared > bestScore {
                 bestScore = shared

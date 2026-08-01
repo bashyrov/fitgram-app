@@ -38,9 +38,9 @@ final class CoachService {
         self.now = now
     }
 
-    func insights(for userRemoteID: String) -> [CoachInsight] {
+    func insights(for userRemoteID: String) async -> [CoachInsight] {
         let context = buildContext(for: userRemoteID)
-        let allInsights = generator.generate(for: context)
+        let allInsights = await generator.generate(for: context)
         guard let dismissalStore else { return allInsights }
         return allInsights.filter { !dismissalStore.isDismissed(headline: $0.headline) }
     }
@@ -49,13 +49,13 @@ final class CoachService {
         dismissalStore?.dismiss(headline: insight.headline)
     }
 
-    func headline(for userRemoteID: String) -> CoachInsight? {
-        insights(for: userRemoteID).first
+    func headline(for userRemoteID: String) async -> CoachInsight? {
+        await insights(for: userRemoteID).first
     }
 
-    func weeklyDebrief(for userRemoteID: String) -> WeeklyDebrief {
+    func weeklyDebrief(for userRemoteID: String) async -> WeeklyDebrief {
         let context = buildContext(for: userRemoteID)
-        let debrief = WeeklyDebrief.from(context: context, generator: generator, now: now())
+        let debrief = await WeeklyDebrief.from(context: context, generator: generator, now: now())
         logStore?.record(debrief, for: userRemoteID)
         return debrief
     }
@@ -107,7 +107,8 @@ final class CoachService {
             streak: streak,
             weight: weight,
             hourOfDay: hour,
-            hasOngoingCulturalEvent: event
+            hasOngoingCulturalEvent: event,
+            userRemoteID: userRemoteID
         )
     }
 

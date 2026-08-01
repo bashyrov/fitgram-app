@@ -8,11 +8,14 @@ final class MealCSVExportServiceTests: XCTestCase {
     private var controller: PersistenceController!
 
     override func setUp() async throws {
+        UserDefaults.standard.set("en", forKey: "app.language")
+        Bundle.setLanguage("en")
         controller = try PersistenceController.makeInMemory()
     }
 
     override func tearDown() async throws {
         controller = nil
+        UserDefaults.standard.removeObject(forKey: "app.language")
     }
 
     func testEscapeQuotesValuesContainingCommas() {
@@ -31,8 +34,8 @@ final class MealCSVExportServiceTests: XCTestCase {
         let service = MealCSVExportService(container: controller.container)
         let csv = try service.buildCSV()
         XCTAssertEqual(csv.components(separatedBy: "\n").count, 1)
-        XCTAssertTrue(csv.hasPrefix("data,godzina,typ,źródło"))
-        XCTAssertTrue(csv.contains(",ocena,tagi"))
+        XCTAssertTrue(csv.hasPrefix("date,time,type,source"))
+        XCTAssertTrue(csv.contains(",rating,tags"))
     }
 
     func testRatingAndTagsAppearInRow() throws {

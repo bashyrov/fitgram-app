@@ -39,7 +39,7 @@ final class VoiceFlowState {
             return
         }
         guard session.isAvailable else {
-            stage = .error(message: "Rozpoznawanie mowy nie jest dostępne na tym urządzeniu.")
+            stage = .error(message: "Speech recognition is not available on this device.")
             return
         }
         stage = .idle
@@ -60,7 +60,7 @@ final class VoiceFlowState {
             stage = .listening
         } catch {
             Logger.ui.error("Voice start failed: \(String(describing: error))")
-            stage = .error(message: error.localizedDescription)
+            stage = .error(message: "Something went wrong. Try again.")
         }
     }
 
@@ -77,13 +77,7 @@ final class VoiceFlowState {
         stage = .idle
     }
 
-    func commit(transcript: String) throws {
-        // Run the regex parser first — handles "owsianka 250g 400 kcal"
-        // and similar, plus multi-item splits ("jajka i tost"). If a
-        // Food catalog is wired in, each matched row contributes real
-        // per-100g macros. Falls back to a 100g placeholder for
-        // transcripts the regexes can't extract.
-        let items = parser.parseMultiple(transcript)
+    func commit(items: [FoodItem]) throws {
         let suggested = Self.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date()))
         let entry = MealEntry(mealType: suggested, source: .voice, items: items)
         try mealSaver.save(meal: entry)

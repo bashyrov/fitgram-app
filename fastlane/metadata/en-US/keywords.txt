@@ -1,1 +1,1 @@
-calories,calorie counter,diet,weight loss,AI coach,Polish food,macros,weight,health,fitness,workout,nutrition
+calories,calorie counter,diet,weight loss,AI coach,macros,nutrition,fitness,food

@@ -37,11 +37,15 @@ struct CalorieProgressCard: View {
                             .foregroundStyle(Tokens.Palette.ink)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
-                        Text(goalHit ? "✓ \(goal) kcal" : "/ \(goal) kcal")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(goalHit ? Tokens.Palette.warning : Tokens.Palette.inkMuted)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
+                        Text(
+                            goalHit
+                                ? LocalizedStringKey("✓ \(goal) kcal")
+                                : LocalizedStringKey("/ \(goal) kcal")
+                        )
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(goalHit ? Tokens.Palette.warning : Tokens.Palette.inkMuted)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                     }
                     .padding(.horizontal, 18)
                 }
@@ -61,14 +65,14 @@ struct CalorieProgressCard: View {
                             onTapGoal()
                         } label: {
                             summaryRow(
-                                label: "Cel — stuknij, aby zmienić",
+                                label: "Goal — tap to change",
                                 value: "\(goal) kcal",
                                 color: Tokens.Palette.primary
                             )
                         }
                         .buttonStyle(.plain)
                     } else {
-                        summaryRow(label: "Cel", value: "\(goal) kcal", color: Tokens.Palette.inkMuted)
+                        summaryRow(label: "Goal", value: "\(goal) kcal", color: Tokens.Palette.inkMuted)
                     }
                     summaryRow(
                         label: "Pozostało",

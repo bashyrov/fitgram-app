@@ -36,18 +36,60 @@ struct MainTabView: View {
     let favoritesService: FavoritesService
     let unlockBus: AchievementUnlockBus
     let onSignOut: () -> Void
-    let onDeleteAccount: () -> Void
-    let onRestartOnboarding: () -> Void
+    let onDeleteAccount: () async throws -> Void
+    let onRestartOnboarding: () throws -> Void
     let todayState: TodayState
     let progressState: ProgressState
+    let voiceParser: VoiceMealParser
+    let mealTextAnalyzer: MealTextAnalysisService
+    let olaChefWorkerService: WorkerOlaChefService?
 
     @State private var addOptionsVisible = false
     @State private var isScanPresented = false
     @State private var isBarcodePresented = false
+    #if DEBUG
+    @State private var debugScanResultPresented = false
+    static let demoScanResult = ScanResult(
+        items: [
+            .init(
+                name: "Schabowy",
+                quantityGrams: 180,
+                caloriesKcal: 420,
+                proteinGrams: 32,
+                carbsGrams: 18,
+                fatGrams: 22,
+                confidence: 0.93
+            ),
+            .init(
+                name: "Ziemniaki gotowane",
+                quantityGrams: 200,
+                caloriesKcal: 160,
+                proteinGrams: 4,
+                carbsGrams: 36,
+                fatGrams: 0.3,
+                confidence: 0.96
+            ),
+            .init(
+                name: "Surówka z kapusty",
+                quantityGrams: 120,
+                caloriesKcal: 60,
+                proteinGrams: 1.4,
+                carbsGrams: 8,
+                fatGrams: 3,
+                confidence: 0.81
+            ),
+        ],
+        suggestedMealType: .lunch,
+        confidence: 0.9,
+        rawAINotes: nil
+    )
+    #endif
     @State private var isQuickDBPresented = false
+    @State private var repeatedMeal: MealEntrySnapshot?
     @State private var isVoicePresented = false
     @State private var isRecipesPresented = false
     @State private var isManualEntryPresented = false
+    @State private var isOlaChefPresented = false
     @State private var isFavoritesListPresented = false
     @State private var isWeeklyDebriefPresented = false
     @State private var weeklyDebrief: WeeklyDebrief?
@@ -60,6 +102,7 @@ struct MainTabView: View {
     @State private var friendsState: FriendsState
     @State private var goalTrackingState: GoalTrackingState
     @State private var isGoalTrackingPresented = false
+    @State private var saveError: String?
 
     init(
         authUser: AuthUser,
@@ -92,8 +135,8 @@ struct MainTabView: View {
         favoritesService: FavoritesService,
         unlockBus: AchievementUnlockBus,
         onSignOut: @escaping () -> Void,
-        onDeleteAccount: @escaping () -> Void,
-        onRestartOnboarding: @escaping () -> Void,
+        onDeleteAccount: @escaping () async throws -> Void,
+        onRestartOnboarding: @escaping () throws -> Void,
         todayState: TodayState,
         progressState: ProgressState
     ) {
@@ -131,6 +174,20 @@ struct MainTabView: View {
         self.onRestartOnboarding = onRestartOnboarding
         self.todayState = todayState
         self.progressState = progressState
+        let foods = (try? foodCatalog.all()) ?? []
+        self.voiceParser = VoiceMealParser(catalog: foods)
+        let mealTextClient: (any APIClient)? = AppConfig.workerBaseURL.map { baseURL in
+            URLSessionAPIClient(
+                baseURL: baseURL,
+                interceptors: [AuthInterceptor(), TimeZoneInterceptor(), LoggingInterceptor()]
+            ) as any APIClient
+        }
+        self.mealTextAnalyzer = MealTextAnalysisService(
+            client: mealTextClient,
+            catalog: foods,
+            foodCatalog: foodCatalog
+        )
+        self.olaChefWorkerService = mealTextClient.map { WorkerOlaChefService(client: $0) }
         self._friendsState = State(
             initialValue: FriendsState(service: friendService, userRemoteID: authUser.id)
         )
@@ -189,6 +246,7 @@ struct MainTabView: View {
                 goalTrackingState: goalTrackingState,
                 onOpenProfile: { selectedTab = .profile },
                 onOpenScanner: { isScanPresented = true },
+                onOpenAddOptions: { addOptionsVisible = true },
                 onOpenGoalTracking: {
                     goalTrackingState.refresh(for: authUser.id)
                     isGoalTrackingPresented = true
@@ -202,7 +260,7 @@ struct MainTabView: View {
                 }
             )
             .tabItem {
-                Label("Dziś", systemImage: "sun.max.fill")
+                Label("Today", systemImage: "sun.max.fill")
             }
             .tag(Tab.today)
 
@@ -211,7 +269,7 @@ struct MainTabView: View {
             // empty scene.
             Color.clear
                 .tabItem {
-                    Label("Dodaj", systemImage: "plus.circle.fill")
+                    Label("Add", systemImage: "plus.circle.fill")
                 }
                 .tag(Tab.add)
 
@@ -220,10 +278,10 @@ struct MainTabView: View {
                 state: progressState,
                 onOpenWeeklyDebrief: { presentWeeklyDebrief() }
             )
-                .tabItem {
-                    Label("Tydzień", systemImage: "chart.bar.fill")
-                }
-                .tag(Tab.progress)
+            .tabItem {
+                Label("Week", systemImage: "chart.bar.fill")
+            }
+            .tag(Tab.progress)
 
             FriendsRootView(
                 state: friendsState,
@@ -233,7 +291,7 @@ struct MainTabView: View {
                 friendService: friendService
             )
             .tabItem {
-                Label("Znajomi", systemImage: "person.2.fill")
+                Label("Friends", systemImage: "person.2.fill")
             }
             .tag(Tab.friends)
 
@@ -264,7 +322,7 @@ struct MainTabView: View {
                 onRestartOnboarding: onRestartOnboarding
             )
             .tabItem {
-                Label("Profil", systemImage: "person.crop.circle")
+                Label("Profile", systemImage: "person.crop.circle")
             }
             .tag(Tab.profile)
         }
@@ -304,6 +362,16 @@ struct MainTabView: View {
         .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.showToday)) { _ in
             selectedTab = .today
         }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("MealgramDebugSwitchTab"))) { note in
+            guard let name = note.userInfo?["tab"] as? String else { return }
+            switch name {
+            case "today": selectedTab = .today
+            case "week", "progress": selectedTab = .progress
+            case "friends": selectedTab = .friends
+            case "profile": selectedTab = .profile
+            default: break
+            }
+        }
         .onReceive(
             NotificationCenter.default.publisher(for: AppShortcutAction.showWeeklyDebrief)
         ) { _ in
@@ -314,7 +382,7 @@ struct MainTabView: View {
             isRecipesPresented = true
         }
         .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.mainGoalChanged)) { _ in
-            goalTrackingState.refresh(for: authUser.id)
+            refreshAfterGoalsChange()
         }
         .onReceive(
             NotificationCenter.default.publisher(for: AppShortcutAction.addWaterFromActivity)
@@ -324,8 +392,34 @@ struct MainTabView: View {
                 _ = await todayState.logWaterGlass(for: authUser.id)
             }
         }
+        .onReceive(
+            NotificationCenter.default.publisher(for: Notification.Name("MealgramMealSaved"))
+        ) { _ in
+            refreshAfterSave()
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(for: Notification.Name("MealgramLanguageChanged"))
+        ) { _ in
+            Task {
+                // Force the cached Coach copy to rebuild in the new locale.
+                try? userProfileService.refreshRecommendationsForUser(remoteID: authUser.id)
+                await todayState.refresh(for: authUser.id)
+                goalTrackingState.refresh(for: authUser.id)
+            }
+        }
         .onContinueUserActivity(CSSearchableItemActionType) { _ in
             isRecipesPresented = true
+        }
+        .alert(
+            "Nie udało się zapisać posiłku",
+            isPresented: Binding(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) { saveError = nil }
+        } message: {
+            Text(saveError ?? "Spróbuj ponownie.")
         }
         .sheet(isPresented: $addOptionsVisible) {
             AddMealSheet(
@@ -333,42 +427,73 @@ struct MainTabView: View {
                 usageMeter: usageMeter,
                 onPhotoScan: {
                     addOptionsVisible = false
-                    gatedPresent(
-                        kind: .photoScan,
-                        cap: entitlementsStore.current.photoScansPerWeek,
-                        trigger: .photoScanQuota,
-                        onAllowed: { isScanPresented = true }
-                    )
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        gatedPresent(
+                            kind: .photoScan,
+                            cap: entitlementsStore.current.photoScansPerWeek,
+                            trigger: .photoScanQuota,
+                            onAllowed: { isScanPresented = true }
+                        )
+                    }
                 },
                 onBarcode: {
                     addOptionsVisible = false
-                    gatedPresent(
-                        kind: .barcodeScan,
-                        cap: entitlementsStore.current.barcodeScansPerWeek,
-                        trigger: .barcodeScanQuota,
-                        onAllowed: { isBarcodePresented = true }
-                    )
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        gatedPresent(
+                            kind: .barcodeScan,
+                            cap: entitlementsStore.current.barcodeScansPerWeek,
+                            trigger: .barcodeScanQuota,
+                            onAllowed: { isBarcodePresented = true }
+                        )
+                    }
                 },
                 onQuickDB: {
+                    // SwiftUI can't dismiss + present a sheet in the same
+                    // render cycle — schedule the new sheet after the
+                    // AddMealSheet finishes its dismissal animation.
                     addOptionsVisible = false
-                    isQuickDBPresented = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        isQuickDBPresented = true
+                    }
+                },
+                onRecentMeal: {
+                    addOptionsVisible = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        if let latest = mealRepository.latestRepeatableMealSnapshot() {
+                            repeatedMeal = latest
+                        } else {
+                            isQuickDBPresented = true
+                        }
+                    }
                 },
                 onVoice: {
                     addOptionsVisible = false
-                    gatedPresent(
-                        kind: .voiceEntry,
-                        cap: entitlementsStore.current.voiceEntriesPerWeek,
-                        trigger: .voiceEntryQuota,
-                        onAllowed: { isVoicePresented = true }
-                    )
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        gatedPresent(
+                            kind: .voiceEntry,
+                            cap: entitlementsStore.current.voiceEntriesPerWeek,
+                            trigger: .voiceEntryQuota,
+                            onAllowed: { isVoicePresented = true }
+                        )
+                    }
                 },
                 onRecipe: {
                     addOptionsVisible = false
-                    isFavoritesListPresented = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        isFavoritesListPresented = true
+                    }
                 },
                 onManual: {
                     addOptionsVisible = false
-                    isManualEntryPresented = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        isManualEntryPresented = true
+                    }
+                },
+                onOlaChef: {
+                    addOptionsVisible = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                        isOlaChefPresented = true
+                    }
                 },
                 onCancel: { addOptionsVisible = false }
             )
@@ -385,7 +510,9 @@ struct MainTabView: View {
                 favoritesService: favoritesService,
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator,
-                userRemoteID: authUser.id
+                userRemoteID: authUser.id,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter
             )
         }
         .fullScreenCover(isPresented: $isBarcodePresented) {
@@ -398,7 +525,9 @@ struct MainTabView: View {
                 favoritesService: favoritesService,
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator,
-                userRemoteID: authUser.id
+                userRemoteID: authUser.id,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter
             )
         }
         .sheet(isPresented: $isQuickDBPresented) {
@@ -412,19 +541,75 @@ struct MainTabView: View {
                 favoritesService: favoritesService,
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator,
-                userRemoteID: authUser.id
+                userRemoteID: authUser.id,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter
+            )
+        }
+        .sheet(item: $repeatedMeal) { snapshot in
+            FoodDetailSheet(
+                repeating: snapshot,
+                onSave: { items in
+                    let entry = MealEntry(
+                        mealType: snapshot.mealType,
+                        source: snapshot.source,
+                        notes: snapshot.notes,
+                        tags: snapshot.tags,
+                        items: items
+                    )
+                    do {
+                        try mealSaver.save(meal: entry)
+                    } catch {
+                        Haptics.warning()
+                        saveError = L("Couldn't save. Try again.")
+                    }
+                },
+                onDismiss: {
+                    repeatedMeal = nil
+                    refreshAfterSave()
+                },
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                userRemoteID: authUser.id,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter
             )
         }
         .fullScreenCover(isPresented: $isVoicePresented) {
             VoiceRootView(
                 mealSaver: mealSaver,
-                parser: VoiceMealParser(catalog: (try? foodCatalog.all()) ?? []),
+                parser: voiceParser,
+                mealAnalyzer: mealTextAnalyzer,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                usageMeter: usageMeter,
                 onDismiss: {
                     isVoicePresented = false
                     refreshAfterSave()
                 }
             )
         }
+        #if DEBUG
+        .fullScreenCover(isPresented: $debugScanResultPresented) {
+            ScanResultView(
+                result: MainTabView.demoScanResult,
+                imageData: nil,
+                onSave: { _, _ in debugScanResultPresented = false },
+                onRetake: { debugScanResultPresented = false },
+                onDismiss: { debugScanResultPresented = false },
+                favoritesService: favoritesService,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                userRemoteID: authUser.id,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter
+            )
+        }
+        .task {
+            await presentInitialDebugSurfaceIfNeeded()
+        }
+        #endif
         .sheet(isPresented: $isRecipesPresented) {
             RecipeListView(
                 state: RecipeListState(repository: recipeRepository),
@@ -434,7 +619,11 @@ struct MainTabView: View {
                     isRecipesPresented = false
                     refreshAfterSave()
                 },
-                estimator: makeRecipeEstimator()
+                estimator: makeRecipeEstimator(),
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter
             )
         }
         .sheet(isPresented: $isManualEntryPresented) {
@@ -444,8 +633,25 @@ struct MainTabView: View {
                 favoritesService: favoritesService,
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator,
+                usageMeter: usageMeter,
+                mealAnalyzer: mealTextAnalyzer,
                 onDismiss: {
                     isManualEntryPresented = false
+                    refreshAfterSave()
+                }
+            )
+        }
+        .fullScreenCover(isPresented: $isOlaChefPresented) {
+            OlaChefView(
+                mealSaver: mealSaver,
+                userRemoteID: authUser.id,
+                entitlementsStore: entitlementsStore,
+                usageMeter: usageMeter,
+                paywallCoordinator: paywallCoordinator,
+                favoritesService: favoritesService,
+                workerService: olaChefWorkerService,
+                onDismiss: {
+                    isOlaChefPresented = false
                     refreshAfterSave()
                 }
             )
@@ -457,6 +663,8 @@ struct MainTabView: View {
                 mealSaver: mealSaver,
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator,
+                mealAnalyzer: mealTextAnalyzer,
+                usageMeter: usageMeter,
                 onAddNew: {
                     isFavoritesListPresented = false
                     isManualEntryPresented = true
@@ -509,9 +717,29 @@ struct MainTabView: View {
             GoalTrackingView(
                 userRemoteID: authUser.id,
                 state: goalTrackingState,
-                onDismiss: { isGoalTrackingPresented = false }
+                onDismiss: { isGoalTrackingPresented = false },
+                tips: goalTipsForCurrentUser()
             )
         }
+    }
+
+    private func refreshAfterGoalsChange() {
+        goalTrackingState.refresh(for: authUser.id)
+        Task {
+            await todayState.refresh(for: authUser.id)
+            await progressState.refresh(for: authUser.id)
+        }
+    }
+
+    /// Looks up the cached Recommendations payload on the current user
+    /// and returns up to 3 inline tips for the goal-tracking sheet.
+    /// Falls back to an empty array if recommendations haven't been
+    /// fetched yet — caller handles the empty case gracefully.
+    private func goalTipsForCurrentUser() -> [RecommendationTip] {
+        guard let user = todayState.user,
+            let recs = RuleBasedRecommendationsService.buildSync(for: user)
+        else { return [] }
+        return Array(recs.tips.prefix(3))
     }
 
     private func makeRecipeEstimator() -> RecipeNutritionEstimator? {
@@ -519,6 +747,37 @@ struct MainTabView: View {
         guard !foods.isEmpty else { return nil }
         return RecipeNutritionEstimator(catalog: foods)
     }
+
+    #if DEBUG
+    @MainActor
+    private func presentInitialDebugSurfaceIfNeeded() async {
+        // Small delay so user data + tab content settle before a sheet pops.
+        try? await Task.sleep(nanoseconds: 700_000_000)
+        switch ProcessInfo.processInfo.environment["MEALGRAM_DEBUG_PRESENT"] {
+        case "scanner":
+            isScanPresented = true
+        case "scan-result":
+            debugScanResultPresented = true
+        case "goal":
+            goalTrackingState.refresh(for: authUser.id)
+            isGoalTrackingPresented = true
+        case "add-meal":
+            addOptionsVisible = true
+        case "recipes":
+            isRecipesPresented = true
+        case "quick-db":
+            isQuickDBPresented = true
+        case "weekly-debrief":
+            presentWeeklyDebrief()
+        case "voice":
+            isVoicePresented = true
+        case "manual":
+            isManualEntryPresented = true
+        default:
+            break
+        }
+    }
+    #endif
 
     private func presentCoachHistory() {
         coachHistory = coachService.history(for: authUser.id)
@@ -544,27 +803,41 @@ struct MainTabView: View {
 
     private func performUndo(_ snapshot: MealEntrySnapshot) {
         undoDismissTask?.cancel()
-        try? mealSaver.save(meal: snapshot.makeEntry())
-        undoSnapshot = nil
-        refreshAfterSave()
+        do {
+            try mealSaver.save(meal: snapshot.makeEntry())
+            undoSnapshot = nil
+            refreshAfterSave()
+        } catch {
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     private func presentWeeklyDebrief() {
-        weeklyDebrief = coachService.weeklyDebrief(for: authUser.id)
-        isWeeklyDebriefPresented = true
+        guard entitlementsStore.current.canUseOlaAdvice,
+            usageMeter.canUse(.coachDebrief, cap: entitlementsStore.current.coachWeeklyDebriefsPerWeek)
+        else {
+            paywallCoordinator.present(.coachDebriefQuota)
+            return
+        }
+        Task {
+            weeklyDebrief = await coachService.weeklyDebrief(for: authUser.id)
+            usageMeter.record(.coachDebrief, cap: entitlementsStore.current.coachWeeklyDebriefsPerWeek)
+            isWeeklyDebriefPresented = true
+        }
     }
 
     private func refreshAfterSave() {
         Task {
             await todayState.refresh(for: authUser.id)
             await progressState.refresh(for: authUser.id)
+            goalTrackingState.refresh(for: authUser.id)
         }
     }
 
-    /// Quota gate for AI-backed scans. Free tier hits a weekly cap; raises
-    /// the upgrade sheet with the matching trigger and short-circuits the
-    /// flow. The usage counter is incremented inside ChainedMealSaver on
-    /// successful meal save — opening the camera doesn't burn the quota.
+    /// Quota gate for free-tier AI entry points. Usage is recorded only
+    /// after a meal is actually saved, but opening a new AI flow is blocked
+    /// once today's local-day allowance is exhausted.
     private func gatedPresent(
         kind: UsageMeter.Kind,
         cap: Int?,
@@ -592,9 +865,14 @@ struct MainTabView: View {
     /// dashboards.
     private func cookSuggested(_ recipe: Recipe) {
         let entry = recipeRepository.cook(recipe)
-        try? mealSaver.save(meal: entry)
-        try? recipeRepository.save(recipe)
-        refreshAfterSave()
+        do {
+            try mealSaver.save(meal: entry)
+            try recipeRepository.save(recipe)
+            refreshAfterSave()
+        } catch {
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 }
 // swiftlint:enable type_body_length

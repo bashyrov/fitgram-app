@@ -72,7 +72,7 @@ struct WaterCard: View {
                                     Circle().fill(Tokens.Palette.surfaceMuted)
                                 )
                         }
-                        .accessibilityLabel(Text("Cofnij ostatnią szklankę"))
+                        .accessibilityLabel(Text("Undo last glass"))
                     }
                 }
             }

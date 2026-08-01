@@ -5,13 +5,14 @@ import SwiftUI
 struct ProfileStatsCard: View {
     let summary: ProfileStatsService.Summary
 
-    private static let memberFormatter: DateFormatter = {
+    private static var memberFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "LLLL yyyy"
         return formatter
-    }()
-
+    
+}
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
@@ -31,33 +32,33 @@ struct ProfileStatsCard: View {
                     tile(symbol: "trophy.fill", value: summary.totalAchievements, caption: "odznak")
                 }
                 if summary.totalCaloriesKcal > 0 {
-                    Text("Łącznie: \(Self.kcalString(summary.totalCaloriesKcal)) kcal")
+                    Text(String.localizedStringWithFormat(L("Total: %@ kcal"), Self.kcalString(summary.totalCaloriesKcal)))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 if summary.totalRecipeCooks > 0 {
-                    Text("Ugotowane: \(summary.totalRecipeCooks)×")
+                    Text(String.localizedStringWithFormat(L("Cooked: %lld×"), summary.totalRecipeCooks))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 if let avg = summary.averageMealRating {
-                    Text(String(format: "Średnia ocena posiłku: ⭐ %.1f / 5", avg))
+                    Text(String.localizedStringWithFormat(L("Average meal rating: ⭐ %.1f / 5"), avg))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.warning)
                 }
                 if summary.longestStreakLength > 0 {
-                    Text("Rekord serii: 🔥 \(summary.longestStreakLength) dni")
+                    Text(String.localizedStringWithFormat(L("Streak record: 🔥 %lld days"), summary.longestStreakLength))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.warning)
                 }
                 if summary.totalWaterMilliliters > 0 {
-                    Text("Wypita woda: 💧 \(Self.litersString(summary.totalWaterMilliliters)) L")
+                    Text(String.localizedStringWithFormat(L("Water drunk: 💧 %@ L"), Self.litersString(summary.totalWaterMilliliters)))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 if let memberSince = summary.memberSince {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Z nami od \(Self.memberFormatter.string(from: memberSince).capitalized)")
+                        Text(String.localizedStringWithFormat(L("With us since %@"), Self.memberFormatter.string(from: memberSince).capitalized))
                             .font(Tokens.Font.caption)
                             .foregroundStyle(Tokens.Palette.inkSubtle)
                         if let daysWithUs = Self.daysSince(memberSince) {
@@ -83,13 +84,14 @@ struct ProfileStatsCard: View {
         return days
     }
 
-    /// Polish day-count label. Singular "1 dzień", plural "N dni".
-    /// Pure function so tests can pin down the strings directly.
+    /// Day-count label localised via xcstrings.
     static func daysWithUsLabel(_ days: Int) -> String {
         switch days {
-        case 0: return "Dzisiaj dołączyłeś"
-        case 1: return "1 dzień z nami"
-        default: return "\(days) dni z nami"
+        case 0: return L("You joined today")
+        case 1: return L("Day 1 with us")
+        default:
+            let format = L("%lld days with us")
+            return String.localizedStringWithFormat(format, days)
         }
     }
 
@@ -103,7 +105,7 @@ struct ProfileStatsCard: View {
         let liters = Double(milliliters) / 1000
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.minimumFractionDigits = 1
         formatter.maximumFractionDigits = 1
         return formatter.string(from: NSNumber(value: liters)) ?? "\(liters)"
@@ -114,7 +116,7 @@ struct ProfileStatsCard: View {
     private static func kcalString(_ value: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 

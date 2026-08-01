@@ -94,7 +94,7 @@ final class WorkerFoodDetectorTests: XCTestCase {
             XCTAssertEqual(request.url?.path, "/api/v1/scan-food")
             XCTAssertEqual(request.httpMethod, "POST")
             let auth = request.value(forHTTPHeaderField: "Authorization")
-            XCTAssertEqual(auth, "Bearer access-token-u-vision")
+            XCTAssertNil(auth)
             let contentType = request.value(forHTTPHeaderField: "Content-Type") ?? ""
             XCTAssertTrue(contentType.contains("multipart/form-data; boundary="))
             return MockURLProtocol.makeResponse(

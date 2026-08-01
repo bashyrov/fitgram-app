@@ -15,36 +15,38 @@ struct FeedEventCard: View {
     }()
 
     var body: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
-                        .frame(width: 32, height: 32)
-                        .overlay(
-                            Text(initial)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.primary)
-                        )
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(event.actorDisplayName)
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text(Self.relative.localizedString(for: event.createdAt, relativeTo: Date()))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
-                    Spacer(minLength: 0)
-                    Image(systemName: symbol)
-                        .foregroundStyle(Tokens.Palette.primary)
+        VStack(alignment: .leading, spacing: Tokens.Space.md) {
+            HStack(spacing: Tokens.Space.sm) {
+                avatar
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(event.actorDisplayName)
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(Self.relative.localizedString(for: event.createdAt, relativeTo: Date()))
+                        .font(Tokens.Font.caption)
+                        .foregroundStyle(Tokens.Palette.inkSubtle)
                 }
-                Text(event.payload)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .fixedSize(horizontal: false, vertical: true)
-                reactionsRow
+                Spacer(minLength: 0)
+                Image(systemName: symbol)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(iconTint)
+                    .frame(width: 34, height: 34)
+                    .background(Circle().fill(iconTint.opacity(0.13)))
             }
+            Text(LocalizedStringKey(event.payload))
+                .font(Tokens.Font.body)
+                .foregroundStyle(Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            reactionsRow
         }
+        .padding(Tokens.Space.md)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.80)))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(.white.opacity(0.34), lineWidth: 1)
+        )
+        .shadow(color: Tokens.Palette.primary.opacity(0.08), radius: 16, y: 10)
     }
 
     private var reactionsRow: some View {
@@ -64,10 +66,10 @@ struct FeedEventCard: View {
                         }
                     }
                     .padding(.horizontal, Tokens.Space.sm)
-                    .padding(.vertical, 6)
+                    .padding(.vertical, 7)
                     .background(
                         Capsule()
-                            .fill(selected ? Tokens.Palette.primarySoft : Tokens.Palette.surfaceMuted)
+                            .fill(selected ? Tokens.Palette.primarySoft : Tokens.Palette.surface.opacity(0.82))
                     )
                     .overlay(
                         Capsule()
@@ -87,6 +89,33 @@ struct FeedEventCard: View {
 
     private var initial: String {
         event.actorDisplayName.first.map { String($0).uppercased() } ?? "?"
+    }
+
+    private var avatar: some View {
+        Text(initial)
+            .font(.system(size: 16, weight: .heavy, design: .rounded))
+            .foregroundStyle(.white)
+            .frame(width: 42, height: 42)
+            .background(
+                Circle().fill(
+                    LinearGradient(
+                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+            )
+            .shadow(color: Tokens.Palette.primary.opacity(0.18), radius: 10, y: 5)
+    }
+
+    private var iconTint: Color {
+        switch event.kind {
+        case .streakMilestone: return Tokens.Palette.warning
+        case .achievementEarned: return Tokens.Palette.accent
+        case .recipeCooked: return Tokens.Palette.primary
+        case .challengeWon: return Tokens.Palette.success
+        case .joined: return Tokens.Palette.primary
+        }
     }
 
     private var symbol: String {

@@ -43,7 +43,8 @@ final class LiveActivityService {
         }
         let runningActivities = Activity<MealgramActivityAttributes>.activities
         if let existing = currentActivityID,
-            runningActivities.contains(where: { $0.id == existing }) {
+            runningActivities.contains(where: { $0.id == existing })
+        {
             return false
         }
         // Cover an edge case: a previous app launch left a dangling

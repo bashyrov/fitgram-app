@@ -13,7 +13,7 @@ struct AddWeightSheet: View {
     init(
         initialWeight: Double?,
         initialNote: String? = nil,
-        title: LocalizedStringKey = "Dodaj wpis wagi",
+        title: LocalizedStringKey = "Add weight entry",
         onCommit: @escaping (Double, String?) -> Void,
         onDismiss: @escaping () -> Void
     ) {
@@ -51,7 +51,7 @@ struct AddWeightSheet: View {
                             }
                         }
                         PrimaryButton(
-                            title: "Zapisz",
+                            title: "Save",
                             systemImage: "checkmark",
                             isEnabled: parsed != nil,
                             action: commit
@@ -65,7 +65,7 @@ struct AddWeightSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }

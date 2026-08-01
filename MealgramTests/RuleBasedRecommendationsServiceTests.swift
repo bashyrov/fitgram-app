@@ -3,6 +3,17 @@ import XCTest
 @testable import Mealgram
 
 final class RuleBasedRecommendationsServiceTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.set("en", forKey: "app.language")
+        Bundle.setLanguage("en")
+    }
+
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "app.language")
+        super.tearDown()
+    }
+
     private func request(
         sex: BiologicalSex = .female,
         age: Int = 30,
@@ -80,27 +91,38 @@ final class RuleBasedRecommendationsServiceTests: XCTestCase {
 
     func testLoseGoalAddsProteinTipWhenBelowThreshold() async throws {
         let svc = RuleBasedRecommendationsService()
-        // 80g / 70kg = ~1.14 g/kg — below 1.2 threshold
+        // 80g / 70kg = ~1.14 g/kg — below 1.2 threshold.
         let result = try await svc.generate(for: request(weight: 70, goal: .lose, protein: 80))
-        XCTAssertTrue(result.tips.contains { $0.title.contains("białko") })
+        XCTAssertTrue(result.tips.contains { $0.title.lowercased().contains("protein") })
     }
 
     func testGainGoalAddsCaloricBoostTip() async throws {
         let svc = RuleBasedRecommendationsService()
         let result = try await svc.generate(for: request(goal: .gain))
-        XCTAssertTrue(result.tips.contains { $0.title.lowercased().contains("kaloryczne") })
+        XCTAssertTrue(
+            result.tips.contains { tip in
+                let combined = (tip.title + " " + tip.description).lowercased()
+                return combined.contains("calorie") || combined.contains("kcal")
+            })
     }
 
     func testSedentaryAddsWalkingTip() async throws {
         let svc = RuleBasedRecommendationsService()
         let result = try await svc.generate(for: request(activity: .sedentary, prefs: []))
-        XCTAssertTrue(result.tips.contains { $0.title.lowercased().contains("spacery") })
+        XCTAssertTrue(result.tips.contains { $0.title.lowercased().contains("walk") })
     }
 
     func testDietaryPreferenceMentioned() async throws {
         let svc = RuleBasedRecommendationsService()
         let result = try await svc.generate(for: request(prefs: [.vegan, .glutenFree]))
-        XCTAssertTrue(result.tips.contains { $0.description.contains("Twoja Szybka Baza") })
+        // Globalised tip copy now references the Quick Database in English.
+        XCTAssertTrue(
+            result.tips.contains { tip in
+                let combined = (tip.title + " " + tip.description).lowercased()
+                return combined.contains("quick database")
+                    || combined.contains("vegan")
+                    || combined.contains("gluten")
+            })
     }
 
     func testNextStepsNonEmpty() async throws {

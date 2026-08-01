@@ -87,7 +87,7 @@ final class TodayState {
     /// Moves the visible day back by one. Always allowed.
     func goToPreviousDay(userRemoteID: String) async {
         guard let previous = calendar.date(byAdding: .day, value: -1, to: viewingDate) else { return }
-        viewingDate = calendar.startOfDay(for: previous)
+        setViewingDate(previous)
         await refresh(for: userRemoteID)
     }
 
@@ -97,12 +97,12 @@ final class TodayState {
         let today = calendar.startOfDay(for: now())
         guard viewingDate < today else { return }
         guard let next = calendar.date(byAdding: .day, value: 1, to: viewingDate) else { return }
-        viewingDate = min(today, calendar.startOfDay(for: next))
+        setViewingDate(min(today, calendar.startOfDay(for: next)))
         await refresh(for: userRemoteID)
     }
 
     func jumpToToday(userRemoteID: String) async {
-        viewingDate = calendar.startOfDay(for: now())
+        setViewingDate(now())
         await refresh(for: userRemoteID)
     }
 
@@ -111,8 +111,30 @@ final class TodayState {
     func jumpToDate(_ date: Date, userRemoteID: String) async {
         let today = calendar.startOfDay(for: now())
         let dayStart = calendar.startOfDay(for: date)
-        viewingDate = min(today, dayStart)
+        setViewingDate(min(today, dayStart))
         await refresh(for: userRemoteID)
+    }
+
+    @discardableResult
+    func overrideCalorieGoal(_ kcal: Int, userRemoteID: String) async -> Bool {
+        do {
+            let context = ModelContext(container)
+            let descriptor = FetchDescriptor<User>(
+                predicate: #Predicate { $0.remoteID == userRemoteID }
+            )
+            guard let user = try context.fetch(descriptor).first else { return false }
+            user.dailyCalorieGoalKcal = max(1000, min(4500, kcal))
+            user.caloriesOverridden = true
+            user.updatedAt = Date()
+            regenerateRecommendations(for: user)
+            try context.save()
+            await refresh(for: userRemoteID)
+            return true
+        } catch {
+            Logger.persistence.error("Calorie goal update failed: \(String(describing: error))")
+            loadError = String(describing: error)
+            return false
+        }
     }
 
     func refresh(for userRemoteID: String) async {
@@ -126,34 +148,32 @@ final class TodayState {
             let user = try context.fetch(userDescriptor).first
             self.user = user
 
-            let dayStart = calendar.startOfDay(for: viewingDate)
-            guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
-                self.meals = []
-                self.totals = Totals()
-                return
-            }
-            let mealDescriptor = FetchDescriptor<MealEntry>(
-                predicate: #Predicate { $0.consumedAt >= dayStart && $0.consumedAt < dayEnd },
-                sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
-            )
-            let entries = try context.fetch(mealDescriptor)
-            self.meals = entries
-            self.totals = entries.reduce(into: Totals()) { acc, entry in
-                acc.calories += entry.totalCaloriesKcal
-                acc.protein += entry.totalProteinGrams
-                acc.carbs += entry.totalCarbsGrams
-                acc.fat += entry.totalFatGrams
-            }
-            self.streak = try streakService.currentStreak(for: userRemoteID)
-            self.suggestedRecipe = (try? recipeRepository?.all(sortedByCookCount: true))?
+            let mealSnapshot = try fetchMealSnapshot(in: context)
+            let streak = try streakService.currentStreak(for: userRemoteID)
+            let suggestedRecipe = (try? recipeRepository?.all(sortedByCookCount: true))?
                 .first { $0.cookCount > 0 }
             let nextEvent = culturalEvents.upcoming(from: now())
-            self.upcomingEvent = nextEvent.flatMap { event in
+            let upcomingEvent = nextEvent.flatMap { event in
                 culturalDismissals.isDismissed(event) ? nil : event
             }
-            self.coachInsights = coachService?.insights(for: userRemoteID) ?? []
-            self.waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
-            self.loadError = nil
+            let coachInsights: [CoachInsight]
+            if let coachService {
+                coachInsights = await coachService.insights(for: userRemoteID)
+            } else {
+                coachInsights = []
+            }
+            let waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
+
+            let result = RefreshResult(
+                meals: mealSnapshot.meals,
+                totals: mealSnapshot.totals,
+                streak: streak,
+                suggestedRecipe: suggestedRecipe,
+                upcomingEvent: upcomingEvent,
+                coachInsights: coachInsights,
+                waterTotalMl: waterTotalMl
+            )
+            applyRefreshResult(result)
             // Widget snapshot is "today" only — never publish a stale
             // historical day to the home-screen widget or Watch face.
             if isViewingToday {
@@ -165,6 +185,66 @@ final class TodayState {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
             self.loadError = String(describing: error)
         }
+    }
+
+    private func fetchMealSnapshot(in context: ModelContext) throws -> MealSnapshot {
+        let dayStart = calendar.startOfDay(for: viewingDate)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+            return MealSnapshot(meals: [], totals: Totals())
+        }
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.consumedAt >= dayStart && $0.consumedAt < dayEnd },
+            sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
+        )
+        let meals = try context.fetch(descriptor)
+        let totals = meals.reduce(into: Totals()) { acc, entry in
+            acc.calories += entry.totalCaloriesKcal
+            acc.protein += entry.totalProteinGrams
+            acc.carbs += entry.totalCarbsGrams
+            acc.fat += entry.totalFatGrams
+        }
+        return MealSnapshot(meals: meals, totals: totals)
+    }
+
+    private func setViewingDate(_ date: Date) {
+        let dayStart = calendar.startOfDay(for: date)
+        withAnimation(Tokens.Motion.gentle) {
+            viewingDate = dayStart
+        }
+    }
+
+    private struct MealSnapshot {
+        let meals: [MealEntry]
+        let totals: Totals
+    }
+
+    private struct RefreshResult {
+        let meals: [MealEntry]
+        let totals: Totals
+        let streak: Streak
+        let suggestedRecipe: Recipe?
+        let upcomingEvent: CulturalEventService.Upcoming?
+        let coachInsights: [CoachInsight]
+        let waterTotalMl: Int
+    }
+
+    private func applyRefreshResult(_ result: RefreshResult) {
+        withAnimation(Tokens.Motion.gentle) {
+            self.meals = result.meals
+            self.totals = result.totals
+            self.streak = result.streak
+            self.suggestedRecipe = result.suggestedRecipe
+            self.upcomingEvent = result.upcomingEvent
+            self.coachInsights = result.coachInsights
+            self.waterTotalMl = result.waterTotalMl
+            self.loadError = nil
+        }
+    }
+
+    private func regenerateRecommendations(for user: User) {
+        guard let recommendations = RuleBasedRecommendationsService.buildSync(for: user) else { return }
+        user.latestRecommendationsJSON = try? JSONEncoder().encode(recommendations)
+        user.recommendationsGeneratedAt = Date()
     }
 
     // MARK: - Derived
@@ -220,7 +300,7 @@ final class TodayState {
         // widget can format without re-rounding.
         let recentMeals: [WidgetSnapshot.MealRow] = meals.prefix(6).map { entry in
             WidgetSnapshot.MealRow(
-                name: entry.items.first?.name ?? String(localized: "Posiłek"),
+                name: entry.items.first?.name ?? L("Posiłek"),
                 kcal: Int(entry.totalCaloriesKcal.rounded())
             )
         }
@@ -298,9 +378,9 @@ final class TodayState {
     var greeting: LocalizedStringKey {
         let hour = calendar.component(.hour, from: now())
         switch hour {
-        case 5..<11: return "Dzień dobry"
-        case 11..<18: return "Cześć"
-        case 18..<23: return "Dobry wieczór"
+        case 5..<11: return "Good morning"
+        case 11..<18: return "Hi"
+        case 18..<23: return "Good evening"
         default: return "Hej"
         }
     }
@@ -309,12 +389,11 @@ final class TodayState {
     /// protect, freezes left, and nothing has been logged today yet.
     var canUseFreeze: Bool {
         guard isViewingToday else { return false }
-        guard let streak, streak.currentLength > 0, streak.freezesAvailable > 0 else { return false }
-        let dayStart = calendar.startOfDay(for: now())
-        if let last = streak.lastLoggedDate, calendar.startOfDay(for: last) >= dayStart {
-            return false
-        }
-        return totals.calories == 0
+        return StreakFreezePolicy(calendar: calendar).canUseFreeze(
+            streak: streak,
+            now: now(),
+            hasLoggedToday: !meals.isEmpty
+        )
     }
 
     /// Consumes one freeze and refreshes. Returns true if a freeze was

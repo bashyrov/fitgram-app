@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Tap-through legal sheet. Holds the Privacy Policy + Terms of Service
 /// URLs which are required by Apple's App Store guidelines (5.1.1)
-/// and by GDPR / RODO. Defaults point at mealgram.pl — change once
+/// and by GDPR / RODO. Defaults point at mealgram.xyz — change once
 /// the actual policy URLs are live.
 struct LegalSheet: View {
     let onDismiss: () -> Void
@@ -16,12 +16,12 @@ struct LegalSheet: View {
     }
 
     private static let privacyURL =
-        URL(string: "https://mealgram.pl/privacy")
+        URL(string: "https://mealgram.xyz/privacy")
         ?? URL(filePath: "/")
     private static let termsURL =
-        URL(string: "https://mealgram.pl/terms")
+        URL(string: "https://mealgram.xyz/terms")
         ?? URL(filePath: "/")
-    private static let supportEmail = "hello@mealgram.pl"
+    private static let supportEmail = "hello@mealgram.xyz"
 
     var body: some View {
         NavigationStack {
@@ -42,7 +42,7 @@ struct LegalSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
             .sheet(item: $presentedURL) { wrapper in
@@ -58,7 +58,7 @@ struct LegalSheet: View {
                 Text("Wszystko w jednym miejscu")
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("Zasady, prywatność, kontakt. Linki otwierają się w bezpiecznej przeglądarce w aplikacji.")
+                Text("Terms, privacy, contact. Links open in a secure in-app browser.")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
@@ -69,11 +69,11 @@ struct LegalSheet: View {
     private var documentsCard: some View {
         Card {
             VStack(alignment: .leading, spacing: 0) {
-                row(symbol: "lock.shield", title: "Polityka prywatności") {
+                row(symbol: "lock.shield", title: "Privacy policy") {
                     presentedURL = IdentifiedURL(url: Self.privacyURL)
                 }
                 Divider().background(Tokens.Palette.separator)
-                row(symbol: "doc.text", title: "Regulamin") {
+                row(symbol: "doc.text", title: "Terms") {
                     presentedURL = IdentifiedURL(url: Self.termsURL)
                 }
             }
@@ -86,7 +86,7 @@ struct LegalSheet: View {
                 Text("Kontakt")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("hello@mealgram.pl")
+                Text("hello@mealgram.xyz")
                     .font(Tokens.Font.body)
                     .foregroundStyle(Tokens.Palette.primary)
                     .onTapGesture {
@@ -107,7 +107,7 @@ struct LegalSheet: View {
                 Text("Atrybucje")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("Baza produktów: Open Food Facts (ODbL).")
+                Text("Food database: Open Food Facts (ODbL).")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text("Wartości makro: USDA + producent.")

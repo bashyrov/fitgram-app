@@ -14,8 +14,8 @@ struct StreakWidget: Widget {
             StreakWidgetEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
         }
-        .configurationDisplayName("Twoja seria")
-        .description("Pokaż serię posiłków i postęp kalorii.")
+        .configurationDisplayName(WL("Your streak"))
+        .description(WL("Show your meal streak and calorie progress."))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -31,11 +31,11 @@ struct StreakProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StreakEntry) -> Void) {
-        completion(StreakEntry(date: Date(), snapshot: WidgetSnapshotStore.shared.load() ?? .placeholder))
+        completion(StreakEntry(date: Date(), snapshot: WidgetSnapshotStore.shared.load() ?? .preview))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StreakEntry>) -> Void) {
-        let entry = StreakEntry(date: Date(), snapshot: WidgetSnapshotStore.shared.load() ?? .placeholder)
+        let entry = StreakEntry(date: Date(), snapshot: WidgetSnapshotStore.shared.load() ?? .preview)
         // Refresh every 30 min — the app also pushes via WidgetCenter
         // after every meal save for faster feedback.
         let nextRefresh = Date().addingTimeInterval(30 * 60)
@@ -65,7 +65,7 @@ struct StreakWidgetEntryView: View {
                     .font(.system(size: 42, weight: .heavy, design: .rounded))
                     .foregroundStyle(.primary)
             }
-            Text(entry.snapshot.streakLabel)
+            Text(entry.snapshot.streakLength == 1 ? WL("day in a row") : WL("days in a row"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Spacer()
@@ -89,7 +89,7 @@ struct StreakWidgetEntryView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
                 if entry.snapshot.lastMealName.isEmpty {
-                    Text("Stuknij, żeby dodać pierwszy posiłek.")
+                    Text(WL("Tap to add your first meal."))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.leading)

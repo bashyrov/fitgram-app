@@ -30,7 +30,7 @@ struct StreakHeader: View {
                     Image(systemName: streakLength > 0 ? "flame.fill" : "flame")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(streakLength > 0 ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
-                    Text("\(streakLength)")
+                    Text(String.localizedStringWithFormat(L("%lld"), streakLength))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(streakLength > 0 ? Tokens.Palette.ink : Tokens.Palette.inkMuted)
                 }
@@ -45,7 +45,7 @@ struct StreakHeader: View {
                 )
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(Text("Streak \(streakLength) dni"))
+            .accessibilityLabel(Text(String.localizedStringWithFormat(L("Streak %lld dni"), streakLength)))
             .accessibilityHint(Text("Stuknij, aby zobaczyć jak działa streak"))
             Button(action: onTapProfile) {
                 Circle()
@@ -57,7 +57,7 @@ struct StreakHeader: View {
                             .foregroundStyle(Tokens.Palette.primary)
                     )
             }
-            .accessibilityLabel(Text("Profil"))
+            .accessibilityLabel(Text("Profile"))
         }
         .sheet(isPresented: $isExplanationPresented) {
             StreakExplanationSheet(streakLength: streakLength) {
@@ -69,7 +69,7 @@ struct StreakHeader: View {
 
     private var name: String {
         if let displayName, !displayName.isEmpty { return displayName }
-        return String(localized: "ty")
+        return L("ty")
     }
 
     private var initial: String {

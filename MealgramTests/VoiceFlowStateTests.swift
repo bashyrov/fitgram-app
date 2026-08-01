@@ -17,15 +17,13 @@ final class VoiceFlowStateTests: XCTestCase {
         XCTAssertEqual(VoiceFlowState.suggestedMealType(forHour: 23), .snack)
     }
 
-    func testCommitPersistsTranscriptAsMealEntry() throws {
+    func testCommitPersistsItemsAsMealEntry() throws {
         let state = VoiceFlowState(session: VoiceCaptureSession(), mealSaver: saver)
-        try state.commit(transcript: "  zjadłam ovsiankę z malinami  ")
+        let item = FoodItem(name: "Owsianka z malinami", quantityGrams: 250, caloriesKcal: 320)
+        try state.commit(items: [item])
         let saved = try XCTUnwrap(saver.saved)
         XCTAssertEqual(saved.source, .voice)
         XCTAssertEqual(saved.items.count, 1)
-        // VoiceMealParser capitalises the residual name when no catalog
-        // match exists. The full transcript is preserved; only casing
-        // differs.
-        XCTAssertEqual(saved.items.first?.name, "Zjadłam Ovsiankę Z Malinami")
+        XCTAssertEqual(saved.items.first?.name, "Owsianka z malinami")
     }
 }

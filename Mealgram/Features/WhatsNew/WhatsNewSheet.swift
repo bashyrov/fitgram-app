@@ -35,7 +35,7 @@ struct WhatsNewSheet: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Później", action: onDismiss)
+                    Button("Later", action: onDismiss)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
             }
@@ -82,7 +82,7 @@ struct WhatsNewSheet: View {
                         .textCase(.uppercase)
                         .tracking(1.2)
                         .foregroundStyle(Tokens.Palette.inkMuted)
-                    Text("Mealgram \(entry.version)")
+                    Text(String.localizedStringWithFormat(L("Mealgram %@"), entry.version))
                         .font(.system(size: 30, weight: .heavy, design: .rounded))
                         .foregroundStyle(Tokens.Palette.ink)
                 }
@@ -213,7 +213,7 @@ enum WhatsNewCatalog {
                 .init(
                     symbol: "globe",
                     tint: Color(red: 0.55, green: 0.45, blue: 0.85),
-                    title: "5 języków, mgnienie oka",
+                    title: "5 languages, instant switch",
                     body: "Polski, English, Українська, Русский, Español — zmiana bez restartu w Ustawieniach."
                 ),
                 .init(
@@ -223,7 +223,7 @@ enum WhatsNewCatalog {
                     body: "Kalorie na lock screenie, w Dynamic Island i na nadgarstku."
                 ),
             ]
-        ),
+        )
     ]
 
     /// Returns the entry the user should see, or nil if the running

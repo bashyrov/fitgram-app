@@ -28,6 +28,7 @@ final class NotificationPlannerTests: XCTestCase {
         )
         XCTAssertEqual(plan.morningGreeting, DateComponents(hour: 8, minute: 0))
         XCTAssertEqual(plan.streakRisk, DateComponents(hour: 20, minute: 30))
+        XCTAssertFalse(plan.streakRiskSuggestsFreeze)
         XCTAssertEqual(plan.eveningSummary, DateComponents(hour: 21, minute: 0))
     }
 
@@ -42,6 +43,7 @@ final class NotificationPlannerTests: XCTestCase {
         )
         XCTAssertNil(plan.morningGreeting)
         XCTAssertNil(plan.streakRisk)
+        XCTAssertFalse(plan.streakRiskSuggestsFreeze)
         XCTAssertEqual(plan.eveningSummary, DateComponents(hour: 21, minute: 0))
     }
 
@@ -147,5 +149,37 @@ final class NotificationPlannerTests: XCTestCase {
         XCTAssertNil(plan.morningGreeting)
         XCTAssertNil(plan.streakRisk)
         XCTAssertEqual(plan.eveningSummary, DateComponents(hour: 21, minute: 0))
+    }
+
+    func testStreakRiskSuggestsFreezeWhenAvailable() {
+        let plan = NotificationPlanner.plan(
+            .init(
+                preferences: .default,
+                hasLoggedToday: false,
+                calendar: Self.utcCalendar(),
+                now: Self.date("2026-05-12T19:00:00Z"),
+                currentStreakLength: 8,
+                freezesAvailable: 1,
+                hasProtectedStreakToday: false
+            )
+        )
+        XCTAssertEqual(plan.streakRisk, DateComponents(hour: 20, minute: 30))
+        XCTAssertTrue(plan.streakRiskSuggestsFreeze)
+    }
+
+    func testProtectedStreakTodaySilencesRiskReminder() {
+        let plan = NotificationPlanner.plan(
+            .init(
+                preferences: .default,
+                hasLoggedToday: false,
+                calendar: Self.utcCalendar(),
+                now: Self.date("2026-05-12T19:00:00Z"),
+                currentStreakLength: 8,
+                freezesAvailable: 1,
+                hasProtectedStreakToday: true
+            )
+        )
+        XCTAssertNil(plan.streakRisk)
+        XCTAssertFalse(plan.streakRiskSuggestsFreeze)
     }
 }

@@ -44,7 +44,8 @@ extension FriendProfileView {
         .padding(Tokens.Space.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(goalsHeroBackground)
-        .mealgramShadow(Tokens.Shadow.float)
+        .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(.white.opacity(0.38), lineWidth: 1))
+        .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 24, y: 14)
     }
 
     @ViewBuilder
@@ -72,7 +73,7 @@ extension FriendProfileView {
                 miniMetric(
                     symbol: "calendar",
                     value: "\(elapsed)",
-                    unit: String(localized: "dni"),
+                    unit: L("dni"),
                     label: "Z nami",
                     tint: Tokens.Palette.primary
                 )
@@ -81,22 +82,19 @@ extension FriendProfileView {
     }
 
     var goalsHeroBackground: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primarySoft, Tokens.Palette.accentSoft],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+        RoundedRectangle(cornerRadius: 28, style: .continuous)
+            .fill(
+                LinearGradient(
+                    colors: [
+                        Tokens.Palette.surface.opacity(0.92),
+                        Tokens.Palette.primarySoft.opacity(0.66),
+                        Tokens.Palette.accentSoft.opacity(0.44),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
                 )
-            Circle()
-                .fill(Tokens.Palette.primary.opacity(0.18))
-                .frame(width: 140, height: 140)
-                .blur(radius: 40)
-                .offset(x: 110, y: -50)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
+            )
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
     }
 
     func miniMetric(
@@ -139,32 +137,32 @@ extension FriendProfileView {
     }
 
     func favoriteRecipesCard(_ recipes: [PublicRecipeReference]) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack(spacing: Tokens.Space.sm) {
-                    ZStack {
-                        Circle()
-                            .fill(Tokens.Palette.success.opacity(0.18))
-                            .frame(width: 28, height: 28)
-                        Image(systemName: "book.closed.fill")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.success)
-                    }
-                    Text("Ulubione przepisy")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                }
-                ForEach(recipes) { recipe in
-                    recipeRow(recipe)
-                    if recipe.id != recipes.last?.id {
-                        Rectangle()
-                            .fill(Tokens.Palette.separator)
-                            .frame(height: 0.5)
-                    }
+        VStack(alignment: .leading, spacing: Tokens.Space.md) {
+            HStack(spacing: Tokens.Space.sm) {
+                Image(systemName: "book.closed.fill")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.success)
+                    .frame(width: 30, height: 30)
+                    .background(Circle().fill(Tokens.Palette.success.opacity(0.16)))
+                Text("Ulubione przepisy")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Spacer()
+            }
+            ForEach(recipes) { recipe in
+                recipeRow(recipe)
+                if recipe.id != recipes.last?.id {
+                    Rectangle()
+                        .fill(Tokens.Palette.separator.opacity(0.7))
+                        .frame(height: 0.5)
                 }
             }
         }
+        .padding(Tokens.Space.lg)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(.white.opacity(0.34), lineWidth: 1))
+        .shadow(color: Tokens.Palette.success.opacity(0.08), radius: 16, y: 9)
     }
 
     func recipeRow(_ recipe: PublicRecipeReference) -> some View {
@@ -184,7 +182,10 @@ extension FriendProfileView {
             if let onCopyRecipe {
                 Button {
                     onCopyRecipe(recipe)
-                    toasts.success("Zapisano do mojej książki", message: recipe.name)
+                    toasts.success(
+                        L("Zapisano do mojej książki"),
+                        message: recipe.name
+                    )
                 } label: {
                     Image(systemName: "tray.and.arrow.down.fill")
                         .font(.system(size: 14, weight: .semibold))

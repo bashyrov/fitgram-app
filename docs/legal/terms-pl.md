@@ -165,10 +165,10 @@ Spory rozstrzygane są przez sąd właściwy dla siedziby Dostawcy. Jako konsume
 Jeśli jakieś postanowienie Regulaminu okaże się nieważne, pozostałe pozostają w mocy.
 
 ### 11.2.
-Aktualna wersja Regulaminu zawsze dostępna pod adresem [mealgram.pl/terms](https://mealgram.pl/terms) i w Aplikacji.
+Aktualna wersja Regulaminu zawsze dostępna pod adresem [mealgram.xyz/terms](https://mealgram.xyz/terms) i w Aplikacji.
 
 ### 11.3.
-Kontakt w sprawach Regulaminu: **hello@mealgram.pl**
+Kontakt w sprawach Regulaminu: **hello@mealgram.xyz**
 
 ---
 

@@ -10,9 +10,12 @@ struct QuickDatabaseRootView: View {
     var entitlementsStore: EntitlementsStore?
     var paywallCoordinator: PaywallCoordinator?
     var userRemoteID: String?
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
 
     @State private var pickedFood: Food?
     @State private var isResetConfirmed = false
+    @State private var saveError: String?
 
     var body: some View {
         NavigationStack {
@@ -25,7 +28,7 @@ struct QuickDatabaseRootView: View {
                 }
                 .padding(.top, Tokens.Space.md)
             }
-            .navigationTitle(Text("Szybka baza"))
+            .navigationTitle(Text("Baza dań"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if state.shouldShowSuggestions {
@@ -34,7 +37,7 @@ struct QuickDatabaseRootView: View {
                             Button(role: .destructive) {
                                 isResetConfirmed = true
                             } label: {
-                                Label("Resetuj Ostatnie / Częste", systemImage: "arrow.counterclockwise")
+                                Label("Resetuj ostatnie i częste", systemImage: "arrow.counterclockwise")
                             }
                         } label: {
                             Image(systemName: "ellipsis.circle")
@@ -50,16 +53,18 @@ struct QuickDatabaseRootView: View {
             .sheet(item: $pickedFood) { food in
                 FoodDetailSheet(
                     food: food,
-                    onSave: { commit(food: food, item: $0, suggestedMealType: Self.suggestedMealType()) },
+                    onSave: { commit(food: food, items: $0, suggestedMealType: Self.suggestedMealType()) },
                     onDismiss: { pickedFood = nil },
                     favoritesService: favoritesService,
                     entitlementsStore: entitlementsStore,
                     paywallCoordinator: paywallCoordinator,
-                    userRemoteID: userRemoteID
+                    userRemoteID: userRemoteID,
+                    mealAnalyzer: mealAnalyzer,
+                    usageMeter: usageMeter
                 )
             }
             .confirmationDialog(
-                "Wyzerować Ostatnie i Częste?",
+                "Zresetować ostatnie i częste?",
                 isPresented: $isResetConfirmed,
                 titleVisibility: .visible
             ) {
@@ -68,7 +73,18 @@ struct QuickDatabaseRootView: View {
                 }
                 Button("Anuluj", role: .cancel) {}
             } message: {
-                Text("Karuzele Ostatnie i Częste wrócą do pierwszej konfiguracji.")
+                Text("Ostatnie i częste dania wrócą do domyślnego widoku.")
+            }
+            .alert(
+                "Nie udało się zapisać posiłku",
+                isPresented: Binding(
+                    get: { saveError != nil },
+                    set: { if !$0 { saveError = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { saveError = nil }
+            } message: {
+                Text(saveError ?? "Spróbuj ponownie.")
             }
         }
     }
@@ -80,7 +96,7 @@ struct QuickDatabaseRootView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(Tokens.Palette.inkMuted)
             TextField(
-                "Szukaj posiłku",
+                "Szukaj dania",
                 text: Binding(
                     get: { state.query },
                     set: { value in Task { await state.applyQuery(value) } }
@@ -113,7 +129,7 @@ struct QuickDatabaseRootView: View {
     private var categoryStrip: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: Tokens.Space.sm) {
-                chip(label: "Wszystkie", isSelected: state.selectedCategory == nil) {
+                chip(label: "Wszystko", isSelected: state.selectedCategory == nil) {
                     Task { await state.selectCategory(nil) }
                 }
                 if state.hasCustomFoods {
@@ -156,13 +172,24 @@ struct QuickDatabaseRootView: View {
 
     @ViewBuilder
     private var list: some View {
-        if state.foods.isEmpty {
+        if state.isLoading && state.foods.isEmpty {
+            ScrollView {
+                VStack(spacing: Tokens.Space.sm) {
+                    ForEach(0..<8, id: \.self) { _ in
+                        LoadingShimmer(cornerRadius: Tokens.Radius.md)
+                            .frame(height: 64)
+                    }
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, Tokens.Space.sm)
+            }
+        } else if state.foods.isEmpty {
             VStack(spacing: Tokens.Space.md) {
                 Spacer()
                 EmptyState(
                     symbol: "magnifyingglass",
                     title: "Nic nie znaleziono",
-                    message: "Spróbuj innego hasła albo wyłącz filtr kategorii.",
+                    message: "Spróbuj innego zapytania albo wyczyść filtr kategorii.",
                     action: nil
                 )
                 Spacer()
@@ -191,7 +218,7 @@ struct QuickDatabaseRootView: View {
         if !state.popularPicks.isEmpty {
             suggestionGroup(title: "Częste", foods: state.popularPicks)
         }
-        Text("Wszystkie")
+        Text("Wszystko")
             .font(Tokens.Font.headline)
             .foregroundStyle(Tokens.Palette.ink)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -218,7 +245,7 @@ struct QuickDatabaseRootView: View {
             pickedFood = food
         } label: {
             VStack(alignment: .leading, spacing: 2) {
-                Text(food.name)
+                Text(food.localizedName)
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(1)
@@ -251,7 +278,7 @@ struct QuickDatabaseRootView: View {
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(food.name)
+                    Text(food.localizedName)
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(subtitle(for: food))
@@ -280,7 +307,7 @@ struct QuickDatabaseRootView: View {
                 Button {
                     quickLog(food)
                 } label: {
-                    Label("Dodaj porcję domyślną", systemImage: "bolt.fill")
+                    Label("Dodaj domyślną porcję", systemImage: "bolt.fill")
                 }
             }
             Button {
@@ -298,14 +325,14 @@ struct QuickDatabaseRootView: View {
         guard let portion = food.defaultPortionGrams, portion > 0 else { return }
         let scale = portion / 100
         let item = FoodItem(
-            name: food.name,
+            name: food.localizedName,
             quantityGrams: portion,
             caloriesKcal: food.caloriesKcalPer100g * scale,
             proteinGrams: food.proteinGramsPer100g * scale,
             carbsGrams: food.carbsGramsPer100g * scale,
             fatGrams: food.fatGramsPer100g * scale
         )
-        commit(food: food, item: item, suggestedMealType: Self.suggestedMealType())
+        commit(food: food, items: [item], suggestedMealType: Self.suggestedMealType())
     }
 
     private func subtitle(for food: Food) -> String {
@@ -337,15 +364,20 @@ struct QuickDatabaseRootView: View {
 
     // MARK: - Save
 
-    private func commit(food: Food, item: FoodItem, suggestedMealType: MealType) {
+    private func commit(food: Food, items: [FoodItem], suggestedMealType: MealType) {
         let entry = MealEntry(
             mealType: suggestedMealType,
             source: .quickDatabase,
-            items: [item]
+            items: items
         )
-        try? mealSaver.save(meal: entry)
-        state.recordPick(food)
-        onDismiss()
+        do {
+            try mealSaver.save(meal: entry)
+            state.recordPick(food)
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     static func suggestedMealType() -> MealType {

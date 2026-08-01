@@ -46,7 +46,7 @@ final class BarcodeFlowState {
                 }
                 stage = .scanning
             } catch {
-                stage = .error(message: error.localizedDescription)
+                stage = .error(message: "Something went wrong. Try again.")
             }
         default:
             stage = .needsPermission(status)
@@ -87,6 +87,16 @@ final class BarcodeFlowState {
         reset()
     }
 
+    func commit(items: [FoodItem]) throws {
+        let entry = MealEntry(
+            mealType: Self.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date())),
+            source: .barcode,
+            items: items
+        )
+        try mealSaver.save(meal: entry)
+        reset()
+    }
+
     // MARK: - Detection
 
     private func handle(detected code: String) async {
@@ -102,7 +112,7 @@ final class BarcodeFlowState {
                 stage = .notFound(barcode: code)
             } catch {
                 Logger.networking.error("Barcode lookup failed: \(String(describing: error))")
-                stage = .error(message: error.localizedDescription)
+                stage = .error(message: "Something went wrong. Try again.")
             }
         }
     }

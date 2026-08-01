@@ -74,10 +74,10 @@ enum ReactionKind: String, Codable, Sendable, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .heart: return "Serce"
-        case .clap: return "Brawo"
-        case .flame: return "Ogień"
-        case .sparkles: return "Iskry"
+        case .heart: return L("Serce")
+        case .clap: return L("Brawo")
+        case .flame: return L("Ogień")
+        case .sparkles: return L("Iskry")
         }
     }
 }

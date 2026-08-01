@@ -126,7 +126,7 @@ struct OlaInsightsHero: View {
     // MARK: - Summary
 
     private var summaryBlock: some View {
-        Text(recommendations.summary)
+        Text(L(recommendations.summary))
             .font(.system(size: 19, weight: .semibold, design: .rounded))
             .foregroundStyle(Tokens.Palette.ink)
             .lineSpacing(2)
@@ -143,7 +143,7 @@ struct OlaInsightsHero: View {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Tokens.Palette.warning)
-                    Text(warning)
+                    Text(L(warning))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.ink)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -197,11 +197,11 @@ struct OlaInsightsHero: View {
                     .font(.system(size: 28))
             }
             VStack(alignment: .leading, spacing: 4) {
-                Text(tip.title)
+                Text(L(tip.title))
                     .font(Tokens.Font.title3)
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(2)
-                Text(tip.description)
+                Text(L(tip.description))
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .lineLimit(4)
@@ -247,7 +247,7 @@ struct OlaInsightsHero: View {
                     .font(.system(size: 10, weight: .heavy))
                     .tracking(1.4)
                     .foregroundStyle(Tokens.Palette.primary)
-                Text(recommendations.nextSteps)
+                Text(L(recommendations.nextSteps))
                     .font(Tokens.Font.body.weight(.semibold))
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(2)

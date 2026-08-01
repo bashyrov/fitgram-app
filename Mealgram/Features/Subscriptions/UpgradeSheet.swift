@@ -1,186 +1,150 @@
 import SwiftUI
 
-/// Universal in-app upgrade sheet. Raised from any surface that hits a
-/// free-tier limit — the `trigger` argument flips the headline/body so
-/// the user sees the right framing. Plan selector + purchase wiring
-/// uses the same `SubscriptionService` the onboarding paywall does.
+/// Universal in-app upgrade sheet. It uses the active SubscriptionService
+/// offerings so the UI mirrors the StoreKit configuration exactly.
 struct UpgradeSheet: View {
     let trigger: PaywallTrigger
     let subscriptionService: any SubscriptionService
     let onDismiss: () -> Void
 
-    @State private var selectedPlan: PlanID = .annual
-    @State private var isPurchasing: Bool = false
+    @State private var offerings: [SubscriptionOffering] = []
+    @State private var selectedID: String?
+    @State private var isLoading = true
+    @State private var isPurchasing = false
     @State private var error: String?
-
-    enum PlanID: String, CaseIterable, Identifiable {
-        case monthly
-        case annual
-        case lifetime
-        var id: String { rawValue }
-
-        var headline: LocalizedStringKey {
-            switch self {
-            case .monthly: return "Miesięczna"
-            case .annual: return "Roczna"
-            case .lifetime: return "Pioneer · raz na zawsze"
-            }
-        }
-        var price: LocalizedStringKey {
-            switch self {
-            case .monthly: return "29 zł"
-            case .annual: return "199 zł"
-            case .lifetime: return "999 zł"
-            }
-        }
-        var unit: LocalizedStringKey {
-            switch self {
-            case .monthly: return "/ miesiąc"
-            case .annual: return "/ rok"
-            case .lifetime: return "jednorazowo"
-            }
-        }
-        var detail: LocalizedStringKey {
-            switch self {
-            case .monthly: return "7 dni za darmo · anuluj w sekundę"
-            case .annual: return "16,60 zł / mies. · 7 dni za darmo"
-            case .lifetime: return "Tylko 1000 miejsc · bez subskrypcji"
-            }
-        }
-        var badge: LocalizedStringKey? {
-            switch self {
-            case .annual: return "−43% TANIEJ"
-            case .lifetime: return "LIMITED"
-            default: return nil
-            }
-        }
-    }
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        triggerHeader
-                        featuresCard
-                        plansList
-                        if let error {
-                            Text(error)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.error)
-                        }
-                        legalNote
+            ScrollView {
+                VStack(spacing: Tokens.Space.lg) {
+                    header
+                    featuresList
+                    planSection
+                    if let error {
+                        Text(error)
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.error)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, Tokens.Space.lg)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.top, Tokens.Space.lg)
-                    // Bottom padding clears the floating Primary CTA so
-                    // the legal "Bezpieczna płatność..." line is fully
-                    // readable when the user scrolls to the end.
-                    .padding(.bottom, 130)
+                    legalNote
                 }
-                VStack {
-                    Spacer()
-                    PrimaryButton(
-                        title: "Zacznij 7-dniowy okres próbny",
-                        systemImage: "sparkles",
-                        isLoading: isPurchasing,
-                        action: { Task { await purchase() } }
-                    )
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.bottom, Tokens.Space.lg)
-                    .background(
-                        LinearGradient(
-                            colors: [Tokens.Palette.background.opacity(0), Tokens.Palette.background],
-                            startPoint: .top,
-                            endPoint: .center
-                        )
-                        .frame(height: 32)
-                        .frame(maxHeight: .infinity, alignment: .top)
-                        .offset(y: -32)
-                        .allowsHitTesting(false)
-                    )
-                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, Tokens.Space.lg)
+                .padding(.bottom, 120)
             }
+            .background(upgradeBackground)
+            .navigationTitle(Text("Premium"))
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Później", action: onDismiss)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        Task { await restore() }
-                    } label: {
-                        Text("Przywróć")
-                            .font(Tokens.Font.footnote)
-                    }
+                    Button("Przywróć") { Task { await restore() } }
+                        .disabled(isPurchasing)
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                bottomBar
+            }
         }
+        .task { await loadOfferings() }
         .toastSurface()
     }
 
-    @ViewBuilder
-    private var triggerHeader: some View {
+    private var selectedOffering: SubscriptionOffering? {
+        guard let selectedID else { return nil }
+        return offerings.first { $0.id == selectedID }
+    }
+
+    private var upgradeBackground: some View {
+        ZStack {
+            Tokens.Palette.background
+            Circle()
+                .fill(Tokens.Palette.primarySoft.opacity(0.48))
+                .frame(width: 360, height: 360)
+                .blur(radius: 110)
+                .offset(x: -160, y: -230)
+            Circle()
+                .fill(Tokens.Palette.accentSoft.opacity(0.26))
+                .frame(width: 320, height: 320)
+                .blur(radius: 115)
+                .offset(x: 170, y: -20)
+            Circle()
+                .fill(Tokens.Palette.warning.opacity(0.12))
+                .frame(width: 260, height: 260)
+                .blur(radius: 105)
+                .offset(x: -100, y: 430)
+        }
+        .ignoresSafeArea()
+    }
+
+    private var header: some View {
         let copy = trigger.copy
-        Card(background: Tokens.Palette.primarySoft) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        return VStack(spacing: Tokens.Space.md) {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Tokens.Palette.primary)
+                .frame(width: 74, height: 74)
+                .overlay {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 32, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                .shadow(color: Tokens.Palette.primary.opacity(0.22), radius: 18, x: 0, y: 10)
+
+            VStack(spacing: Tokens.Space.xs) {
                 if let badge = copy.badge {
                     Text(badge.uppercased())
                         .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundStyle(Tokens.Palette.primary)
                         .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(
-                            Capsule().fill(Tokens.Palette.primary)
-                        )
-                        .foregroundStyle(.white)
+                        .padding(.vertical, 5)
+                        .background(Capsule().fill(Tokens.Palette.primarySoft))
                 }
                 Text(copy.headline)
                     .font(Tokens.Font.title2)
                     .foregroundStyle(Tokens.Palette.ink)
+                    .multilineTextAlignment(.center)
                 Text(copy.body)
                     .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .frame(maxWidth: .infinity)
+        .padding(.top, Tokens.Space.sm)
     }
 
-    private var featuresCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Tokens.Palette.primary)
-                    Text("Co dostajesz w Premium")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                feature(
-                    symbol: "camera.metering.center.weighted",
-                    title: "Nieograniczone skany AI",
-                    detail: "Zdjęcia, kody, głos — bez tygodniowych limitów"
-                )
-                feature(
-                    symbol: "star.fill",
-                    title: "Moje przepisy",
-                    detail: "Dodaj jednym tapnięciem, oszczędź minuty dziennie"
-                )
-                feature(
-                    symbol: "sparkles.tv",
-                    title: "Ola — Twój trener AI",
-                    detail: "Codzienne podsumowania zamiast 1 tygodniowo"
-                )
-                feature(
-                    symbol: "chart.line.uptrend.xyaxis",
-                    title: "Pełna historia + eksporty",
-                    detail: "JSON, CSV, ZIP · brak limitu 30 dni"
-                )
-                feature(
-                    symbol: "person.2.fill",
-                    title: "Nieograniczona społeczność",
-                    detail: "Znajomi, cele, przepisy — bez limitów"
-                )
-            }
+    private var featuresList: some View {
+        VStack(spacing: 0) {
+            feature(
+                symbol: "camera.viewfinder",
+                title: "Nieograniczone skany AI",
+                detail: "Zdjęcia, kody i głos bez tygodniowych limitów"
+            )
+            Divider().padding(.leading, 44)
+            feature(
+                symbol: "sparkles",
+                title: "Ola — Twój coach AI",
+                detail: "Codzienne wskazówki i tygodniowe podsumowania pod Twoje cele"
+            )
+            Divider().padding(.leading, 44)
+            feature(
+                symbol: "chart.line.uptrend.xyaxis",
+                title: "Pełna historia postępów",
+                detail: "Trendy, eksporty, przepisy, ulubione i synchronizacja iCloud"
+            )
+        }
+        .padding(.vertical, Tokens.Space.xs)
+        .background {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Tokens.Palette.surface)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Tokens.Palette.separator.opacity(0.65), lineWidth: 0.5)
         }
     }
 
@@ -191,160 +155,264 @@ struct UpgradeSheet: View {
     ) -> some View {
         HStack(alignment: .top, spacing: Tokens.Space.md) {
             Image(systemName: symbol)
-                .font(.system(size: 18))
+                .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
+                .frame(width: 28, height: 28)
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(detail)
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 0)
         }
+        .padding(.horizontal, Tokens.Space.lg)
+        .padding(.vertical, Tokens.Space.md)
     }
 
-    private var plansList: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            ForEach(PlanID.allCases) { plan in
-                UpgradePlanRow(
-                    plan: plan,
-                    isSelected: selectedPlan == plan,
-                    action: { selectedPlan = plan }
+    @ViewBuilder
+    private var planSection: some View {
+        if isLoading {
+            VStack(spacing: Tokens.Space.md) {
+                ProgressView()
+                    .tint(Tokens.Palette.primary)
+                Text("Ładowanie planów…")
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Tokens.Space.xxl)
+            .background {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            }
+        } else if offerings.isEmpty {
+            VStack(spacing: Tokens.Space.sm) {
+                Image(systemName: "sparkles")
+                    .font(.title2)
+                    .foregroundStyle(Tokens.Palette.primary)
+                Text("Plany testowe są gotowe")
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(
+                    "Apple może nie zwrócić produktów w lokalnej instalacji. Do testu pokażemy konfigurację z aplikacji."
                 )
+                .font(Tokens.Font.footnote)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+                .multilineTextAlignment(.center)
+                Button("Pokaż plany testowe") {
+                    offerings = [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
+                    selectedID = offerings.first(where: \.isFeatured)?.id ?? offerings.first?.id
+                    error = nil
+                }
+                .font(Tokens.Font.footnote.weight(.semibold))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(Tokens.Space.xl)
+            .background {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            }
+        } else {
+            VStack(spacing: Tokens.Space.sm) {
+                ForEach(offerings) { offering in
+                    UpgradeOfferingRow(
+                        offering: offering,
+                        isSelected: selectedID == offering.id,
+                        action: {
+                            selectedID = offering.id
+                            Haptics.light()
+                        }
+                    )
+                }
             }
         }
     }
 
     private var legalNote: some View {
-        VStack(spacing: 4) {
-            HStack(spacing: Tokens.Space.xs) {
-                Image(systemName: "lock.shield.fill")
-                    .foregroundStyle(Tokens.Palette.primary)
-                Text("Bezpieczna płatność przez Apple · RODO od pierwszego dnia")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Bezpieczna płatność przez Apple", systemImage: "lock.shield.fill")
+                .font(Tokens.Font.caption.weight(.semibold))
+                .foregroundStyle(Tokens.Palette.inkMuted)
+            Text(autoRenewalDisclosure)
+                .font(Tokens.Font.caption2)
+                .foregroundStyle(Tokens.Palette.inkSubtle)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 14) {
+                if let privacyURL {
+                    Link("Polityka prywatności", destination: privacyURL)
+                }
+                if let termsURL {
+                    Link("Warunki korzystania", destination: termsURL)
+                }
                 Spacer()
             }
-            HStack {
-                Text("Anuluj w każdej chwili w Ustawieniach iOS.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-                Spacer()
-            }
+            .font(Tokens.Font.caption2.weight(.semibold))
+            .foregroundStyle(Tokens.Palette.primary)
         }
     }
 
-    // MARK: - Actions
+    private var privacyURL: URL? {
+        URL(string: "https://mealgram.xyz/privacy")
+    }
 
+    private var termsURL: URL? {
+        URL(string: "https://mealgram.xyz/terms")
+    }
+
+    private var bottomBar: some View {
+        VStack(spacing: Tokens.Space.sm) {
+            PrimaryButton(
+                title: selectedOffering?.trialDays == nil
+                    ? "Dalej"
+                    : "Zacznij okres próbny",
+                systemImage: "checkmark",
+                isLoading: isPurchasing,
+                isEnabled: selectedOffering != nil && !isLoading
+            ) {
+                Task { await purchase() }
+            }
+            HStack(spacing: Tokens.Space.xs) {
+                Image(systemName: "apple.logo")
+                Text("Zarządzaj lub anuluj kiedy chcesz w Ustawieniach")
+            }
+            .font(Tokens.Font.caption)
+            .foregroundStyle(Tokens.Palette.inkSubtle)
+        }
+        .padding(.horizontal, Tokens.Space.screenPadding)
+        .padding(.top, Tokens.Space.md)
+        .padding(.bottom, Tokens.Space.sm)
+        .background(.regularMaterial)
+    }
+
+    /// Apple App Store guideline 3.1.2 requires clear subscription terms.
+    private var autoRenewalDisclosure: LocalizedStringKey {
+        """
+        Premium odnawia się co miesiąc lub co rok w pokazanej cenie do momentu anulowania. \
+        Opłata za odnowienie jest pobierana z Apple ID przed końcem okresu.
+        """
+    }
+
+    @MainActor
+    private func loadOfferings() async {
+        isLoading = true
+        error = nil
+        defer { isLoading = false }
+        do {
+            let loaded = try await subscriptionService.offerings()
+            offerings = loaded
+            selectedID = loaded.first(where: \.isFeatured)?.id ?? loaded.first?.id
+        } catch {
+            offerings = [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
+            selectedID = offerings.first(where: \.isFeatured)?.id ?? offerings.first?.id
+            self.error = nil
+        }
+    }
+
+    @MainActor
     private func purchase() async {
-        guard !isPurchasing else { return }
+        guard let selectedOffering, !isPurchasing else { return }
         isPurchasing = true
+        error = nil
         defer { isPurchasing = false }
         do {
-            let offering = offering(for: selectedPlan)
-            _ = try await subscriptionService.purchase(offering)
-            Haptics.success()
-            onDismiss()
+            let snapshot = try await subscriptionService.purchase(selectedOffering)
+            if snapshot.isPremium {
+                Haptics.success()
+                onDismiss()
+            }
         } catch {
-            self.error = "Nie udało się rozpocząć subskrypcji. Spróbuj ponownie."
+            self.error =
+                (error as? LocalizedError)?.errorDescription
+                ?? L("Couldn't start the subscription. Please try again.")
         }
     }
 
+    @MainActor
     private func restore() async {
+        guard !isPurchasing else { return }
+        isPurchasing = true
+        error = nil
+        defer { isPurchasing = false }
         do {
-            _ = try await subscriptionService.restore()
-            Haptics.success()
-            onDismiss()
+            let snapshot = try await subscriptionService.restore()
+            if snapshot.isPremium {
+                Haptics.success()
+                onDismiss()
+            } else {
+                self.error = L("Nothing to restore.")
+            }
         } catch {
-            self.error = "Nic do przywrócenia."
-        }
-    }
-
-    private func offering(for plan: PlanID) -> SubscriptionOffering {
-        switch plan {
-        case .monthly: return .stockMonthly
-        case .annual: return .stockAnnual
-        case .lifetime:
-            return SubscriptionOffering(
-                id: "lifetime",
-                productID: "mealgram_premium_lifetime",
-                title: String(localized: "Lifetime"),
-                priceLabel: "999 zł",
-                periodLabel: String(localized: "jednorazowo"),
-                isFeatured: false,
-                trialDays: nil
-            )
+            self.error = (error as? LocalizedError)?.errorDescription ?? L("Nothing to restore.")
         }
     }
 }
 
-private struct UpgradePlanRow: View {
-    let plan: UpgradeSheet.PlanID
+private struct UpgradeOfferingRow: View {
+    let offering: SubscriptionOffering
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(alignment: .center, spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .stroke(
-                            isSelected ? Tokens.Palette.primary : Tokens.Palette.separator,
-                            lineWidth: 2
-                        )
-                        .frame(width: 22, height: 22)
-                    if isSelected {
-                        Circle()
-                            .fill(Tokens.Palette.primary)
-                            .frame(width: 12, height: 12)
-                    }
-                }
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Tokens.Space.xs) {
                     HStack(spacing: Tokens.Space.xs) {
-                        Text(plan.headline)
+                        Text(offering.title)
                             .font(Tokens.Font.bodyEmphasized)
                             .foregroundStyle(Tokens.Palette.ink)
-                        if let badge = plan.badge {
-                            Text(badge)
+                        if offering.isFeatured {
+                            Text("NAJLEPSZA")
                                 .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(
-                                    Capsule().fill(Tokens.Palette.primary)
-                                )
-                                .foregroundStyle(.white)
+                                .background(Capsule().fill(Tokens.Palette.primary))
                         }
                     }
-                    Text(plan.detail)
+                    Text(detail)
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(2)
                 }
-                Spacer(minLength: 0)
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text(plan.price)
+                Spacer(minLength: Tokens.Space.sm)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(offering.priceLabel)
                         .font(Tokens.Font.title3)
-                        .foregroundStyle(isSelected ? Tokens.Palette.primary : Tokens.Palette.ink)
-                    Text(plan.unit)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(offering.periodLabel)
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(isSelected ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
             }
             .padding(Tokens.Space.lg)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(isSelected ? Tokens.Palette.primarySoft : Tokens.Palette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .stroke(
-                        isSelected ? Tokens.Palette.primary : Tokens.Palette.separator,
-                        lineWidth: isSelected ? 2 : 1
+                        isSelected ? Tokens.Palette.primary : Tokens.Palette.separator.opacity(0.65),
+                        lineWidth: isSelected ? 1.5 : 0.5
                     )
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var detail: LocalizedStringKey {
+        if let trialDays = offering.trialDays {
+            return LocalizedStringKey(
+                String.localizedStringWithFormat(L("%lld dni za darmo"), trialDays)
             )
         }
-        .buttonStyle(PressableButtonStyle())
+        return "Anuluj kiedy chcesz"
     }
 }

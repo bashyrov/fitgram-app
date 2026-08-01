@@ -21,6 +21,12 @@ struct RecommendationsRequest: Codable, Equatable, Sendable {
     var waterGoalMl: Int
     var dietaryPreferences: [DietaryPreference]
     var hitSafetyFloor: Bool
+    /// Opaque user id for AI-usage attribution. Empty during onboarding;
+    /// the Worker logs that as "anonymous".
+    var userID: String?
+    /// ISO 639-1 — the Worker prompts Gemini to answer in this language
+    /// so the onboarding plan card matches the device locale.
+    var locale: String?
 }
 
 /// Structured response from the AI Coach. Matches the JSON schema the

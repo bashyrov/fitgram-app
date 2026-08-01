@@ -94,6 +94,16 @@ final class VoiceMealParserTests: XCTestCase {
         XCTAssertEqual(item.caloriesKcal, 0)
     }
 
+    func testParseMultipleEmptyTranscriptReturnsNoItems() {
+        let parser = VoiceMealParser()
+        XCTAssertTrue(parser.parseMultiple("   ").isEmpty)
+    }
+
+    func testParseMultipleFillerSpeechReturnsNoItems() {
+        let parser = VoiceMealParser()
+        XCTAssertTrue(parser.parseMultiple("halo test nic").isEmpty)
+    }
+
     // MARK: - Multi-item
 
     func testSplitOnPolishConnectives() {

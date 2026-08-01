@@ -69,14 +69,14 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
         var warnings: [String] = []
         if request.hitSafetyFloor {
             warnings.append(
-                "Twoje tempo było zbyt agresywne — ustawiliśmy minimum kalorii, żeby chronić Twoje zdrowie. "
-                    + "Rozważ wolniejszy plan."
+                L("Your pace was too aggressive — we have set a calorie minimum to protect your health.")
+                    + L("Rozważ wolniejszy plan.")
             )
         }
         if let pace = request.paceKgPerWeek, pace >= 0.75 {
             warnings.append(
-                "Tempo \(formatted(pace)) kg/tydzień jest dość intensywne. Większość ludzi osiąga "
-                    + "trwałe rezultaty przy 0.25-0.5 kg/tydzień."
+                String.localizedStringWithFormat(L("Pace %@ kg/week is quite intense. Most people reach "), formatted(pace))
+                    + L("trwałe rezultaty przy 0.25-0.5 kg/tydzień.")
             )
         }
         return warnings
@@ -85,13 +85,18 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
     // MARK: - Tips
 
     private func tips(for request: RecommendationsRequest) -> [RecommendationTip] {
+        // Rotation seed — calendar day of year. Same plan stays stable
+        // throughout the day, but Ola surfaces a fresh angle every
+        // morning so the onboarding-cached snapshot doesn't feel stale.
+        let seed = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 0
+
         var tips: [RecommendationTip] = []
-        if let proteinTip = proteinTip(for: request) { tips.append(proteinTip) }
-        tips.append(goalAnchorTip(for: request))
-        tips.append(polishCuisineTip())
-        tips.append(hydrationTip(waterGoalMl: request.waterGoalMl))
+        if let proteinTip = proteinTip(for: request, seed: seed) { tips.append(proteinTip) }
+        tips.append(goalAnchorTip(for: request, seed: seed))
+        tips.append(cuisineTip(seed: seed))
+        tips.append(hydrationTip(waterGoalMl: request.waterGoalMl, seed: seed))
         if request.activityLevel == .sedentary {
-            tips.append(sedentaryNudgeTip())
+            tips.append(sedentaryNudgeTip(seed: seed))
         }
         if !request.dietaryPreferences.isEmpty {
             tips.append(dietaryPreferenceTip(prefs: request.dietaryPreferences))
@@ -99,101 +104,171 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
         return tips
     }
 
-    private func proteinTip(for request: RecommendationsRequest) -> RecommendationTip? {
-        let proteinPerKg = Double(request.proteinGoalGrams) / request.weightKg
-        guard request.goal == .lose, proteinPerKg < 1.2 else { return nil }
-        return RecommendationTip(
-            icon: "🍗",
-            title: "Postaw na białko",
-            description:
-                "Przy odchudzaniu celuj w 1.5-2 g białka na kg masy ciała — twarożek, jajka, "
-                + "schab i rośliny strączkowe pomogą zachować mięśnie."
-        )
+    /// Picks one option from the array using the supplied seed — gives
+    /// stable-per-day rotation without external randomness.
+    private static func pick<T>(_ options: [T], seed: Int) -> T {
+        options[abs(seed) % options.count]
     }
 
-    private func goalAnchorTip(for request: RecommendationsRequest) -> RecommendationTip {
+    private func proteinTip(for request: RecommendationsRequest, seed: Int) -> RecommendationTip? {
+        let proteinPerKg = Double(request.proteinGoalGrams) / request.weightKg
+        guard request.goal == .lose, proteinPerKg < 1.2 else { return nil }
+        let variants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "🍗",
+                title: L("Lean on protein"),
+                description:
+                    L("Aim for 1.5-2 g of protein per kg of body weight — cottage cheese, eggs, chicken, lentils keep muscle while fat goes.")
+            ),
+            RecommendationTip(
+                icon: "🥚",
+                title: L("Front-load protein"),
+                description: L("Hitting 30-35 g at breakfast cuts the 11 AM cookie reflex more than half of users notice.")
+            ),
+            RecommendationTip(
+                icon: "🐟",
+                title: L("Two protein servings"),
+                description:
+                    L("Two palm-sized servings of meat / fish / tofu per day usually nails your protein target without obsessing.")
+            ),
+        ]
+        return Self.pick(variants, seed: seed)
+    }
+
+    private func goalAnchorTip(for request: RecommendationsRequest, seed: Int) -> RecommendationTip {
+        let loseVariants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "🥗", title: L("Half the plate is vegetables"),
+                description:
+                    L("Salad, slaw, pickled cucumbers — low-calorie volume keeps you full. Try it at every lunch and dinner.")
+            ),
+            RecommendationTip(
+                icon: "🍽", title: L("Slow the meal down"),
+                description:
+                    L("20 minutes per meal lets satiety signals catch up. Most over-eating is finishing the plate before your gut knows it's full.")
+            ),
+            RecommendationTip(
+                icon: "🌅", title: L("Stop late-night snacking"),
+                description: L("A loose 8 PM cut-off saves most people 200-400 kcal a day without changing what they eat.")
+            ),
+        ]
+        let gainVariants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "🥜", title: L("Small high-calorie add-ons"),
+                description:
+                    L("A spoon of olive oil, a handful of nuts, half an avocado — easy +200-300 kcal without feeling stuffed.")
+            ),
+            RecommendationTip(
+                icon: "🥛", title: L("Drink your calories"),
+                description:
+                    L("Smoothies and milk are easier than chewing more food. A 400 kcal shake between meals adds up fast.")
+            ),
+        ]
+        let maintainVariants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "⚖️", title: L("Consistency beats perfection"),
+                description:
+                    L("Maintenance is a weekly-average game. One above-target day doesn't break it — watch the 7-day picture.")
+            ),
+            RecommendationTip(
+                icon: "📊", title: L("Mind the trend, not the day"),
+                description: L("Daily weight swings 1-2 kg on water alone. Trust the 14-day moving average.")),
+        ]
+        let healthVariants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "👩‍⚕️", title: L("Follow your dietitian's plan"),
+                description:
+                    L("Mealgram helps you track what you're already supposed to do. Export weekly CSV from Profile and bring it to the visit.")
+            )
+        ]
+        let trackingVariants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "🔎", title: L("Notice first, change later"),
+                description:
+                    L("Just log for two weeks — no targets. The patterns you spot say more than any diet article.")),
+            RecommendationTip(
+                icon: "📝", title: L("Two weeks of honest logs"),
+                description: L("Don't change anything yet. The data points show you what's worth nudging.")),
+        ]
         switch request.goal {
-        case .lose:
-            return RecommendationTip(
-                icon: "🥗",
-                title: "Połowa talerza to warzywa",
-                description:
-                    "Surówka z kapusty, mizeria, kiszone ogórki — polskie warzywa są "
-                    + "niskokaloryczne i dają sytość. Spróbuj robić to przy każdym obiedzie."
-            )
-        case .gain:
-            return RecommendationTip(
-                icon: "🥜",
-                title: "Małe wysokokaloryczne dodatki",
-                description:
-                    "Łyżka oliwy, garść orzechów, awokado — łatwy sposób, żeby dodać "
-                    + "200-300 kcal bez czucia się przejedzonym."
-            )
-        case .maintain:
-            return RecommendationTip(
-                icon: "⚖️",
-                title: "Konsystencja > perfekcja",
-                description:
-                    "Utrzymanie wagi to gra w średnich tygodniowych. Jeden dzień powyżej "
-                    + "normy nic nie psuje — patrz na 7-dniowy obraz."
-            )
-        case .healthCondition:
-            return RecommendationTip(
-                icon: "👩‍⚕️",
-                title: "Trzymaj plan dietetyka",
-                description:
-                    "Mealgram pomoże Ci śledzić to, co i tak masz robić. Eksportuj "
-                    + "tygodniowy raport (Profil → Eksport CSV) i zabierz go na wizytę."
-            )
-        case .justTracking:
-            return RecommendationTip(
-                icon: "🔎",
-                title: "Najpierw zauważ, potem zmieniaj",
-                description:
-                    "Przez 2 tygodnie po prostu loguj — bez celów. Wzorce, które zobaczysz, "
-                    + "powiedzą Ci więcej niż jakikolwiek artykuł o dietach."
-            )
+        case .lose: return Self.pick(loseVariants, seed: seed)
+        case .gain: return Self.pick(gainVariants, seed: seed)
+        case .maintain: return Self.pick(maintainVariants, seed: seed)
+        case .healthCondition: return Self.pick(healthVariants, seed: seed)
+        case .justTracking: return Self.pick(trackingVariants, seed: seed)
         }
     }
 
-    private func polishCuisineTip() -> RecommendationTip {
-        RecommendationTip(
-            icon: "🥟",
-            title: "Polskie klasyki nie są wrogiem",
-            description:
-                "Pierogi ruskie ~250 kcal/porcja, żurek z jajkiem ~180 kcal — większość "
-                + "polskich dań mieści się w zdrowej normie, jeśli pilnujesz porcji."
-        )
+    private func cuisineTip(seed: Int) -> RecommendationTip {
+        let variants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "🌍", title: L("Comfort food isn't the enemy"),
+                description:
+                    L("Most home-cooked dishes fit in your daily target if portions are sane. Mealgram tracks weight, not your culture.")
+            ),
+            RecommendationTip(
+                icon: "🍝", title: L("Pasta is fine in portions"),
+                description:
+                    L("150 g cooked pasta = ~200 kcal. Half the plate vegetables and a fist of protein keeps it balanced.")
+            ),
+            RecommendationTip(
+                icon: "🍣", title: L("Sushi math"),
+                description: L("8-piece roll runs ~250-350 kcal. Two rolls + miso soup is a balanced lunch most days.")),
+            RecommendationTip(
+                icon: "🥙", title: L("Wraps beat sandwiches"),
+                description:
+                    L("A wrap with lean protein + lots of veg usually beats a hot sandwich on calories and protein-per-bite.")
+            ),
+        ]
+        return Self.pick(variants, seed: seed)
     }
 
-    private func hydrationTip(waterGoalMl: Int) -> RecommendationTip {
-        RecommendationTip(
-            icon: "💧",
-            title: "Pij wodę przed posiłkiem",
-            description:
-                "Twoja dzienna norma to \(waterGoalMl) ml. Szklanka wody 15 minut przed "
-                + "jedzeniem często wystarcza, żeby porcja była naturalnie mniejsza."
-        )
+    private func hydrationTip(waterGoalMl: Int, seed: Int) -> RecommendationTip {
+        let variants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "💧", title: L("Drink water before meals"),
+                description:
+                    String.localizedStringWithFormat(L("Your daily target is %lld ml. A glass 15 minutes before eating often shrinks the portion naturally."), waterGoalMl)
+            ),
+            RecommendationTip(
+                icon: "🚰", title: L("Glass at every transition"),
+                description:
+                    String.localizedStringWithFormat(L("Tie water to existing habits — one at wake-up, one at lunch, one at clock-out. Hitting %lld ml gets automatic."), waterGoalMl)
+            ),
+            RecommendationTip(
+                icon: "🥤", title: L("Thirst masquerades as hunger"),
+                description:
+                    L("When the 4 PM snack craving hits, try a tall glass of water first. Many 'hunger' signals dissolve in 10 minutes.")
+            ),
+        ]
+        return Self.pick(variants, seed: seed)
     }
 
-    private func sedentaryNudgeTip() -> RecommendationTip {
-        RecommendationTip(
-            icon: "🚶",
-            title: "Krótkie spacery po posiłku",
-            description:
-                "10 minut po obiedzie obniża skok cukru i pomaga w odchudzaniu. Nie trzeba "
-                + "zaczynać od siłowni — wystarczy ruch po pracy."
-        )
+    private func sedentaryNudgeTip(seed: Int) -> RecommendationTip {
+        let variants: [RecommendationTip] = [
+            RecommendationTip(
+                icon: "🚶", title: L("10-min walk after dinner"),
+                description: L("Lowers the post-meal blood-sugar spike by ~20% on average. No gym required — just shoes.")),
+            RecommendationTip(
+                icon: "🪜", title: L("Take the stairs"),
+                description:
+                    L("5 floors a day = ~50 kcal extra plus a quad workout. Small habits compound across the year.")),
+            RecommendationTip(
+                icon: "⏰", title: L("Stand every hour"),
+                description:
+                    L("Even one minute of standing per hour at a desk job lifts daily energy expenditure noticeably.")),
+        ]
+        return Self.pick(variants, seed: seed)
     }
 
     private func dietaryPreferenceTip(prefs: [DietaryPreference]) -> RecommendationTip {
         let labels = prefs.map(\.label).joined(separator: ", ")
         return RecommendationTip(
             icon: "🌱",
-            title: "Twoja dieta: \(labels)",
+            title: String.localizedStringWithFormat(L("Your diet: %@"), labels),
             description:
-                "Twoja Szybka Baza i sugestie Oli filtrują się pod Twój styl. Zawsze "
-                + "możesz dodać własne produkty w Profilu."
+                L("Twoja Szybka Baza i sugestie Oli filtrują się pod Twój styl. Zawsze ")
+                + L("możesz dodać własne produkty w Profilu.")
         )
     }
 
@@ -204,45 +279,24 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
         let protein = request.proteinGoalGrams
         switch request.goal {
         case .lose:
-            return String(
-                localized:
-                    "Twój plan: \(kcal) kcal dziennie, \(protein) g białka. To bezpieczne tempo na zrównoważone odchudzanie."
-            )
+            return String.localizedStringWithFormat(L("Your plan: %lld kcal daily, %lld g protein. A safe pace for balanced weight loss."), kcal, protein)
         case .gain:
-            return String(
-                localized:
-                    "Twój plan: \(kcal) kcal dziennie, \(protein) g białka. Lekka nadwyżka — masa głównie z mięśni."
-            )
+            return String.localizedStringWithFormat(L("Your plan: %lld kcal daily, %lld g protein. A light surplus — mass mostly from muscle."), kcal, protein)
         case .maintain:
-            return String(
-                localized:
-                    "Twój plan: \(kcal) kcal dziennie. Cel — utrzymać wagę i zbudować zdrowe nawyki."
-            )
+            return String.localizedStringWithFormat(L("Your plan: %lld kcal daily. Goal — keep your weight and build healthy habits."), kcal)
         case .healthCondition:
-            return String(
-                localized:
-                    "Twój plan: \(kcal) kcal i pełna kontrola makro. Trzymamy Cię na poziomie zaleceń."
-            )
+            return String.localizedStringWithFormat(L("Your plan: %lld kcal and full macro control. We keep you at the recommended level."), kcal)
         case .justTracking:
-            return String(
-                localized:
-                    "Twój plan: \(kcal) kcal jako punkt odniesienia. Loguj — odkryj, co tak naprawdę jesz."
-            )
+            return String.localizedStringWithFormat(L("Your plan: %lld kcal as a reference point. Log it — discover what you really eat."), kcal)
         }
     }
 
     private func nextStepsCopy(for request: RecommendationsRequest) -> String {
         switch request.goal {
         case .lose, .gain:
-            return String(
-                localized:
-                    "Pierwszy krok: zaloguj dzisiejsze śniadanie. Spróbuj skanu zdjęciem — to najszybszy sposób."
-            )
+            return L("First step: log today's breakfast. Try the photo scan — it's the fastest way.")
         case .maintain, .healthCondition, .justTracking:
-            return String(
-                localized:
-                    "Pierwszy krok: zaloguj swoje kolejne 3 posiłki. Po tygodniu zobaczysz pierwsze wzorce."
-            )
+            return L("First step: log your next 3 meals. After a week, you will see the first patterns.")
         }
     }
 

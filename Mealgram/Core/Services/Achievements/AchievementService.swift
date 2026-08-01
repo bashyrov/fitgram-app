@@ -20,6 +20,25 @@ final class AchievementService {
     /// Returns the unlocked definitions so callers can render a banner.
     @discardableResult
     func evaluate(forUser userRemoteID: String) throws -> [AchievementDefinition] {
+        try evaluate(forUser: userRemoteID, afterSavingMealID: nil)
+    }
+
+    /// Save-path evaluation: only grants achievements whose predicate
+    /// changed because of the meal that has just been saved. This avoids
+    /// dumping a historical backlog of 25/50/100-meal badges after one
+    /// ordinary entry when older data already existed on the device.
+    @discardableResult
+    func evaluateAfterSaving(
+        meal savedMeal: MealEntry,
+        forUser userRemoteID: String
+    ) throws -> [AchievementDefinition] {
+        try evaluate(forUser: userRemoteID, afterSavingMealID: savedMeal.id)
+    }
+
+    private func evaluate(
+        forUser userRemoteID: String,
+        afterSavingMealID savedMealID: UUID?
+    ) throws -> [AchievementDefinition] {
         let context = ModelContext(container)
 
         let alreadyDescriptor = FetchDescriptor<Achievement>(
@@ -58,6 +77,7 @@ final class AchievementService {
             proteinGoalGrams: user?.proteinGoalGrams,
             carbsGoalGrams: user?.carbsGoalGrams,
             fatGoalGrams: user?.fatGoalGrams,
+            calorieGoalKcal: user?.dailyCalorieGoalKcal,
             hasLoggedWeight: weightCount > 0,
             totalRecipeCooks: totalCooks,
             totalWeightEntries: weightCount,
@@ -68,11 +88,24 @@ final class AchievementService {
             meals: meals, streak: streak,
             alreadyEarned: earnedIDs, inputs: inputs
         )
-        guard !unlockedIDs.isEmpty else { return [] }
+        let idsToGrant: [String]
+        if let savedMealID {
+            let previousMeals = meals.filter { $0.id != savedMealID }
+            let previousUnlockedIDs = Set(
+                engine.evaluate(
+                    meals: previousMeals, streak: streak,
+                    alreadyEarned: earnedIDs, inputs: inputs
+                )
+            )
+            idsToGrant = unlockedIDs.filter { !previousUnlockedIDs.contains($0) }
+        } else {
+            idsToGrant = unlockedIDs
+        }
+        guard !idsToGrant.isEmpty else { return [] }
 
         var unlocked: [AchievementDefinition] = []
         let now = Date()
-        for id in unlockedIDs {
+        for id in idsToGrant {
             guard let definition = AchievementCatalog.definition(for: id) else { continue }
             let row = Achievement(
                 userRemoteID: userRemoteID,

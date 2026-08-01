@@ -18,7 +18,7 @@ struct CoachHistoryView: View {
 
         var label: LocalizedStringKey {
             switch self {
-            case .all: return "Wszystkie"
+            case .all: return "All"
             case .helpful: return "👍 Pomocne"
             case .unhelpful: return "👎 Nietrafione"
             }
@@ -33,13 +33,14 @@ struct CoachHistoryView: View {
         }
     }
 
-    private static let weekFormatter: DateFormatter = {
+    private static var weekFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "d MMMM"
         return formatter
-    }()
-
+    
+}
     var body: some View {
         NavigationStack {
             ZStack {
@@ -51,7 +52,7 @@ struct CoachHistoryView: View {
                         } else {
                             filterChips
                             if visibleLogs.isEmpty {
-                                Text("Brak wpisów w tym filtrze.")
+                                Text("No entries match this filter.")
                                     .font(Tokens.Font.footnote)
                                     .foregroundStyle(Tokens.Palette.inkMuted)
                                     .padding(.vertical, Tokens.Space.lg)
@@ -69,7 +70,7 @@ struct CoachHistoryView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }

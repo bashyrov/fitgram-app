@@ -3,6 +3,17 @@ import XCTest
 @testable import Mealgram
 
 final class RecipeModificationEngineTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
+    }
+
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "app.language")
+        super.tearDown()
+    }
+
     private func recipe(ingredients: [String]) -> Recipe {
         let recipe = Recipe(title: "Test")
         recipe.ingredients = ingredients.map { RecipeIngredient(name: $0) }

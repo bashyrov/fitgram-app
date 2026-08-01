@@ -10,6 +10,7 @@ private struct GoalSheetScaffold<Content: View>: View {
     let onCancel: () -> Void
     let onSave: () -> Void
     let saveDisabled: Bool
+    @Binding var errorMessage: String?
     @ViewBuilder var content: () -> Content
 
     init(
@@ -17,12 +18,14 @@ private struct GoalSheetScaffold<Content: View>: View {
         onCancel: @escaping () -> Void,
         onSave: @escaping () -> Void,
         saveDisabled: Bool = false,
+        errorMessage: Binding<String?> = .constant(nil),
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
         self.onCancel = onCancel
         self.onSave = onSave
         self.saveDisabled = saveDisabled
+        self._errorMessage = errorMessage
         self.content = content
     }
 
@@ -42,11 +45,22 @@ private struct GoalSheetScaffold<Content: View>: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onCancel)
+                    Button("Cancel", action: onCancel)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zapisz", action: onSave).disabled(saveDisabled)
+                    Button("Save", action: onSave).disabled(saveDisabled)
                 }
+            }
+            .alert(
+                "Nie udało się zapisać zmian",
+                isPresented: Binding(
+                    get: { errorMessage != nil },
+                    set: { if !$0 { errorMessage = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { errorMessage = nil }
+            } message: {
+                Text(errorMessage ?? L("Couldn't save. Try again."))
             }
         }
     }
@@ -61,6 +75,7 @@ struct QuickWeightUpdateSheet: View {
 
     @State private var weightKg: Double
     @State private var note: String = ""
+    @State private var errorMessage: String?
 
     init(user: User, service: UserProfileService, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -71,9 +86,10 @@ struct QuickWeightUpdateSheet: View {
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Aktualizuj wagę",
+            title: L("Update weight"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             Card {
                 VStack(spacing: Tokens.Space.md) {
@@ -100,6 +116,8 @@ struct QuickWeightUpdateSheet: View {
             onDismiss()
         } catch {
             Logger.persistence.error("Weight update failed: \(String(describing: error))")
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
         }
     }
 }
@@ -112,6 +130,7 @@ struct EditActivitySheet: View {
     let onDismiss: () -> Void
 
     @State private var selected: ActivityLevel
+    @State private var errorMessage: String?
 
     init(user: User, service: UserProfileService, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -139,9 +158,10 @@ struct EditActivitySheet: View {
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Aktywność",
+            title: L("Activity"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             VStack(spacing: Tokens.Space.md) {
                 ForEach(ActivityLevel.allCases, id: \.self) { level in
@@ -159,7 +179,7 @@ struct EditActivitySheet: View {
                     HStack {
                         Image(systemName: "flame.fill")
                             .foregroundStyle(Tokens.Palette.primary)
-                        Text("Norma zmieni się: \(user.dailyCalorieGoalKcal) → \(previewKcal) kcal")
+                        Text(String.localizedStringWithFormat(L("Norma zmieni się: %lld → %lld kcal"), user.dailyCalorieGoalKcal, previewKcal))
                             .font(Tokens.Font.body)
                             .foregroundStyle(Tokens.Palette.ink)
                     }
@@ -169,9 +189,14 @@ struct EditActivitySheet: View {
     }
 
     private func save() {
-        try? service.updateActivityLevel(selected)
-        Haptics.light()
-        onDismiss()
+        do {
+            try service.updateActivityLevel(selected)
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
     }
 
     private func symbol(for level: ActivityLevel) -> String {
@@ -186,21 +211,21 @@ struct EditActivitySheet: View {
 
     private func title(for level: ActivityLevel) -> String {
         switch level {
-        case .sedentary: return String(localized: "Siedzący")
-        case .light: return String(localized: "Lekko aktywny")
-        case .moderate: return String(localized: "Umiarkowanie aktywny")
-        case .active: return String(localized: "Aktywny")
-        case .veryActive: return String(localized: "Bardzo aktywny")
+        case .sedentary: return L("Siedzący")
+        case .light: return L("Lekko aktywny")
+        case .moderate: return L("Umiarkowanie aktywny")
+        case .active: return L("Aktywny")
+        case .veryActive: return L("Very active")
         }
     }
 
     private func subtitle(for level: ActivityLevel) -> String {
         switch level {
-        case .sedentary: return String(localized: "Biuro, niewiele ruchu")
-        case .light: return String(localized: "Ćwiczenia 1-3× w tygodniu")
-        case .moderate: return String(localized: "Ćwiczenia 3-5× w tygodniu")
-        case .active: return String(localized: "Treningi 5-6× w tygodniu")
-        case .veryActive: return String(localized: "Intensywne 6-7× w tygodniu")
+        case .sedentary: return L("Biuro, niewiele ruchu")
+        case .light: return L("Ćwiczenia 1-3× w tygodniu")
+        case .moderate: return L("Ćwiczenia 3-5× w tygodniu")
+        case .active: return L("Treningi 5-6× w tygodniu")
+        case .veryActive: return L("Intensywne 6-7× w tygodniu")
         }
     }
 }
@@ -213,6 +238,7 @@ struct EditCaloriesSheet: View {
     let onDismiss: () -> Void
 
     @State private var kcal: Int
+    @State private var errorMessage: String?
 
     init(user: User, service: UserProfileService, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -222,20 +248,37 @@ struct EditCaloriesSheet: View {
     }
 
     private func save() {
-        try? service.overrideCalories(kcal)
-        Haptics.light()
-        onDismiss()
+        do {
+            try service.overrideCalories(kcal)
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
+    }
+
+    private func resetTargetsToRecommended() {
+        do {
+            try service.resetTargetsToRecommended()
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
     }
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Cel kaloryczny",
+            title: L("Calorie goal"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             Card {
                 VStack(spacing: Tokens.Space.md) {
-                    Text("\(kcal) kcal")
+                    Text(String.localizedStringWithFormat(L("%lld kcal"), kcal))
                         .font(Tokens.Font.title)
                     Slider(
                         value: Binding(
@@ -247,9 +290,7 @@ struct EditCaloriesSheet: View {
                 }
             }
             Button("Wróć do zalecanych") {
-                try? service.resetTargetsToRecommended()
-                Haptics.light()
-                onDismiss()
+                resetTargetsToRecommended()
             }
             .buttonStyle(.borderedProminent)
             .tint(Tokens.Palette.primary)
@@ -266,6 +307,7 @@ struct EditMacrosSheet: View {
 
     @State private var proteinPct: Double
     @State private var fatPct: Double
+    @State private var errorMessage: String?
 
     init(user: User, service: UserProfileService, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -295,29 +337,46 @@ struct EditMacrosSheet: View {
     }
 
     private func save() {
-        try? service.overrideMacros(
-            protein: proteinGrams,
-            carbs: carbsGrams,
-            fat: fatGrams
-        )
-        Haptics.light()
-        onDismiss()
+        do {
+            try service.overrideMacros(
+                protein: proteinGrams,
+                carbs: carbsGrams,
+                fat: fatGrams
+            )
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
+    }
+
+    private func resetTargetsToRecommended() {
+        do {
+            try service.resetTargetsToRecommended()
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
     }
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Makroskładniki",
+            title: L("Makroskładniki"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             Card {
                 VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                    macroSlider(symbol: "💪", label: "Białko", pct: $proteinPct, grams: proteinGrams)
-                    macroSlider(symbol: "🥑", label: "Tłuszcze", pct: $fatPct, grams: fatGrams)
+                    macroSlider(symbol: "💪", label: L("Protein"), pct: $proteinPct, grams: proteinGrams)
+                    macroSlider(symbol: "🥑", label: L("Fats"), pct: $fatPct, grams: fatGrams)
                     HStack {
                         Text("🍞 Węglowodany").foregroundStyle(Tokens.Palette.ink)
                         Spacer()
-                        Text("\(carbsGrams) g (\(Int(carbsPct * 100))%)")
+                        Text(String.localizedStringWithFormat(L("%lld g (%lld%%)"), carbsGrams, Int(carbsPct * 100)))
                             .foregroundStyle(Tokens.Palette.inkMuted)
                     }
                     .font(Tokens.Font.body)
@@ -332,9 +391,7 @@ struct EditMacrosSheet: View {
                 }
             }
             Button("Wróć do zalecanych") {
-                try? service.resetTargetsToRecommended()
-                Haptics.light()
-                onDismiss()
+                resetTargetsToRecommended()
             }
             .buttonStyle(.borderedProminent)
             .tint(Tokens.Palette.primary)
@@ -349,9 +406,9 @@ struct EditMacrosSheet: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text("\(symbol) \(label)")
+                Text(String.localizedStringWithFormat(L("%@ %@"), symbol, label))
                 Spacer()
-                Text("\(grams) g (\(Int(pct.wrappedValue * 100))%)")
+                Text(String.localizedStringWithFormat(L("%lld g (%lld%%)"), grams, Int(pct.wrappedValue * 100)))
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
             .font(Tokens.Font.body)
@@ -368,6 +425,7 @@ struct EditWaterSheet: View {
     let onDismiss: () -> Void
 
     @State private var waterMl: Int
+    @State private var errorMessage: String?
 
     init(user: User, service: UserProfileService, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -377,20 +435,37 @@ struct EditWaterSheet: View {
     }
 
     private func save() {
-        try? service.overrideWater(waterMl)
-        Haptics.light()
-        onDismiss()
+        do {
+            try service.overrideWater(waterMl)
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
+    }
+
+    private func resetTargetsToRecommended() {
+        do {
+            try service.resetTargetsToRecommended()
+            Haptics.light()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
     }
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Cel wody",
+            title: L("Water goal"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             Card {
                 VStack(spacing: Tokens.Space.md) {
-                    Text("\(waterMl) ml")
+                    Text(String.localizedStringWithFormat(L("%lld ml"), waterMl))
                         .font(Tokens.Font.title)
                     Slider(
                         value: Binding(
@@ -402,9 +477,7 @@ struct EditWaterSheet: View {
                 }
             }
             Button("Wróć do zalecanych") {
-                try? service.resetTargetsToRecommended()
-                Haptics.light()
-                onDismiss()
+                resetTargetsToRecommended()
             }
             .buttonStyle(.borderedProminent)
             .tint(Tokens.Palette.primary)
@@ -422,6 +495,7 @@ struct EditMainGoalSheet: View {
     @State private var kind: GoalKind
     @State private var paceKgPerWeek: Double
     @State private var targetWeightKg: Double
+    @State private var errorMessage: String?
 
     init(user: User, service: UserProfileService, onDismiss: @escaping () -> Void) {
         self.user = user
@@ -429,26 +503,33 @@ struct EditMainGoalSheet: View {
         self.onDismiss = onDismiss
         self._kind = State(initialValue: user.goalKind)
         self._paceKgPerWeek = State(initialValue: user.goalPaceKgPerWeek ?? 0.5)
-        let fallbackTarget = (user.weightKg ?? 70)
+        let fallbackTarget =
+            (user.weightKg ?? 70)
             - (user.goalKind == .lose ? 5 : (user.goalKind == .gain ? -5 : 0))
         self._targetWeightKg = State(initialValue: user.goalTargetWeightKg ?? fallbackTarget)
     }
 
     private func save() {
-        try? service.updateMainGoal(
-            kind: kind,
-            paceKgPerWeek: kind.requiresPaceAndTarget ? paceKgPerWeek : nil,
-            targetWeightKg: kind.requiresPaceAndTarget ? targetWeightKg : nil
-        )
-        Haptics.success()
-        onDismiss()
+        do {
+            try service.updateMainGoal(
+                kind: kind,
+                paceKgPerWeek: kind.requiresPaceAndTarget ? paceKgPerWeek : nil,
+                targetWeightKg: kind.requiresPaceAndTarget ? targetWeightKg : nil
+            )
+            Haptics.success()
+            onDismiss()
+        } catch {
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
     }
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Twój cel",
+            title: L("Your goal"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             goalHero
             VStack(spacing: Tokens.Space.md) {
@@ -499,7 +580,7 @@ struct EditMainGoalSheet: View {
                         .foregroundStyle(.white)
                 }
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Twój cel")
+                    Text("Your goal")
                         .font(Tokens.Font.caption)
                         .textCase(.uppercase)
                         .tracking(1.2)
@@ -559,7 +640,7 @@ struct EditMainGoalSheet: View {
                     Image(systemName: "arrow.right")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundStyle(Tokens.Palette.inkSubtle)
-                    journeyPillar(label: "Cel", value: targetWeightKg, tint: heroTint(for: kind))
+                    journeyPillar(label: "Goal", value: targetWeightKg, tint: heroTint(for: kind))
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
@@ -618,7 +699,7 @@ struct EditMainGoalSheet: View {
                     Image(systemName: "speedometer")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Tokens.Palette.warning)
-                    Text("Tempo")
+                    Text("Pace")
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
@@ -649,8 +730,8 @@ struct EditMainGoalSheet: View {
                             .font(Tokens.Font.caption)
                             .foregroundStyle(Tokens.Palette.inkMuted)
                             + Text(estimatedEnd.formatted(.dateTime.day().month(.wide).year()))
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.ink)
+                            .font(Tokens.Font.caption)
+                            .foregroundStyle(Tokens.Palette.ink)
                     }
                     .padding(.top, 2)
                 }
@@ -705,21 +786,21 @@ struct EditMainGoalSheet: View {
 
     private func title(for goal: GoalKind) -> String {
         switch goal {
-        case .lose: return String(localized: "Schudnąć")
-        case .gain: return String(localized: "Nabrać masy")
-        case .maintain: return String(localized: "Utrzymać wagę")
-        case .healthCondition: return String(localized: "Cel zdrowotny")
-        case .justTracking: return String(localized: "Tylko śledzenie")
+        case .lose: return L("Lose weight")
+        case .gain: return L("Gain weight")
+        case .maintain: return L("Maintain weight")
+        case .healthCondition: return L("Health goal")
+        case .justTracking: return L("Just tracking")
         }
     }
 
     private func subtitle(for goal: GoalKind) -> String {
         switch goal {
-        case .lose: return String(localized: "Łagodny deficyt")
-        case .gain: return String(localized: "Większa porcja energii")
-        case .maintain: return String(localized: "Bez zmiany masy")
-        case .healthCondition: return String(localized: "Plan zdrowotny / dietetyk")
-        case .justTracking: return String(localized: "Po prostu loguj")
+        case .lose: return L("Łagodny deficyt")
+        case .gain: return L("Większa porcja energii")
+        case .maintain: return L("Bez zmiany masy")
+        case .healthCondition: return L("Plan zdrowotny / dietetyk")
+        case .justTracking: return L("Po prostu loguj")
         }
     }
 }
@@ -734,6 +815,7 @@ struct EditProfileDataSheet: View {
     @State private var sex: BiologicalSex
     @State private var heightCm: Int
     @State private var birthDate: Date
+    @State private var errorMessage: String?
 
     @Environment(\.modelContext) private var modelContext
 
@@ -751,27 +833,28 @@ struct EditProfileDataSheet: View {
 
     var body: some View {
         GoalSheetScaffold(
-            title: "Twoje dane",
+            title: L("Your data"),
             onCancel: onDismiss,
-            onSave: save
+            onSave: save,
+            errorMessage: $errorMessage
         ) {
             Card {
                 VStack(spacing: Tokens.Space.md) {
                     HStack {
-                        Text("Płeć").foregroundStyle(Tokens.Palette.inkMuted)
+                        Text("Sex").foregroundStyle(Tokens.Palette.inkMuted)
                         Spacer()
-                        Picker("Płeć", selection: $sex) {
-                            Text("Kobieta").tag(BiologicalSex.female)
-                            Text("Mężczyzna").tag(BiologicalSex.male)
+                        Picker("Sex", selection: $sex) {
+                            Text("Female").tag(BiologicalSex.female)
+                            Text("Male").tag(BiologicalSex.male)
                             Text("Wolę nie podawać").tag(BiologicalSex.undisclosed)
                         }
                         .pickerStyle(.menu)
                     }
                     HStack {
-                        Text("Wzrost").foregroundStyle(Tokens.Palette.inkMuted)
+                        Text("Height").foregroundStyle(Tokens.Palette.inkMuted)
                         Spacer()
                         Stepper(value: $heightCm, in: 130...220, step: 1) {
-                            Text("\(heightCm) cm")
+                            Text(String.localizedStringWithFormat(L("%lld cm"), heightCm))
                         }
                     }
                     DatePicker(
@@ -787,13 +870,26 @@ struct EditProfileDataSheet: View {
 
     private func save() {
         // Direct mutation — these aren't behind a service method yet.
+        let previousSex = user.biologicalSex
+        let previousHeight = user.heightCm
+        let previousBirthDate = user.birthDate
+        let previousUpdatedAt = user.updatedAt
         user.biologicalSex = sex
         user.heightCm = heightCm
         user.birthDate = birthDate
         user.updatedAt = Date()
-        try? modelContext.save()
-        try? service.resetTargetsToRecommended()
-        Haptics.light()
-        onDismiss()
+        do {
+            try modelContext.save()
+            try service.resetTargetsToRecommended()
+            Haptics.light()
+            onDismiss()
+        } catch {
+            user.biologicalSex = previousSex
+            user.heightCm = previousHeight
+            user.birthDate = previousBirthDate
+            user.updatedAt = previousUpdatedAt
+            Haptics.warning()
+            errorMessage = L("Couldn't save. Try again.")
+        }
     }
 }

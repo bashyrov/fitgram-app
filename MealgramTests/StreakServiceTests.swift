@@ -79,19 +79,94 @@ final class StreakServiceTests: XCTestCase {
     }
 
     func testConsumeFreezeReducesAvailable() throws {
+        let now = Self.date("2026-05-12T20:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
         let context = ModelContext(controller.container)
-        context.insert(Streak(userRemoteID: "u-1", freezesAvailable: 2))
+        context.insert(
+            Streak(
+                userRemoteID: "u-1",
+                currentLength: 5,
+                longestLength: 5,
+                lastLoggedDate: yesterday,
+                freezesAvailable: 2
+            )
+        )
         try context.save()
 
-        let service = StreakService(container: controller.container)
+        let service = StreakService(container: controller.container, now: { now })
         XCTAssertTrue(try service.consumeFreeze(for: "u-1"))
         let updated = try service.currentStreak(for: "u-1")
         XCTAssertEqual(updated.freezesAvailable, 1)
+        XCTAssertEqual(updated.currentLength, 5)
+        XCTAssertNotNil(updated.lastFreezeDate)
     }
 
     func testConsumeFreezeNoOpWhenNoneAvailable() throws {
         let service = StreakService(container: controller.container)
         _ = try service.currentStreak(for: "u-1")
         XCTAssertFalse(try service.consumeFreeze(for: "u-1"))
+    }
+
+    func testSevenDayStreakEarnsFreezeUpToCap() throws {
+        var now = Self.date("2026-05-01T08:00:00Z")
+        let calendar = Calendar(identifier: .gregorian)
+        let service = StreakService(container: controller.container, now: { now }, calendar: calendar)
+
+        for dayOffset in 0..<14 {
+            now = calendar.date(byAdding: .day, value: dayOffset, to: Self.date("2026-05-01T08:00:00Z")) ?? now
+            try service.registerLog(for: "u-earn")
+        }
+
+        let streak = try service.currentStreak(for: "u-earn")
+        XCTAssertEqual(streak.currentLength, 14)
+        XCTAssertEqual(streak.freezesAvailable, 2)
+        XCTAssertEqual(streak.lastFreezeAwardedLength, 14)
+    }
+
+    func testFreezeLetsTomorrowLogContinueStreak() throws {
+        var now = Self.date("2026-05-12T20:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let context = ModelContext(controller.container)
+        context.insert(
+            Streak(
+                userRemoteID: "u-bridge",
+                currentLength: 6,
+                longestLength: 6,
+                lastLoggedDate: yesterday,
+                freezesAvailable: 1
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        XCTAssertTrue(try service.consumeFreeze(for: "u-bridge"))
+        now = Self.date("2026-05-13T08:00:00Z")
+        try service.registerLog(for: "u-bridge")
+
+        let streak = try service.currentStreak(for: "u-bridge")
+        XCTAssertEqual(streak.currentLength, 7)
+        XCTAssertEqual(streak.longestLength, 7)
+    }
+
+    func testCurrentStreakResetsAfterUnprotectedGap() throws {
+        let stale = Self.date("2026-05-10T12:00:00Z")
+        let now = Self.date("2026-05-12T08:00:00Z")
+        let context = ModelContext(controller.container)
+        context.insert(
+            Streak(
+                userRemoteID: "u-gap",
+                currentLength: 4,
+                longestLength: 6,
+                lastLoggedDate: stale,
+                freezesAvailable: 1
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let streak = try service.currentStreak(for: "u-gap")
+        XCTAssertEqual(streak.currentLength, 0)
+        XCTAssertEqual(streak.longestLength, 6)
+        XCTAssertNil(streak.lastLoggedDate)
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
-import Observation
 import OSLog
+import Observation
 import WatchConnectivity
 
 /// iPhone-side glue for the Apple Watch companion app. Responsibilities:

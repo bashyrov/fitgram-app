@@ -13,6 +13,7 @@ struct TodayView: View {
     var goalTrackingState: GoalTrackingState?
     let onOpenProfile: () -> Void
     let onOpenScanner: () -> Void
+    let onOpenAddOptions: () -> Void
     var onOpenGoalTracking: (() -> Void)?
     var onCookSuggested: ((Recipe) -> Void)?
     var onCoachAction: ((CoachInsight.ActionKind) -> Void)?
@@ -20,23 +21,23 @@ struct TodayView: View {
     var onSelectMeal: ((MealEntry) -> Void)?
     var onDismissInsight: ((CoachInsight) -> Void)?
 
-    @State private var isDatePickerPresented = false
-    @State private var isWaterGoalAlertPresented = false
-    @State private var waterGoalDraft: Int = WaterService.defaultDailyGoalMilliliters
-    @State private var isCalorieGoalAlertPresented = false
-    @State private var calorieGoalDraft: Int = 2100
-    @State private var isOlaTipsPresented = false
+    @State var isDatePickerPresented = false
+    @State var isWaterGoalAlertPresented = false
+    @State var waterGoalDraft: Int = WaterService.defaultDailyGoalMilliliters
+    @State var isCalorieGoalAlertPresented = false
+    @State var calorieGoalDraft: Int = 2100
+    @State var isOlaTipsPresented = false
+    @State var isFactsLibraryPresented = false
+    @State var hasStagedContent = false
 
     @AppStorage("water.dailyGoalMl") private var waterGoalStored = WaterService.defaultDailyGoalMilliliters
-
-    @Environment(\.modelContext) private var modelContext
 
     /// Day-rotating fact picker for the "Porady od Oli" sheet. The
     /// selector itself is cheap to construct — but parking it on the
     /// view keeps the chosen fact stable across re-renders.
-    private let factSelector = DailyFactSelector()
+    let factSelector = DailyFactSelector()
 
-    private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
+    func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         if let onCoachAction {
             onCoachAction(kind)
             return
@@ -48,20 +49,81 @@ struct TodayView: View {
 
     var body: some View {
         ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
+            todayBackground
             ScrollViewReader { proxy in
                 ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        StreakHeader(
+                    VStack(spacing: Tokens.Space.md) {
+                        TodayDashboardHero(
                             greeting: state.greeting,
                             displayName: state.user?.displayName,
                             streakLength: state.streak?.currentLength ?? 0,
-                            onTapProfile: onOpenProfile
+                            viewingDate: state.viewingDate,
+                            isViewingToday: state.isViewingToday,
+                            consumed: state.totals.calories,
+                            calorieGoal: state.calorieGoal,
+                            calorieProgress: state.calorieProgress,
+                            protein: state.totals.protein,
+                            carbs: state.totals.carbs,
+                            fat: state.totals.fat,
+                            proteinGoal: state.user?.proteinGoalGrams ?? 120,
+                            carbsGoal: state.user?.carbsGoalGrams ?? 240,
+                            fatGoal: state.user?.fatGoalGrams ?? 70,
+                            waterTotalMilliliters: state.waterTotalMl,
+                            waterGoalMilliliters: waterGoalStored,
+                            showsWater: state.isViewingToday,
+                            onTapProfile: onOpenProfile,
+                            onPreviousDay: {
+                                Haptics.light()
+                                Task { await state.goToPreviousDay(userRemoteID: userRemoteID) }
+                            },
+                            onPickDate: {
+                                isDatePickerPresented = true
+                                Haptics.light()
+                            },
+                            onNextDay: {
+                                Haptics.light()
+                                Task { await state.goToNextDay(userRemoteID: userRemoteID) }
+                            },
+                            onTapGoal: state.user.map { _ in
+                                {
+                                    calorieGoalDraft = state.calorieGoal
+                                    isCalorieGoalAlertPresented = true
+                                }
+                            },
+                            onAddWater: {
+                                Haptics.light()
+                                Task { await state.logWaterGlass(for: userRemoteID) }
+                            },
+                            onUndoWater: {
+                                Haptics.warning()
+                                Task { await state.undoLastWater(for: userRemoteID) }
+                            },
+                            onEditWaterGoal: {
+                                waterGoalDraft = waterGoalStored
+                                isWaterGoalAlertPresented = true
+                            }
                         )
                         .padding(.top, Tokens.Space.md)
                         .id("todayTop")
+                        .todayStage(isVisible: hasStagedContent, index: 0)
+                        .animation(Tokens.Motion.gentle, value: dayIdentity)
+                        .animation(Tokens.Motion.gentle, value: Int(state.totals.calories.rounded()))
 
-                        dayScrubBar
+                        TodayQuickActionHub(
+                            canUseOlaAdvice: canUseOlaAdvice,
+                            onOpenAddOptions: onOpenAddOptions,
+                            onOpenScanner: onOpenScanner,
+                            onOpenOla: {
+                                Haptics.light()
+                                if canUseOlaAdvice {
+                                    isOlaTipsPresented = true
+                                } else {
+                                    paywallCoordinator?.present(.coachDebriefQuota)
+                                }
+                            }
+                        )
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                        .todayStage(isVisible: hasStagedContent, index: 1)
 
                         if state.canUseFreeze, let streak = state.streak {
                             StreakFreezeCard(
@@ -71,126 +133,35 @@ struct TodayView: View {
                                 Haptics.success()
                                 Task { await state.consumeFreeze(for: userRemoteID) }
                             }
-                        }
-
-                        CalorieProgressCard(
-                            consumed: state.totals.calories,
-                            goal: state.calorieGoal,
-                            progress: state.calorieProgress,
-                            onTapGoal: state.user.map { _ in
-                                {
-                                    calorieGoalDraft = state.calorieGoal
-                                    isCalorieGoalAlertPresented = true
-                                }
-                            }
-                        )
-
-                        MacroDistributionCard(
-                            protein: state.totals.protein,
-                            carbs: state.totals.carbs,
-                            fat: state.totals.fat,
-                            proteinGoal: state.user?.proteinGoalGrams ?? 120,
-                            carbsGoal: state.user?.carbsGoalGrams ?? 240,
-                            fatGoal: state.user?.fatGoalGrams ?? 70
-                        )
-
-                        if state.isViewingToday {
-                            WaterCard(
-                                totalMilliliters: state.waterTotalMl,
-                                goalMilliliters: waterGoalStored,
-                                onAddGlass: {
-                                    Haptics.light()
-                                    Task { await state.logWaterGlass(for: userRemoteID) }
-                                },
-                                onUndo: {
-                                    Haptics.warning()
-                                    Task { await state.undoLastWater(for: userRemoteID) }
-                                },
-                                onEditGoal: {
-                                    waterGoalDraft = waterGoalStored
-                                    isWaterGoalAlertPresented = true
-                                }
-                            )
+                            .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                            .todayStage(isVisible: hasStagedContent, index: 2)
                         }
 
                         goalTrackingSlot
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .todayStage(isVisible: hasStagedContent, index: 3)
 
-                        // "Ciekawostka dnia" block — one rotating fact
-                        // per calendar day, always visible (free +
-                        // Premium). Tap opens the full Ola tips sheet
-                        // on the Ciekawostki segment for browsing more.
-                        if state.isViewingToday,
-                            let fact = factSelector.factForToday() {
-                            Button {
-                                Haptics.light()
-                                isOlaTipsPresented = true
-                            } label: {
-                                FactCard(fact: fact, highlighted: true)
-                            }
-                            .buttonStyle(PressableButtonStyle())
-                            .accessibilityLabel(Text("Otwórz Ciekawostki"))
-                        }
+                        factOfDaySlot
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .todayStage(isVisible: hasStagedContent, index: 4)
 
-                        if state.isViewingToday,
-                            let user = state.user,
-                            let data = user.latestRecommendationsJSON,
-                            let recs = try? JSONDecoder().decode(Recommendations.self, from: data) {
-                            // Tap the entire hero to open the full
-                            // "Porady od Oli" sheet — but keep the
-                            // in-place carousel + Następny krok visible.
-                            Button {
-                                Haptics.light()
-                                isOlaTipsPresented = true
-                            } label: {
-                                OlaInsightsHero(
-                                    recommendations: recs,
-                                    lastUpdated: user.recommendationsGeneratedAt
-                                )
-                            }
-                            .buttonStyle(PressableButtonStyle())
-                            .accessibilityLabel(Text("Otwórz porady od Oli"))
-                        }
+                        olaAdviceSlot
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .todayStage(isVisible: hasStagedContent, index: 5)
 
-                        if state.isViewingToday,
-                            let favoritesService,
-                            let mealSaver,
-                            let entitlementsStore,
-                            let paywallCoordinator {
-                            FavoritesCarousel(
-                                userRemoteID: userRemoteID,
-                                favoritesService: favoritesService,
-                                mealSaver: mealSaver,
-                                entitlementsStore: entitlementsStore,
-                                paywallCoordinator: paywallCoordinator,
-                                onSaved: {
-                                    Task { await state.refresh(for: userRemoteID) }
-                                }
-                            )
-                        }
-
-                        if state.isViewingToday, let insight = state.coachInsights.first {
-                            AIInsightCard(
-                                insight: insight,
-                                onAction: { kind in handleCoachAction(kind) },
-                                onDismiss: onDismissInsight.map { handler in
-                                    { handler(insight) }
-                                }
-                            )
-                        }
-
-                        if state.isViewingToday, let upcoming = state.upcomingEvent {
-                            CulturalEventBanner(upcoming: upcoming) {
-                                Haptics.light()
-                                state.dismissCulturalEvent()
-                            }
-                        }
-
-                        suggestedRecipeCard
+                        updatesStack
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .todayStage(isVisible: hasStagedContent, index: 6)
 
                         mealsSection
+                            .id(dayIdentity)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .todayStage(isVisible: hasStagedContent, index: 7)
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.bottom, Tokens.Space.xxxl)
+                    .animation(Tokens.Motion.gentle, value: dayIdentity)
+                    .animation(Tokens.Motion.gentle, value: state.meals.count)
                 }
                 .refreshable {
                     await state.refresh(for: userRemoteID)
@@ -207,6 +178,15 @@ struct TodayView: View {
         .task {
             await state.refresh(for: userRemoteID)
             goalTrackingState?.refresh(for: userRemoteID)
+            withAnimation(Tokens.Motion.gentle.delay(0.08)) {
+                hasStagedContent = true
+            }
+            #if DEBUG
+            if DebugBypass.initialSheet == "ola-tips" {
+                try? await Task.sleep(nanoseconds: 800_000_000)
+                isOlaTipsPresented = true
+            }
+            #endif
         }
         .sheet(isPresented: $isDatePickerPresented) {
             DateJumpSheet(
@@ -225,19 +205,17 @@ struct TodayView: View {
                 },
                 onDismiss: { isDatePickerPresented = false }
             )
-            .presentationDetents([.medium])
+            .presentationDetents([.large])
         }
         .alert("Dzienny cel wody", isPresented: $isWaterGoalAlertPresented) {
             TextField("ml", value: $waterGoalDraft, format: .number)
                 .keyboardType(.numberPad)
-            Button("Zapisz") {
+            Button("Save") {
                 waterGoalStored = max(250, min(8000, waterGoalDraft))
                 Haptics.light()
             }
-            Button("Domyślnie") {
-                waterGoalStored = WaterService.defaultDailyGoalMilliliters
-            }
-            Button("Anuluj", role: .cancel) {}
+            Button("Default") { waterGoalStored = WaterService.defaultDailyGoalMilliliters }
+            Button("Cancel", role: .cancel) {}
         } message: {
             Text("250–8000 ml. Standard to 2000 ml.")
         }
@@ -245,180 +223,72 @@ struct TodayView: View {
             OlaTipsView(
                 recommendations: currentRecommendations,
                 lastUpdated: state.user?.recommendationsGeneratedAt,
-                selector: factSelector,
                 onDismiss: { isOlaTipsPresented = false }
+            )
+        }
+        .sheet(isPresented: $isFactsLibraryPresented) {
+            FactsLibraryView(
+                highlightedFact: todayFact,
+                initialCategory: preferredFactCategory,
+                onDismiss: { isFactsLibraryPresented = false }
             )
         }
         .alert("Dzienny cel kalorii", isPresented: $isCalorieGoalAlertPresented) {
             TextField("kcal", value: $calorieGoalDraft, format: .number)
                 .keyboardType(.numberPad)
-            Button("Zapisz") {
-                applyCalorieGoal(calorieGoalDraft)
-            }
-            Button("Anuluj", role: .cancel) {}
+            Button("Save") { applyCalorieGoal(calorieGoalDraft) }
+            Button("Cancel", role: .cancel) {}
         } message: {
             Text("1000–4500 kcal. Pełna edycja w Profilu → Cele.")
         }
     }
 
-    /// Pulls the cached Recommendations off the User row, if any.
-    /// Used to seed the "Porady od Oli" sheet — the hero card and the
-    /// sheet share the same JSON snapshot.
-    private var currentRecommendations: Recommendations? {
-        guard let data = state.user?.latestRecommendationsJSON else { return nil }
-        return try? JSONDecoder().decode(Recommendations.self, from: data)
-    }
+    var dayIdentity: Date { Calendar.current.startOfDay(for: state.viewingDate) }
 
-    private func applyCalorieGoal(_ kcal: Int) {
-        guard let user = state.user else { return }
-        let clamped = max(1000, min(4500, kcal))
-        user.dailyCalorieGoalKcal = clamped
-        user.updatedAt = Date()
-        try? modelContext.save()
-        Haptics.light()
-        Task { await state.refresh(for: userRemoteID) }
-    }
-
-    /// Goal Tracking card. Three exclusive outcomes:
-    /// 1. User has lose/gain goal + Premium → full card with AI tips.
-    /// 2. User has lose/gain goal but no Premium → blurred peek card
-    ///    (header sharp, body teasing); tap opens paywall.
-    /// 3. User has no structured lose/gain goal → nothing.
-    @ViewBuilder
-    private var goalTrackingSlot: some View {
-        if state.isViewingToday, let user = state.user, shouldShowGoalSlot(for: user) {
-            if entitlementsStore?.current.isPremium == true,
-                let goalTrackingState,
-                let snapshot = goalTrackingState.snapshot {
-                GoalTrackingCard(snapshot: snapshot, tips: goalTipsForUser(user)) {
-                    Haptics.light()
-                    onOpenGoalTracking?()
-                }
-            } else if entitlementsStore?.current.isPremium != true {
-                GoalTrackingPeekCard(
-                    currentWeightKg: user.weightKg,
-                    targetWeightKg: user.goalTargetWeightKg
-                ) {
-                    Haptics.light()
-                    paywallCoordinator?.present(.goalTracking)
-                }
-            }
+    var todayBackground: some View {
+        ZStack {
+            Tokens.Palette.background
+            Circle()
+                .fill(Tokens.Palette.primarySoft.opacity(0.52))
+                .frame(width: 360, height: 360)
+                .blur(radius: 104)
+                .offset(x: -160, y: -240)
+            Circle()
+                .fill(Tokens.Palette.accentSoft.opacity(0.24))
+                .frame(width: 330, height: 330)
+                .blur(radius: 112)
+                .offset(x: 170, y: -60)
+            Circle()
+                .fill(Tokens.Palette.warning.opacity(0.10))
+                .frame(width: 270, height: 270)
+                .blur(radius: 105)
+                .offset(x: -120, y: 420)
         }
+        .ignoresSafeArea()
     }
 
-    /// First 3 tips from the cached `Recommendations` payload — they're
-    /// already tailored to the user's goal kind, calorie/macro targets,
-    /// dietary prefs, and current weight via the rule-based generator.
-    private func goalTipsForUser(_ user: User) -> [RecommendationTip] {
-        guard let data = user.latestRecommendationsJSON,
-            let recs = try? JSONDecoder().decode(Recommendations.self, from: data)
-        else { return [] }
-        return Array(recs.tips.prefix(3))
-    }
+}
 
-    private func shouldShowGoalSlot(for user: User) -> Bool {
-        let kind = user.goalKind
-        guard kind == .lose || kind == .gain else { return false }
-        return user.goalStartDate != nil
-    }
+private struct TodayStageModifier: ViewModifier {
+    let isVisible: Bool
+    let index: Int
 
-    @ViewBuilder
-    private var suggestedRecipeCard: some View {
-        if state.isViewingToday, let suggested = state.suggestedRecipe, let onCookSuggested {
-            SuggestedRecipeCard(recipe: suggested) {
-                onCookSuggested(suggested)
-            }
-        }
-    }
-
-    private var dayScrubBar: some View {
-        HStack(spacing: Tokens.Space.md) {
-            Button {
-                Haptics.light()
-                Task { await state.goToPreviousDay(userRemoteID: userRemoteID) }
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.title3)
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .frame(width: 36, height: 36)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("Poprzedni dzień"))
-
-            Button {
-                isDatePickerPresented = true
-                Haptics.light()
-            } label: {
-                VStack(spacing: 0) {
-                    Text(state.isViewingToday ? String(localized: "Dziś") : Self.dayLabel(state.viewingDate))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    if !state.isViewingToday {
-                        Text("Wróć do dziś")
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("Wybierz datę"))
-
-            Button {
-                Haptics.light()
-                Task { await state.goToNextDay(userRemoteID: userRemoteID) }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.title3)
-                    .foregroundStyle(state.isViewingToday ? Tokens.Palette.inkSubtle : Tokens.Palette.primary)
-                    .frame(width: 36, height: 36)
-            }
-            .buttonStyle(.plain)
-            .disabled(state.isViewingToday)
-            .accessibilityLabel(Text("Następny dzień"))
-        }
-    }
-
-    private static func dayLabel(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale.current
-        formatter.dateFormat = "EEEE, d MMM"
-        return formatter.string(from: date).capitalized
-    }
-
-    @ViewBuilder
-    private var mealsSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Text(state.isViewingToday ? String(localized: "Dziś") : String(localized: "Dziennik dnia"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text("\(state.meals.count) posiłków")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-
-            if state.meals.isEmpty {
-                EmptyMealsCallout(onTap: onOpenScanner)
-            } else {
-                LazyVStack(spacing: Tokens.Space.sm) {
-                    ForEach(state.meals) { meal in
-                        Button {
-                            onSelectMeal?(meal)
-                        } label: {
-                            MealTimelineRow(meal: meal)
-                        }
-                        .buttonStyle(PressableButtonStyle())
-                    }
-                }
-            }
-        }
+    func body(content: Content) -> some View {
+        content
+            .opacity(isVisible ? 1 : 0)
+            .offset(y: isVisible ? 0 : 18)
+            .scaleEffect(isVisible ? 1 : 0.985)
+            .animation(Tokens.Motion.gentle.delay(Double(index) * 0.045), value: isVisible)
     }
 }
 
-private struct EmptyMealsCallout: View {
+extension View {
+    fileprivate func todayStage(isVisible: Bool, index: Int) -> some View {
+        modifier(TodayStageModifier(isVisible: isVisible, index: index))
+    }
+}
+
+struct EmptyMealsCallout: View {
     let onTap: () -> Void
 
     var body: some View {
@@ -432,10 +302,10 @@ private struct EmptyMealsCallout: View {
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Brak posiłków dzisiaj")
+                    Text("No meals today")
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
-                    Text("Stuknij, żeby zeskanować pierwszy.")
+                    Text("Wybierz, jak chcesz dodać pierwszy posiłek.")
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
@@ -446,14 +316,11 @@ private struct EmptyMealsCallout: View {
             .padding(Tokens.Space.lg)
             .background(
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
+                    .fill(.ultraThinMaterial)
             )
-            .overlay(
+            .background(
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .strokeBorder(
-                        Tokens.Palette.separator,
-                        style: StrokeStyle(lineWidth: 1, dash: [4, 4])
-                    )
+                    .fill(Tokens.Palette.surface.opacity(0.78))
             )
         }
         .buttonStyle(PressableButtonStyle())

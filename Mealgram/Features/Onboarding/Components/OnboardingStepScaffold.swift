@@ -36,7 +36,9 @@ struct OnboardingStepScaffold<Content: View>: View {
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
                 .padding(.top, Tokens.Space.lg)
-                .padding(.bottom, Tokens.Space.lg)
+                // Generous bottom padding so the last content row never
+                // hides under the floating CTA + its fade gradient.
+                .padding(.bottom, 160)
             }
             .scrollDismissesKeyboard(.interactively)
 

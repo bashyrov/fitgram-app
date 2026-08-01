@@ -1,0 +1,34 @@
+# fastlane deliver config — drives metadata + screenshots upload to App
+# Store Connect. Lives next to Fastfile so `fastlane deliver` picks it up.
+
+app_identifier "app.mealgram.ios.bashyrov"
+team_id "L55G3V9NJ3"
+
+# Don't push the binary again; we already did that via the `beta` lane.
+skip_binary_upload true
+
+# Push all the language folders under metadata/ + screenshots/.
+metadata_path "./fastlane/metadata"
+screenshots_path "./fastlane/screenshots"
+
+# Apple's App Store Connect API has been moving pricing into the new
+# Subscriptions/Pricing endpoints; fastlane's old `price_tier` write
+# breaks against the current schema. Skipping here — set the price
+# manually once in App Store Connect (Pricing and Availability → Free).
+automatic_release false
+
+# Apple App Review needs a way to reach you on rejection.
+app_review_information(
+  first_name: "Artur",
+  last_name: "B.",
+  email_address: "bashyroov@gmail.com",
+  phone_number: "+48 883158877",
+  notes: "Onboarding kicks in on first launch and walks through goal setup before the Today screen unlocks. No demo account needed — Sign in with Apple lands directly inside the app. Photo scan flow needs internet to reach our Cloudflare Worker proxy, which forwards to Google Gemini and returns nutrition estimates without retaining the image. Auto-renewable subscription metadata includes Terms of Use / EULA at https://mealgram.xyz/terms and Privacy Policy at https://mealgram.xyz/privacy."
+)
+
+# Submit-time compliance answers.
+submission_information(
+  add_id_info_uses_idfa: false,
+  export_compliance_uses_encryption: false,
+  content_rights_contains_third_party_content: false
+)

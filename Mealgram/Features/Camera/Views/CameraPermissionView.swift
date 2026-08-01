@@ -17,11 +17,11 @@ struct CameraPermissionView: View {
                     title: title,
                     message: message,
                     action: status == .denied
-                        ? .init(title: "Otwórz Ustawienia", perform: openSettings)
-                        : .init(title: "Pozwól na dostęp", perform: onRetry)
+                        ? .init(title: "Open Settings", perform: openSettings)
+                        : .init(title: "Allow access", perform: onRetry)
                 )
                 Spacer()
-                SecondaryButton(title: "Zamknij", systemImage: "xmark") { onDismiss() }
+                SecondaryButton(title: "Close", systemImage: "xmark") { onDismiss() }
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .padding(.bottom, Tokens.Space.xl)
             }
@@ -39,11 +39,11 @@ struct CameraPermissionView: View {
     private var message: LocalizedStringKey {
         switch status {
         case .denied, .restricted:
-            return "Włącz dostęp do aparatu w Ustawieniach, żebyśmy mogli skanować posiłki ze zdjęć."
+            return "Enable camera access in Settings so we can scan meals from photos."
         case .notDetermined:
-            return "Skanujemy posiłki z aparatu. Zdjęcia trafiają tylko do naszego AI i nigdzie poza tym."
+            return "We scan meals with the camera. Photos go only to our AI and nowhere else."
         case .authorized:
-            return "Możesz zacząć skanować."
+            return "Ready to scan."
         }
     }
 

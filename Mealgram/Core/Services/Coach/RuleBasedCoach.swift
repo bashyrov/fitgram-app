@@ -7,7 +7,7 @@ import Foundation
 struct RuleBasedCoach: CoachInsightGenerator {
     var maxInsights: Int = 3
 
-    func generate(for context: CoachContext) -> [CoachInsight] {
+    func generate(for context: CoachContext) async -> [CoachInsight] {
         var insights: [CoachInsight] = []
         for rule in Self.rules {
             if let insight = rule(context) {
@@ -19,6 +19,23 @@ struct RuleBasedCoach: CoachInsightGenerator {
             insights.append(Self.welcome(context))
         }
         return insights
+    }
+
+    func generateWeekly(for context: CoachContext) async -> WeeklyDebriefAIResult {
+        // Rule-based path returns the same insights as the daily call but
+        // capped at 5; the headline stays nil so WeeklyDebrief.from() falls
+        // back to its stat-derived heading.
+        var insights: [CoachInsight] = []
+        for rule in Self.rules {
+            if let insight = rule(context) {
+                insights.append(insight)
+                if insights.count >= 5 { break }
+            }
+        }
+        if insights.isEmpty {
+            insights.append(Self.welcome(context))
+        }
+        return WeeklyDebriefAIResult(headline: nil, insights: insights)
     }
 
     private typealias Rule = (CoachContext) -> CoachInsight?
@@ -43,11 +60,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard [3, 7, 14, 21, 30, 60, 100].contains(length) else { return nil }
         return CoachInsight(
             tone: .celebration,
-            headline: String(localized: "Brawo!"),
-            body: String(
-                localized:
-                    "Już \(length) dni z rzędu z Mealgram. Spokojne tempo — to dokładnie tak, jak ma być."
-            )
+            headline: L("Brawo!"),
+            body: String.localizedStringWithFormat(L("Already %lld days in a row with Mealgram. A calm pace — exactly how it should be."), length)
         )
     }
 
@@ -56,22 +70,16 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard delta < 0 else {
             return CoachInsight(
                 tone: .encouragement,
-                headline: String(localized: "Spokojnie"),
-                body: String(
-                    localized:
-                        "Mała zmiana wagi (+\(formatKg(delta))) — to normalne wahania. Spójrzmy na średnią z całego miesiąca."
-                ),
-                actionTitle: String(localized: "Otwórz wagę"),
+                headline: L("Spokojnie"),
+                body: String.localizedStringWithFormat(L("A small weight change (+%@) — normal fluctuation. Let's look at the whole-month average."), formatKg(delta)),
+                actionTitle: L("Otwórz wagę"),
                 actionKind: .openWeightLog
             )
         }
         return CoachInsight(
             tone: .celebration,
-            headline: String(localized: "Świetna trajektoria"),
-            body: String(
-                localized:
-                    "W ciągu 30 dni schudłaś \(formatKg(-delta)). Konsekwencja popłaca — tak trzymać."
-            )
+            headline: L("Świetna trajektoria"),
+            body: String.localizedStringWithFormat(L("Over 30 days you lost %@. Consistency pays off — keep it up."), formatKg(-delta))
         )
     }
 
@@ -79,12 +87,9 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard context.streak.atRiskToday, context.streak.current >= 2, context.hourOfDay >= 18 else { return nil }
         return CoachInsight(
             tone: .nudge,
-            headline: String(localized: "Seria zagrożona"),
-            body: String(
-                localized:
-                    "Twoja seria \(context.streak.current) dni — jeszcze nic dziś nie zapisałaś. Krótki wpis wystarczy."
-            ),
-            actionTitle: String(localized: "Dodaj posiłek"),
+            headline: L("Seria zagrożona"),
+            body: String.localizedStringWithFormat(L("Your %lld-day streak — nothing logged today yet. A quick entry is enough."), context.streak.current),
+            actionTitle: L("Add meal"),
             actionKind: .openScanner
         )
     }
@@ -97,12 +102,9 @@ struct RuleBasedCoach: CoachInsightGenerator {
         let missing = Int(max(0, Double(context.goals.proteinGoalGrams) - context.today.proteinGrams))
         return CoachInsight(
             tone: .suggestion,
-            headline: String(localized: "Trochę białka"),
-            body: String(
-                localized:
-                    "Brakuje \(missing) g białka do celu. Twaróg, jajka, strączki — pasują niemal do każdego posiłku."
-            ),
-            actionTitle: String(localized: "Szybka baza"),
+            headline: L("Trochę białka"),
+            body: String.localizedStringWithFormat(L("%lld g of protein left to your goal. Cottage cheese, eggs, legumes — they fit almost any meal."), missing),
+            actionTitle: L("Quick Database"),
             actionKind: .openQuickDB
         )
     }
@@ -113,11 +115,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard ratio >= 1.2, context.hourOfDay < 22 else { return nil }
         return CoachInsight(
             tone: .nudge,
-            headline: String(localized: "Dziś bogato"),
-            body: String(
-                localized:
-                    "Już ponad cel kalorii. Wieczorem warto coś lekkiego — sałata, twaróg, owoce."
-            )
+            headline: L("Rich day today"),
+            body: L("Już ponad cel kalorii. Wieczorem warto coś lekkiego — sałata, twaróg, owoce.")
         )
     }
 
@@ -131,12 +130,9 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard context.today.proteinGrams < 15 else { return nil }
         return CoachInsight(
             tone: .suggestion,
-            headline: String(localized: "Białko na śniadanie"),
-            body: String(
-                localized:
-                    "Śniadanie zalogowane — dorzuć trochę białka (jajka, twaróg, skyr). Łatwiej trzymać sytość do obiadu."
-            ),
-            actionTitle: String(localized: "Szybka baza"),
+            headline: L("Protein for breakfast"),
+            body: L("Breakfast logged — add some protein (eggs, cottage cheese, skyr). It's easier to stay full until lunch."),
+            actionTitle: L("Quick Database"),
             actionKind: .openQuickDB
         )
     }
@@ -152,11 +148,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard ratio >= 0.4, ratio < 0.7 else { return nil }
         return CoachInsight(
             tone: .encouragement,
-            headline: String(localized: "Dobre tempo"),
-            body: String(
-                localized:
-                    "Pół dnia za Tobą i ładnie w limicie. Lekka przekąska + kolacja domyka dzień."
-            )
+            headline: L("Dobre tempo"),
+            body: L("Pół dnia za Tobą i ładnie w limicie. Lekka przekąska + kolacja domyka dzień.")
         )
     }
 
@@ -167,11 +160,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard ratio >= 0.7, ratio < 1.0 else { return nil }
         return CoachInsight(
             tone: .suggestion,
-            headline: String(localized: "Wszystko na kursie"),
-            body: String(
-                localized:
-                    "Jesteś bliska celu. Lekka kolacja albo przekąska — i wystarczy."
-            )
+            headline: L("Wszystko na kursie"),
+            body: L("You're close to your goal. A light dinner or snack — that's enough.")
         )
     }
 
@@ -179,11 +169,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
         guard context.week.daysWithinCalorieGoal >= 5 else { return nil }
         return CoachInsight(
             tone: .celebration,
-            headline: String(localized: "Świetny tydzień"),
-            body: String(
-                localized:
-                    "5 z ostatnich 7 dni w celu kalorii. To bardziej liczy się niż jeden idealny dzień."
-            )
+            headline: L("Świetny tydzień"),
+            body: L("5 out of the last 7 days within your calorie goal. This matters more than one perfect day.")
         )
     }
 
@@ -192,35 +179,26 @@ struct RuleBasedCoach: CoachInsightGenerator {
         if context.hourOfDay < 10 {
             return CoachInsight(
                 tone: .encouragement,
-                headline: String(localized: "Dzień dobry"),
-                body: String(
-                    localized:
-                        "Co dziś planujesz na śniadanie? Stuknij plusik, gdy będzie gotowe."
-                ),
-                actionTitle: String(localized: "Dodaj posiłek"),
+                headline: L("Good morning"),
+                body: L("What's for breakfast today? Tap + when it's ready."),
+                actionTitle: L("Add meal"),
                 actionKind: .openScanner
             )
         }
         if context.hourOfDay < 15 {
             return CoachInsight(
                 tone: .suggestion,
-                headline: String(localized: "Pora obiadu"),
-                body: String(
-                    localized:
-                        "Jeszcze nic dziś nie zapisałaś — dorzuć obiad, żebym mogła ułożyć dzień."
-                ),
-                actionTitle: String(localized: "Dodaj posiłek"),
+                headline: L("Pora obiadu"),
+                body: L("Jeszcze nic dziś nie zapisałaś — dorzuć obiad, żebym mogła ułożyć dzień."),
+                actionTitle: L("Add meal"),
                 actionKind: .openScanner
             )
         }
         return CoachInsight(
             tone: .nudge,
-            headline: String(localized: "Pusty dzień"),
-            body: String(
-                localized:
-                    "Wpiszmy choć jeden posiłek — nie chcemy stracić serii."
-            ),
-            actionTitle: String(localized: "Dodaj posiłek"),
+            headline: L("Pusty dzień"),
+            body: L("Wpiszmy choć jeden posiłek — nie chcemy stracić serii."),
+            actionTitle: L("Add meal"),
             actionKind: .openScanner
         )
     }
@@ -228,11 +206,8 @@ struct RuleBasedCoach: CoachInsightGenerator {
     private static func welcome(_ context: CoachContext) -> CoachInsight {
         CoachInsight(
             tone: .encouragement,
-            headline: String(localized: "Spokojny dzień"),
-            body: String(
-                localized:
-                    "Wszystko wygląda zdrowo. Nie zapominaj o wodzie — to często prosty brakujący puzzel."
-            )
+            headline: L("Spokojny dzień"),
+            body: L("Everything looks healthy. Don't forget about water — it's often the simple missing puzzle piece.")
         )
     }
 

@@ -62,7 +62,7 @@ struct CustomFoodFormSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }
@@ -106,7 +106,7 @@ struct CustomFoodFormSheet: View {
                     .foregroundStyle(Tokens.Palette.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 stepper(label: "Kalorie (kcal)", value: $kcal, step: 5, range: 0...900)
-                stepper(label: "Białko (g)", value: $protein, step: 1, range: 0...100)
+                stepper(label: "Protein (g)", value: $protein, step: 1, range: 0...100)
                 stepper(label: "Węgle (g)", value: $carbs, step: 1, range: 0...100)
                 stepper(label: "Tłuszcz (g)", value: $fat, step: 1, range: 0...100)
             }

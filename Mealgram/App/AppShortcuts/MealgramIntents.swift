@@ -26,7 +26,7 @@ enum AppShortcutAction {
 
 /// Open the app and raise the "Add meal" action sheet.
 struct LogMealIntent: AppIntent {
-    static var title: LocalizedStringResource = "Dodaj posiłek"
+    static var title: LocalizedStringResource = "Add meal"
     static var description = IntentDescription("Otwiera Mealgram i pokazuje opcje dodania posiłku.")
     static var openAppWhenRun: Bool = true
 
@@ -74,19 +74,19 @@ struct MealgramShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: LogMealIntent(),
             phrases: [
-                "Dodaj posiłek w \(.applicationName)",
+                "Add meal in \(.applicationName)",
                 "Zapisz jedzenie w \(.applicationName)",
             ],
-            shortTitle: "Dodaj posiłek",
+            shortTitle: "Add meal",
             systemImageName: "plus.circle.fill"
         )
         AppShortcut(
             intent: ShowTodayIntent(),
             phrases: [
                 "Pokaż dzisiaj w \(.applicationName)",
-                "Co jadłem dzisiaj w \(.applicationName)",
+                "What I ate today in \(.applicationName)",
             ],
-            shortTitle: "Dziś",
+            shortTitle: "Today",
             systemImageName: "sun.max.fill"
         )
         AppShortcut(
@@ -95,7 +95,7 @@ struct MealgramShortcuts: AppShortcutsProvider {
                 "Podsumowanie tygodnia w \(.applicationName)",
                 "Co u mnie w \(.applicationName)",
             ],
-            shortTitle: "Co u Ciebie",
+            shortTitle: "How you're doing",
             systemImageName: "sparkles"
         )
     }

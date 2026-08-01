@@ -11,9 +11,21 @@ workers_dev = true
 # id = ""
 # preview_id = ""
 
+# Admin-only AI usage accounting — see USAGE_DASHBOARD.md for migrations
+# + secret rotation.
+[[d1_databases]]
+binding = "USAGE_DB"
+database_name = "mealgram-usage"
+database_id = "a762efb2-0937-4fa0-9d84-62fd38844f6d"
+
 [vars]
 # Non-secret toggles. Use `wrangler secret put NAME` for the rest:
-#   SUPABASE_JWT_SECRET, GEMINI_API_KEY, UPSTASH_REDIS_URL, UPSTASH_REDIS_TOKEN
+#   SUPABASE_JWT_SECRET, ANTHROPIC_API_KEY, GEMINI_API_KEY, UPSTASH_REDIS_URL, UPSTASH_REDIS_TOKEN
+ANTHROPIC_BASE_URL = "https://leafapi.cc/"
+ANTHROPIC_AUTH_MODE = "bearer"
+AI_PROVIDER = "gemini"
+CLAUDE_TEXT_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_VISION_MODEL = "claude-sonnet-4-20250514"
 GEMINI_VISION_MODEL = "gemini-2.5-flash"
 GEMINI_PREMIUM_MODEL = "gemini-2.5-pro"
 CACHE_TTL_SECONDS = "604800"  # 7 days

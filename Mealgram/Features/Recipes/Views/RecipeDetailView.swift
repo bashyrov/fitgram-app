@@ -7,17 +7,22 @@ import UIKit
 /// serving nutrition and pipes it through `MealSaving`.
 struct RecipeDetailView: View {
     let recipe: Recipe
-    let onCook: (Double) -> Void
+    let onCook: ([FoodItem]) -> Void
     let onEdit: () -> Void
     let onRate: (Double?) -> Void
     let onDismiss: () -> Void
     var similarRecipes: [Recipe] = []
     var onSelectSimilar: ((Recipe) -> Void)?
+    var mealAnalyzer: MealTextAnalysisService?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var usageMeter: UsageMeter?
 
     @State private var servings: Double = 1
     @State private var checkedIngredients: Set<UUID> = []
     @State private var didCopyIngredients = false
     @State private var activeModIntent: RecipeModificationEngine.Intent?
+    @State private var isPortionSheetPresented = false
 
     var body: some View {
         NavigationStack {
@@ -45,7 +50,7 @@ struct RecipeDetailView: View {
                             similarCard(onSelectSimilar)
                         }
                         PrimaryButton(title: "Ugotuj i dodaj do dziennika", systemImage: "checkmark") {
-                            onCook(servings)
+                            isPortionSheetPresented = true
                         }
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
@@ -56,16 +61,16 @@ struct RecipeDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: Tokens.Space.sm) {
                         if !recipe.ingredients.isEmpty {
                             ShareLink(
                                 item: shoppingListText,
-                                subject: Text("Lista zakupów — \(recipe.title)"),
+                                subject: Text(String.localizedStringWithFormat(L("Shopping list — %@"), recipe.title)),
                                 preview: SharePreview(
-                                    "Lista zakupów — \(recipe.title)",
+                                    String.localizedStringWithFormat(L("Shopping list — %@"), recipe.title),
                                     icon: Image(systemName: "cart")
                                 )
                             ) {
@@ -92,7 +97,7 @@ struct RecipeDetailView: View {
                         } label: {
                             Image(systemName: "pencil")
                         }
-                        .accessibilityLabel(Text("Edytuj"))
+                        .accessibilityLabel(Text("Edit"))
                     }
                 }
             }
@@ -104,6 +109,20 @@ struct RecipeDetailView: View {
                 )
                 .presentationDetents([.medium, .large])
             }
+            .sheet(isPresented: $isPortionSheetPresented) {
+                RecipePortionSheet(
+                    recipe: recipe,
+                    onSave: { items in
+                        isPortionSheetPresented = false
+                        onCook(items)
+                    },
+                    onDismiss: { isPortionSheetPresented = false },
+                    mealAnalyzer: mealAnalyzer,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    usageMeter: usageMeter
+                )
+            }
         }
     }
 
@@ -112,11 +131,11 @@ struct RecipeDetailView: View {
     private var header: some View {
         Card(elevation: Tokens.Shadow.float) {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("\(recipe.servings) porcje")
+                Text(String.localizedStringWithFormat(L("%lld porcje"), recipe.servings))
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 if recipe.cookCount > 0 {
-                    Text("Ugotowane \(recipe.cookCount) razy")
+                    Text(String.localizedStringWithFormat(L("Cooked %lld times"), recipe.cookCount))
                         .font(Tokens.Font.subheadline)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
@@ -194,7 +213,7 @@ struct RecipeDetailView: View {
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     if recipe.rating != nil {
-                        Button("Wyczyść") {
+                        Button("Clear") {
                             onRate(nil)
                             Haptics.light()
                         }
@@ -214,7 +233,7 @@ struct RecipeDetailView: View {
                                 .foregroundStyle(filled ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(Text("Oceń \(star) gwiazdek"))
+                        .accessibilityLabel(Text(String.localizedStringWithFormat(L("Oceń %lld gwiazdek"), star)))
                     }
                     Spacer()
                 }
@@ -244,7 +263,7 @@ struct RecipeDetailView: View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                 HStack {
-                    Text("Składniki")
+                    Text("Ingredients")
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
@@ -260,7 +279,7 @@ struct RecipeDetailView: View {
                     }
                     .buttonStyle(.plain)
                     if !checkedIngredients.isEmpty {
-                        Button("Wyczyść") {
+                        Button("Clear") {
                             checkedIngredients.removeAll()
                             Haptics.light()
                         }
@@ -303,12 +322,12 @@ struct RecipeDetailView: View {
     private var instructionsCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text("Instrukcje")
+                Text("Instructions")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in
                     HStack(alignment: .top, spacing: Tokens.Space.sm) {
-                        Text("\(index + 1).")
+                        Text(String.localizedStringWithFormat(L("%lld."), index + 1))
                             .font(Tokens.Font.bodyEmphasized)
                             .foregroundStyle(Tokens.Palette.primary)
                             .frame(width: 24, alignment: .leading)
@@ -340,7 +359,7 @@ struct RecipeDetailView: View {
                                         .font(Tokens.Font.bodyEmphasized)
                                         .foregroundStyle(Tokens.Palette.ink)
                                         .lineLimit(1)
-                                    Text("\(peer.ingredients.count) składn.")
+                                    Text(String.localizedStringWithFormat(L("%lld składn."), peer.ingredients.count))
                                         .font(Tokens.Font.caption)
                                         .foregroundStyle(Tokens.Palette.inkMuted)
                                 }
@@ -375,9 +394,19 @@ struct RecipeDetailView: View {
     /// (likely the user, sending themselves a list) has context.
     var shoppingListText: String {
         var lines: [String] = []
-        lines.append("Lista zakupów — \(recipe.title)")
+        lines.append(
+            String.localizedStringWithFormat(
+                L("Lista zakupów — %@"),
+                recipe.title
+            )
+        )
         let scaledServings = max(1, Int(servings.rounded()))
-        lines.append("(\(scaledServings) porcje)")
+        lines.append(
+            String.localizedStringWithFormat(
+                L("(%lld porcje)"),
+                scaledServings
+            )
+        )
         lines.append("")
         for ingredient in recipe.ingredients {
             lines.append("• \(ingredient.name)")
@@ -387,7 +416,7 @@ struct RecipeDetailView: View {
 
     private func macroPill(label: LocalizedStringKey, grams: Double, color: Color) -> some View {
         VStack(spacing: 2) {
-            Text("\(Int(grams))")
+            Text(String.localizedStringWithFormat(L("%lld"), Int(grams)))
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(color)
             Text(label)

@@ -17,7 +17,7 @@ struct SuggestedRecipeCard: View {
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Ulubione")
+                    Text("Favorites")
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.primary)
                     Text(recipe.title)
@@ -39,7 +39,7 @@ struct SuggestedRecipeCard: View {
                         .background(Capsule().fill(Tokens.Palette.primary))
                 }
                 .buttonStyle(PressableButtonStyle())
-                .accessibilityLabel(Text("Ugotuj \(recipe.title)"))
+                .accessibilityLabel(Text(String.localizedStringWithFormat(L("Ugotuj %@"), recipe.title)))
             }
         }
     }
@@ -47,13 +47,16 @@ struct SuggestedRecipeCard: View {
     private var subtitle: String {
         var parts: [String] = []
         if recipe.cookCount > 0 {
-            parts.append("Ugotowane \(recipe.cookCount) razy")
+            let format = L("Cooked %lld times")
+            parts.append(String.localizedStringWithFormat(format, recipe.cookCount))
         }
         if let kcal = recipe.caloriesPerServing, kcal > 0 {
-            parts.append("\(Int(kcal)) kcal / porcję")
+            let format = L("%lld kcal / porcję")
+            parts.append(String.localizedStringWithFormat(format, Int(kcal)))
         }
         if parts.isEmpty {
-            parts.append("\(recipe.servings) porcje")
+            let format = L("%lld porcje")
+            parts.append(String.localizedStringWithFormat(format, recipe.servings))
         }
         return parts.joined(separator: " · ")
     }

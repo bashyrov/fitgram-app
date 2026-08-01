@@ -10,7 +10,7 @@ struct LanguageSettingsView: View {
 
     var body: some View {
         ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
+            languageBackground
             ScrollView {
                 VStack(spacing: Tokens.Space.lg) {
                     headerCard
@@ -21,7 +21,7 @@ struct LanguageSettingsView: View {
                 .padding(.vertical, Tokens.Space.lg)
             }
         }
-        .navigationTitle(Text("Język"))
+        .navigationTitle(Text(languageTitle))
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -44,16 +44,38 @@ struct LanguageSettingsView: View {
                         .foregroundStyle(.white)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Wybierz język aplikacji")
+                    Text(languageHeaderTitle)
                         .font(Tokens.Font.title3)
                         .foregroundStyle(Tokens.Palette.ink)
-                    Text("Zmiana zachodzi od razu, bez restartu.")
+                    Text(languageHeaderSubtitle)
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
                 Spacer(minLength: 0)
             }
         }
+    }
+
+    private var languageBackground: some View {
+        ZStack {
+            Tokens.Palette.background
+            Circle()
+                .fill(Tokens.Palette.primarySoft.opacity(0.42))
+                .frame(width: 350, height: 350)
+                .blur(radius: 108)
+                .offset(x: -160, y: -210)
+            Circle()
+                .fill(Tokens.Palette.accentSoft.opacity(0.24))
+                .frame(width: 300, height: 300)
+                .blur(radius: 112)
+                .offset(x: 150, y: -10)
+            Circle()
+                .fill(Tokens.Palette.warning.opacity(0.08))
+                .frame(width: 240, height: 240)
+                .blur(radius: 100)
+                .offset(x: -80, y: 350)
+        }
+        .ignoresSafeArea()
     }
 
     private var languageList: some View {
@@ -119,7 +141,7 @@ struct LanguageSettingsView: View {
             Image(systemName: "info.circle.fill")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Tokens.Palette.primary)
-            Text("Niektóre etykiety systemowe (np. okna z prośbą o pozwolenie) będą po polsku do momentu restartu telefonu.")
+            Text(languageHelpHint)
                 .font(Tokens.Font.footnote)
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
@@ -129,6 +151,40 @@ struct LanguageSettingsView: View {
         .background(
             RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
                 .fill(Tokens.Palette.primarySoft)
+        )
+    }
+
+    private var languageTitle: String {
+        TL(pl: "Język", en: "Language", uk: "Мова", ru: "Язык", es: "Idioma")
+    }
+
+    private var languageHeaderTitle: String {
+        TL(
+            pl: "Wybierz język aplikacji",
+            en: "Choose app language",
+            uk: "Виберіть мову застосунку",
+            ru: "Выберите язык приложения",
+            es: "Elige el idioma de la app"
+        )
+    }
+
+    private var languageHeaderSubtitle: String {
+        TL(
+            pl: "Zmiana zachodzi od razu, bez restartu.",
+            en: "The change happens instantly, without a restart.",
+            uk: "Зміна застосовується одразу, без перезапуску.",
+            ru: "Изменение применяется сразу, без перезапуска.",
+            es: "El cambio se aplica al instante, sin reiniciar."
+        )
+    }
+
+    private var languageHelpHint: String {
+        TL(
+            pl: "Niektóre etykiety systemowe, np. okna uprawnień, mogą pozostać w języku iOS.",
+            en: "Some system labels, such as permission prompts, may remain in your iOS language.",
+            uk: "Деякі системні написи, наприклад запити дозволів, можуть залишатися мовою iOS.",
+            ru: "Некоторые системные надписи, например запросы разрешений, могут остаться на языке iOS.",
+            es: "Algunas etiquetas del sistema, como los permisos, pueden seguir en el idioma de iOS."
         )
     }
 }

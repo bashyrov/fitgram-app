@@ -1,26 +1,22 @@
-Mealgram es un contador de calorías inteligente diseñado para la cocina polaca y tus objetivos. Sin báscula, sin contar gramos — solo haz una foto del plato, escanea un código de barras o di lo que comiste.
+Mealgram es un contador de calorías inteligente sin fricciones. Sin báscula, sin contar gramos — solo haz una foto del plato, escanea un código de barras o di lo que comiste.
 
 LO QUE OBTIENES
-• 📸 Escaneo de comidas por foto — la IA reconoce pierogi, schnitzel, sopas y más de 160 platos polacos
-• 📦 Escáner de códigos de barras — Open Food Facts directo del envase
-• 🎙 Añadir por voz en polaco — "comí sopa de tomate y un sándwich de queso"
-• 🔎 Base Rápida — 160+ clásicos polacos con datos nutricionales precisos
-• 🧠 Coach Ola — IA que recuerda tus objetivos, dieta y hábitos
-• 📊 Objetivos y métricas — calorías, macros, agua, peso, IMC
-• 🔥 Racha diaria — mantén el ritmo, gana insignias, comparte tu progreso
-• 👫 Amigos — retos semanales, ranking, perder peso juntos
-• 📚 Libro de recetas — cocina, planifica, importa desde URL
-• 💧 Seguimiento de agua — objetivo diario + un toque para añadir
-• 📅 Eventos culinarios polacos — Mealgram los conoce
-
-PREMIUM DESBLOQUEA
-• Seguimiento del peso con gráfico de tendencia y recordatorio
-• AI Coach Claude — resúmenes diarios personalizados
-• Historial completo + exportación JSON/CSV/ZIP — sin límite de 30 días
-• Escaneos ilimitados, "Mis recetas" ilimitadas
-• Comunidad de amigos sin límite de 3 personas
+• Escaneo de comidas por foto — la IA reconoce pierogi, schnitzel, sushi, pasta, ensaladas y más de 3000 platos del mundo
+• Escáner de códigos de barras — Open Food Facts directo del envase
+• Añadir por voz — "comí sopa de tomate y un sándwich de queso"
+• Base Rápida — 3000+ comidas con datos nutricionales precisos
+• Coach Ola — IA que recuerda tus objetivos, dieta y hábitos
+• Objetivos y métricas — calorías, macros, agua, peso, IMC
+• Racha diaria — mantén el ritmo, gana insignias, comparte tu progreso
+• Amigos — retos semanales, ranking, perder peso juntos
+• Libro de recetas — cocina, planifica, importa desde URL
+• Seguimiento de agua — objetivo diario + un toque para añadir
 
 PRIVACIDAD
-Tus datos se sincronizan vía iCloud — solo tú accedes. Sin servidores Mealgram, sin rastreo, sin anuncios. Apple Sign In con un toque.
+Tus datos siguen bajo tu control: sincronización con iCloud, sin anuncios, sin venta de datos personales y procesamiento de IA transparente.
 
-Mealgram está hecho con cariño en Polonia para el mercado polaco — por un desarrollador polaco en solitario.
+Mealgram está hecho por un pequeño equipo independiente — tu feedback va directo a las personas que escriben el código.
+
+LEGAL
+Términos de uso: https://mealgram.xyz/terms
+Política de privacidad: https://mealgram.xyz/privacy

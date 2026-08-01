@@ -5,6 +5,7 @@ import SwiftUI
 /// transition so it stays calm.
 struct OnboardingView: View {
     @Bindable var flow: OnboardingFlow
+    let subscriptionService: any SubscriptionService
 
     var body: some View {
         ZStack {
@@ -34,7 +35,7 @@ struct OnboardingView: View {
             }
             .opacity(flow.canGoBack ? 1 : 0)
             .disabled(!flow.canGoBack)
-            .accessibilityLabel(Text("Wróć"))
+            .accessibilityLabel(Text("Back"))
 
             OnboardingProgressBar(
                 index: flow.currentStep.progressIndex,
@@ -52,8 +53,10 @@ struct OnboardingView: View {
             case .welcome:
                 WelcomeStepView(
                     onContinue: { flow.advance() },
-                    onSkip: { flow.skipToEnd() }
+                    onSkip: nil
                 )
+            case .account:
+                AccountStepView(profile: $flow.profile) { flow.advance() }
             case .goal:
                 GoalStepView(goal: $flow.profile.goal) { flow.advance() }
             case .profile:
@@ -65,10 +68,15 @@ struct OnboardingView: View {
             case .firstScan:
                 FirstScanStepView { flow.advance() }
             case .calibration:
+                // Always rebuild from the rule-based generator at render so
+                // the page tracks the in-app language picker even mid-flow.
+                // (Worker copy is still fetched in the background for the
+                // analytics/source attribution path.)
                 CalibrationStepView(
                     profile: $flow.profile,
                     computedTargets: flow.computedTargets,
-                    recommendations: flow.recommendations,
+                    recommendations: flow.profile.recommendationsRequest
+                        .map { RuleBasedRecommendationsService.buildSync(for: $0) },
                     isLoadingRecommendations: flow.isLoadingRecommendations
                 ) { flow.advance() }
                 .task(id: flow.currentStep) {
@@ -77,7 +85,11 @@ struct OnboardingView: View {
             case .notifications:
                 NotificationStepView { flow.advance() }
             case .paywall:
-                PaywallStepView { flow.advance() }
+                PaywallStepView(
+                    subscriptionService: subscriptionService,
+                    onPurchased: { flow.advance() },
+                    onSkip: { flow.advance() }
+                )
             case .celebration:
                 CelebrationStepView(
                     displayName: flow.displayName,
@@ -85,7 +97,13 @@ struct OnboardingView: View {
                 )
             }
         }
-        .transition(.opacity)
+        .id(flow.currentStep)
+        .transition(
+            .asymmetric(
+                insertion: .opacity.combined(with: .move(edge: .trailing)),
+                removal: .opacity.combined(with: .move(edge: .leading))
+            )
+        )
         .animation(Tokens.Motion.gentle, value: flow.currentStep)
     }
 }

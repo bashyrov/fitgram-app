@@ -10,6 +10,8 @@ final class NotificationCoordinatorTests: XCTestCase {
     private var scheduler: SpyScheduler!
 
     override func setUp() async throws {
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
         controller = try PersistenceController.makeInMemory()
         scheduler = SpyScheduler()
     }
@@ -17,6 +19,7 @@ final class NotificationCoordinatorTests: XCTestCase {
     override func tearDown() async throws {
         controller = nil
         scheduler = nil
+        UserDefaults.standard.removeObject(forKey: "app.language")
     }
 
     func testNotifyAchievementFormatsTitleWithDefinition() async {
@@ -34,8 +37,11 @@ final class NotificationCoordinatorTests: XCTestCase {
         await coordinator.notifyAchievement(definition)
 
         XCTAssertEqual(scheduler.achievements.count, 1)
-        XCTAssertEqual(scheduler.achievements.first?.title, "Nowa odznaka: Tydzień!")
-        XCTAssertEqual(scheduler.achievements.first?.body, "Siedem dni z rzędu wpisów.")
+        XCTAssertEqual(scheduler.achievements.first?.title, "Odblokowano: Tydzień!")
+        XCTAssertEqual(
+            scheduler.achievements.first?.body,
+            "Siedem dni z rzędu wpisów. Zobacz odznakę i zachowaj ten rytm."
+        )
     }
 
     func testRescheduleAllForwardsPlanToScheduler() async {
@@ -45,6 +51,38 @@ final class NotificationCoordinatorTests: XCTestCase {
         )
         await coordinator.rescheduleAll(for: "u-x")
         XCTAssertEqual(scheduler.reschedules.count, 1)
+    }
+
+    func testRescheduleAllSuggestsFreezeWhenStreakIsAtRisk() async throws {
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let context = ModelContext(controller.container)
+        context.insert(
+            Streak(
+                userRemoteID: "u-freeze",
+                currentLength: 8,
+                longestLength: 8,
+                lastLoggedDate: yesterday,
+                freezesAvailable: 1
+            )
+        )
+        try context.save()
+
+        let coordinator = NotificationCoordinator(
+            scheduler: scheduler,
+            container: controller.container,
+            now: { Self.date("2026-05-12T19:00:00Z") }
+        )
+        await coordinator.rescheduleAll(for: "u-freeze")
+
+        XCTAssertEqual(scheduler.reschedules.count, 1)
+        XCTAssertTrue(scheduler.reschedules[0].streakRiskSuggestsFreeze)
+    }
+
+    private static func date(_ iso: String) -> Date {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        guard let date = formatter.date(from: iso) else { fatalError("Bad ISO date \(iso)") }
+        return date
     }
 }
 

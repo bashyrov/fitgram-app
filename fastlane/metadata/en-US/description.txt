@@ -1,26 +1,22 @@
-Mealgram is a smart calorie tracker built for Polish cuisine and Polish goals. No scale, no gram counting — just snap a photo of your plate, scan a barcode, or say what you ate.
+Mealgram is a smart calorie tracker built around speed and zero friction. No scale, no gram counting — just snap a photo of your plate, scan a barcode, or say what you ate.
 
 WHAT YOU GET
-• 📸 Photo meal scanning — AI recognises pierogi, schnitzel, kasza, soups and 160+ other Polish dishes
-• 📦 Barcode scanner — Open Food Facts straight from the package
-• 🎙 Add by voice in Polish — "I ate tomato soup and a cheese sandwich"
-• 🔎 Quick Database — 160+ Polish classics with precise nutrition data
-• 🧠 Coach Ola — AI coach that remembers your goals, diet, and habits
-• 📊 Goals and metrics — calories, macros, water, weight, BMI
-• 🔥 Daily streak — keep the rhythm, earn badges, share progress
-• 👫 Friends — weekly challenges, leaderboard, lose weight together
-• 📚 Recipe book — cook, plan, import from any URL
-• 💧 Water tracking — daily goal + one-tap add
-• 📅 Polish cultural events — Christmas Eve, Fat Thursday, Easter — Mealgram knows
-
-PREMIUM UNLOCKS
-• Weight goal tracking with trend chart and reminder
-• Claude AI Coach — daily personalised summaries
-• Full history + JSON/CSV/ZIP export — no 30-day cap
-• Unlimited scans, unlimited "My recipes"
-• Friend community with no 3-person limit
+• Photo meal scanning — AI recognises pierogi, schnitzel, kasza, soups, pasta, sushi, salads and 3000+ other dishes worldwide
+• Barcode scanner — Open Food Facts straight from the package
+• Add by voice — "I had tomato soup and a cheese sandwich"
+• Quick Database — 3000+ foods with precise nutrition data
+• Coach Ola — AI coach that remembers your goals, diet, and habits
+• Goals and metrics — calories, macros, water, weight, BMI
+• Daily streak — keep the rhythm, earn badges, share progress
+• Friends — weekly challenges, leaderboard, lose weight together
+• Recipe book — cook, plan, import from any URL
+• Water tracking — daily goal + one-tap add
 
 PRIVACY & SECURITY
-Your data syncs via iCloud — only you have access. No Mealgram servers, no tracking, no ads. One-tap Apple Sign In.
+Your data stays under your control with iCloud sync, no ads, no selling personal data, and transparent AI processing.
 
-Mealgram is made with love in Poland for the Polish market — by a Polish solo developer. Your subscription supports continued development without privacy compromises.
+Mealgram is built by a small independent team — feedback goes directly to the people writing the code.
+
+LEGAL
+Terms of Use: https://mealgram.xyz/terms
+Privacy Policy: https://mealgram.xyz/privacy

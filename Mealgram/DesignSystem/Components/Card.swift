@@ -12,11 +12,16 @@ struct Card<Content: View>: View {
     var body: some View {
         content()
             .padding(padding)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(background)
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(background.opacity(0.84))
             )
-            .mealgramShadow(elevation)
+            .overlay(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(.white.opacity(0.36), lineWidth: 1)
+            )
+            .shadow(color: Tokens.Palette.primary.opacity(0.08), radius: 18, y: 10)
     }
 }
 

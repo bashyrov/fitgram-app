@@ -69,18 +69,21 @@ struct FoodItemEditorSheet: View {
                         }
                         Card {
                             VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text("Wartości odżywcze")
+                                Text("Nutrition values")
                                     .font(Tokens.Font.headline)
                                     .foregroundStyle(Tokens.Palette.ink)
+                                Text("Możesz wpisać tylko gramaturę. Brakujące kcal i makro uzupełni baza lub AI przy zapisie.")
+                                    .font(Tokens.Font.caption)
+                                    .foregroundStyle(Tokens.Palette.inkMuted)
                                 field(
                                     label: "Kalorie (kcal)", placeholder: "250", text: $calories, keyboard: .decimalPad)
-                                field(label: "Białko (g)", placeholder: "15", text: $protein, keyboard: .decimalPad)
-                                field(label: "Węgle (g)", placeholder: "30", text: $carbs, keyboard: .decimalPad)
-                                field(label: "Tłuszcz (g)", placeholder: "8", text: $fat, keyboard: .decimalPad)
+                                field(label: "Protein (g)", placeholder: "15", text: $protein, keyboard: .decimalPad)
+                                field(label: "Carbs (g)", placeholder: "30", text: $carbs, keyboard: .decimalPad)
+                                field(label: "Fat (g)", placeholder: "8", text: $fat, keyboard: .decimalPad)
                             }
                         }
                         PrimaryButton(
-                            title: mode == .adding ? "Dodaj" : "Zapisz",
+                            title: mode == .adding ? "Add" : "Save",
                             systemImage: "checkmark",
                             isEnabled: isValid,
                             action: commit
@@ -90,11 +93,11 @@ struct FoodItemEditorSheet: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text(mode == .adding ? "Dodaj składnik" : "Edytuj składnik"))
+            .navigationTitle(Text(mode == .adding ? "Add ingredient" : "Edit ingredient"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }
@@ -115,7 +118,9 @@ struct FoodItemEditorSheet: View {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return false }
         guard let gramsValue = Self.parseDouble(grams), gramsValue > 0 else { return false }
-        guard let calsValue = Self.parseDouble(calories), calsValue >= 0 else { return false }
+        if !calories.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            guard let calsValue = Self.parseDouble(calories), calsValue >= 0 else { return false }
+        }
         return true
     }
 
@@ -145,14 +150,13 @@ struct FoodItemEditorSheet: View {
 
     private func commit() {
         guard isValid,
-            let gramsValue = Self.parseDouble(grams),
-            let caloriesValue = Self.parseDouble(calories)
+            let gramsValue = Self.parseDouble(grams)
         else { return }
         let item = ScanResult.DetectedItem(
             id: originalID ?? UUID(),
             name: name.trimmingCharacters(in: .whitespacesAndNewlines),
             quantityGrams: gramsValue,
-            caloriesKcal: caloriesValue,
+            caloriesKcal: Self.parseDouble(calories) ?? 0,
             proteinGrams: Self.parseDouble(protein) ?? 0,
             carbsGrams: Self.parseDouble(carbs) ?? 0,
             fatGrams: Self.parseDouble(fat) ?? 0,

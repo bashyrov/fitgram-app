@@ -87,7 +87,7 @@ final class InMemoryFriendService: FriendService {
                 actorDisplayName: ola.displayName,
                 actorAvatarURL: nil,
                 kind: .streakMilestone,
-                payload: "Trzy tygodnie z rzędu! 🔥",
+                payload: L("Trzy tygodnie z rzędu! 🔥"),
                 createdAt: now().addingTimeInterval(-30 * 60),
                 reactions: [.heart: 2],
                 myReaction: nil
@@ -98,7 +98,7 @@ final class InMemoryFriendService: FriendService {
                 actorDisplayName: kasia.displayName,
                 actorAvatarURL: nil,
                 kind: .achievementEarned,
-                payload: "Zdobyła odznakę „Białkowy dzień”.",
+                payload: L("Zdobyła odznakę „Białkowy dzień”."),
                 createdAt: now().addingTimeInterval(-3 * 60 * 60),
                 reactions: [:],
                 myReaction: nil
@@ -109,7 +109,7 @@ final class InMemoryFriendService: FriendService {
                 actorDisplayName: michal.displayName,
                 actorAvatarURL: nil,
                 kind: .recipeCooked,
-                payload: "Ugotował „Schabowego z ziemniakami” już 5 razy.",
+                payload: L("Ugotował „Schabowego z ziemniakami” już 5 razy."),
                 createdAt: now().addingTimeInterval(-26 * 60 * 60),
                 reactions: [.clap: 1, .flame: 1],
                 myReaction: .clap
@@ -132,25 +132,43 @@ final class InMemoryFriendService: FriendService {
         let earlierMember = Calendar.current.date(byAdding: .month, value: -8, to: now) ?? now
         let weeklyOla = WeeklyStats(
             averageDailyKcal: 1820, totalScans: 31, daysHitGoal: 6,
-            topFoods: ["Owsianka", "Pierogi ruskie", "Tofu z warzywami"]
+            topFoods: [
+                L("Owsianka"),
+                L("Pierogi ruskie"),
+                L("Tofu z warzywami"),
+            ]
         )
         let weeklyKasia = WeeklyStats(
             averageDailyKcal: 1980, totalScans: 24, daysHitGoal: 5,
-            topFoods: ["Schabowy", "Surówka", "Sernik"]
+            topFoods: [
+                L("Schabowy"),
+                L("Surówka"),
+                L("Sernik"),
+            ]
         )
         let recipesOla: [PublicRecipeReference] = [
-            .init(id: UUID(), name: "Buddha bowl z tofu", kcalPerServing: 520, cookCount: 7),
-            .init(id: UUID(), name: "Naleśniki bananowe", kcalPerServing: 320, cookCount: 4),
+            .init(
+                id: UUID(),
+                name: L("Buddha bowl z tofu"),
+                kcalPerServing: 520,
+                cookCount: 7
+            ),
+            .init(
+                id: UUID(),
+                name: L("Naleśniki bananowe"),
+                kcalPerServing: 320,
+                cookCount: 4
+            ),
         ]
         return [
             ola.id: FriendProfileSnapshot(
                 id: ola.id, displayName: ola.displayName,
                 username: "@ola_k", avatarURL: nil,
-                bio: "Bieganie i pierogi. Zaczęłam logować w styczniu.",
+                bio: L("Running and pierogi. Started logging in January."),
                 memberSinceDate: earlierMember,
                 currentStreak: ola.currentStreak,
-                level: ProfileLevel(number: 12, label: "Pro"),
-                goalLabel: "Schudnąć 3 kg",
+                level: ProfileLevel(number: 12, label: L("Pro")),
+                goalLabel: L("Lose 3 kg"),
                 achievements: [],
                 weeklyStats: weeklyOla,
                 topRecipes: recipesOla,
@@ -164,8 +182,8 @@ final class InMemoryFriendService: FriendService {
                 bio: nil,
                 memberSinceDate: earlierMember,
                 currentStreak: kasia.currentStreak,
-                level: ProfileLevel(number: 8, label: "Explorer"),
-                goalLabel: "Utrzymać wagę",
+                level: ProfileLevel(number: 8, label: L("Explorer")),
+                goalLabel: L("Maintain weight"),
                 achievements: [],
                 weeklyStats: weeklyKasia,
                 topRecipes: [],

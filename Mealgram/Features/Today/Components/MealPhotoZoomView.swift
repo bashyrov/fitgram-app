@@ -41,7 +41,7 @@ struct MealPhotoZoomView: View {
                     .padding(12)
                     .background(.black.opacity(0.4), in: Circle())
             }
-            .accessibilityLabel(Text("Zamknij"))
+            .accessibilityLabel(Text("Close"))
             .padding(Tokens.Space.lg)
         }
     }

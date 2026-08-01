@@ -1,27 +1,44 @@
 import OSLog
 import SwiftUI
 
-/// Full-screen "Moje przepisy" surface. Opened from the Add-meal sheet
+/// Full-screen "My recipes" surface. Opened from the Add-meal sheet
 /// as the entry-point that used to be the Recipe Library. Lists every
 /// saved favourite as a card; tap to re-add at the default portion,
 /// swipe to delete, "+" to record a fresh entry (lands on the Manual
-/// entry sheet which has the "Dodaj do moich przepisów" toggle).
+/// entry sheet which has the "Add to my recipes" toggle).
 struct FavoritesListView: View {
     let userRemoteID: String
     let favoritesService: any FavoritesServing
     let mealSaver: any MealSaving
     let entitlementsStore: EntitlementsStore
     let paywallCoordinator: PaywallCoordinator
+    let mealAnalyzer: MealTextAnalysisService?
+    let usageMeter: UsageMeter?
     let onAddNew: () -> Void
     let onDismiss: () -> Void
 
+    /// All rows in storage. Display-time slicing happens via `visibleFavorites`
+    /// — nothing is ever dropped from DB.
     @State private var favorites: [FavoriteMeal] = []
     @State private var pendingDelete: FavoriteMeal?
     @State private var pendingAdd: FavoriteMeal?
 
+    /// Soft-capped view: when a free-tier limit is in effect, only the first
+    /// `cap` rows render. The rest stay on disk for when the user upgrades.
+    private var visibleFavorites: [FavoriteMeal] {
+        guard let cap = entitlementsStore.current.favoritesCap, favorites.count > cap else {
+            return favorites
+        }
+        return Array(favorites.prefix(cap))
+    }
+
+    private var hiddenCount: Int {
+        max(0, favorites.count - visibleFavorites.count)
+    }
+
     private var capLabel: String? {
         guard let cap = entitlementsStore.current.favoritesCap else { return nil }
-        return "\(favorites.count) / \(cap)"
+        return "\(visibleFavorites.count) / \(cap)"
     }
 
     var body: some View {
@@ -34,11 +51,11 @@ struct FavoritesListView: View {
                     list
                 }
             }
-            .navigationTitle(Text("Moje przepisy"))
+            .navigationTitle(Text("My recipes"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -71,21 +88,25 @@ struct FavoritesListView: View {
                 titleVisibility: .visible,
                 presenting: pendingDelete
             ) { favorite in
-                Button("Usuń", role: .destructive) {
+                Button("Delete", role: .destructive) {
                     try? favoritesService.remove(id: favorite.id)
                     pendingDelete = nil
                     reload()
                 }
-                Button("Anuluj", role: .cancel) { pendingDelete = nil }
+                Button("Cancel", role: .cancel) { pendingDelete = nil }
             }
             .sheet(item: $pendingAdd) { favorite in
                 FavoritePortionSheet(
                     favorite: favorite,
-                    onSave: { grams in
+                    onSave: { items in
                         pendingAdd = nil
-                        saveWithPortion(favorite, grams: grams)
+                        saveWithItems(favorite, items: items)
                     },
-                    onDismiss: { pendingAdd = nil }
+                    onDismiss: { pendingAdd = nil },
+                    mealAnalyzer: mealAnalyzer,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    usageMeter: usageMeter
                 )
             }
         }
@@ -96,15 +117,56 @@ struct FavoritesListView: View {
         ScrollView {
             VStack(spacing: Tokens.Space.sm) {
                 if let cap = entitlementsStore.current.favoritesCap {
-                    capHint(used: favorites.count, cap: cap)
+                    capHint(used: min(favorites.count, cap), cap: cap)
                 }
-                ForEach(favorites) { favorite in
+                ForEach(visibleFavorites) { favorite in
                     favoriteRow(favorite)
+                }
+                if hiddenCount > 0 {
+                    hiddenRowsUpsell
                 }
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
             .padding(.vertical, Tokens.Space.lg)
         }
+    }
+
+    private var hiddenRowsUpsell: some View {
+        Button {
+            paywallCoordinator.present(.favoritesUnavailable)
+        } label: {
+            HStack(spacing: Tokens.Space.md) {
+                ZStack {
+                    Circle()
+                        .fill(Tokens.Palette.primarySoft)
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(String.localizedStringWithFormat(L("+%lld hidden recipes"), hiddenCount))
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text("Premium pokazuje całą Twoją kolekcję bez limitu.")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .lineLimit(2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+            }
+            .padding(Tokens.Space.md)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .strokeBorder(Tokens.Palette.primary.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                    .background(
+                        RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                            .fill(Tokens.Palette.surface)
+                    )
+            )
+        }
+        .buttonStyle(PressableButtonStyle())
     }
 
     private var emptyState: some View {
@@ -118,11 +180,11 @@ struct FavoritesListView: View {
                     .foregroundStyle(Tokens.Palette.primary)
             }
             VStack(spacing: Tokens.Space.sm) {
-                Text("Brak przepisów")
+                Text("No recipes")
                     .font(Tokens.Font.title2)
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(
-                    "Twoje stałe posiłki będą tutaj. Wpisz nowy lub dodaj z dowolnego skanu — przyciskiem ⭐."
+                    "Your regular meals will appear here. Enter a new one or add it from any scan using the ⭐ button."
                 )
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.inkMuted)
@@ -144,14 +206,14 @@ struct FavoritesListView: View {
                 .foregroundStyle(remaining == 0 ? Tokens.Palette.error : Tokens.Palette.primary)
             VStack(alignment: .leading, spacing: 2) {
                 if remaining == 0 {
-                    Text("Wykorzystałeś limit \(cap) przepisów")
+                    Text(String.localizedStringWithFormat(L("Wykorzystałeś limit %lld przepisów"), cap))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("Premium daje nieograniczoną książkę.")
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 } else {
-                    Text("\(remaining) miejsce(a) zostało w bezpłatnej wersji")
+                    Text(String.localizedStringWithFormat(L("%lld miejsce(a) zostało w bezpłatnej wersji"), remaining))
                         .font(Tokens.Font.body)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("Premium odblokowuje nieograniczone przepisy.")
@@ -199,7 +261,7 @@ struct FavoritesListView: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(Int(favorite.caloriesKcal))")
+                    Text(String.localizedStringWithFormat(L("%lld"), Int(favorite.caloriesKcal)))
                         .font(Tokens.Font.title3)
                         .foregroundStyle(Tokens.Palette.primary)
                     Text("kcal")
@@ -219,47 +281,47 @@ struct FavoritesListView: View {
             Button(role: .destructive) {
                 pendingDelete = favorite
             } label: {
-                Label("Usuń", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
         .contextMenu {
             Button {
                 quickAdd(favorite)
             } label: {
-                Label("Dodaj na dziś", systemImage: "plus.circle")
+                Label("Add to today", systemImage: "plus.circle")
             }
             Button(role: .destructive) {
                 pendingDelete = favorite
             } label: {
-                Label("Usuń", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }
 
     private func detailLine(_ favorite: FavoriteMeal) -> String {
         let grams = Int(favorite.defaultQuantityGrams)
-        let macros = "\(Int(favorite.proteinGrams))B · \(Int(favorite.carbsGrams))W · \(Int(favorite.fatGrams))T"
+        let macros =
+            "\(Int(favorite.proteinGrams))\(L("P")) · \(Int(favorite.carbsGrams))\(L("C")) · \(Int(favorite.fatGrams))\(L("F"))"
         if favorite.useCount > 0 {
-            return "\(grams) g · \(macros) · użyte \(favorite.useCount)×"
+            return String.localizedStringWithFormat(L("%lld g · %@ · used %lld×"), grams, macros, favorite.useCount)
         }
         return "\(grams) g · \(macros)"
     }
 
     // MARK: - Actions
 
-    /// Tap raises the portion picker. `saveWithPortion` commits once
-    /// the user hits "Dodaj" with their chosen grams.
+    /// Tap raises the portion picker. `saveWithItems` commits once
+    /// the user hits "Add" with their chosen mode.
     private func quickAdd(_ favorite: FavoriteMeal) {
         Haptics.light()
         pendingAdd = favorite
     }
 
-    private func saveWithPortion(_ favorite: FavoriteMeal, grams: Double) {
-        let item = favorite.foodItem(quantityGrams: grams)
+    private func saveWithItems(_ favorite: FavoriteMeal, items: [FoodItem]) {
         let meal = MealEntry(
             mealType: inferredMealType(),
             source: favorite.sourceHint,
-            items: [item]
+            items: items
         )
         do {
             try mealSaver.save(meal: meal)

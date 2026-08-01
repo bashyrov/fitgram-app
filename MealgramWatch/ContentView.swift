@@ -9,7 +9,14 @@ struct ContentView: View {
     @Environment(WatchStore.self) private var store
 
     private var snapshot: WatchSnapshot {
-        store.snapshot ?? .placeholder
+        if let real = store.snapshot { return real }
+        #if DEBUG
+        // No iPhone paired in the screenshot simulator — fall back to the
+        // rich preview snapshot so the rings actually have data to render.
+        return .preview
+        #else
+        return .placeholder
+        #endif
     }
 
     var body: some View {
@@ -118,7 +125,7 @@ private struct WaterButton: View {
                     Image(systemName: "drop.fill")
                         .font(.system(size: 14, weight: .semibold))
                 }
-                Text(String(localized: "+1 szklanka"))
+                Text("+1 glass")
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
             }
             .foregroundStyle(.white)
@@ -130,7 +137,7 @@ private struct WaterButton: View {
         }
         .buttonStyle(.plain)
         .disabled(isLoading)
-        .accessibilityLabel(Text(String(localized: "Dodaj szklankę wody")))
+        .accessibilityLabel(Text("Add a glass of water"))
     }
 }
 

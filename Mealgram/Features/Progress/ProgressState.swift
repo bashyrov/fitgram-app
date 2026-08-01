@@ -18,7 +18,7 @@ final class ProgressState {
         let mealCount: Int
 
         var id: Date { date }
-        var caloriesInt: Int { Int(calories) }
+        var caloriesInt: Int { calories.safeProgressInt }
     }
 
     private(set) var lastSevenDays: [DayTotal] = []
@@ -97,10 +97,10 @@ final class ProgressState {
             let dayEntries = grouped[day] ?? []
             return DayTotal(
                 date: day,
-                calories: dayEntries.reduce(0) { $0 + $1.totalCaloriesKcal },
-                protein: dayEntries.reduce(0) { $0 + $1.totalProteinGrams },
-                carbs: dayEntries.reduce(0) { $0 + $1.totalCarbsGrams },
-                fat: dayEntries.reduce(0) { $0 + $1.totalFatGrams },
+                calories: dayEntries.safeSum(\.totalCaloriesKcal),
+                protein: dayEntries.safeSum(\.totalProteinGrams),
+                carbs: dayEntries.safeSum(\.totalCarbsGrams),
+                fat: dayEntries.safeSum(\.totalFatGrams),
                 mealCount: dayEntries.count
             )
         }
@@ -110,7 +110,8 @@ final class ProgressState {
     var averageCalories: Double {
         let active = lastSevenDays.filter { $0.mealCount > 0 }
         guard !active.isEmpty else { return 0 }
-        return active.reduce(0) { $0 + $1.calories } / Double(active.count)
+        let average = active.reduce(0) { $0 + $1.calories } / Double(active.count)
+        return average.isFinite ? average : 0
     }
 
     var bestDay: DayTotal? {
@@ -136,10 +137,10 @@ final class ProgressState {
             let dayEntries = grouped[day] ?? []
             return DayTotal(
                 date: day,
-                calories: dayEntries.reduce(0) { $0 + $1.totalCaloriesKcal },
-                protein: dayEntries.reduce(0) { $0 + $1.totalProteinGrams },
-                carbs: dayEntries.reduce(0) { $0 + $1.totalCarbsGrams },
-                fat: dayEntries.reduce(0) { $0 + $1.totalFatGrams },
+                calories: dayEntries.safeSum(\.totalCaloriesKcal),
+                protein: dayEntries.safeSum(\.totalProteinGrams),
+                carbs: dayEntries.safeSum(\.totalCarbsGrams),
+                fat: dayEntries.safeSum(\.totalFatGrams),
                 mealCount: dayEntries.count
             )
         }
@@ -154,7 +155,25 @@ final class ProgressState {
             let start = max(0, index - window + 1)
             let slice = lastThirtyDays[start...index]
             let avg = slice.reduce(0) { $0 + $1.calories } / Double(slice.count)
-            return (day.date, avg)
+            return (day.date, avg.isFinite ? avg : 0)
+        }
+    }
+}
+
+extension Double {
+    fileprivate var safeProgressValue: Double {
+        isFinite && self > 0 ? self : 0
+    }
+
+    fileprivate var safeProgressInt: Int {
+        safeProgressValue > Double(Int.max) ? Int.max : Int(safeProgressValue)
+    }
+}
+
+extension Array where Element == MealEntry {
+    fileprivate func safeSum(_ keyPath: KeyPath<MealEntry, Double>) -> Double {
+        reduce(0) { partial, entry in
+            partial + entry[keyPath: keyPath].safeProgressValue
         }
     }
 }

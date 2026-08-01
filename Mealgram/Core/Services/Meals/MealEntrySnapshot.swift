@@ -1,7 +1,7 @@
 import Foundation
 
 /// Value-type capture of a `MealEntry` and its `FoodItem`s for undo.
-/// Held in memory between the delete and the time-bound "Cofnij" banner.
+/// Held in memory between the delete and the time-bound "Undo" banner.
 /// Restoring goes through the normal `MealSaving` pipeline, so a fresh
 /// `MealEntry` (new UUIDs) gets created and side-effects re-fire.
 struct MealEntrySnapshot: Equatable, Sendable, Identifiable {

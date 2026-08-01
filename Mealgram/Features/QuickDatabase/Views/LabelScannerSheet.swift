@@ -50,10 +50,10 @@ struct LabelScannerSheet: View {
                         symbol: "exclamationmark.triangle.fill",
                         title: "Nie udało się odczytać",
                         message: LocalizedStringKey(message),
-                        action: .init(title: "Spróbuj ponownie", perform: { stage = .capturing })
+                        action: .init(title: "Try again", perform: { stage = .capturing })
                     )
                     Spacer()
-                    SecondaryButton(title: "Zamknij", systemImage: "xmark", action: onDismiss)
+                    SecondaryButton(title: "Close", systemImage: "xmark", action: onDismiss)
                         .padding(.horizontal, Tokens.Space.screenPadding)
                         .padding(.bottom, Tokens.Space.xl)
                 }
@@ -80,11 +80,11 @@ struct LabelScannerSheet: View {
                 let message: String
                 switch error {
                 case .unsupportedImage:
-                    message = String(localized: "Zdjęcie jest nieczytelne. Spróbuj ponownie w lepszym świetle.")
+                    message = L("The photo is unreadable. Try again in better light.")
                 case .visionFailed(let reason):
-                    message = String(localized: "Vision nie odpowiedział: \(reason)")
+                    message = String.localizedStringWithFormat(L("Vision didn't respond: %@"), reason)
                 case .noNutritionFound:
-                    message = String(localized: "Nie znalazłam wartości odżywczych na etykiecie.")
+                    message = L("I couldn't find nutrition values on the label.")
                 }
                 stage = .failed(message)
             } catch {

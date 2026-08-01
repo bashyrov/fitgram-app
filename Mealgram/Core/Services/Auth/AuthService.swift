@@ -13,14 +13,17 @@ final class AuthService {
     private let providers: [AuthProviderKind: any AuthProvider]
     private let tokenStore: TokenStore
     private let session: AuthSession
+    private let profileProvisioner: SupabaseProfileProvisioner
 
     init(
         providers: [any AuthProvider],
         tokenStore: TokenStore = TokenStore(),
+        profileProvisioner: SupabaseProfileProvisioner = SupabaseProfileProvisioner(),
         session: AuthSession
     ) {
         self.providers = Dictionary(uniqueKeysWithValues: providers.map { ($0.kind, $0) })
         self.tokenStore = tokenStore
+        self.profileProvisioner = profileProvisioner
         self.session = session
     }
 
@@ -63,6 +66,7 @@ final class AuthService {
                 displayName: nil,
                 provider: credentials.provider
             )
+            await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
             session.update(phase: .authenticated(user))
             Logger.auth.info("Signed in via \(kind.rawValue, privacy: .public)")
         } catch let error as AuthError {
@@ -70,6 +74,44 @@ final class AuthService {
             session.surface(error: error)
         } catch {
             Logger.auth.error("Sign-in failed (\(kind.rawValue, privacy: .public)): \(String(describing: error))")
+            session.surface(error: .unknown(underlying: String(describing: error)))
+        }
+    }
+
+    /// Phase 1 of the email flow — asks Supabase to send a magic link.
+    /// Phase 2 lands in `completeEmailSignIn(callbackURL:)` when the user
+    /// taps the email and iOS routes the deep link back to us.
+    func requestEmailMagicLink(email: String) async throws {
+        guard let provider = providers[.email] as? EmailAuthProvider else {
+            throw AuthError.providerNotConfigured(.email)
+        }
+        try await provider.requestMagicLink(email: email)
+    }
+
+    func completeEmailSignIn(callbackURL: URL) async {
+        guard let provider = providers[.email] as? EmailAuthProvider else {
+            session.surface(error: .providerNotConfigured(.email))
+            return
+        }
+        session.setWorking(true)
+        defer { session.setWorking(false) }
+        do {
+            let credentials = try provider.complete(callbackURL: callbackURL)
+            try tokenStore.save(session: credentials)
+            let user = AuthUser(
+                id: credentials.userID,
+                email: nil,
+                displayName: nil,
+                provider: .email
+            )
+            await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
+            session.update(phase: .authenticated(user))
+            Logger.auth.info("Email magic-link sign-in completed")
+        } catch let error as AuthError {
+            Logger.auth.error("Email completion failed: \(error.userMessage)")
+            session.surface(error: error)
+        } catch {
+            Logger.auth.error("Email completion failed: \(String(describing: error))")
             session.surface(error: .unknown(underlying: String(describing: error)))
         }
     }

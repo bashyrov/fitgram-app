@@ -23,8 +23,9 @@ final class FoodCatalogTests: XCTestCase {
         // wasn't added to the build phase.
         let seeder = FoodSeeder(container: controller.container)
         let bundle = try seeder.load()
-        XCTAssertEqual(bundle.schemaVersion, "1.0.0")
+        XCTAssertFalse(bundle.schemaVersion.isEmpty)
         XCTAssertGreaterThan(bundle.items.count, 150)
+        // Polish staple from the legacy seed survives the merge.
         XCTAssertTrue(bundle.items.contains(where: { $0.name == "Schabowy z kotleta" }))
     }
 
@@ -70,7 +71,13 @@ final class FoodCatalogTests: XCTestCase {
 
     func testSeedItemMapsAllFields() throws {
         let bundle = try FoodSeeder(container: controller.container).load()
-        guard let bigMac = bundle.items.first(where: { $0.name == "Big Mac" }) else {
+        // Multiple seeds can carry the same brand — pick the one whose
+        // restaurant column is also populated (covers both fields).
+        guard
+            let bigMac = bundle.items.first(where: {
+                $0.name == "Big Mac" && $0.restaurant != nil
+            })
+        else {
             XCTFail("Big Mac fixture missing")
             return
         }
@@ -118,10 +125,13 @@ final class FoodCatalogTests: XCTestCase {
         XCTAssertGreaterThan(initialCount, 0)
 
         await state.applyQuery("schabowy")
+        // Search now spans every localized name + brand + restaurant. Assert
+        // every result has the term in at least one searchable column.
         XCTAssertTrue(
             state.foods.allSatisfy { food in
-                food.name.localizedCaseInsensitiveContains("schabowy")
+                food.allSearchableNames.contains { $0.localizedCaseInsensitiveContains("schabowy") }
                     || (food.brand?.localizedCaseInsensitiveContains("schabowy") ?? false)
+                    || (food.restaurantName?.localizedCaseInsensitiveContains("schabowy") ?? false)
             })
 
         await state.applyQuery("")

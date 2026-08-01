@@ -5,32 +5,38 @@
 - **Privacy Manifest** (`Mealgram/Supporting/PrivacyInfo.xcprivacy`) — оформлен с задекларированными типами данных (email, photo, health, crash) и API-reasons (UserDefaults, FileTimestamp, SystemBootTime, DiskSpace).
 - **fastlane Fastfile + Appfile** — три lane: `bump_build`, `beta` (TestFlight), `release` (submission).
 - **Metadata на 5 локалей** (PL/EN/UK/RU/ES) в `fastlane/metadata/`: name, subtitle, description, keywords, promotional_text, release_notes + общие copyright, primary_category (`HEALTH_AND_FITNESS`), secondary (`FOOD_AND_DRINK`).
+- **Terms of Use / EULA для авто‑подписок**: публичная страница `https://mealgram.xyz/terms`, ссылка добавлена в App Store description всех 5 локалей и в App Review notes.
+- **Public URL metadata**: `privacy_url.txt`, `support_url.txt`, `marketing_url.txt` добавлены для всех локалей fastlane.
 - **iCloud sync + App Groups + Push entitlements** ↗ enabled (commit `96f094b`).
 - **5 языков локализации** UI + 150 фактов = ~7150 переведённых строк.
 - **In-app language picker** (5 langs мгновенное переключение без рестарта).
 
 ## ⚠️ Что ОТ ТЕБЯ требуется до первого upload
 
-### 1. App Icon (БЛОКЕР)
+### 1. App Icon
 
-В [Mealgram/Resources/Assets.xcassets/AppIcon.appiconset/](Mealgram/Resources/Assets.xcassets/AppIcon.appiconset/) сейчас **только манифест без файлов**. Apple отклонит submission без иконки.
+В [Mealgram/Resources/Assets.xcassets/AppIcon.appiconset/](Mealgram/Resources/Assets.xcassets/AppIcon.appiconset/) уже есть `AppIcon-1024.png`.
 
-Что нужно:
-- 1 PNG **1024×1024 без альфа-канала** (App Store icon)
-- Универсальный icon — Xcode 14+ генерирует все остальные размеры автоматически
+Проверено: **1024×1024, без alpha** — подходит для App Store.
 
-Простой путь: открой [icon.kitchen](https://icon.kitchen) (бесплатный онлайн-генератор), сделай иконку с буквой M на лайм-градиенте, скачай 1024×1024 PNG, перетащи в Xcode → AppIcon.appiconset.
+### 2. Public legal/support pages
 
-### 2. Privacy Policy URL
+Apple требует публичные страницы для privacy/support и рабочую Terms of Use / EULA ссылку для auto-renewable subscriptions.
 
-Apple требует публичную страницу политики приватности. Mealgram собирает email, фото, health-data — без неё откажут.
+Уже подготовлено:
+- `https://mealgram.xyz/privacy`
+- `https://mealgram.xyz/support`
+- `https://mealgram.xyz/terms`
 
-Что нужно: страница `mealgram.pl/privacy` или `bashyrov.dev/mealgram-privacy` или GitHub Pages.
-Шаблон уже подготовлен под факт что данные хранятся **только локально + iCloud** (no Mealgram servers). Если хочешь — попроси, сгенерирую markdown.
+После деплоя `landing/` на хостинг запусти `fastlane ios prepare_metadata`, чтобы App Store metadata обновилась.
 
-### 3. Support URL
+### 3. App Store metadata после rejection про EULA
 
-Любая страница с контактом. Можно просто `mailto:hello@mealgram.pl` обёрнутая в `bashyrov.dev/mealgram-support`, или Notion-страничка, или Telegram-чат.
+Для текущего rejection:
+1. задеплой `landing/terms.html` + redirect `/terms`
+2. запусти `fastlane ios prepare_metadata`
+3. в App Store Connect проверь, что description каждой локали содержит `https://mealgram.xyz/terms`
+4. re-submit build for review
 
 ### 4. App Store Connect — создать app record
 
@@ -106,10 +112,10 @@ Mealgram имеет paywall, но StoreKit пока в mock-режиме. Что
 2. Type: **Auto-Renewable Subscription**
 3. Создай Subscription Group "Mealgram Premium"
 4. Внутри группы создай продукты:
-   - `mealgram.premium.monthly` (1 месяц, 16.60 zł)
-   - `mealgram.premium.yearly` (1 год, 199 zł)
-5. Запиши Product IDs — отдашь мне, я подключу к RevenueCat или прямой StoreKit 2
-6. Установи RevenueCat SDK (опционально) → их dashboard сильно упрощает аналитику
+   - `mealgram_premium_monthly` (1 месяц, 16.60 zł)
+   - `mealgram_premium_yearly` (1 год, 199 zł)
+5. Включи 7-day free trial / introductory offer для обоих продуктов, если хочешь пробный период на оба плана.
+6. Эти Product IDs уже подключены в StoreKit 2 в приложении — RevenueCat не обязателен для первого review.
 
 ## 🔥 Что я могу разблокировать после первого submission
 

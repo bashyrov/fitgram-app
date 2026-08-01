@@ -87,9 +87,9 @@ VoiceOver, Dynamic Type, redukcja ruchu — wszystko działa.
 
 ▸ KONTAKT
 
-Pytania? hello@mealgram.pl
-Polityka prywatności: mealgram.pl/privacy
-Regulamin: mealgram.pl/terms
+Pytania? hello@mealgram.xyz
+Polityka prywatności: mealgram.xyz/privacy
+Regulamin: mealgram.xyz/terms
 
 Mealgram — bo dieta to nie więzienie, tylko rytm.
 ```
@@ -110,14 +110,14 @@ Wersja 1.0 — pierwsza publiczna wersja Mealgram!
 • Eksport JSON / CSV / ZIP
 • Pełna prywatność — wszystko lokalnie
 
-Dzięki za bycie wśród pierwszych użytkowników! Pisz na hello@mealgram.pl jeśli czegoś brakuje.
+Dzięki za bycie wśród pierwszych użytkowników! Pisz na hello@mealgram.xyz jeśli czegoś brakuje.
 ```
 
 ## Adres URL
 
-- **Marketing URL:** https://mealgram.pl
-- **Support URL:** https://mealgram.pl/support (lub mailto:hello@mealgram.pl)
-- **Privacy Policy URL:** https://mealgram.pl/privacy
+- **Marketing URL:** https://mealgram.xyz
+- **Support URL:** https://mealgram.xyz/support (lub mailto:hello@mealgram.xyz)
+- **Privacy Policy URL:** https://mealgram.xyz/privacy
 
 ## App Privacy (App Store Connect questionnaire)
 

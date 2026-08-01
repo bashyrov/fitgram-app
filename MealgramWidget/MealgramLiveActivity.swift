@@ -97,21 +97,21 @@ private struct MealgramLockScreenView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         LockScreenMacroBar(
-                            name: String(localized: "Białko"),
+                            name: WL("Białko"),
                             consumed: state.proteinConsumed,
                             goal: state.proteinGoal,
                             progress: state.proteinProgress,
                             color: Color("BrandPrimary")
                         )
                         LockScreenMacroBar(
-                            name: String(localized: "Węgle"),
+                            name: WL("Węgle"),
                             consumed: state.carbsConsumed,
                             goal: state.carbsGoal,
                             progress: state.carbsProgress,
                             color: Color("BrandAccent")
                         )
                         LockScreenMacroBar(
-                            name: String(localized: "Tłuszcz"),
+                            name: WL("Tłuszcz"),
                             consumed: state.fatConsumed,
                             goal: state.fatGoal,
                             progress: state.fatProgress,
@@ -315,7 +315,7 @@ private struct DynamicIslandWaterButton: View {
             Link(destination: MealgramActivityDeepLink.addWater) {
                 HStack(spacing: 6) {
                     Image(systemName: "drop.fill")
-                    Text(String(localized: "+1 szklanka"))
+                    Text(WL("+1 szklanka"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                 }
                 .foregroundStyle(.white)

@@ -34,7 +34,7 @@ final class Food {
     var verified: Bool = false
     var createdAt: Date = Date()
     /// How many times the local user has picked this row from Quick DB.
-    /// Drives the "Częste" carousel — defaults to 0 for newly-seeded rows
+    /// Drives the "Frequent" carousel — defaults to 0 for newly-seeded rows
     /// and lightweight-migrates cleanly because SwiftData fills new
     /// non-optional `Int` columns with their default.
     var pickCount: Int = 0
@@ -87,5 +87,43 @@ extension Food {
     var imageURL: URL? {
         get { imageURLString.flatMap(URL.init(string:)) }
         set { imageURLString = newValue?.absoluteString }
+    }
+
+    /// User-visible name. Reads `localizationsJSON` for a translation matching
+    /// the current locale's language code; falls back to `name` (canonical
+    /// English) when there's no match. Custom user-created rows have no JSON
+    /// payload so they pass through unchanged.
+    var localizedName: String {
+        guard let map = localizationsMap else { return name }
+        let code = LocalizationStore.currentLanguageCode()
+        if let localized = map[code], !localized.isEmpty {
+            return localized
+        }
+        return name
+    }
+
+    /// All names (canonical English + every value in `localizationsJSON`),
+    /// lowercased and de-duped. Used by Quick DB search, voice parser, and
+    /// the recipe estimator so a single query matches against every language
+    /// at once — e.g. a Russian user searching "borscht" still hits the row
+    /// whose canonical name is "Borscht with white sausage".
+    var allSearchableNames: [String] {
+        var names: Set<String> = [name]
+        if let map = localizationsMap {
+            for value in map.values where !value.isEmpty {
+                names.insert(value)
+            }
+        }
+        return Array(names)
+    }
+
+    private var localizationsMap: [String: String]? {
+        guard let json = localizationsJSON,
+            let data = json.data(using: .utf8),
+            let map = try? JSONDecoder().decode([String: String].self, from: data)
+        else {
+            return nil
+        }
+        return map
     }
 }

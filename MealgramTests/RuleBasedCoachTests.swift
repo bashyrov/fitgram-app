@@ -5,6 +5,17 @@ import XCTest
 final class RuleBasedCoachTests: XCTestCase {
     private let coach = RuleBasedCoach()
 
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
+    }
+
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "app.language")
+        super.tearDown()
+    }
+
     // MARK: - Helpers
 
     private func context(
@@ -53,34 +64,34 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Streak milestone
 
-    func testSevenDayStreakCelebrated() {
-        let result = coach.generate(for: context(streakCurrent: 7))
+    func testSevenDayStreakCelebrated() async {
+        let result = await coach.generate(for: context(streakCurrent: 7))
         XCTAssertEqual(result.first?.tone, .celebration)
         XCTAssertTrue(result.first?.body.contains("7") ?? false)
     }
 
-    func testFiveDayStreakNotCelebrated() {
-        let result = coach.generate(for: context(todayKcal: 800, entryCount: 1, streakCurrent: 5))
+    func testFiveDayStreakNotCelebrated() async {
+        let result = await coach.generate(for: context(todayKcal: 800, entryCount: 1, streakCurrent: 5))
         XCTAssertNotEqual(result.first?.headline, "Brawo!")
     }
 
     // MARK: - Streak-at-risk
 
-    func testStreakAtRiskAfter6PMNudges() {
-        let result = coach.generate(for: context(streakCurrent: 4, atRisk: true, hour: 19))
+    func testStreakAtRiskAfter6PMNudges() async {
+        let result = await coach.generate(for: context(streakCurrent: 4, atRisk: true, hour: 19))
         XCTAssertEqual(result.first?.tone, .nudge)
         XCTAssertEqual(result.first?.actionKind, .openScanner)
     }
 
-    func testStreakAtRiskBefore6PMDoesNotNudge() {
-        let result = coach.generate(for: context(streakCurrent: 4, atRisk: true, hour: 13))
+    func testStreakAtRiskBefore6PMDoesNotNudge() async {
+        let result = await coach.generate(for: context(streakCurrent: 4, atRisk: true, hour: 13))
         XCTAssertNotEqual(result.first?.tone, .nudge)
     }
 
     // MARK: - Protein suggestion
 
-    func testLowProteinAfterLunchSuggests() {
-        let result = coach.generate(
+    func testLowProteinAfterLunchSuggests() async {
+        let result = await coach.generate(
             for: context(
                 proteinGoal: 100,
                 todayKcal: 600,
@@ -94,8 +105,8 @@ final class RuleBasedCoachTests: XCTestCase {
         XCTAssertEqual(insight?.actionKind, .openQuickDB)
     }
 
-    func testProteinSuggestionDoesNotFireBeforeLunch() {
-        let result = coach.generate(
+    func testProteinSuggestionDoesNotFireBeforeLunch() async {
+        let result = await coach.generate(
             for: context(
                 proteinGoal: 100, todayKcal: 600, todayProtein: 20,
                 entryCount: 1, hour: 11
@@ -106,8 +117,8 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Calorie overshoot
 
-    func testOver120PercentCaloriesNudges() {
-        let result = coach.generate(
+    func testOver120PercentCaloriesNudges() async {
+        let result = await coach.generate(
             for: context(calorieGoal: 1800, todayKcal: 2300, entryCount: 3, hour: 19)
         )
         XCTAssertTrue(result.contains { $0.tone == .nudge && $0.headline.contains("bogato") })
@@ -115,21 +126,21 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Welcome fallback
 
-    func testEmptyEarlyMorningProducesGreeting() {
-        let result = coach.generate(for: context(hour: 7))
+    func testEmptyEarlyMorningProducesGreeting() async {
+        let result = await coach.generate(for: context(hour: 7))
         XCTAssertFalse(result.isEmpty)
         XCTAssertEqual(result.first?.actionKind, .openScanner)
     }
 
     // MARK: - Weight progress
 
-    func testWeightDropCelebrated() {
-        let result = coach.generate(for: context(weight30Delta: -1.5))
+    func testWeightDropCelebrated() async {
+        let result = await coach.generate(for: context(weight30Delta: -1.5))
         XCTAssertTrue(result.contains { $0.tone == .celebration && $0.headline.contains("trajektoria") })
     }
 
-    func testWeightSpikeIsEncouragementWithAction() {
-        let result = coach.generate(for: context(weight30Delta: 1.4))
+    func testWeightSpikeIsEncouragementWithAction() async {
+        let result = await coach.generate(for: context(weight30Delta: 1.4))
         let insight = result.first { $0.actionKind == .openWeightLog }
         XCTAssertNotNil(insight)
         XCTAssertEqual(insight?.tone, .encouragement)
@@ -137,8 +148,8 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Balanced week
 
-    func testFiveOutOfSevenDaysCelebrated() {
-        let result = coach.generate(
+    func testFiveOutOfSevenDaysCelebrated() async {
+        let result = await coach.generate(
             for: context(
                 todayKcal: 800, entryCount: 1,
                 weekDays: 6, weekCalorieDays: 5, streakCurrent: 6
@@ -149,15 +160,15 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Morning protein
 
-    func testMorningProteinFiresWhenBreakfastLightOnProtein() {
-        let result = coach.generate(
+    func testMorningProteinFiresWhenBreakfastLightOnProtein() async {
+        let result = await coach.generate(
             for: context(todayKcal: 250, todayProtein: 5, entryCount: 1, hour: 8)
         )
         XCTAssertTrue(result.contains { $0.headline.contains("Białko na śniadanie") })
     }
 
-    func testMorningProteinSilentAfterEnoughProtein() {
-        let result = coach.generate(
+    func testMorningProteinSilentAfterEnoughProtein() async {
+        let result = await coach.generate(
             for: context(todayKcal: 250, todayProtein: 25, entryCount: 1, hour: 8)
         )
         XCTAssertFalse(result.contains { $0.headline.contains("Białko na śniadanie") })
@@ -165,15 +176,15 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Afternoon momentum
 
-    func testAfternoonMomentumFiresMidDayInRange() {
-        let result = coach.generate(
+    func testAfternoonMomentumFiresMidDayInRange() async {
+        let result = await coach.generate(
             for: context(todayKcal: 1100, entryCount: 2, hour: 15)
         )
         XCTAssertTrue(result.contains { $0.headline.contains("Dobre tempo") })
     }
 
-    func testAfternoonMomentumSilentBefore14() {
-        let result = coach.generate(
+    func testAfternoonMomentumSilentBefore14() async {
+        let result = await coach.generate(
             for: context(todayKcal: 1100, entryCount: 2, hour: 12)
         )
         XCTAssertFalse(result.contains { $0.headline.contains("Dobre tempo") })
@@ -181,9 +192,9 @@ final class RuleBasedCoachTests: XCTestCase {
 
     // MARK: - Max insights bound
 
-    func testNeverReturnsMoreThanThree() {
+    func testNeverReturnsMoreThanThree() async {
         // All-fire context: 7-day streak + weight drop + week + at-risk would be 4+
-        let result = coach.generate(
+        let result = await coach.generate(
             for: context(
                 weekDays: 7, weekCalorieDays: 6,
                 streakCurrent: 7,

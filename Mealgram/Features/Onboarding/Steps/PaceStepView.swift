@@ -15,10 +15,15 @@ struct PaceStepView: View {
     @State private var targetWeightKg: Double
 
     private let paceOptions: [PaceOption] = [
-        .init(value: 0.25, label: "Spokojne", subtitle: "0,25 kg / tydzień", symbol: "tortoise.fill", severity: .gentle),
-        .init(value: 0.5, label: "Umiarkowane", subtitle: "0,5 kg / tydzień", symbol: "figure.walk", severity: .gentle),
-        .init(value: 0.75, label: "Szybkie", subtitle: "0,75 kg / tydzień", symbol: "figure.run", severity: .warn),
-        .init(value: 1.0, label: "Bardzo szybkie", subtitle: "1 kg / tydzień", symbol: "exclamationmark.triangle", severity: .danger),
+        .init(
+            value: 0.25, label: L("Relaxed"), subtitle: L("0.25 kg / week"), symbol: "tortoise.fill",
+            severity: .gentle),
+        .init(
+            value: 0.5, label: L("Moderate"), subtitle: L("0.5 kg / week"), symbol: "figure.walk", severity: .gentle),
+        .init(value: 0.75, label: L("Fast"), subtitle: L("0.75 kg / week"), symbol: "figure.run", severity: .warn),
+        .init(
+            value: 1.0, label: L("Very fast"), subtitle: L("1 kg / week"), symbol: "exclamationmark.triangle",
+            severity: .danger),
     ]
 
     init(profile: Binding<OnboardingProfile>, onContinue: @escaping () -> Void) {
@@ -44,9 +49,9 @@ struct PaceStepView: View {
 
     var body: some View {
         OnboardingStepScaffold(
-            title: profile.goal == .lose ? "Jak szybko?" : "Jak chcesz nabierać?",
-            subtitle: "Wolniejsze tempo to zwykle trwalszy efekt. Możesz to zmienić później.",
-            primaryTitle: "Dalej",
+            title: profile.goal == .lose ? "Jak szybko?" : "How do you want to gain?",
+            subtitle: "A gentler pace usually means longer-lasting results. You can change it later.",
+            primaryTitle: "Next",
             primarySystemImage: "arrow.right",
             onPrimary: {
                 profile.goalPaceKgPerWeek = pace.value
@@ -60,7 +65,7 @@ struct PaceStepView: View {
                     if let estimatedDate {
                         Card(background: Tokens.Palette.primarySoft) {
                             VStack(spacing: 4) {
-                                Text("Osiągniesz cel")
+                                Text("Reach your goal")
                                     .font(Tokens.Font.footnote)
                                     .foregroundStyle(Tokens.Palette.primary)
                                 Text(estimatedDate.formatted(date: .long, time: .omitted))
@@ -87,7 +92,7 @@ struct PaceStepView: View {
                 Text(String(format: "%.1f kg", targetWeightKg))
                     .font(Tokens.Font.title2)
                 Spacer()
-                Text(String(format: "obecna %.1f kg", currentWeightKg))
+                Text(String.localizedStringWithFormat(L("current %.1f kg"), currentWeightKg))
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
@@ -151,7 +156,7 @@ struct PaceStepView: View {
         HStack(alignment: .top, spacing: Tokens.Space.sm) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(Tokens.Palette.warning)
-            Text("To bardzo intensywne tempo. Trwałe rezultaty przy 0,25-0,5 kg/tydzień. Skonsultuj z dietetykiem.")
+            Text("That's an intense pace. Sustainable results come at 0.25-0.5 kg/week. Consult a dietician.")
                 .font(Tokens.Font.footnote)
                 .foregroundStyle(Tokens.Palette.ink)
         }

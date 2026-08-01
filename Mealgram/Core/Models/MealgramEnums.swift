@@ -42,7 +42,7 @@ enum GoalKind: String, Codable, CaseIterable, Sendable {
     /// goal that doesn't map to weight change. Math falls back to TDEE
     /// (maintain), but the surface labels differently.
     case healthCondition = "health_condition"
-    /// "Bez celu, tylko śledzenie" — user just wants to log without any
+    /// "No goal, just tracking" — user just wants to log without any
     /// energy target. Math falls back to TDEE.
     case justTracking = "just_tracking"
 }

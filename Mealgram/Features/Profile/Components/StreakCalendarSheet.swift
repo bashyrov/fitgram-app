@@ -10,14 +10,23 @@ struct StreakCalendarSheet: View {
     @State private var anchorDate = Date()
     @State private var snapshot: StreakCalendar.Snapshot?
 
-    private static let monthFormatter: DateFormatter = {
+    private static var monthFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "LLLL yyyy"
         return formatter
-    }()
-
-    private let weekdayShort = ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"]
+    
+}
+    private let weekdayShort: [String] = [
+        L("Mon"),
+        L("Tue"),
+        L("Wed"),
+        L("Thu"),
+        L("Fri"),
+        L("Sat"),
+        L("Sun"),
+    ]
 
     var body: some View {
         NavigationStack {
@@ -34,11 +43,11 @@ struct StreakCalendarSheet: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Historia serii"))
+            .navigationTitle(Text("Streak history"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -127,7 +136,7 @@ struct StreakCalendarSheet: View {
                 RoundedRectangle(cornerRadius: 4, style: .continuous)
                     .stroke(Tokens.Palette.accent, lineWidth: 2)
                     .frame(width: 14, height: 14)
-                Text("Dziś")
+                Text("Today")
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }

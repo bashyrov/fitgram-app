@@ -1,4 +1,3 @@
-import Charts
 import SwiftUI
 
 /// Full-screen Goal Tracking surface. Big chart + "Wpisz dzisiejszą
@@ -7,15 +6,12 @@ struct GoalTrackingView: View {
     let userRemoteID: String
     @Bindable var state: GoalTrackingState
     let onDismiss: () -> Void
+    /// Optional inline tips block — typically the same 3 tips the Today
+    /// card surfaces, but rendered with more breathing room here so
+    /// the user has the full advice context in one place.
+    var tips: [RecommendationTip] = []
 
     @State private var isAddPresented = false
-
-    private static let dayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale.current
-        formatter.dateFormat = "d MMM"
-        return formatter
-    }()
 
     var body: some View {
         NavigationStack {
@@ -29,6 +25,9 @@ struct GoalTrackingView: View {
                             }
                             summaryCard(snapshot)
                             chartCard(snapshot)
+                            if !tips.isEmpty {
+                                tipsCard
+                            }
                             PrimaryButton(
                                 title: "Wpisz dzisiejszą wagę",
                                 systemImage: "scalemass.fill",
@@ -44,11 +43,11 @@ struct GoalTrackingView: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Twój cel"))
+            .navigationTitle(Text("Your goal"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
             .task { state.refresh(for: userRemoteID) }
@@ -71,7 +70,7 @@ struct GoalTrackingView: View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "checkmark.seal.fill")
                 .foregroundStyle(.white)
-            Text("Cel osiągnięty 🎉")
+            Text("Goal reached 🎉")
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(.white)
         }
@@ -97,7 +96,7 @@ struct GoalTrackingView: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("Cel")
+                        Text("Goal")
                             .font(Tokens.Font.footnote)
                             .foregroundStyle(Tokens.Palette.inkMuted)
                         Text(String(format: "%.1f kg", snapshot.targetWeightKg))
@@ -129,127 +128,47 @@ struct GoalTrackingView: View {
 
     private func progressLabel(_ snapshot: GoalTrackingService.Snapshot) -> String {
         let percent = Int((snapshot.progress * 100).rounded())
-        return String(localized: "Postęp \(percent)%")
+        return String.localizedStringWithFormat(L("Progress %lld%%"), percent)
     }
 
     private func daysLabel(_ snapshot: GoalTrackingService.Snapshot) -> String {
         if let total = snapshot.totalDays, total > 0 {
-            return String(localized: "Dzień \(snapshot.daysElapsed) z \(total)")
+            return String.localizedStringWithFormat(L("Day %lld of %lld"), snapshot.daysElapsed, total)
         }
-        return String(localized: "Dzień \(snapshot.daysElapsed)")
+        return String.localizedStringWithFormat(L("Day %lld"), snapshot.daysElapsed)
     }
 
     private func chartCard(_ snapshot: GoalTrackingService.Snapshot) -> some View {
+        GoalTrendChart(snapshot: snapshot)
+    }
+
+    private var tipsCard: some View {
         Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                chartHeader(snapshot)
-                if snapshot.entries.count >= 2 {
-                    chartBody(snapshot)
-                } else {
-                    chartEmptyState
+            VStack(alignment: .leading, spacing: Tokens.Space.md) {
+                HStack(spacing: Tokens.Space.sm) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Tokens.Palette.primary)
+                    Text("AI Coach tips")
+                        .font(Tokens.Font.headline)
+                        .foregroundStyle(Tokens.Palette.ink)
                 }
-            }
-        }
-    }
-
-    private func chartHeader(_ snapshot: GoalTrackingService.Snapshot) -> some View {
-        HStack {
-            Text("Trend")
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-            Text(rangeLabel(snapshot))
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-        }
-    }
-
-    private func chartBody(_ snapshot: GoalTrackingService.Snapshot) -> some View {
-        Chart {
-            ForEach(snapshot.entries) { point in
-                LineMark(
-                    x: .value("Data", point.date),
-                    y: .value("Waga", point.weightKg)
-                )
-                .interpolationMethod(.monotone)
-                .foregroundStyle(Tokens.Palette.primary)
-                PointMark(
-                    x: .value("Data", point.date),
-                    y: .value("Waga", point.weightKg)
-                )
-                .symbolSize(28)
-                .foregroundStyle(Tokens.Palette.primary)
-            }
-            RuleMark(y: .value("Cel", snapshot.targetWeightKg))
-                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                .foregroundStyle(Tokens.Palette.warning)
-                .annotation(position: .top, alignment: .trailing) {
-                    Text(String(format: "Cel %.1f kg", snapshot.targetWeightKg))
-                        .font(Tokens.Font.caption2)
-                        .foregroundStyle(Tokens.Palette.warning)
-                }
-            if let estimated = snapshot.estimatedEndDate {
-                RuleMark(x: .value("Koniec", estimated))
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
-                    .foregroundStyle(Tokens.Palette.accent)
-                    .annotation(position: .top, alignment: .leading) {
-                        Text("Plan")
-                            .font(Tokens.Font.caption2)
-                            .foregroundStyle(Tokens.Palette.accent)
+                ForEach(tips) { tip in
+                    HStack(alignment: .top, spacing: Tokens.Space.sm) {
+                        Text(tip.icon)
+                            .font(.system(size: 22))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(LocalizedStringKey(tip.title))
+                                .font(Tokens.Font.bodyEmphasized)
+                                .foregroundStyle(Tokens.Palette.ink)
+                            Text(LocalizedStringKey(tip.description))
+                                .font(Tokens.Font.footnote)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
+                }
             }
         }
-        .chartXScale(domain: chartXDomain(snapshot))
-        .chartXAxis {
-            AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                AxisValueLabel(format: .dateTime.day().month())
-                    .font(Tokens.Font.caption2)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                AxisGridLine().foregroundStyle(Tokens.Palette.separator)
-            }
-        }
-        .chartYAxis {
-            AxisMarks { _ in
-                AxisGridLine().foregroundStyle(Tokens.Palette.separator)
-                AxisValueLabel()
-                    .font(Tokens.Font.caption2)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-        }
-        .frame(height: 220)
-    }
-
-    /// Adaptive x-axis range. Spans `[earliest entry - 0.5d, latest + 1d]`
-    /// so a tiny 2-3 entry log already reads as a chart instead of two
-    /// points overlapping at the same x. Always honours the goal start
-    /// as the lower floor and includes the projected end if known.
-    private func chartXDomain(_ snapshot: GoalTrackingService.Snapshot) -> ClosedRange<Date> {
-        let calendar = Calendar.current
-        let earliestEntry = snapshot.entries.min(by: { $0.date < $1.date })?.date
-        let latestEntry = snapshot.entries.max(by: { $0.date < $1.date })?.date
-        let lower = earliestEntry.map { calendar.date(byAdding: .hour, value: -12, to: $0) ?? $0 }
-            ?? snapshot.startDate
-        let upperCandidates: [Date] = [
-            latestEntry.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) },
-            snapshot.estimatedEndDate,
-            calendar.date(byAdding: .day, value: 1, to: Date()),
-        ].compactMap { $0 }
-        let upper = upperCandidates.max() ?? Date()
-        return lower...max(upper, calendar.date(byAdding: .day, value: 1, to: lower) ?? upper)
-    }
-
-    private var chartEmptyState: some View {
-        Text("Dodaj jeszcze jeden wpis, żeby zobaczyć trend.")
-            .font(Tokens.Font.footnote)
-            .foregroundStyle(Tokens.Palette.inkMuted)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, Tokens.Space.lg)
-    }
-
-    private func rangeLabel(_ snapshot: GoalTrackingService.Snapshot) -> String {
-        let start = Self.dayFormatter.string(from: snapshot.startDate)
-        let end = Self.dayFormatter.string(from: Date())
-        return "\(start) → \(end)"
     }
 
     private var emptyCard: some View {
@@ -262,7 +181,7 @@ struct GoalTrackingView: View {
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(
-                    "Wybierz cel \"Zrzucić wagę\" lub \"Przybrać na wadze\" w Profilu → Cele, żeby aktywować śledzenie."
+                    "Select the goal \"Lose weight\" or \"Gain weight\" in Profile → Goals to activate tracking."
                 )
                 .font(Tokens.Font.footnote)
                 .foregroundStyle(Tokens.Palette.inkMuted)

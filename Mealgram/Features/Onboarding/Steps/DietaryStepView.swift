@@ -16,8 +16,8 @@ struct DietaryStepView: View {
     var body: some View {
         OnboardingStepScaffold(
             title: "Czego unikasz?",
-            subtitle: "Pomożemy dostroić sugestie. Nic nie musisz wybierać.",
-            primaryTitle: selected.isEmpty ? "Pomiń" : "Dalej",
+            subtitle: "We'll fine-tune our suggestions. You don't have to pick anything.",
+            primaryTitle: selected.isEmpty ? "Next" : "Next",
             primarySystemImage: "arrow.right",
             onPrimary: onContinue,
             content: {
@@ -39,7 +39,7 @@ struct DietaryStepView: View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "info.circle")
                 .foregroundStyle(Tokens.Palette.primary)
-            Text("Wszystko jest w porządku — nic nie musisz zaznaczać.")
+            Text("All good — you don't have to pick anything.")
                 .font(Tokens.Font.footnote)
                 .foregroundStyle(Tokens.Palette.inkMuted)
             Spacer()

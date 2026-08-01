@@ -11,20 +11,22 @@ struct DayMealsSheet: View {
 
     @State private var meals: [MealEntry] = []
 
-    private static let titleFormatter: DateFormatter = {
+    private static var titleFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "EEEE, d MMMM yyyy"
         return formatter
-    }()
+    
+}
+    private static var timeFormatter: DateFormatter {
 
-    private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         return formatter
-    }()
-
+    
+}
     var body: some View {
         NavigationStack {
             ZStack {
@@ -54,7 +56,7 @@ struct DayMealsSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
             .task { await load() }
@@ -65,11 +67,11 @@ struct DayMealsSheet: View {
         let totalKcal = Int(meals.reduce(0.0) { $0 + $1.totalCaloriesKcal }.rounded())
         return Card(elevation: Tokens.Shadow.card) {
             HStack {
-                Text("\(meals.count) posiłków")
+                Text(String.localizedStringWithFormat(L("%lld posiłków"), meals.count))
                     .font(Tokens.Font.subheadline)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Spacer()
-                Text("\(totalKcal) kcal")
+                Text(String.localizedStringWithFormat(L("%lld kcal"), totalKcal))
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.primary)
             }
@@ -85,11 +87,11 @@ struct DayMealsSheet: View {
                     .frame(width: 52, alignment: .leading)
                 Divider().frame(width: 1, height: 32).overlay(Tokens.Palette.separator)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(meal.items.first?.name ?? String(localized: "Posiłek"))
+                    Text(meal.items.first?.name ?? L("Posiłek"))
                         .font(Tokens.Font.body)
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
-                    Text("\(Int(meal.totalCaloriesKcal)) kcal")
+                    Text(String.localizedStringWithFormat(L("%lld kcal"), Int(meal.totalCaloriesKcal)))
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }

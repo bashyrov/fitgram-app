@@ -5,6 +5,12 @@ import Observation
 @MainActor
 @Observable
 final class FriendsState {
+    enum ConnectionStatus {
+        case none
+        case outgoing
+        case friend
+    }
+
     private(set) var friends: [PublicProfile] = []
     private(set) var incoming: [FriendRequest] = []
     private(set) var outgoing: [FriendRequest] = []
@@ -43,18 +49,41 @@ final class FriendsState {
 
     func runSearch() async {
         do {
-            searchResults = try await service.search(query: searchQuery, excluding: userRemoteID)
+            let cleaned = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+            if cleaned.hasPrefix("mealgram://friend/") || UUID(uuidString: cleaned) != nil {
+                let profile = try await service.profile(forCode: cleaned)
+                searchResults = profile.id == userRemoteID ? [] : [profile]
+            } else {
+                searchResults = try await service.search(query: searchQuery, excluding: userRemoteID)
+            }
         } catch {
             searchResults = []
         }
     }
 
-    func sendRequest(to profile: PublicProfile) async {
+    func connectionStatus(for profile: PublicProfile) -> ConnectionStatus {
+        if friends.contains(where: { $0.id == profile.id }) {
+            return .friend
+        }
+        if outgoing.contains(where: { $0.toUserID == profile.id && $0.status == .pending }) {
+            return .outgoing
+        }
+        return .none
+    }
+
+    @discardableResult
+    func sendRequest(to profile: PublicProfile) async -> Bool {
         do {
-            _ = try await service.sendRequest(from: userRemoteID, to: profile.id)
+            let request = try await service.sendRequest(from: userRemoteID, to: profile.id)
+            if service is InMemoryFriendService {
+                try await service.accept(request: request, as: profile.id)
+            }
             await refresh()
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = String(describing: error)
+            return false
         }
     }
 

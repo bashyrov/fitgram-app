@@ -52,7 +52,7 @@ final class ScanState {
                 try await captureSession.startIfNeeded()
                 stage = .ready
             } catch {
-                stage = .error(message: error.localizedDescription)
+                stage = .error(message: "Something went wrong. Try again.")
             }
         default:
             stage = .needsPermission(status)
@@ -75,7 +75,7 @@ final class ScanState {
             stage = .results(result)
         } catch {
             Logger.ui.error("Scan capture failed: \(String(describing: error))")
-            stage = .error(message: error.localizedDescription)
+            stage = .error(message: "Something went wrong. Try again.")
         }
     }
 
@@ -90,7 +90,12 @@ final class ScanState {
         // best-effort — failure logs and continues with a nil filename.
         let photoFilename: String? = capturedImageData.flatMap { data in
             guard let photoStore else { return nil }
-            return try? photoStore.save(imageData: data)
+            do {
+                return try photoStore.save(imageData: data)
+            } catch {
+                Logger.persistence.error("Meal photo persistence failed: \(String(describing: error))")
+                return nil
+            }
         }
         let entry = MealEntry(
             consumedAt: Date(),

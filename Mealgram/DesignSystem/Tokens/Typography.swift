@@ -20,6 +20,13 @@ extension Tokens {
         /// Monospaced digits, for calorie counters and timers, keeping width stable.
         static let counter = SwiftUI.Font.system(size: 44, weight: .semibold, design: .rounded)
             .monospacedDigit()
+
+        /// Brand display face — Agbalumo Regular. Use for the splash logo and
+        /// large hero moments. Falls back to SF Pro Rounded when the bundled
+        /// font is missing (e.g. preview canvas before generation).
+        static func brand(size: CGFloat) -> SwiftUI.Font {
+            SwiftUI.Font.custom("Agbalumo-Regular", size: size, relativeTo: .largeTitle)
+        }
     }
 }
 

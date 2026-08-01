@@ -44,6 +44,30 @@ platform :ios do
       issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
       key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"])
     )
+
+    # Distribution cert + provisioning profiles. The paid Apple Developer
+    # team has no distribution identity installed yet on this machine, so
+    # `cert` provisions one (or downloads an existing one) into Keychain,
+    # then `sigh` creates / fetches the App Store profile for each target.
+    cert(
+      api_key: api_key,
+      development: false,
+      output_path: "build/profiles"
+    )
+    sigh(
+      api_key: api_key,
+      app_identifier: "app.mealgram.ios.bashyrov",
+      adhoc: false,
+      force: true,
+      output_path: "build/profiles"
+    )
+    sigh(
+      api_key: api_key,
+      app_identifier: "app.mealgram.ios.bashyrov.widget",
+      adhoc: false,
+      force: true,
+      output_path: "build/profiles"
+    )
     build_app(
       project: "Mealgram.xcodeproj",
       scheme: "Mealgram",
@@ -53,7 +77,21 @@ platform :ios do
       include_symbols: true,
       clean: true,
       output_directory: "build",
-      output_name: "Mealgram.ipa"
+      output_name: "Mealgram.ipa",
+      export_options: {
+        signingStyle: "automatic",
+        teamID: "L55G3V9NJ3",
+        # Lets xcodebuild authenticate against the developer portal during
+        # export so it can download the App Store distribution profile.
+        # Without this, the export step fails with "No Accounts".
+        provisioningProfiles: {},
+      },
+      xcargs: [
+        "-allowProvisioningUpdates",
+        "-authenticationKeyID", ENV["APP_STORE_CONNECT_API_KEY_ID"],
+        "-authenticationKeyIssuerID", ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+        "-authenticationKeyPath", ENV["APP_STORE_CONNECT_API_KEY_PATH"],
+      ].join(" ")
     )
     upload_to_testflight(
       api_key: api_key,
@@ -63,6 +101,28 @@ platform :ios do
       changelog: File.read("metadata/changelog.txt").strip
     )
     UI.success "Uploaded to TestFlight."
+  end
+
+  desc "Upload metadata + screenshots without submitting for review"
+  lane :prepare_metadata do
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"])
+    )
+    deliver(
+      api_key: api_key,
+      app_identifier: "app.mealgram.ios.bashyrov",
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      skip_metadata: false,
+      precheck_include_in_app_purchases: false,
+      run_precheck_before_submit: false
+    )
+    UI.success "Metadata + screenshots staged. Review in App Store Connect, then run `fastlane release`."
   end
 
   desc "Submit current TestFlight build for App Store review"
@@ -81,6 +141,8 @@ platform :ios do
       skip_screenshots: false,
       skip_metadata: false,
       skip_app_version_update: false,
+      precheck_include_in_app_purchases: false,
+      run_precheck_before_submit: false,
       submission_information: {
         add_id_info_uses_idfa: false,
         export_compliance_uses_encryption: false,

@@ -51,6 +51,16 @@ final class UserRepository {
         guard let stored = try context.fetch(descriptor).first else {
             throw RepositoryError.userNotFound
         }
+        // Onboarding-captured identity fields. Empty string means
+        // "user didn't override what the auth provider gave us".
+        let trimmedDisplay = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedDisplay.isEmpty {
+            stored.displayName = trimmedDisplay
+        }
+        let trimmedEmail = profile.emailAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedEmail.isEmpty, trimmedEmail.contains("@") {
+            stored.email = trimmedEmail
+        }
         stored.goalKind = profile.goal
         stored.biologicalSex = profile.biologicalSex
         stored.activityLevel = profile.activityLevel
@@ -69,7 +79,8 @@ final class UserRepository {
         if let pace = profile.goalPaceKgPerWeek,
             let target = profile.goalTargetWeightKg,
             let current = profile.weightKg,
-            pace > 0 {
+            pace > 0
+        {
             stored.goalStartDate = Date()
             stored.goalEstimatedEndDate = GoalProjection.estimatedEndDate(
                 currentWeightKg: current,
@@ -151,6 +162,16 @@ struct OnboardingProfile: Equatable {
     var hitSafetyFloor: Bool = false
 
     var dietaryPreferences: Set<DietaryPreference> = []
+
+    /// Display name captured during onboarding (e.g. "Alex"). Persists
+    /// into `User.displayName` on completion. Falls back to whatever
+    /// the auth provider gave us if the user leaves the field empty.
+    var displayName: String = ""
+
+    /// Optional email — Apple Sign In with the "Hide my email" toggle
+    /// gives us nothing, so we offer the user a way to fill it in
+    /// manually. Validated lightly (must contain @ if present).
+    var emailAddress: String = ""
 }
 
 extension OnboardingProfile {
@@ -177,7 +198,9 @@ extension OnboardingProfile {
             fiberGoalGrams: fiberGoalGrams,
             waterGoalMl: waterGoalMl,
             dietaryPreferences: Array(dietaryPreferences),
-            hitSafetyFloor: hitSafetyFloor
+            hitSafetyFloor: hitSafetyFloor,
+            userID: nil,
+            locale: LocalizationStore.currentLanguageCode()
         )
     }
 }

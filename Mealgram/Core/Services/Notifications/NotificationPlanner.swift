@@ -48,6 +48,9 @@ struct NotificationPlanner {
         /// True when the user has already entered a weigh-in for today
         /// (any source). Silences the goal-weight reminder.
         var hasLoggedGoalWeightToday: Bool = false
+        var currentStreakLength: Int = 0
+        var freezesAvailable: Int = 0
+        var hasProtectedStreakToday: Bool = false
     }
 
     static func plan(_ context: Context) -> NotificationPlan {
@@ -62,8 +65,11 @@ struct NotificationPlanner {
         // Streak-at-risk — only when the user genuinely hasn't logged
         // today. Repeats daily; the next reschedule on app foreground +
         // meal save will clear it as soon as they log.
-        if context.preferences.streakRisk, !context.hasLoggedToday {
+        let shouldSendStreakRisk =
+            context.preferences.streakRisk && !context.hasLoggedToday && !context.hasProtectedStreakToday
+        if shouldSendStreakRisk {
             plan.streakRisk = DateComponents(hour: 20, minute: 30)
+            plan.streakRiskSuggestsFreeze = context.currentStreakLength > 0 && context.freezesAvailable > 0
         }
 
         // Evening wrap-up — independent of logging activity; always a
@@ -75,9 +81,9 @@ struct NotificationPlanner {
         // Goal weight reminder — gated on having an active goal + Premium
         // (caller folds both into `hasActiveGoal`). Silenced once the
         // user has already logged a weigh-in today.
-        if context.preferences.goalWeight,
-            context.hasActiveGoal,
-            !context.hasLoggedGoalWeightToday {
+        let shouldSendGoalWeight =
+            context.preferences.goalWeight && context.hasActiveGoal && !context.hasLoggedGoalWeightToday
+        if shouldSendGoalWeight {
             plan.goalWeight = DateComponents(
                 hour: context.preferences.goalWeightHour,
                 minute: context.preferences.goalWeightMinute

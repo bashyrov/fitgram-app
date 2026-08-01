@@ -9,6 +9,8 @@ final class TodayStateTests: XCTestCase {
     private var context: ModelContext!
 
     override func setUp() async throws {
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
         controller = try PersistenceController.makeInMemory()
         context = ModelContext(controller.container)
     }
@@ -16,6 +18,7 @@ final class TodayStateTests: XCTestCase {
     override func tearDown() async throws {
         controller = nil
         context = nil
+        UserDefaults.standard.removeObject(forKey: "app.language")
     }
 
     private static func date(_ iso: String) -> Date {
@@ -100,9 +103,9 @@ final class TodayStateTests: XCTestCase {
 
     func testGreetingByHour() async throws {
         for (hour, expected) in [
-            (8, "Dzień dobry"),
-            (13, "Cześć"),
-            (20, "Dobry wieczór"),
+            (8, "Good morning"),
+            (13, "Hi"),
+            (20, "Good evening"),
             (2, "Hej"),
         ] {
             let fixed = Calendar.current.date(bySettingHour: hour, minute: 0, second: 0, of: Date()) ?? Date()

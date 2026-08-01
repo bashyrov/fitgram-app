@@ -31,35 +31,35 @@ extension MacroSplit {
     static let presets: [MacroSplit] = [
         MacroSplit(
             id: "balanced",
-            label: String(localized: "Zbalansowane 25 / 50 / 25"),
+            label: L("Zbalansowane 25 / 50 / 25"),
             proteinShare: 0.25,
             carbsShare: 0.50,
             fatShare: 0.25
         ),
         MacroSplit(
             id: "highProtein",
-            label: String(localized: "Wysoko-białkowe 35 / 35 / 30"),
+            label: L("Wysoko-białkowe 35 / 35 / 30"),
             proteinShare: 0.35,
             carbsShare: 0.35,
             fatShare: 0.30
         ),
         MacroSplit(
             id: "endurance",
-            label: String(localized: "Wytrzymałościowe 20 / 55 / 25"),
+            label: L("Wytrzymałościowe 20 / 55 / 25"),
             proteinShare: 0.20,
             carbsShare: 0.55,
             fatShare: 0.25
         ),
         MacroSplit(
             id: "lowCarb",
-            label: String(localized: "Mniej węgli 30 / 30 / 40"),
+            label: L("Mniej węgli 30 / 30 / 40"),
             proteinShare: 0.30,
             carbsShare: 0.30,
             fatShare: 0.40
         ),
         MacroSplit(
             id: "keto",
-            label: String(localized: "Keto 25 / 5 / 70"),
+            label: L("Keto 25 / 5 / 70"),
             proteinShare: 0.25,
             carbsShare: 0.05,
             fatShare: 0.70

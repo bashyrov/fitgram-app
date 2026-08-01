@@ -20,7 +20,7 @@ settings:
     SWIFT_EMIT_LOC_STRINGS: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     DEVELOPMENT_TEAM: "L55G3V9NJ3"
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     ENABLE_MODULE_VERIFIER: YES
@@ -58,13 +58,14 @@ targets:
     resources:
       - path: Mealgram/Resources/Assets.xcassets
       - path: Mealgram/Resources/Seeds
+      - path: Mealgram/Resources/Fonts
     info:
       path: Mealgram/Supporting/Info.plist
       properties:
         CFBundleDisplayName: Mealgram
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        CFBundleDevelopmentRegion: pl
+        CFBundleDevelopmentRegion: en
         CFBundleLocalizations:
           - pl
           - en
@@ -89,17 +90,36 @@ targets:
         UIUserInterfaceStyle: Automatic
         NSCameraUsageDescription: "Mealgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach."
         NSPhotoLibraryUsageDescription: "Mealgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki."
+        NSPhotoLibraryAddUsageDescription: "Mealgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
         NSMicrophoneUsageDescription: "Mealgram używa mikrofonu do szybkiego dodawania posiłków głosem."
         NSSpeechRecognitionUsageDescription: "Mealgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
         NSHealthShareUsageDescription: "Mealgram synchronizuje aktywność i wagę z Apple Health."
         NSHealthUpdateUsageDescription: "Mealgram zapisuje posiłki i kalorie w Apple Health."
-        NSUserTrackingUsageDescription: "Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi."
         NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
+        UIAppFonts:
+          - Agbalumo-Regular.ttf
         LSApplicationCategoryType: public.app-category.healthcare-fitness
+        CFBundleURLTypes:
+          - CFBundleTypeRole: Editor
+            CFBundleURLName: app.mealgram.auth
+            CFBundleURLSchemes:
+              - mealgram
+          - CFBundleTypeRole: Editor
+            CFBundleURLName: app.mealgram.google
+            CFBundleURLSchemes:
+              - com.googleusercontent.apps.849312185535-mlidbn8lrhfdsro4f9t2a1ruuqmucgi3
+        WORKER_BASE_URL: $(WORKER_BASE_URL)
+        SUPABASE_URL: $(SUPABASE_URL)
+        SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
+        GOOGLE_OAUTH_CLIENT_ID: $(GOOGLE_OAUTH_CLIENT_ID)
+        REVENUECAT_API_KEY: $(REVENUECAT_API_KEY)
+        IS_PAYMENTS_ENABLED: $(IS_PAYMENTS_ENABLED)
     entitlements:
       path: Mealgram/Supporting/Mealgram.entitlements
       properties:
+        com.apple.developer.applesignin:
+          - Default
         com.apple.developer.icloud-container-identifiers:
           - iCloud.app.mealgram.ios.bashyrov
         com.apple.developer.icloud-services:
@@ -108,7 +128,7 @@ targets:
           - iCloud.app.mealgram.ios.bashyrov
         com.apple.security.application-groups:
           - group.app.mealgram.shared
-        aps-environment: development
+        aps-environment: production
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov
@@ -122,6 +142,12 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_FILE: Mealgram/Supporting/Info.plist
         CODE_SIGN_ENTITLEMENTS: Mealgram/Supporting/Mealgram.entitlements
+        WORKER_BASE_URL: "https://mealgram-worker.bashyroov.workers.dev"
+        SUPABASE_URL: "https://rrkvandbftozmwwfpfqi.supabase.co"
+        SUPABASE_ANON_KEY: "sb_publishable_qVVIG9LKOXpTzIQAN8ve2w_-i26wrMl"
+        GOOGLE_OAUTH_CLIENT_ID: "849312185535-mlidbn8lrhfdsro4f9t2a1ruuqmucgi3.apps.googleusercontent.com"
+        REVENUECAT_API_KEY: ""
+        IS_PAYMENTS_ENABLED: "true"
 
   MealgramWidget:
     type: app-extension
@@ -130,6 +156,7 @@ targets:
     sources:
       - path: MealgramWidget
       - path: Shared
+      - path: Mealgram/Resources/Localizable.xcstrings
     entitlements:
       path: MealgramWidget/MealgramWidget.entitlements
       properties:
@@ -141,6 +168,13 @@ targets:
         CFBundleDisplayName: Mealgram
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleLocalizations:
+          - pl
+          - en
+          - uk
+          - ru
+          - es
+        CFBundleDevelopmentRegion: en
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
@@ -162,6 +196,8 @@ targets:
     sources:
       - path: MealgramWatch
       - path: Shared
+        excludes:
+          - MealgramActivityAttributes.swift
     resources:
       - path: MealgramWatch/Assets.xcassets
     info:
@@ -234,6 +270,10 @@ schemes:
         MealgramUITests: [test]
     run:
       config: Debug
+      # Local StoreKit Configuration — when DEBUG, in-app purchases go
+      # through the fake products defined in Mealgram.storekit so we can
+      # test paywall + restore without App Store Connect being wired.
+      storeKitConfiguration: Mealgram/Supporting/Mealgram.storekit
       commandLineArguments:
         "-FIRDebugEnabled": false
     test:

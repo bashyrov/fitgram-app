@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Reusable card used both for "ciekawostka dnia" highlight on the
-/// "Dziś" tab of `OlaTipsView` and as the expanded row in the
-/// "Ciekawostki" catalog list. Matches the Ola hero aesthetic — soft
-/// rounded card with a gradient ring around the emoji puck.
+/// Reusable card used by the standalone facts library and the Today
+/// fact-of-day preview.
 struct FactCard: View {
     let fact: NutritionFact
     /// "Highlighted" style is used for today's fact: a bit larger emoji,
@@ -23,7 +21,6 @@ struct FactCard: View {
                 }
                 Spacer(minLength: 0)
             }
-            // Fact bodies stay in Polish source language this pass.
             Text(fact.body)
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.ink.opacity(0.85))
@@ -48,25 +45,21 @@ struct FactCard: View {
                 cornerRadius: highlighted ? Tokens.Radius.xl : Tokens.Radius.lg,
                 style: .continuous
             )
-            .fill(Tokens.Palette.surface)
+            .fill(.ultraThinMaterial)
         )
-        .overlay(
+        .background(
             RoundedRectangle(
                 cornerRadius: highlighted ? Tokens.Radius.xl : Tokens.Radius.lg,
                 style: .continuous
             )
-            .strokeBorder(
-                LinearGradient(
-                    colors: highlighted
-                        ? [tint(for: fact.category).opacity(0.55), tint(for: fact.category).opacity(0.10)]
-                        : [Tokens.Palette.separator, Tokens.Palette.separator.opacity(0.4)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ),
-                lineWidth: highlighted ? 1.5 : 1
-            )
+            .fill(Tokens.Palette.surface.opacity(highlighted ? 0.78 : 0.86))
         )
-        .mealgramShadow(highlighted ? Tokens.Shadow.float : Tokens.Shadow.card)
+        .shadow(
+            color: tint(for: fact.category).opacity(highlighted ? 0.12 : 0.06),
+            radius: highlighted ? 18 : 10,
+            x: 0,
+            y: highlighted ? 10 : 5
+        )
     }
 
     private var emojiPuck: some View {
@@ -81,19 +74,6 @@ struct FactCard: View {
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
-                )
-                .frame(width: highlighted ? 56 : 44, height: highlighted ? 56 : 44)
-            Circle()
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [
-                            tint(for: fact.category).opacity(0.65),
-                            tint(for: fact.category).opacity(0.20),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1.2
                 )
                 .frame(width: highlighted ? 56 : 44, height: highlighted ? 56 : 44)
             Text(fact.icon)
@@ -141,18 +121,18 @@ struct FactCard: View {
 
     static func localizedCategory(_ category: NutritionFact.Category) -> String {
         switch category {
-        case .calories: return String(localized: "Kalorie")
-        case .weightLoss: return String(localized: "Odchudzanie")
-        case .weightGain: return String(localized: "Masa")
-        case .protein: return String(localized: "Białko")
-        case .carbs: return String(localized: "Węglowodany")
-        case .fats: return String(localized: "Tłuszcze")
-        case .fiber: return String(localized: "Błonnik")
-        case .hydration: return String(localized: "Nawodnienie")
-        case .metabolism: return String(localized: "Metabolizm")
-        case .training: return String(localized: "Trening")
-        case .psychology: return String(localized: "Psychologia")
-        case .polishCuisine: return String(localized: "Kuchnia PL")
+        case .calories: return L("Calories")
+        case .weightLoss: return L("Odchudzanie")
+        case .weightGain: return L("Masa")
+        case .protein: return L("Protein")
+        case .carbs: return L("Węglowodany")
+        case .fats: return L("Fats")
+        case .fiber: return L("Fiber")
+        case .hydration: return L("Nawodnienie")
+        case .metabolism: return L("Metabolizm")
+        case .training: return L("Trening")
+        case .psychology: return L("Psychologia")
+        case .polishCuisine: return L("Kuchnia PL")
         }
     }
 }

@@ -6,7 +6,9 @@ import OSLog
 /// flow — it deletes server-side data (Supabase) *first*, then nukes local
 /// SwiftData stores and the keychain, then signs out.
 ///
-/// Server side is stubbed until Supabase is wired up; local cleanup is real.
+/// Server-side deletion goes through the Supabase Edge Function when the
+/// production Supabase URL + anon key are configured; local cleanup is always
+/// real so the device never keeps stale personal data.
 @MainActor
 final class AccountDeletionService {
     private let authService: AuthService
@@ -35,14 +37,35 @@ final class AccountDeletionService {
         Logger.auth.warning("Account deletion finished")
     }
 
-    /// Wipes Supabase-side data. Real implementation calls the
-    /// `/api/v1/account` DELETE Edge Function once we have a Supabase client.
+    /// Wipes Supabase-side data via the `account` Edge Function. The function
+    /// owns table-by-table cascading so the app never ships admin delete logic.
     private func deleteServerData() async throws {
-        guard AppConfig.isSupabaseConfigured else {
+        guard let supabaseURL = AppConfig.supabaseURL,
+            let anonKey = AppConfig.supabaseAnonKey
+        else {
             Logger.auth.notice("Skipping server-side deletion: Supabase not configured")
             return
         }
-        // TODO(Milestone 1.6): call Edge Function once Supabase client lands.
+        guard let token = try tokenStore.accessToken, !token.isEmpty else {
+            Logger.auth.notice("Skipping server-side deletion: user is already signed out")
+            return
+        }
+
+        let url = supabaseURL.appending(path: "functions/v1/account")
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            let body = String(data: data, encoding: .utf8) ?? ""
+            Logger.auth.error("Server-side deletion failed: \(http.statusCode) \(body, privacy: .public)")
+            throw AuthError.unknown(underlying: L("Nie udało się usunąć danych z serwera. Spróbuj ponownie."))
+        }
     }
 
     private func clearLocalStores() throws {

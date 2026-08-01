@@ -5,9 +5,8 @@ import Foundation
 /// the "ciekawostka dnia"; the full catalog is browsable from the
 /// secondary segment.
 ///
-/// Bodies are deliberately written in Polish, ~3-5 sentences each, in a
-/// "smart friend over coffee" tone. They are flagged as PL-only this
-/// pass — translations land in a follow-up bulk pass.
+/// Bodies are short, concrete and localized through either
+/// Localizable.xcstrings or the generated-catalog `TL(...)` helper.
 struct NutritionFact: Identifiable, Sendable, Equatable, Hashable {
     /// Stable string identifier so we can persist "seen" facts later
     /// without depending on array index.
@@ -17,7 +16,7 @@ struct NutritionFact: Identifiable, Sendable, Equatable, Hashable {
     let icon: String
     /// Short headline — also serves as a row label in the catalogue.
     let title: String
-    /// 3-5 sentence body. PL only this pass.
+    /// Short body in the current app language.
     let body: String
     /// Optional source/citation footer. Keep it short — "WHO 2024",
     /// "EFSA", "IŻŻ". Nil means "internal editorial".
@@ -56,22 +55,22 @@ struct NutritionFact: Identifiable, Sendable, Equatable, Hashable {
         var id: String { rawValue }
 
         /// Human-readable Polish chip label (also used in the segmented
-        /// filter strip). All UI-facing labels go through `String(localized:)`
-        /// at call site — this is just the canonical key.
+        /// filter strip). Wrapped here with `String(localized:)` so the
+        /// keys are extracted into Localizable.xcstrings at build time.
         var displayKey: String {
             switch self {
-            case .calories: return "Kalorie"
-            case .weightLoss: return "Odchudzanie"
-            case .weightGain: return "Masa"
-            case .protein: return "Białko"
-            case .carbs: return "Węglowodany"
-            case .fats: return "Tłuszcze"
-            case .fiber: return "Błonnik"
-            case .hydration: return "Nawodnienie"
-            case .metabolism: return "Metabolizm"
-            case .training: return "Trening"
-            case .psychology: return "Psychologia"
-            case .polishCuisine: return "Kuchnia PL"
+            case .calories: return L("Kalorie")
+            case .weightLoss: return L("Odchudzanie")
+            case .weightGain: return L("Masa")
+            case .protein: return L("Protein")
+            case .carbs: return L("Węglowodany")
+            case .fats: return L("Tłuszcze")
+            case .fiber: return L("Fiber")
+            case .hydration: return L("Nawodnienie")
+            case .metabolism: return L("Metabolizm")
+            case .training: return L("Trening")
+            case .psychology: return L("Psychologia")
+            case .polishCuisine: return L("Kuchnia PL")
             }
         }
     }

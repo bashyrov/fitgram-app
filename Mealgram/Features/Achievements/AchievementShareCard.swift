@@ -31,15 +31,7 @@ struct AchievementShareCard: View {
                 }
 
                 VStack(spacing: 24) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.white.opacity(0.25))
-                            .frame(width: 320, height: 320)
-                        Image(systemName: definition.symbol)
-                            .font(.system(size: 152, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .shadow(color: .black.opacity(0.18), radius: 16, x: 0, y: 6)
-                    }
+                    AchievementMedallion(definition: definition, isEarned: true, size: 330, showsLock: false)
                     Text(definition.title)
                         .font(.system(size: 56, weight: .heavy, design: .rounded))
                         .foregroundStyle(.white)
@@ -54,9 +46,11 @@ struct AchievementShareCard: View {
 
                 VStack(spacing: 6) {
                     if let earnedAt {
-                        Text("zdobyte \(Self.dateFormatter.string(from: earnedAt))")
-                            .font(.system(size: 26, weight: .medium, design: .rounded))
-                            .foregroundStyle(.white.opacity(0.85))
+                        Text(
+                            String.localizedStringWithFormat(L("zdobyte %@"), Self.dateFormatter.string(from: earnedAt))
+                        )
+                        .font(.system(size: 26, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.85))
                     }
                     if let displayName, !displayName.isEmpty {
                         Text(displayName)
@@ -72,12 +66,14 @@ struct AchievementShareCard: View {
         .frame(width: 1080, height: 1920)
     }
 
-    private static let dateFormatter: DateFormatter = {
+    private static var dateFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "d MMMM yyyy"
         return formatter
-    }()
+
+    }
 }
 
 extension AchievementShareCard {

@@ -8,6 +8,9 @@ enum PaywallTrigger: String, Equatable, Sendable {
     case photoScanQuota = "photo_scan_quota"
     case barcodeScanQuota = "barcode_scan_quota"
     case voiceEntryQuota = "voice_entry_quota"
+    case mealAIRefreshQuota = "meal_ai_refresh_quota"
+    case productNutritionQuota = "product_nutrition_quota"
+    case olaChefQuota = "ola_chef_quota"
     case coachDebriefQuota = "coach_debrief_quota"
     case favoritesUnavailable = "favorites_unavailable"
     case customGoalsCap = "custom_goals_cap"
@@ -35,80 +38,103 @@ extension PaywallTrigger {
         switch self {
         case .photoScanQuota:
             return Copy(
-                headline: "Wykorzystałeś skany na ten tydzień",
-                body: "Premium daje nieograniczone skany zdjęć + dokładniejszy Gemini Pro AI. 7 dni za darmo.",
-                badge: "Skanowanie AI"
+                headline: L("Dzienny limit AI wykorzystany"),
+                body: L(
+                    "W bezpłatnej wersji masz 3 zapytania AI dziennie. Pro odblokowuje pełne skanowanie i 7 dni próbne."
+                ),
+                badge: L("Skanowanie AI")
             )
         case .barcodeScanQuota:
             return Copy(
-                headline: "Limit kodów wyczerpany",
-                body: "Z Premium skanujesz kody bez limitu — i dostajesz całą Bazę Otwartą żywności.",
-                badge: "Kody"
+                headline: L("Dzienny limit AI wykorzystany"),
+                body: L("W bezpłatnej wersji masz 3 zapytania AI dziennie. Pro daje więcej przestrzeni na testy."),
+                badge: L("Kody")
             )
         case .voiceEntryQuota:
             return Copy(
-                headline: "Limit nagrań głosowych wyczerpany",
-                body: "Premium odblokowuje nieograniczone wpisy głosem + szybkie parsowanie po polsku.",
-                badge: "Głos"
+                headline: L("Dzienny limit AI wykorzystany"),
+                body: L("W bezpłatnej wersji możesz zapisać 3 posiłki AI dziennie. Premium nie ma limitów."),
+                badge: L("Voice")
+            )
+        case .mealAIRefreshQuota:
+            return Copy(
+                headline: L("Limit odświeżeń AI wykorzystany"),
+                body: L(
+                    "W bezpłatnej wersji możesz odświeżyć dane dania 3 razy dziennie. Premium odblokowuje nielimitowane poprawki."
+                ),
+                badge: L("AI refresh")
+            )
+        case .productNutritionQuota:
+            return Copy(
+                headline: L("Limit produktów AI wykorzystany"),
+                body: L("W bezpłatnej wersji AI uzupełni 2 pojedyncze produkty dziennie. Premium nie ma limitów."),
+                badge: L("Produkty")
+            )
+        case .olaChefQuota:
+            return Copy(
+                headline: L("Kuchnia Oli bez limitu w Pro"),
+                body: L("W bezpłatnej wersji Kuchnia Oli działa raz dziennie. Premium odblokowuje nielimitowane pomysły pod kalorie."),
+                badge: L("Kuchnia Oli")
             )
         case .coachDebriefQuota:
             return Copy(
-                headline: "Ola podsumowała Twój tydzień",
-                body: "W Premium Ola pisze podsumowania kiedy chcesz — codziennie albo na żądanie.",
-                badge: "AI Coach"
+                headline: L("Ola jest w Pro"),
+                body: L(
+                    "Free pokazuje podgląd. Pro odblokowuje porady Oli, fakty w kontekście i tygodniowe podsumowania."),
+                badge: L("AI Coach")
             )
         case .favoritesUnavailable:
             return Copy(
-                headline: "Moje przepisy — limit 5 na free",
-                body: "Zapisuj swoje stałe pozycje, dodawaj jednym tapnięciem. Zaoszczędź minuty dziennie.",
-                badge: "Ulubione"
+                headline: L("Ulubione bez limitu"),
+                body: L("Zapisuj regularne produkty i dodawaj je jednym tapnięciem bez limitów."),
+                badge: L("Favorites")
             )
         case .customGoalsCap:
             return Copy(
-                headline: "Więcej celów = Premium",
-                body: "W bezpłatnej wersji jeden aktywny cel. Premium pozwala mieć trzy jednocześnie.",
-                badge: "Cele"
+                headline: L("Więcej celów = Premium"),
+                body: L("W bezpłatnej wersji jeden aktywny cel. Premium pozwala mieć trzy jednocześnie."),
+                badge: L("Goals")
             )
         case .friendsCap:
             return Copy(
-                headline: "Dodaj więcej znajomych w Premium",
-                body: "Bezpłatne konto wspiera 3 znajomych. Premium otwiera nieograniczoną grupę.",
-                badge: "Społeczność"
+                headline: L("Znajomi bez limitu"),
+                body: L("Dodawaj znajomych i grupy bez sztucznych ograniczeń."),
+                badge: L("Społeczność")
             )
         case .recipesCap:
             return Copy(
-                headline: "Pełna książka przepisów = Premium",
-                body: "Bezpłatnie 5 przepisów. Premium odblokowuje nieograniczoną książkę + import z URL.",
-                badge: "Przepisy"
+                headline: L("Limit 5 przepisów"),
+                body: L("W bezpłatnej wersji zapiszesz 5 przepisów. Pro odblokowuje całą bibliotekę i import z URL."),
+                badge: L("Recipes")
             )
         case .exportCsv, .exportZip:
             return Copy(
-                headline: "Eksport do CSV / ZIP — Premium",
-                body: "W bezpłatnym koncie zostawiamy eksport JSON. Premium dodaje CSV (dla Excela) i pełny pakiet ZIP.",
-                badge: "Eksport"
+                headline: L("Eksport bez limitu"),
+                body: L("JSON, CSV i pełny ZIP są dostępne dla każdego użytkownika."),
+                badge: L("Eksport")
             )
         case .themePicker:
             return Copy(
-                headline: "Wybór motywu — Premium",
-                body: "Tryb ciemny, jasny albo automatyczny. Premium pozwala ustawić sztywno.",
-                badge: "Motyw"
+                headline: L("Wybór motywu — Premium"),
+                body: L("Tryb ciemny, jasny albo automatyczny. Premium pozwala ustawić sztywno."),
+                badge: L("Motyw")
             )
         case .iCloudSync:
             return Copy(
-                headline: "Synchronizacja przez iCloud — Premium",
-                body: "Dane między telefonem a iPadem zawsze świeże. Premium włącza iCloud sync.",
-                badge: "Sync"
+                headline: L("Synchronizacja przez iCloud — Premium"),
+                body: L("Dane między telefonem a iPadem zawsze świeże. Premium włącza iCloud sync."),
+                badge: L("Sync")
             )
         case .goalTracking:
             return Copy(
-                headline: "Śledzenie celu — Premium",
-                body: "Codzienna waga, wykres trendu i przypomnienie. Premium odblokowuje pełne śledzenie postępu.",
-                badge: "Cel"
+                headline: L("Śledzenie celu — Premium"),
+                body: L("Daily weight, trend chart, and reminder. Premium unlocks full progress tracking."),
+                badge: L("Goal")
             )
         case .manual:
             return Copy(
-                headline: "Wypróbuj Mealgram Premium",
-                body: "7 dni za darmo. Pełne AI, nieograniczone skany, AI Coach, eksporty.",
+                headline: L("Wypróbuj Mealgram Premium"),
+                body: L("7 dni za darmo. Pełne AI, nieograniczone skany, AI Coach, eksporty."),
                 badge: nil
             )
         }

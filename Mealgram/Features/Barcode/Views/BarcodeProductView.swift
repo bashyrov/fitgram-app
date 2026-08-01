@@ -5,15 +5,41 @@ import SwiftUI
 /// the data model is simpler (single line item, no AI confidence display).
 struct BarcodeProductView: View {
     let product: BarcodeProduct
-    let onSave: (Double) -> Void
+    let onSave: ([FoodItem]) -> Void
     let onRetake: () -> Void
     let onDismiss: () -> Void
     var favoritesService: (any FavoritesServing)?
     var entitlementsStore: EntitlementsStore?
     var paywallCoordinator: PaywallCoordinator?
     var userRemoteID: String?
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
 
     @State private var portion: Double = 1.0
+
+    init(
+        product: BarcodeProduct,
+        onSave: @escaping ([FoodItem]) -> Void,
+        onRetake: @escaping () -> Void,
+        onDismiss: @escaping () -> Void,
+        favoritesService: (any FavoritesServing)? = nil,
+        entitlementsStore: EntitlementsStore? = nil,
+        paywallCoordinator: PaywallCoordinator? = nil,
+        userRemoteID: String? = nil,
+        mealAnalyzer: MealTextAnalysisService? = nil,
+        usageMeter: UsageMeter? = nil
+    ) {
+        self.product = product
+        self.onSave = onSave
+        self.onRetake = onRetake
+        self.onDismiss = onDismiss
+        self.favoritesService = favoritesService
+        self.entitlementsStore = entitlementsStore
+        self.paywallCoordinator = paywallCoordinator
+        self.userRemoteID = userRemoteID
+        self.mealAnalyzer = mealAnalyzer
+        self.usageMeter = usageMeter
+    }
 
     var body: some View {
         ZStack {
@@ -39,17 +65,18 @@ struct BarcodeProductView: View {
         if let favoritesService,
             let entitlementsStore,
             let paywallCoordinator,
-            let userRemoteID {
-            let factor = grams / 100
+            let userRemoteID
+        {
+            let favoriteItems = itemsToSave()
             FavoriteToggleButton(
                 payload: FavoriteToggleButton.Payload(
                     name: product.name,
-                    quantityGrams: grams,
-                    caloriesKcal: product.nutrition.caloriesKcalPer100g * factor,
-                    proteinGrams: product.nutrition.proteinPer100g * factor,
-                    carbsGrams: product.nutrition.carbsPer100g * factor,
-                    fatGrams: product.nutrition.fatPer100g * factor,
-                    fiberGrams: product.nutrition.fiberPer100g.map { $0 * factor },
+                    quantityGrams: favoriteItems.reduce(0) { $0 + $1.quantityGrams },
+                    caloriesKcal: favoriteItems.reduce(0) { $0 + $1.caloriesKcal },
+                    proteinGrams: favoriteItems.reduce(0) { $0 + $1.proteinGrams },
+                    carbsGrams: favoriteItems.reduce(0) { $0 + $1.carbsGrams },
+                    fatGrams: favoriteItems.reduce(0) { $0 + $1.fatGrams },
+                    fiberGrams: favoriteItems.compactMap(\.fiberGrams).reduce(0, +),
                     source: .barcode,
                     catalogFoodID: nil
                 ),
@@ -74,7 +101,7 @@ struct BarcodeProductView: View {
                 }
                 .padding(.leading, Tokens.Space.screenPadding)
                 .padding(.top, Tokens.Space.md)
-                .accessibilityLabel(Text("Zamknij"))
+                .accessibilityLabel(Text("Close"))
                 Spacer()
             }
         }
@@ -121,17 +148,17 @@ struct BarcodeProductView: View {
                         .font(Tokens.Font.subheadline)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
-                Text("\(Int(adjustedCalories)) kcal")
+                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(adjustedCalories)))
                     .font(Tokens.Font.counter)
                     .foregroundStyle(Tokens.Palette.primary)
 
                 HStack(spacing: Tokens.Space.lg) {
-                    macroPill(label: "Białko", grams: adjustedProtein, color: Tokens.Palette.primary)
+                    macroPill(label: "Protein", grams: adjustedProtein, color: Tokens.Palette.primary)
                     macroPill(label: "Węgle", grams: adjustedCarbs, color: Tokens.Palette.warning)
                     macroPill(label: "Tłuszcz", grams: adjustedFat, color: Tokens.Palette.accent)
                 }
 
-                Text("Kod \(product.barcode)")
+                Text(String.localizedStringWithFormat(L("Kod %@"), product.barcode))
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
@@ -147,7 +174,7 @@ struct BarcodeProductView: View {
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("\(Int(grams)) g")
+                        Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
                             .font(Tokens.Font.title3)
                             .foregroundStyle(Tokens.Palette.primary)
                             .lineLimit(1)
@@ -166,7 +193,7 @@ struct BarcodeProductView: View {
     private var footer: some View {
         VStack(spacing: Tokens.Space.sm) {
             PrimaryButton(title: "Dodaj do dziennika", systemImage: "checkmark") {
-                onSave(portion)
+                onSave(itemsToSave())
             }
             Button(action: onRetake) {
                 Text("Skanuj inny kod")
@@ -184,7 +211,7 @@ struct BarcodeProductView: View {
 
     private func macroPill(label: LocalizedStringKey, grams: Double, color: Color) -> some View {
         VStack(spacing: 2) {
-            Text("\(Int(grams)) g")
+            Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(color)
             Text(label)
@@ -195,8 +222,31 @@ struct BarcodeProductView: View {
     }
 
     private var grams: Double { (product.servingGrams ?? 100) * portion }
-    private var adjustedCalories: Double { product.nutrition.caloriesKcalPer100g * grams / 100 }
-    private var adjustedProtein: Double { product.nutrition.proteinPer100g * grams / 100 }
-    private var adjustedCarbs: Double { product.nutrition.carbsPer100g * grams / 100 }
-    private var adjustedFat: Double { product.nutrition.fatPer100g * grams / 100 }
+    private var adjustedCalories: Double {
+        product.nutrition.caloriesKcalPer100g * grams / 100
+    }
+    private var adjustedProtein: Double {
+        product.nutrition.proteinPer100g * grams / 100
+    }
+    private var adjustedCarbs: Double {
+        product.nutrition.carbsPer100g * grams / 100
+    }
+    private var adjustedFat: Double {
+        product.nutrition.fatPer100g * grams / 100
+    }
+
+    private func itemsToSave() -> [FoodItem] {
+        [
+            FoodItem(
+                name: product.name,
+                quantityGrams: grams,
+                caloriesKcal: adjustedCalories,
+                proteinGrams: adjustedProtein,
+                carbsGrams: adjustedCarbs,
+                fatGrams: adjustedFat,
+                fiberGrams: product.nutrition.fiberPer100g.map { $0 * grams / 100 },
+                confidence: 1.0
+            )
+        ]
+    }
 }

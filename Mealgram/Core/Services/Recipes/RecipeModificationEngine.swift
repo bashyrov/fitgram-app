@@ -18,10 +18,10 @@ struct RecipeModificationEngine {
 
         var label: String {
             switch self {
-            case .lighter: return String(localized: "Lżejsza wersja")
-            case .moreProtein: return String(localized: "Więcej białka")
-            case .glutenFree: return String(localized: "Bez glutenu")
-            case .dairyFree: return String(localized: "Bez nabiału")
+            case .lighter: return L("Lżejsza wersja")
+            case .moreProtein: return L("Więcej białka")
+            case .glutenFree: return L("Bez glutenu")
+            case .dairyFree: return L("Dairy-free")
             }
         }
 
@@ -80,36 +80,36 @@ struct RecipeModificationEngine {
 
     private static let rulesByIntent: [Intent: [Rule]] = [
         .lighter: [
-            Rule(trigger: "śmietan", replacement: String(localized: "zamień na jogurt grecki naturalny")),
-            Rule(trigger: "majonez", replacement: String(localized: "zamień na jogurt + musztarda")),
-            Rule(trigger: "masło", replacement: String(localized: "zamień połowę na oliwę")),
-            Rule(trigger: "boczek", replacement: String(localized: "zamień na wędzonego kurczaka")),
-            Rule(trigger: "cukier", replacement: String(localized: "ogranicz o połowę albo zamień na erytrol")),
+            Rule(trigger: "śmietan", replacement: L("zamień na jogurt grecki naturalny")),
+            Rule(trigger: "majonez", replacement: L("zamień na jogurt + musztarda")),
+            Rule(trigger: "masło", replacement: L("zamień połowę na oliwę")),
+            Rule(trigger: "boczek", replacement: L("zamień na wędzonego kurczaka")),
+            Rule(trigger: "cukier", replacement: L("ogranicz o połowę albo zamień na erytrol")),
         ],
         .moreProtein: [
-            Rule(trigger: "ryż", replacement: String(localized: "część zamień na soczewicę lub komosę")),
-            Rule(trigger: "mąka", replacement: String(localized: "dodaj 2 łyżki mąki sojowej / białka w proszku")),
-            Rule(trigger: "ser", replacement: String(localized: "zwiększ porcję twarogu o 50 %")),
-            Rule(trigger: "jogurt", replacement: String(localized: "wybierz grecki 0 % lub skyr")),
+            Rule(trigger: "ryż", replacement: L("część zamień na soczewicę lub komosę")),
+            Rule(trigger: "mąka", replacement: L("dodaj 2 łyżki mąki sojowej / białka w proszku")),
+            Rule(trigger: "ser", replacement: L("zwiększ porcję twarogu o 50 %")),
+            Rule(trigger: "jogurt", replacement: L("wybierz grecki 0 % lub skyr")),
         ],
         .glutenFree: [
             Rule(
                 trigger: "mąka pszenna",
-                replacement: String(localized: "zamień na mąkę gryczaną lub bezglutenową mieszankę")),
+                replacement: L("zamień na mąkę gryczaną lub bezglutenową mieszankę")),
             Rule(
-                trigger: "makaron", replacement: String(localized: "zamień na makaron ryżowy / gryczany / kukurydziany")
+                trigger: "makaron", replacement: L("zamień na makaron ryżowy / gryczany / kukurydziany")
             ),
             Rule(
                 trigger: "chleb",
-                replacement: String(localized: "wybierz chleb bezglutenowy oznaczony przekreślonym kłosem")),
-            Rule(trigger: "bułka", replacement: String(localized: "zamień na bułkę bezglutenową")),
+                replacement: L("wybierz chleb bezglutenowy oznaczony przekreślonym kłosem")),
+            Rule(trigger: "bułka", replacement: L("zamień na bułkę bezglutenową")),
         ],
         .dairyFree: [
-            Rule(trigger: "mleko", replacement: String(localized: "zamień na mleko owsiane lub migdałowe")),
-            Rule(trigger: "ser", replacement: String(localized: "zamień na tofu wędzone lub roślinną alternatywę")),
-            Rule(trigger: "masło", replacement: String(localized: "zamień na oliwę albo wegańską margarynę")),
-            Rule(trigger: "śmietan", replacement: String(localized: "zamień na śmietanę kokosową")),
-            Rule(trigger: "jogurt", replacement: String(localized: "zamień na jogurt kokosowy lub sojowy")),
+            Rule(trigger: "mleko", replacement: L("zamień na mleko owsiane lub migdałowe")),
+            Rule(trigger: "ser", replacement: L("zamień na tofu wędzone lub roślinną alternatywę")),
+            Rule(trigger: "masło", replacement: L("zamień na oliwę albo wegańską margarynę")),
+            Rule(trigger: "śmietan", replacement: L("zamień na śmietanę kokosową")),
+            Rule(trigger: "jogurt", replacement: L("zamień na jogurt kokosowy lub sojowy")),
         ],
     ]
 }

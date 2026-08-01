@@ -67,7 +67,7 @@ struct GoalTrackingCard: View {
                 .font(.caption)
                 .foregroundStyle(Tokens.Palette.inkSubtle)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Cel")
+                Text("Goal")
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(String(format: "%.1f kg", snapshot.targetWeightKg))
@@ -89,7 +89,7 @@ struct GoalTrackingCard: View {
                 .foregroundStyle(Tokens.Palette.inkMuted)
             Spacer()
             if snapshot.isGoalReached {
-                Text("Cel osiągnięty")
+                Text("Goal reached")
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.success)
             }
@@ -105,7 +105,7 @@ struct GoalTrackingCard: View {
                 Image(systemName: "sparkles")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Tokens.Palette.accent)
-                Text("Co pomoże dziś")
+                Text("What helps today")
                     .font(.system(size: 11, weight: .heavy))
                     .tracking(1)
                     .textCase(.uppercase)
@@ -115,7 +115,7 @@ struct GoalTrackingCard: View {
                 HStack(alignment: .top, spacing: 8) {
                     Text(tip.icon)
                         .font(.system(size: 14))
-                    Text(tip.title)
+                    Text(L(tip.title))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(2)
@@ -128,9 +128,9 @@ struct GoalTrackingCard: View {
 
     private var daysLabel: String {
         if let total = snapshot.totalDays, total > 0 {
-            return String(localized: "Dzień \(snapshot.daysElapsed) z \(total)")
+            return String.localizedStringWithFormat(L("Day %lld of %lld"), snapshot.daysElapsed, total)
         }
-        return String(localized: "Dzień \(snapshot.daysElapsed)")
+        return String.localizedStringWithFormat(L("Day %lld"), snapshot.daysElapsed)
     }
 
     @ViewBuilder
@@ -139,8 +139,8 @@ struct GoalTrackingCard: View {
         if points.count >= 2 {
             Chart(points) { point in
                 LineMark(
-                    x: .value("Data", point.date),
-                    y: .value("Waga", point.weightKg)
+                    x: .value("Date", point.date),
+                    y: .value("Weight", point.weightKg)
                 )
                 .interpolationMethod(.monotone)
                 .foregroundStyle(Tokens.Palette.primary)
@@ -172,6 +172,7 @@ struct GoalTrackingPeekCard: View {
     /// from the user's goal even though we won't show them sharply.
     let currentWeightKg: Double?
     let targetWeightKg: Double?
+    var isLocked: Bool = true
     let onTap: () -> Void
 
     var body: some View {
@@ -186,14 +187,14 @@ struct GoalTrackingPeekCard: View {
                         }
                         .blur(radius: 6)
                         .allowsHitTesting(false)
-                        premiumChip
+                        actionChip
                     }
                 }
             }
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("Twój cel — odblokuj w Premium"))
+        .accessibilityLabel(Text(isLocked ? "Twój cel — Pro" : "Twój cel"))
     }
 
     private var header: some View {
@@ -204,7 +205,7 @@ struct GoalTrackingPeekCard: View {
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(Tokens.Palette.ink)
             Spacer()
-            Image(systemName: "lock.fill")
+            Image(systemName: isLocked ? "lock.fill" : "chevron.right")
                 .foregroundStyle(Tokens.Palette.primary)
         }
     }
@@ -223,7 +224,7 @@ struct GoalTrackingPeekCard: View {
                 .font(.caption)
                 .foregroundStyle(Tokens.Palette.inkSubtle)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Cel")
+                Text("Goal")
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(targetWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
@@ -243,7 +244,7 @@ struct GoalTrackingPeekCard: View {
                 Image(systemName: "sparkles")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Tokens.Palette.accent)
-                Text("Co pomoże dziś")
+                Text("What helps today")
                     .font(.system(size: 11, weight: .heavy))
                     .tracking(1)
                     .textCase(.uppercase)
@@ -263,21 +264,23 @@ struct GoalTrackingPeekCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var premiumChip: some View {
+    private var actionChip: some View {
         HStack(spacing: 6) {
-            Image(systemName: "sparkles")
+            Image(systemName: isLocked ? "sparkles" : "target")
                 .font(.system(size: 12, weight: .bold))
-            Text("Odblokuj Premium")
+            Text(isLocked ? "PRO" : "Otwórz cel")
                 .font(.system(size: 12, weight: .heavy))
                 .tracking(0.5)
         }
         .foregroundStyle(.white)
-        .padding(.horizontal, 14)
+        .padding(.horizontal, isLocked ? 16 : 14)
         .padding(.vertical, 8)
         .background(
             Capsule().fill(
                 LinearGradient(
-                    colors: [Tokens.Palette.primary, Tokens.Palette.accent],
+                    colors: isLocked
+                        ? [Tokens.Palette.primary, Tokens.Palette.accent]
+                        : [Tokens.Palette.primary, Tokens.Palette.primary.opacity(0.72)],
                     startPoint: .leading,
                     endPoint: .trailing
                 )

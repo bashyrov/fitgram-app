@@ -6,7 +6,7 @@ struct FriendRow: View {
     var body: some View {
         HStack(spacing: Tokens.Space.md) {
             avatar
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(profile.displayName)
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.ink)
@@ -16,39 +16,53 @@ struct FriendRow: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 0)
-            if let streak = profile.currentStreak, streak > 0, profile.sharesStreak {
-                HStack(spacing: 4) {
-                    Image(systemName: "flame.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    Text("\(streak)")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                .padding(.horizontal, Tokens.Space.sm)
-                .padding(.vertical, 2)
-                .background(Capsule().fill(Tokens.Palette.warning.opacity(0.15)))
-            }
+            trailingBadge
         }
         .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(.white.opacity(0.34), lineWidth: 1)
         )
+        .shadow(color: Tokens.Palette.primary.opacity(0.06), radius: 14, y: 8)
     }
 
     private var avatar: some View {
-        Circle()
-            .fill(Tokens.Palette.primarySoft)
-            .frame(width: 40, height: 40)
-            .overlay(
-                Text(initial)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
+        Text(initial)
+            .font(.system(size: 17, weight: .heavy, design: .rounded))
+            .foregroundStyle(.white)
+            .frame(width: 48, height: 48)
+            .background(
+                Circle().fill(
+                    LinearGradient(
+                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
             )
+    }
+
+    @ViewBuilder
+    private var trailingBadge: some View {
+        if let streak = profile.currentStreak, streak > 0, profile.sharesStreak {
+            HStack(spacing: 5) {
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(Tokens.Palette.warning)
+                Text("\(streak)")
+                    .font(Tokens.Font.caption.weight(.bold))
+                    .foregroundStyle(Tokens.Palette.ink)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Capsule().fill(Tokens.Palette.warning.opacity(0.15)))
+        } else {
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(Tokens.Palette.inkSubtle)
+        }
     }
 
     private var initial: String {
@@ -57,7 +71,7 @@ struct FriendRow: View {
 
     private var subtitle: String {
         if let count = profile.achievementCount, profile.sharesAchievements {
-            return "\(count) odznak"
+            return String.localizedStringWithFormat(L("%lld badges"), count)
         }
         return "Mealgram"
     }

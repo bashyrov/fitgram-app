@@ -19,7 +19,7 @@ struct CulturalEventBanner: View {
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text(upcoming.event.name)
+                        Text(LocalizedStringKey(upcoming.event.name))
                             .font(Tokens.Font.bodyEmphasized)
                             .foregroundStyle(Tokens.Palette.ink)
                         Spacer(minLength: 0)
@@ -30,7 +30,7 @@ struct CulturalEventBanner: View {
                             .padding(.vertical, 2)
                             .background(Capsule().fill(Color.white.opacity(0.6)))
                     }
-                    Text(upcoming.event.foodNote)
+                    Text(LocalizedStringKey(upcoming.event.foodNote))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                         .fixedSize(horizontal: false, vertical: true)
@@ -52,8 +52,9 @@ struct CulturalEventBanner: View {
     }
 
     private var badge: String {
-        if upcoming.isToday { return "dziś" }
-        if upcoming.daysAway == 1 { return "jutro" }
-        return "za \(upcoming.daysAway) dni"
+        if upcoming.isToday { return L("dziś") }
+        if upcoming.daysAway == 1 { return L("jutro") }
+        let format = L("za %lld dni")
+        return String.localizedStringWithFormat(format, upcoming.daysAway)
     }
 }

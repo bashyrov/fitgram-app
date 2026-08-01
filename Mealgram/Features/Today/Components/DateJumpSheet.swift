@@ -30,7 +30,7 @@ struct DateJumpSheet: View {
                 Tokens.Palette.background.ignoresSafeArea()
                 VStack(spacing: Tokens.Space.md) {
                     DatePicker(
-                        "Wybierz dzień",
+                        "Pick a day",
                         selection: $draftDate,
                         in: ...Date(),
                         displayedComponents: .date
@@ -39,26 +39,47 @@ struct DateJumpSheet: View {
                     .padding(.horizontal, Tokens.Space.screenPadding)
                     .tint(Tokens.Palette.primary)
 
-                    PrimaryButton(title: "Pokaż ten dzień", systemImage: "calendar") {
-                        onPick(draftDate)
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-
-                    Button("Wróć do dziś", action: onToday)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
-
                     Spacer(minLength: 0)
                 }
                 .padding(.top, Tokens.Space.md)
+                .frame(maxHeight: .infinity, alignment: .top)
             }
-            .navigationTitle(Text("Wybierz dzień"))
+            .safeAreaInset(edge: .bottom) {
+                bottomActions
+            }
+            .navigationTitle(Text("Pick a day"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
+        }
+    }
+
+    private var bottomActions: some View {
+        VStack(spacing: Tokens.Space.sm) {
+            PrimaryButton(title: "Show this day", systemImage: "calendar") {
+                onPick(draftDate)
+            }
+
+            Button(action: onToday) {
+                Text("Back to today")
+                    .font(Tokens.Font.bodyEmphasized)
+                    .foregroundStyle(Tokens.Palette.primary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 40)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, Tokens.Space.screenPadding)
+        .padding(.top, Tokens.Space.md)
+        .padding(.bottom, Tokens.Space.sm)
+        .background(.regularMaterial)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Tokens.Palette.separator.opacity(0.7))
+                .frame(height: 0.5)
         }
     }
 }

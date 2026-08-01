@@ -18,15 +18,15 @@ extension AuthError {
     var userMessage: String {
         switch self {
         case .providerNotConfigured(let kind):
-            return String(localized: "Logowanie przez \(kind.displayName) nie jest jeszcze dostępne.")
+            return String.localizedStringWithFormat(L("Sign-in via %@ is not yet available."), kind.displayName)
         case .canceled:
-            return String(localized: "Logowanie zostało anulowane.")
+            return L("Logowanie zostało anulowane.")
         case .invalidCredential:
-            return String(localized: "Nie udało się potwierdzić Twoich danych. Spróbuj jeszcze raz.")
+            return L("Nie udało się potwierdzić Twoich danych. Spróbuj jeszcze raz.")
         case .network:
-            return String(localized: "Brak połączenia. Sprawdź internet i spróbuj ponownie.")
+            return L("No connection. Check the internet and try again.")
         case .unknown:
-            return String(localized: "Coś poszło nie tak. Spróbuj ponownie za chwilę.")
+            return L("Something went wrong. Try again in a moment.")
         }
     }
 }

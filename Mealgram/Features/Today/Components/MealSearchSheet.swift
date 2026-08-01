@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Szukaj posiłku" sheet — global query across the user's meal history.
+/// "Search a meal" sheet — global query across the user's meal history.
 /// Results group by calendar day, newest first; tapping a row dismisses
 /// the sheet and raises the meal-detail sheet for the picked entry.
 struct MealSearchSheet: View {
@@ -11,20 +11,22 @@ struct MealSearchSheet: View {
     @State private var query: String = ""
     @State private var results: [MealEntry] = []
 
-    private static let dayFormatter: DateFormatter = {
+    private static var dayFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "EEEE, d MMMM yyyy"
         return formatter
-    }()
+    
+}
+    private static var timeFormatter: DateFormatter {
 
-    private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         return formatter
-    }()
-
+    
+}
     var body: some View {
         NavigationStack {
             ZStack {
@@ -35,11 +37,11 @@ struct MealSearchSheet: View {
                 }
                 .padding(.top, Tokens.Space.md)
             }
-            .navigationTitle(Text("Szukaj posiłku"))
+            .navigationTitle(Text("Search a meal"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -101,7 +103,7 @@ struct MealSearchSheet: View {
         } else if results.isEmpty {
             VStack(spacing: Tokens.Space.md) {
                 Spacer()
-                Text("Nic nie znaleziono dla \"\(query)\".")
+                Text(String.localizedStringWithFormat(L("Nic nie znaleziono dla \"%@\"."), query))
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .multilineTextAlignment(.center)
@@ -133,7 +135,7 @@ struct MealSearchSheet: View {
         } label: {
             HStack(spacing: Tokens.Space.md) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(meal.items.first?.name ?? "Posiłek")
+                    Text(meal.items.first?.name ?? L("Posiłek"))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
@@ -142,7 +144,7 @@ struct MealSearchSheet: View {
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
                 Spacer(minLength: 0)
-                Text("\(Int(meal.totalCaloriesKcal)) kcal")
+                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(meal.totalCaloriesKcal)))
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.primary)
             }

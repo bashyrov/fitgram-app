@@ -78,19 +78,26 @@ struct ToastBanner: View {
                         Circle().fill(Tokens.Palette.surfaceMuted)
                     )
             }
-            .accessibilityLabel(Text("Zamknij"))
+            .accessibilityLabel(Text("Close"))
         }
         .padding(.vertical, Tokens.Space.sm)
         .padding(.horizontal, Tokens.Space.md)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                .fill(.regularMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                        .strokeBorder(toast.style.tint.opacity(0.20), lineWidth: 1)
-                )
-                .shadow(color: .black.opacity(0.12), radius: 18, y: 6)
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .fill(Tokens.Palette.surface.opacity(0.88))
         )
+        .overlay {
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .strokeBorder(.white.opacity(0.38), lineWidth: 1)
+        }
+        .overlay(alignment: .leading) {
+            Capsule()
+                .fill(toast.style.tint)
+                .frame(width: 4)
+                .padding(.vertical, Tokens.Space.sm)
+        }
+        .shadow(color: toast.style.tint.opacity(0.16), radius: 20, y: 8)
         .offset(y: dragOffset)
         .gesture(
             DragGesture()
@@ -113,11 +120,17 @@ struct ToastBanner: View {
     private var iconPuck: some View {
         ZStack {
             Circle()
-                .fill(toast.style.tint.opacity(0.18))
-                .frame(width: 38, height: 38)
+                .fill(
+                    LinearGradient(
+                        colors: [toast.style.tint.opacity(0.95), toast.style.tint.opacity(0.55)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 40, height: 40)
             Image(systemName: toast.symbol)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(toast.style.tint)
+                .font(.system(size: 16, weight: .heavy))
+                .foregroundStyle(.white)
         }
     }
 }

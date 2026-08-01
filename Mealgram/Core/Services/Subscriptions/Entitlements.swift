@@ -11,6 +11,9 @@ struct Entitlements: Equatable, Sendable {
     let photoScansPerWeek: Int?
     let barcodeScansPerWeek: Int?
     let voiceEntriesPerWeek: Int?
+    let mealAIRefreshesPerDay: Int?
+    let productNutritionLookupsPerDay: Int?
+    let olaChefRequestsPerDay: Int?
     let coachWeeklyDebriefsPerWeek: Int?
 
     let activeCustomGoalsCap: Int?
@@ -24,12 +27,16 @@ struct Entitlements: Equatable, Sendable {
     let canUseFavorites: Bool
     let canChangeTheme: Bool
     let canUseICloudSync: Bool
+    let canUseOlaAdvice: Bool
 
     static let free = Entitlements(
         isPremium: false,
         photoScansPerWeek: FreeTierLimits.photoScansPerWeek,
         barcodeScansPerWeek: FreeTierLimits.barcodeScansPerWeek,
         voiceEntriesPerWeek: FreeTierLimits.voiceEntriesPerWeek,
+        mealAIRefreshesPerDay: FreeTierLimits.aiMealRefreshesPerDay,
+        productNutritionLookupsPerDay: FreeTierLimits.aiProductLookupsPerDay,
+        olaChefRequestsPerDay: FreeTierLimits.olaChefRequestsPerDay,
         coachWeeklyDebriefsPerWeek: FreeTierLimits.coachWeeklyDebriefsPerWeek,
         activeCustomGoalsCap: FreeTierLimits.activeCustomGoals,
         savedRecipesCap: FreeTierLimits.savedRecipes,
@@ -39,7 +46,8 @@ struct Entitlements: Equatable, Sendable {
         allowedExportFormats: FreeTierLimits.allowedExportFormats,
         canUseFavorites: FreeTierLimits.canUseFavorites,
         canChangeTheme: FreeTierLimits.canChangeTheme,
-        canUseICloudSync: FreeTierLimits.canUseICloudSync
+        canUseICloudSync: FreeTierLimits.canUseICloudSync,
+        canUseOlaAdvice: FreeTierLimits.canUseOlaAdvice
     )
 
     /// `nil` for every cap means "no limit".
@@ -48,6 +56,9 @@ struct Entitlements: Equatable, Sendable {
         photoScansPerWeek: nil,
         barcodeScansPerWeek: nil,
         voiceEntriesPerWeek: nil,
+        mealAIRefreshesPerDay: nil,
+        productNutritionLookupsPerDay: nil,
+        olaChefRequestsPerDay: nil,
         coachWeeklyDebriefsPerWeek: nil,
         activeCustomGoalsCap: nil,
         savedRecipesCap: nil,
@@ -57,7 +68,8 @@ struct Entitlements: Equatable, Sendable {
         allowedExportFormats: [.json, .csv, .zip],
         canUseFavorites: true,
         canChangeTheme: true,
-        canUseICloudSync: true
+        canUseICloudSync: true,
+        canUseOlaAdvice: true
     )
 }
 
@@ -71,10 +83,9 @@ final class EntitlementsStore {
 
     private let subscriptionService: any SubscriptionService
 
-    /// Optional downgrade trim callback — invoked when the tier flips
-    /// premium → free so over-cap features (e.g. > 5 favourites) get
-    /// trimmed to the new limits. Set by the composition root after
-    /// FavoritesService exists.
+    /// Optional downgrade callback kept for future billing experiments.
+    /// With the current unlimited free/trial posture it should not trim
+    /// anything because every cap is `nil`.
     var onDowngradeFreeTier: (() -> Void)?
 
     init(subscriptionService: any SubscriptionService) {
@@ -83,9 +94,7 @@ final class EntitlementsStore {
     }
 
     /// Reconciles `current` against the latest snapshot. Called after
-    /// purchase/restore/refresh. When the tier downgrades, the optional
-    /// `onDowngradeFreeTier` hook fires once so over-cap data gets
-    /// trimmed (e.g. excess "Mój przepis" rows).
+    /// purchase/restore/refresh.
     func reconcile() {
         let next: Entitlements = subscriptionService.snapshot.isPremium ? .premium : .free
         guard next != current else { return }

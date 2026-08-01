@@ -34,6 +34,8 @@ test: ## Run unit + UI tests
 	  -destination '$(DESTINATION)' \
 	  -derivedDataPath $(DERIVED) \
 	  -enableCodeCoverage YES \
+	  -testLanguage pl \
+	  -testRegion PL \
 	  test | xcbeautify
 
 lint: ## Run SwiftLint

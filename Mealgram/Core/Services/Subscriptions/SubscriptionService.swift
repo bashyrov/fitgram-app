@@ -66,9 +66,9 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     static let stockMonthly = SubscriptionOffering(
         id: "monthly",
         productID: "mealgram_premium_monthly",
-        title: String(localized: "Co miesiąc"),
+        title: L("Monthly"),
         priceLabel: "29 zł",
-        periodLabel: String(localized: "/ miesiąc"),
+        periodLabel: L("/ month"),
         isFeatured: false,
         trialDays: 7
     )
@@ -76,9 +76,9 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     static let stockAnnual = SubscriptionOffering(
         id: "annual",
         productID: "mealgram_premium_yearly",
-        title: String(localized: "Cały rok"),
+        title: L("Yearly"),
         priceLabel: "199 zł",
-        periodLabel: String(localized: "/ rok — oszczędzasz 43%"),
+        periodLabel: L("/ year — save 43%"),
         isFeatured: true,
         trialDays: 7
     )
@@ -90,7 +90,23 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
 @MainActor
 @Observable
 final class MockSubscriptionService: SubscriptionService {
-    private(set) var snapshot: SubscriptionSnapshot = .free
+    private(set) var snapshot: SubscriptionSnapshot
+
+    init() {
+        if !AppConfig.isPaymentsEnabled {
+            // v1 launch posture — every user is Premium so the whole app
+            // is unlocked and no paywall ever shows. When `IS_PAYMENTS_-
+            // ENABLED` flips to true, this branch is bypassed and a real
+            // StoreKit-backed subscription service is wired instead.
+            self.snapshot = .premiumMock
+        } else {
+            #if DEBUG
+            self.snapshot = DebugBypass.bypassAuth ? .premiumMock : .free
+            #else
+            self.snapshot = .free
+            #endif
+        }
+    }
 
     func refresh() async {
         // Inert. Mock starts free; tests bump snapshot manually.

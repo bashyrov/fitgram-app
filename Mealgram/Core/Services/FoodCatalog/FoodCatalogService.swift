@@ -21,6 +21,11 @@ protocol FoodCatalog {
     /// persisted row.
     @discardableResult
     func create(_ food: Food) throws -> Food
+    /// Inserts a food inferred by the AI nutrition resolver. Unlike manual
+    /// "my kitchen" rows, these become part of the shared local lookup
+    /// cache and are never created directly from user-entered guesses.
+    @discardableResult
+    func createAIInferred(_ food: Food) throws -> Food
     /// Zeroes pickCount + clears lastPickedAt on every Food. Used by
     /// Profile → Preferences → "Resetuj statystyki Szybkiej bazy" to
     /// give the user a fresh "Ostatnie / Częste" recommendation pool.
@@ -107,6 +112,13 @@ final class FoodCatalogService: FoodCatalog {
         return food
     }
 
+    @discardableResult
+    func createAIInferred(_ food: Food) throws -> Food {
+        food.remoteID = food.remoteID ?? "ai:\(FoodNameNormalizer.key(for: food.name))"
+        food.verified = false
+        return try create(food)
+    }
+
     func resetPickHistory() throws {
         let context = ModelContext(container)
         let descriptor = FetchDescriptor<Food>(
@@ -125,20 +137,20 @@ extension FoodCategory {
     /// User-visible label for the chip strip.
     var localizedLabel: String {
         switch self {
-        case .general: return "Inne"
-        case .homemade: return "Domowe"
-        case .restaurant: return "Restauracje"
-        case .fastFood: return "Fast food"
-        case .packaged: return "Pakowane"
-        case .beverage: return "Napoje"
-        case .snack: return "Przekąski"
-        case .produce: return "Owoce / warzywa"
-        case .bakery: return "Pieczywo"
-        case .dairy: return "Nabiał"
-        case .meat: return "Mięso"
-        case .seafood: return "Ryby"
-        case .sweets: return "Słodycze"
-        case .grain: return "Kasze / ryż"
+        case .general: return L("Inne")
+        case .homemade: return L("Domowe")
+        case .restaurant: return L("Restauracje")
+        case .fastFood: return L("Fast food")
+        case .packaged: return L("Pakowane")
+        case .beverage: return L("Napoje")
+        case .snack: return L("Przekąski")
+        case .produce: return L("Owoce / warzywa")
+        case .bakery: return L("Pieczywo")
+        case .dairy: return L("Nabiał")
+        case .meat: return L("Mięso")
+        case .seafood: return L("Ryby")
+        case .sweets: return L("Słodycze")
+        case .grain: return L("Zboża / ryż")
         }
     }
 }

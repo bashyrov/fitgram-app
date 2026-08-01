@@ -1,26 +1,22 @@
-Mealgram to inteligentny licznik kalorii zaprojektowany dla polskiej kuchni i polskich celów. Bez wagi, bez liczenia gramów — wystarczy zdjęcie talerza, kod kreskowy z półki lub krótka komenda głosowa.
+Mealgram to inteligentny licznik kalorii bez tarcia. Bez wagi, bez liczenia gramów — wystarczy zdjęcie talerza, kod kreskowy z półki lub krótka komenda głosowa.
 
 CO DOSTAJESZ
-• 📸 Skanowanie posiłków zdjęciem — AI rozpoznaje pierogi, schabowy, kotlety, kaszę, kapuśniaki i 160+ innych polskich dań
-• 📦 Skaner kodów kreskowych — Open Food Facts prosto z opakowania
-• 🎙 Dodawanie głosem po polsku — „zjadłam zupę pomidorową i kanapkę z serem”
-• 🔎 Szybka Baza — 160+ klasyków polskiej kuchni z dokładnymi wartościami
-• 🧠 Trener Ola — AI Coach który zapamiętuje Twoje cele, dietę i nawyki
-• 📊 Cele i pomiary — kalorie, makro, woda, waga, BMI
-• 🔥 Seria dni — utrzymuj rytm, zarabiaj odznaki, dziel się postępem
-• 👫 Znajomi — wyzwania tygodniowe, ranking, wspólne odchudzanie
-• 📚 Książka przepisów — gotuj, planuj, importuj z URL
-• 💧 Trackowanie wody — dzienna norma + szybkie tap dodawanie
-• 📅 Polskie wydarzenia kulinarne — Wigilia, Tłusty Czwartek, Wielkanoc — Mealgram wie
-
-PREMIUM ODBLOKOWUJE
-• Śledzenie celu wagi z wykresem trendu i przypomnieniem
-• AI Coach Claude — codzienne spersonalizowane podsumowania
-• Pełna historia + eksport JSON/CSV/ZIP — bez limitu 30 dni
-• Nieograniczone skany, nieograniczone "Moje przepisy"
-• Społeczność znajomych bez limitu 3 osób
+• Skanowanie posiłków zdjęciem — AI rozpoznaje pierogi, schabowy, sushi, pastę, sałatki i 3000+ innych dań z całego świata
+• Skaner kodów kreskowych — Open Food Facts prosto z opakowania
+• Dodawanie głosem — „zjadłam zupę pomidorową i kanapkę z serem"
+• Szybka Baza — 3000+ pozycji z dokładnymi wartościami
+• Trener Ola — AI Coach który zapamiętuje Twoje cele, dietę i nawyki
+• Cele i pomiary — kalorie, makro, woda, waga, BMI
+• Seria dni — utrzymuj rytm, zarabiaj odznaki, dziel się postępem
+• Znajomi — wyzwania tygodniowe, ranking, wspólne odchudzanie
+• Książka przepisów — gotuj, planuj, importuj z URL
+• Trackowanie wody — dzienna norma + szybkie tap dodawanie
 
 PRYWATNOŚĆ I BEZPIECZEŃSTWO
-Twoje dane synchronizują się przez iCloud — tylko Ty masz do nich dostęp. Bez serwerów Mealgrama, bez śledzenia, bez reklam. Logowanie Apple Sign In jednym tapnięciem.
+Twoje dane pozostają pod Twoją kontrolą: synchronizacja iCloud, bez reklam, bez sprzedaży danych i z transparentnym przetwarzaniem AI.
 
-Mealgram jest zrobiony z miłością w Polsce dla polskiego rynku — przez polskiego solo-developera. Twoja subskrypcja wspiera dalszy rozwój aplikacji bez kompromisów dla prywatności.
+Mealgram jest tworzony przez mały niezależny zespół — feedback trafia bezpośrednio do osób piszących kod.
+
+LINKI PRAWNE
+Regulamin / Terms of Use: https://mealgram.xyz/terms
+Polityka prywatności: https://mealgram.xyz/privacy

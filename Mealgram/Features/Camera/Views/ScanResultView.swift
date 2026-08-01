@@ -1,5 +1,6 @@
 import SwiftUI
 
+// swiftlint:disable file_length
 // Detected items + portion adjustment + save. Items can be tapped to
 // edit, swiped to delete, or added manually via the footer. The portion
 // slider scales totals globally.
@@ -14,10 +15,19 @@ struct ScanResultView: View {
     var entitlementsStore: EntitlementsStore?
     var paywallCoordinator: PaywallCoordinator?
     var userRemoteID: String?
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
 
     @State private var result: ScanResult
-    @State private var portion: Double = 1.0
+    @State private var portionMode: PortionAdjustmentMode = .overall
+    @State private var overallName: String
+    @State private var overallGrams: Double
+    @State private var detailGrams: [UUID: Double] = [:]
     @State private var editorMode: FoodItemEditorSheet.Mode?
+    @State private var isAnalyzingText = false
+    @State private var isCompletingNutrition = false
+    @State private var productLookupsInFlight: Set<UUID> = []
+    @FocusState private var isTextInputFocused: Bool
 
     init(
         result: ScanResult,
@@ -28,7 +38,9 @@ struct ScanResultView: View {
         favoritesService: (any FavoritesServing)? = nil,
         entitlementsStore: EntitlementsStore? = nil,
         paywallCoordinator: PaywallCoordinator? = nil,
-        userRemoteID: String? = nil
+        userRemoteID: String? = nil,
+        mealAnalyzer: MealTextAnalysisService? = nil,
+        usageMeter: UsageMeter? = nil
     ) {
         self.initialResult = result
         self.imageData = imageData
@@ -39,7 +51,11 @@ struct ScanResultView: View {
         self.entitlementsStore = entitlementsStore
         self.paywallCoordinator = paywallCoordinator
         self.userRemoteID = userRemoteID
+        self.mealAnalyzer = mealAnalyzer
+        self.usageMeter = usageMeter
         self._result = State(initialValue: result)
+        self._overallName = State(initialValue: Self.defaultOverallName(for: result))
+        self._overallGrams = State(initialValue: Self.totalGrams(for: result.items))
     }
 
     var body: some View {
@@ -67,6 +83,16 @@ struct ScanResultView: View {
                 onDismiss: { editorMode = nil }
             )
         }
+        .scrollDismissesKeyboard(.interactively)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Gotowe") {
+                    isTextInputFocused = false
+                }
+                .font(Tokens.Font.bodyEmphasized)
+            }
+        }
     }
 
     /// Hero image at the top — lives inside the ScrollView so it
@@ -86,8 +112,12 @@ struct ScanResultView: View {
         VStack(spacing: Tokens.Space.lg) {
             summaryCard
             favoriteButton
-            portionCard
-            itemsCard
+            modePicker
+            if portionMode == .overall {
+                overallCard
+            } else {
+                itemsCard
+            }
             Color.clear.frame(height: 120)  // breathing room for the floating CTA
         }
         .padding(.horizontal, Tokens.Space.screenPadding)
@@ -118,7 +148,7 @@ struct ScanResultView: View {
                     .frame(width: 40, height: 40)
                     .background(.ultraThinMaterial, in: Circle())
             }
-            .accessibilityLabel(Text("Zamknij"))
+            .accessibilityLabel(Text("Close"))
             Spacer()
         }
     }
@@ -127,10 +157,15 @@ struct ScanResultView: View {
         switch mode {
         case .adding:
             result.items.append(item)
+            detailGrams[item.id] = item.quantityGrams
         case .editing(let original):
             if let index = result.items.firstIndex(where: { $0.id == original.id }) {
                 result.items[index] = item
+                detailGrams[item.id] = item.quantityGrams
             }
+        }
+        if overallName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            overallName = Self.defaultOverallName(for: result)
         }
     }
 
@@ -160,7 +195,7 @@ struct ScanResultView: View {
                         Text(mealTypeLabel(for: result.suggestedMealType))
                             .font(Tokens.Font.subheadline)
                             .foregroundStyle(Tokens.Palette.inkMuted)
-                        Text("\(Int(adjustedCalories)) kcal")
+                        Text(String.localizedStringWithFormat(L("%lld kcal"), Int(selectedCalories.rounded())))
                             .font(Tokens.Font.counter)
                             .foregroundStyle(Tokens.Palette.primary)
                     }
@@ -168,45 +203,65 @@ struct ScanResultView: View {
                     confidenceBadge
                 }
                 HStack(spacing: Tokens.Space.lg) {
-                    macroPill(label: "Białko", grams: adjustedProtein, color: Tokens.Palette.primary)
-                    macroPill(label: "Węgle", grams: adjustedCarbs, color: Tokens.Palette.warning)
-                    macroPill(label: "Tłuszcz", grams: adjustedFat, color: Tokens.Palette.accent)
+                    macroPill(label: "Protein", grams: selectedProtein, color: Tokens.Palette.primary)
+                    macroPill(label: "Carbs", grams: selectedCarbs, color: Tokens.Palette.warning)
+                    macroPill(label: "Fat", grams: selectedFat, color: Tokens.Palette.accent)
                 }
             }
         }
     }
 
-    private var portionCard: some View {
+    private var modePicker: some View {
+        PortionModeSelector(
+            selection: $portionMode,
+            totalLabel: L("Jedno danie z wagą i sumą makro."),
+            detailLabel: L("Składniki z osobną gramaturą."),
+            detailCount: max(1, result.items.count)
+        )
+    }
+
+    private var overallCard: some View {
         Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+            VStack(alignment: .leading, spacing: Tokens.Space.md) {
+                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                    HStack {
+                        Text("Nazwa dania")
+                            .font(Tokens.Font.footnote)
+                            .foregroundStyle(Tokens.Palette.inkMuted)
+                        Spacer()
+                        aiRefreshButton(text: overallName)
+                    }
+                    TextField("Risotto z krewetkami", text: $overallName)
+                        .font(Tokens.Font.bodyEmphasized)
+                        .textFieldStyle(.roundedBorder)
+                        .focused($isTextInputFocused)
+                        .submitLabel(.done)
+                        .onSubmit { isTextInputFocused = false }
+                }
                 HStack {
                     Text("Porcja")
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("\(Int(totalAdjustedGrams)) g")
+                        Text(String.localizedStringWithFormat(L("%lld g"), Int(overallGrams.rounded())))
                             .font(Tokens.Font.title3)
                             .foregroundStyle(Tokens.Palette.primary)
                             .lineLimit(1)
                             .minimumScaleFactor(0.6)
-                        Text(String(format: "×%.2f", portion))
+                        Text(String(format: "×%.2f", overallFactor))
                             .font(Tokens.Font.caption)
                             .foregroundStyle(Tokens.Palette.inkMuted)
                     }
                 }
-                Slider(value: $portion, in: 0.25...3.0, step: 0.05)
+                Slider(value: $overallGrams, in: 10...1500, step: 5)
                     .tint(Tokens.Palette.primary)
                 HStack {
-                    Text("Mniej")
+                    Text("10 g")
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.inkSubtle)
                     Spacer()
-                    Text("Pełna")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                    Spacer()
-                    Text("Większa")
+                    Text("1500 g")
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.inkSubtle)
                 }
@@ -214,39 +269,43 @@ struct ScanResultView: View {
         }
     }
 
-    private var totalAdjustedGrams: Double {
-        result.items.reduce(0) { $0 + $1.quantityGrams } * portion
-    }
-
     @ViewBuilder
     private var favoriteButton: some View {
-        if let favoritesService,
-            let entitlementsStore,
-            let paywallCoordinator,
-            let userRemoteID,
-            let first = result.items.first {
+        if let context = favoriteContext, let first = result.items.first {
             let name =
                 result.items.count > 1
-                    ? result.items.map(\.name).joined(separator: " + ")
-                    : first.name
+                ? result.items.map(\.name).joined(separator: " + ")
+                : first.name
             FavoriteToggleButton(
                 payload: FavoriteToggleButton.Payload(
                     name: name,
-                    quantityGrams: totalAdjustedGrams,
-                    caloriesKcal: result.totalCalories * portion,
-                    proteinGrams: result.totalProtein * portion,
-                    carbsGrams: result.totalCarbs * portion,
-                    fatGrams: result.totalFat * portion,
+                    quantityGrams: selectedGrams,
+                    caloriesKcal: selectedCalories,
+                    proteinGrams: selectedProtein,
+                    carbsGrams: selectedCarbs,
+                    fatGrams: selectedFat,
                     fiberGrams: nil,
                     source: .photoScan,
                     catalogFoodID: nil
                 ),
-                userRemoteID: userRemoteID,
-                favoritesService: favoritesService,
-                entitlementsStore: entitlementsStore,
-                paywallCoordinator: paywallCoordinator
+                userRemoteID: context.userRemoteID,
+                favoritesService: context.favoritesService,
+                entitlementsStore: context.entitlementsStore,
+                paywallCoordinator: context.paywallCoordinator
             )
         }
+    }
+
+    private var favoriteContext: ScanResultFavoriteContext? {
+        guard let favoritesService, let entitlementsStore, let paywallCoordinator, let userRemoteID else {
+            return nil
+        }
+        return ScanResultFavoriteContext(
+            favoritesService: favoritesService,
+            entitlementsStore: entitlementsStore,
+            paywallCoordinator: paywallCoordinator,
+            userRemoteID: userRemoteID
+        )
     }
 
     private var itemsCard: some View {
@@ -257,7 +316,8 @@ struct ScanResultView: View {
                         .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
-                    Text("\(result.items.count) elementów")
+                    aiRefreshButton(text: result.items.map(\.name).joined(separator: ", "))
+                    Text(String.localizedStringWithFormat(L("%lld elementów"), result.items.count))
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
@@ -269,22 +329,34 @@ struct ScanResultView: View {
                             Button {
                                 editorMode = .editing(item)
                             } label: {
-                                Label("Edytuj", systemImage: "pencil")
+                                Label("Edit", systemImage: "pencil")
                             }
                             Button(role: .destructive) {
                                 result.items.removeAll(where: { $0.id == item.id })
+                                detailGrams[item.id] = nil
                             } label: {
-                                Label("Usuń", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                 }
                 Button {
-                    editorMode = .adding
+                    let item = ScanResult.DetectedItem(
+                        name: "",
+                        quantityGrams: 100,
+                        caloriesKcal: 0,
+                        proteinGrams: 0,
+                        carbsGrams: 0,
+                        fatGrams: 0,
+                        confidence: 1.0
+                    )
+                    result.items.append(item)
+                    detailGrams[item.id] = item.quantityGrams
+                    Haptics.selection()
                 } label: {
                     HStack(spacing: Tokens.Space.sm) {
                         Image(systemName: "plus.circle.fill")
                             .foregroundStyle(Tokens.Palette.primary)
-                        Text("Dodaj składnik ręcznie")
+                        Text("Dodaj produkt")
                             .font(Tokens.Font.bodyEmphasized)
                             .foregroundStyle(Tokens.Palette.primary)
                         Spacer(minLength: 0)
@@ -298,21 +370,65 @@ struct ScanResultView: View {
     }
 
     private func itemRow(_ item: ScanResult.DetectedItem) -> some View {
-        HStack(spacing: Tokens.Space.md) {
+        let binding = Binding<Double>(
+            get: { detailGrams[item.id] ?? item.quantityGrams },
+            set: { detailGrams[item.id] = $0 }
+        )
+        let nameBinding = Binding<String>(
+            get: {
+                guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return item.name }
+                return result.items[index].name
+            },
+            set: { newValue in
+                guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return }
+                result.items[index] = ScanResult.DetectedItem(
+                    id: item.id,
+                    name: newValue,
+                    quantityGrams: result.items[index].quantityGrams,
+                    caloriesKcal: result.items[index].caloriesKcal,
+                    proteinGrams: result.items[index].proteinGrams,
+                    carbsGrams: result.items[index].carbsGrams,
+                    fatGrams: result.items[index].fatGrams,
+                    confidence: result.items[index].confidence
+                )
+            }
+        )
+        let factor = item.quantityGrams > 0 ? binding.wrappedValue / item.quantityGrams : 1
+        return HStack(spacing: Tokens.Space.md) {
             Circle()
                 .fill(Tokens.Palette.primarySoft)
                 .frame(width: 8, height: 8)
             VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text("\(Int(item.quantityGrams)) g")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                HStack(spacing: Tokens.Space.xs) {
+                    TextField("Produkt", text: nameBinding)
+                        .font(Tokens.Font.bodyEmphasized)
+                        .textFieldStyle(.roundedBorder)
+                        .focused($isTextInputFocused)
+                        .submitLabel(.done)
+                        .onSubmit { isTextInputFocused = false }
+                    Spacer(minLength: 0)
+                    productAIButton(for: item)
+                    if result.items.count > 1 {
+                        Button {
+                            result.items.removeAll(where: { $0.id == item.id })
+                            detailGrams[item.id] = nil
+                            Haptics.selection()
+                        } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundStyle(Tokens.Palette.error)
+                        }
+                        .buttonStyle(.pressable)
+                    }
+                }
+                Slider(value: binding, in: 10...800, step: 5)
+                    .tint(Tokens.Palette.primary)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
-                Text("\(Int(item.caloriesKcal * portion)) kcal")
+                Text(String.localizedStringWithFormat(L("%lld g"), Int(binding.wrappedValue.rounded())))
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                Text(String.localizedStringWithFormat(L("%lld kcal"), Int((item.caloriesKcal * factor).rounded())))
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.ink)
                 Image(systemName: "chevron.right")
@@ -322,9 +438,37 @@ struct ScanResultView: View {
         }
     }
 
+    private func productAIButton(for item: ScanResult.DetectedItem) -> some View {
+        Button {
+            Task { await refreshProductNutrition(item) }
+        } label: {
+            HStack(spacing: 4) {
+                if productLookupsInFlight.contains(item.id) {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .tint(Tokens.Palette.primary)
+                } else {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 11, weight: .bold))
+                }
+                AIQuotaBadge(remaining: productNutritionRemaining)
+            }
+        }
+        .frame(minWidth: 30, minHeight: 30)
+        .foregroundStyle(Tokens.Palette.primary)
+        .background(Circle().fill(Tokens.Palette.primarySoft))
+        .buttonStyle(.pressable)
+        .disabled(
+            productLookupsInFlight.contains(item.id)
+                || mealAnalyzer == nil
+                || item.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        )
+        .accessibilityLabel(Text("Uzupełnij produkt AI"))
+    }
+
     private var confidenceBadge: some View {
         let pct = Int(result.confidence * 100)
-        return Text("\(pct)% pewności")
+        return Text(String.localizedStringWithFormat(L("%lld%% confidence"), pct))
             .font(Tokens.Font.caption)
             .foregroundStyle(Tokens.Palette.primary)
             .padding(.horizontal, Tokens.Space.sm)
@@ -336,11 +480,15 @@ struct ScanResultView: View {
 
     private var footer: some View {
         VStack(spacing: Tokens.Space.sm) {
-            PrimaryButton(title: "Dodaj do dziennika", systemImage: "checkmark") {
-                onSave(result, portion)
+            PrimaryButton(
+                title: isCompletingNutrition ? "Uzupełniam..." : "Dodaj do dziennika",
+                systemImage: isCompletingNutrition ? "sparkles" : "checkmark",
+                isEnabled: !isCompletingNutrition
+            ) {
+                Task { await saveSelectedResult() }
             }
             Button(action: onRetake) {
-                Text("Zrób jeszcze raz")
+                Text("Take another")
                     .font(Tokens.Font.callout)
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
@@ -359,11 +507,119 @@ struct ScanResultView: View {
         )
     }
 
+    private func saveSelectedResult() async {
+        let selected = selectedResult
+        guard let mealAnalyzer else {
+            onSave(selected, 1)
+            return
+        }
+        let completionUse = aiCompletionUseCount(for: selected.items)
+        guard canConsumeAICompletion(count: completionUse) else { return }
+        isCompletingNutrition = true
+        defer { isCompletingNutrition = false }
+        let completed = await mealAnalyzer.complete(result: selected)
+        recordAICompletion(count: completionUse)
+        onSave(completed, 1)
+    }
+
+    private func aiRefreshButton(text: String) -> some View {
+        Button {
+            isTextInputFocused = false
+            Task { await refreshFromAI(text: text) }
+        } label: {
+            HStack(spacing: 5) {
+                if isAnalyzingText {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .tint(Tokens.Palette.primary)
+                } else {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 11, weight: .bold))
+                }
+                Text("Odśwież AI")
+                    .font(Tokens.Font.caption.weight(.bold))
+                AIQuotaBadge(remaining: mealAIRefreshRemaining)
+            }
+            .foregroundStyle(Tokens.Palette.primary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Capsule().fill(Tokens.Palette.primarySoft))
+        }
+        .buttonStyle(.pressable)
+        .disabled(isAnalyzingText || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+    }
+
+    private var mealAIRefreshRemaining: Int? {
+        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.mealAIRefreshesPerDay)
+    }
+
+    private var productNutritionRemaining: Int? {
+        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
+    }
+
+    private func refreshFromAI(text: String) async {
+        guard let mealAnalyzer else { return }
+        let cap = entitlementsStore?.current.mealAIRefreshesPerDay
+        if usageMeter?.canUse(.mealAIRefresh, cap: cap) == false {
+            Haptics.light()
+            paywallCoordinator?.present(.mealAIRefreshQuota)
+            return
+        }
+        isAnalyzingText = true
+        defer { isAnalyzingText = false }
+        let analysis = await mealAnalyzer.analyze(text: text, mealType: result.suggestedMealType)
+        usageMeter?.record(.mealAIRefresh, cap: cap)
+        result = analysis.detailedResult
+        overallName = analysis.overall.name
+        overallGrams = analysis.overall.quantityGrams
+        detailGrams = Dictionary(uniqueKeysWithValues: result.items.map { ($0.id, $0.quantityGrams) })
+        Haptics.success()
+    }
+
+    private func refreshProductNutrition(_ item: ScanResult.DetectedItem) async {
+        guard let mealAnalyzer else { return }
+        let currentGrams = detailGrams[item.id] ?? item.quantityGrams
+        guard currentGrams > 0, !item.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        let cap = entitlementsStore?.current.productNutritionLookupsPerDay
+        if usageMeter?.canUse(.productNutritionLookup, cap: cap) == false {
+            Haptics.light()
+            paywallCoordinator?.present(.productNutritionQuota)
+            return
+        }
+        productLookupsInFlight.insert(item.id)
+        defer { productLookupsInFlight.remove(item.id) }
+        let draft = FoodItem(
+            id: item.id,
+            name: item.name,
+            quantityGrams: currentGrams,
+            caloriesKcal: 0,
+            proteinGrams: 0,
+            carbsGrams: 0,
+            fatGrams: 0,
+            confidence: item.confidence
+        )
+        let completed = await mealAnalyzer.complete(item: draft, mealType: result.suggestedMealType)
+        usageMeter?.record(.productNutritionLookup, cap: cap)
+        guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return }
+        result.items[index] = ScanResult.DetectedItem(
+            id: item.id,
+            name: completed.item.name,
+            quantityGrams: completed.item.quantityGrams,
+            caloriesKcal: completed.item.caloriesKcal,
+            proteinGrams: completed.item.proteinGrams,
+            carbsGrams: completed.item.carbsGrams,
+            fatGrams: completed.item.fatGrams,
+            confidence: completed.item.confidence ?? item.confidence
+        )
+        detailGrams[item.id] = completed.item.quantityGrams
+        Haptics.success()
+    }
+
     // MARK: - Helpers
 
     private func macroPill(label: LocalizedStringKey, grams: Double, color: Color) -> some View {
         VStack(spacing: 2) {
-            Text("\(Int(grams)) g")
+            Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(color)
             Text(label)
@@ -375,15 +631,136 @@ struct ScanResultView: View {
 
     private func mealTypeLabel(for kind: MealType) -> LocalizedStringKey {
         switch kind {
-        case .breakfast: return "Śniadanie"
-        case .lunch: return "Obiad"
-        case .dinner: return "Kolacja"
-        case .snack: return "Przekąska"
+        case .breakfast: return "Breakfast"
+        case .lunch: return "Lunch"
+        case .dinner: return "Dinner"
+        case .snack: return "Snack"
         }
     }
 
-    private var adjustedCalories: Double { result.totalCalories * portion }
-    private var adjustedProtein: Double { result.totalProtein * portion }
-    private var adjustedCarbs: Double { result.totalCarbs * portion }
-    private var adjustedFat: Double { result.totalFat * portion }
+    private var adjustedProtein: Double { result.totalProtein }
+    private var adjustedCarbs: Double { result.totalCarbs }
+    private var adjustedFat: Double { result.totalFat }
+
+    private var selectedResult: ScanResult {
+        switch portionMode {
+        case .overall:
+            return ScanResult(
+                items: [overallItem],
+                suggestedMealType: result.suggestedMealType,
+                confidence: result.confidence,
+                rawAINotes: result.rawAINotes
+            )
+        case .detailed:
+            return ScanResult(
+                items: detailedItems,
+                suggestedMealType: result.suggestedMealType,
+                confidence: result.confidence,
+                rawAINotes: result.rawAINotes
+            )
+        }
+    }
+
+    private var overallItem: ScanResult.DetectedItem {
+        ScanResult.DetectedItem(
+            name: overallName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                ? Self.defaultOverallName(for: result)
+                : overallName,
+            quantityGrams: overallGrams,
+            caloriesKcal: result.totalCalories * overallFactor,
+            proteinGrams: result.totalProtein * overallFactor,
+            carbsGrams: result.totalCarbs * overallFactor,
+            fatGrams: result.totalFat * overallFactor,
+            confidence: result.confidence
+        )
+    }
+
+    private var detailedItems: [ScanResult.DetectedItem] {
+        result.items.compactMap { item in
+            let trimmedName = item.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedName.isEmpty else { return nil }
+            let grams = detailGrams[item.id] ?? item.quantityGrams
+            let factor = item.quantityGrams > 0 ? grams / item.quantityGrams : 1
+            return ScanResult.DetectedItem(
+                id: item.id,
+                name: trimmedName,
+                quantityGrams: grams,
+                caloriesKcal: item.caloriesKcal * factor,
+                proteinGrams: item.proteinGrams * factor,
+                carbsGrams: item.carbsGrams * factor,
+                fatGrams: item.fatGrams * factor,
+                confidence: item.confidence
+            )
+        }
+    }
+
+    private var selectedGrams: Double {
+        switch portionMode {
+        case .overall: return overallGrams
+        case .detailed: return detailedItems.reduce(0) { $0 + $1.quantityGrams }
+        }
+    }
+
+    private var selectedCalories: Double { selectedResult.totalCalories }
+    private var selectedProtein: Double { selectedResult.totalProtein }
+    private var selectedCarbs: Double { selectedResult.totalCarbs }
+    private var selectedFat: Double { selectedResult.totalFat }
+
+    private var overallFactor: Double {
+        let base = max(1, Self.totalGrams(for: result.items))
+        return overallGrams / base
+    }
+
+    private static func totalGrams(for items: [ScanResult.DetectedItem]) -> Double {
+        items.reduce(0) { $0 + $1.quantityGrams }
+    }
+
+    private static func defaultOverallName(for result: ScanResult) -> String {
+        guard !result.items.isEmpty else { return L("Posiłek") }
+        if result.items.count == 1 { return result.items[0].name }
+        return result.items.map(\.name).joined(separator: " + ")
+    }
+
+    private func aiCompletionUseCount(for items: [ScanResult.DetectedItem]) -> Int {
+        let missingCount = items.filter(Self.needsNutrition).count
+        guard missingCount > 0 else { return 0 }
+        return portionMode == .overall ? 1 : missingCount
+    }
+
+    private func canConsumeAICompletion(count: Int) -> Bool {
+        guard count > 0 else { return true }
+        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
+        let cap =
+            portionMode == .overall
+            ? entitlementsStore?.current.mealAIRefreshesPerDay
+            : entitlementsStore?.current.productNutritionLookupsPerDay
+        guard let cap, let usageMeter else { return true }
+        if usageMeter.used(kind) + count <= cap { return true }
+        Haptics.light()
+        paywallCoordinator?.present(portionMode == .overall ? .mealAIRefreshQuota : .productNutritionQuota)
+        return false
+    }
+
+    private func recordAICompletion(count: Int) {
+        guard count > 0 else { return }
+        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
+        let cap =
+            portionMode == .overall
+            ? entitlementsStore?.current.mealAIRefreshesPerDay
+            : entitlementsStore?.current.productNutritionLookupsPerDay
+        for _ in 0..<count {
+            usageMeter?.record(kind, cap: cap)
+        }
+    }
+
+    private static func needsNutrition(_ item: ScanResult.DetectedItem) -> Bool {
+        item.caloriesKcal <= 0 || item.proteinGrams <= 0 || item.carbsGrams <= 0 || item.fatGrams <= 0
+    }
+}
+
+private struct ScanResultFavoriteContext {
+    let favoritesService: any FavoritesServing
+    let entitlementsStore: EntitlementsStore
+    let paywallCoordinator: PaywallCoordinator
+    let userRemoteID: String
 }

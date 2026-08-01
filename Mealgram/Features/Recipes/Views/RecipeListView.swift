@@ -8,10 +8,15 @@ struct RecipeListView: View {
     let mealSaver: any MealSaving
     let onDismiss: () -> Void
     var estimator: RecipeNutritionEstimator?
+    var entitlementsStore: EntitlementsStore?
+    var paywallCoordinator: PaywallCoordinator?
+    var mealAnalyzer: MealTextAnalysisService?
+    var usageMeter: UsageMeter?
 
     @State private var formMode: FormPresentation?
     @State private var detailRecipe: Recipe?
     @State private var isImportPresented = false
+    @State private var saveError: String?
 
     private let importer = RecipeURLImporter()
 
@@ -37,7 +42,7 @@ struct RecipeListView: View {
                 }
                 .padding(.top, Tokens.Space.md)
             }
-            .navigationTitle(Text("Moje przepisy"))
+            .navigationTitle(Text("My recipes"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -53,7 +58,7 @@ struct RecipeListView: View {
                         }
                         .accessibilityLabel(Text("Filtr ulubionych"))
                         Menu {
-                            Picker("Sortuj", selection: $state.sort) {
+                            Picker("Sort", selection: $state.sort) {
                                 ForEach(RecipeListState.Sort.allCases, id: \.self) { sort in
                                     Text(sort.label).tag(sort)
                                 }
@@ -61,26 +66,26 @@ struct RecipeListView: View {
                         } label: {
                             Image(systemName: "arrow.up.arrow.down")
                         }
-                        .accessibilityLabel(Text("Sortuj"))
+                        .accessibilityLabel(Text("Sort"))
                         Menu {
                             Button {
-                                formMode = .adding
+                                presentAddRecipe()
                             } label: {
                                 Label("Wpisz ręcznie", systemImage: "square.and.pencil")
                             }
                             Button {
-                                isImportPresented = true
+                                presentImportRecipe()
                             } label: {
-                                Label("Importuj z URL", systemImage: "link")
+                                Label("Import from URL", systemImage: "link")
                             }
                         } label: {
                             Image(systemName: "plus")
                         }
-                        .accessibilityLabel(Text("Dodaj przepis"))
+                        .accessibilityLabel(Text("Add recipe"))
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
             .task { await state.refresh() }
@@ -106,7 +111,7 @@ struct RecipeListView: View {
             .sheet(item: $detailRecipe) { recipe in
                 RecipeDetailView(
                     recipe: recipe,
-                    onCook: { servings in cook(recipe, servings: servings) },
+                    onCook: { items in cook(recipe, items: items) },
                     onEdit: {
                         detailRecipe = nil
                         formMode = .editing(recipe)
@@ -116,8 +121,23 @@ struct RecipeListView: View {
                     similarRecipes: SimilarRecipesEngine.similar(to: recipe, in: state.recipes),
                     onSelectSimilar: { peer in
                         detailRecipe = peer
-                    }
+                    },
+                    mealAnalyzer: mealAnalyzer,
+                    entitlementsStore: entitlementsStore,
+                    paywallCoordinator: paywallCoordinator,
+                    usageMeter: usageMeter
                 )
+            }
+            .alert(
+                "Nie udało się zapisać posiłku",
+                isPresented: Binding(
+                    get: { saveError != nil },
+                    set: { if !$0 { saveError = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { saveError = nil }
+            } message: {
+                Text(saveError ?? "Spróbuj ponownie.")
             }
         }
     }
@@ -157,12 +177,12 @@ struct RecipeListView: View {
                 Spacer()
                 EmptyState(
                     symbol: "book.closed.fill",
-                    title: state.recipes.isEmpty ? "Brak przepisów" : "Nic nie znaleziono",
+                    title: state.recipes.isEmpty ? "No recipes" : "Nothing found",
                     message: state.recipes.isEmpty
                         ? "Zapisz pierwszy przepis, żeby szybko dodać go do dziennika kolejnym razem."
                         : "Spróbuj innego hasła.",
                     action: state.recipes.isEmpty
-                        ? .init(title: "Dodaj przepis", perform: { formMode = .adding })
+                        ? .init(title: "Add recipe", perform: presentAddRecipe)
                         : nil
                 )
                 Spacer()
@@ -172,7 +192,7 @@ struct RecipeListView: View {
                 LazyVStack(spacing: Tokens.Space.sm) {
                     if state.filtered.count != state.recipes.count {
                         HStack {
-                            Text("\(state.filtered.count) z \(state.recipes.count) przepisów")
+                            Text(String.localizedStringWithFormat(L("%lld z %lld przepisów"), state.filtered.count, state.recipes.count))
                                 .font(Tokens.Font.caption)
                                 .foregroundStyle(Tokens.Palette.inkMuted)
                             Spacer()
@@ -186,8 +206,12 @@ struct RecipeListView: View {
                         .padding(.horizontal, 4)
                         .padding(.top, Tokens.Space.sm)
                     }
-                    ForEach(state.filtered) { recipe in
-                        row(recipe)
+                    ForEach(Array(state.filtered.enumerated()), id: \.element.id) { index, recipe in
+                        if isRecipeLocked(at: index) {
+                            lockedRow(recipe)
+                        } else {
+                            row(recipe)
+                        }
                     }
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
@@ -229,7 +253,7 @@ struct RecipeListView: View {
                     .foregroundStyle(Tokens.Palette.warning)
                 }
                 if recipe.cookCount > 0 {
-                    Text("× \(recipe.cookCount)")
+                    Text(String.localizedStringWithFormat(L("× %lld"), recipe.cookCount))
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.primary)
                 }
@@ -262,7 +286,7 @@ struct RecipeListView: View {
                 detailRecipe = nil
                 formMode = .editing(recipe)
             } label: {
-                Label("Edytuj", systemImage: "pencil")
+                Label("Edit", systemImage: "pencil")
             }
             Button {
                 duplicateRecipe(recipe)
@@ -272,39 +296,118 @@ struct RecipeListView: View {
             Button(role: .destructive) {
                 delete(recipe)
             } label: {
-                Label("Usuń", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }
 
+    private func lockedRow(_ recipe: Recipe) -> some View {
+        Button {
+            Haptics.light()
+            paywallCoordinator?.present(.recipesCap)
+        } label: {
+            HStack(spacing: Tokens.Space.md) {
+                ZStack {
+                    Circle()
+                        .fill(Tokens.Palette.primarySoft.opacity(0.62))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(Tokens.Palette.primary)
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(recipe.title)
+                        .font(Tokens.Font.bodyEmphasized)
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                    Text("Przepis Pro")
+                        .font(Tokens.Font.footnote)
+                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+                Text("PRO")
+                    .font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(Capsule().fill(Tokens.Palette.primary))
+            }
+            .padding(Tokens.Space.md)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                    .fill(Tokens.Palette.surface.opacity(0.64))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
+                    .stroke(Tokens.Palette.separator.opacity(0.75), lineWidth: 1)
+            )
+            .opacity(0.62)
+        }
+        .buttonStyle(.plain)
+    }
+
     private func duplicateRecipe(_ recipe: Recipe) {
-        try? repository.duplicate(recipe)
-        Haptics.light()
-        Task { await state.refresh() }
+        do {
+            try repository.duplicate(recipe)
+            Haptics.light()
+            Task { await state.refresh() }
+        } catch {
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     // swiftlint:enable function_body_length
 
     private func rate(_ recipe: Recipe, value: Double?) {
+        let previous = recipe.rating
         recipe.rating = value
-        try? repository.save(recipe)
-        Task { await state.refresh() }
+        do {
+            try repository.save(recipe)
+            Task { await state.refresh() }
+        } catch {
+            recipe.rating = previous
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     private func toggleFavorite(_ recipe: Recipe) {
+        let previous = recipe.isFavorite
         recipe.isFavorite.toggle()
-        try? repository.save(recipe)
-        Haptics.light()
+        do {
+            try repository.save(recipe)
+            Haptics.light()
+        } catch {
+            recipe.isFavorite = previous
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     private func subtitle(for recipe: Recipe) -> String {
         var parts: [String] = []
-        parts.append("\(recipe.servings) porcje")
+        parts.append(
+            String.localizedStringWithFormat(
+                L("%lld porcje"),
+                recipe.servings
+            )
+        )
         if let kcal = recipe.caloriesPerServing, kcal > 0 {
-            parts.append("\(Int(kcal)) kcal / porcję")
+            parts.append(
+                String.localizedStringWithFormat(
+                    L("%lld kcal / porcję"),
+                    Int(kcal)
+                )
+            )
         }
         if !recipe.ingredients.isEmpty {
-            parts.append("\(recipe.ingredients.count) składników")
+            parts.append(
+                String.localizedStringWithFormat(
+                    L("%lld składników"),
+                    recipe.ingredients.count
+                )
+            )
         }
         return parts.joined(separator: " · ")
     }
@@ -314,6 +417,11 @@ struct RecipeListView: View {
     private func handle(draft: RecipeDraft, mode: FormPresentation) {
         switch mode {
         case .adding:
+            guard canAddRecipe else {
+                Haptics.light()
+                paywallCoordinator?.present(.recipesCap)
+                return
+            }
             let recipe = Recipe(
                 title: draft.title,
                 summary: draft.summary,
@@ -327,8 +435,15 @@ struct RecipeListView: View {
             recipe.fatPerServing = draft.fatPerServing
             recipe.prepMinutes = draft.prepMinutes
             recipe.cookMinutes = draft.cookMinutes
-            try? repository.create(recipe)
+            do {
+                try repository.create(recipe)
+            } catch {
+                Haptics.warning()
+                saveError = L("Couldn't save. Try again.")
+                return
+            }
         case .editing(let recipe):
+            let previous = RecipeRollbackSnapshot(recipe)
             recipe.title = draft.title
             recipe.summary = draft.summary
             recipe.servings = draft.servings
@@ -348,22 +463,78 @@ struct RecipeListView: View {
             recipe.proteinPerServing = draft.proteinPerServing
             recipe.carbsPerServing = draft.carbsPerServing
             recipe.fatPerServing = draft.fatPerServing
-            try? repository.save(recipe)
+            do {
+                try repository.save(recipe)
+            } catch {
+                previous.restore(recipe)
+                Haptics.warning()
+                saveError = L("Couldn't save. Try again.")
+                return
+            }
         }
         Task { await state.refresh() }
     }
 
-    private func cook(_ recipe: Recipe, servings: Double) {
-        let entry = repository.cook(recipe, servings: servings)
-        try? mealSaver.save(meal: entry)
-        try? repository.save(recipe)
-        detailRecipe = nil
-        onDismiss()
+    private var canAddRecipe: Bool {
+        guard let cap = entitlementsStore?.current.savedRecipesCap else { return true }
+        return state.recipes.count < cap
+    }
+
+    private func isRecipeLocked(at index: Int) -> Bool {
+        guard let cap = entitlementsStore?.current.savedRecipesCap else { return false }
+        return index >= cap
+    }
+
+    private func presentAddRecipe() {
+        guard canAddRecipe else {
+            Haptics.light()
+            paywallCoordinator?.present(.recipesCap)
+            return
+        }
+        formMode = .adding
+    }
+
+    private func presentImportRecipe() {
+        guard canAddRecipe else {
+            Haptics.light()
+            paywallCoordinator?.present(.recipesCap)
+            return
+        }
+        isImportPresented = true
+    }
+
+    private func cook(_ recipe: Recipe, items: [FoodItem]) {
+        let entry = MealEntry(
+            mealType: RecipeRepository.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date())),
+            source: .recipe,
+            portionMultiplier: 1,
+            items: items
+        )
+        let previousCookCount = recipe.cookCount
+        let previousUpdatedAt = recipe.updatedAt
+        recipe.cookCount += 1
+        recipe.updatedAt = Date()
+        do {
+            try mealSaver.save(meal: entry)
+            try repository.save(recipe)
+            detailRecipe = nil
+            onDismiss()
+        } catch {
+            recipe.cookCount = previousCookCount
+            recipe.updatedAt = previousUpdatedAt
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     private func delete(_ recipe: Recipe) {
-        try? repository.delete(recipe)
-        Task { await state.refresh() }
+        do {
+            try repository.delete(recipe)
+            Task { await state.refresh() }
+        } catch {
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+        }
     }
 
     private func presentation(for mode: FormPresentation) -> RecipeFormSheet.Mode {
@@ -371,5 +542,38 @@ struct RecipeListView: View {
         case .adding: return .adding
         case .editing(let recipe): return .editing(recipe)
         }
+    }
+}
+
+private struct RecipeRollbackSnapshot {
+    let title: String
+    let summary: String?
+    let servings: Int
+    let instructions: [String]
+    let caloriesPerServing: Double?
+    let proteinPerServing: Double?
+    let carbsPerServing: Double?
+    let fatPerServing: Double?
+
+    init(_ recipe: Recipe) {
+        title = recipe.title
+        summary = recipe.summary
+        servings = recipe.servings
+        instructions = recipe.instructions
+        caloriesPerServing = recipe.caloriesPerServing
+        proteinPerServing = recipe.proteinPerServing
+        carbsPerServing = recipe.carbsPerServing
+        fatPerServing = recipe.fatPerServing
+    }
+
+    func restore(_ recipe: Recipe) {
+        recipe.title = title
+        recipe.summary = summary
+        recipe.servings = servings
+        recipe.instructions = instructions
+        recipe.caloriesPerServing = caloriesPerServing
+        recipe.proteinPerServing = proteinPerServing
+        recipe.carbsPerServing = carbsPerServing
+        recipe.fatPerServing = fatPerServing
     }
 }

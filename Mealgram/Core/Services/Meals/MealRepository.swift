@@ -69,6 +69,21 @@ final class MealRepository {
         return (try? context.fetch(descriptor)) ?? []
     }
 
+    /// Newest meal with at least one item. Used by Add → Ostatnie so the
+    /// user can repeat the last real meal through the same portion screen.
+    func latestRepeatableMeal() -> MealEntry? {
+        let context = ModelContext(container)
+        var descriptor = FetchDescriptor<MealEntry>(
+            sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = 12
+        return ((try? context.fetch(descriptor)) ?? []).first { !$0.items.isEmpty }
+    }
+
+    func latestRepeatableMealSnapshot() -> MealEntrySnapshot? {
+        latestRepeatableMeal().map(MealEntrySnapshot.capture)
+    }
+
     /// Sweeps the photo directory for filenames no MealEntry references,
     /// deletes them, returns the count. Safe to call from Profile → "Wyczyść
     /// osierocone zdjęcia" — only orphans go.

@@ -12,13 +12,18 @@ enum FoodDetectorFactory {
         session: URLSession = .shared
     ) -> any FoodDetector {
         guard let workerURL = AppConfig.workerBaseURL else {
+            #if DEBUG
             Logger.networking.notice("WORKER_BASE_URL absent — using MockFoodDetector")
             return MockFoodDetector()
+            #else
+            Logger.networking.error("WORKER_BASE_URL absent — photo AI is not configured")
+            return UnconfiguredFoodDetector()
+            #endif
         }
         let client = URLSessionAPIClient(
             session: session,
             baseURL: workerURL,
-            interceptors: [AuthInterceptor(tokenStore: tokenStore), LoggingInterceptor()],
+            interceptors: [AuthInterceptor(tokenStore: tokenStore), TimeZoneInterceptor(), LoggingInterceptor()],
             retryPolicy: .default
         )
         return WorkerFoodDetector(client: client)

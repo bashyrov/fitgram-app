@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Co u Ciebie" — the once-a-week summary Ola delivers. Pulled lazily
+/// "How you're doing" — the once-a-week summary Ola delivers. Pulled lazily
 /// from `CoachService` when the user opens the sheet; pure read-model.
 struct WeeklyDebriefView: View {
     let debrief: WeeklyDebrief
@@ -29,7 +29,7 @@ struct WeeklyDebriefView: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Co u Ciebie"))
+            .navigationTitle(Text("How you're doing"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if let onOpenHistory {
@@ -43,7 +43,7 @@ struct WeeklyDebriefView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -80,7 +80,7 @@ struct WeeklyDebriefView: View {
 
     private var rangeCaption: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "d MMMM"
         let calendar = Calendar.current
         let to = debrief.generatedAt
@@ -140,21 +140,25 @@ struct WeeklyDebriefView: View {
                 HStack(spacing: Tokens.Space.md) {
                     Image(systemName: value ? "hand.thumbsup.fill" : "hand.thumbsdown.fill")
                         .foregroundStyle(Tokens.Palette.primary)
-                    Text(value ? "Dzięki za feedback!" : "Zanotowane — postaramy się bardziej dopasować.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(
+                        value
+                            ? LocalizedStringKey("Thanks for the feedback!")
+                            : LocalizedStringKey("Zanotowane — postaramy się bardziej dopasować.")
+                    )
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.ink)
                     Spacer(minLength: 0)
                 }
             }
         } else {
             Card {
                 VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                    Text("Pomocne?")
+                    Text("Helpful?")
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     HStack(spacing: Tokens.Space.md) {
-                        feedbackButton(value: true, symbol: "hand.thumbsup", label: "Tak")
-                        feedbackButton(value: false, symbol: "hand.thumbsdown", label: "Nie")
+                        feedbackButton(value: true, symbol: "hand.thumbsup", label: "Yes")
+                        feedbackButton(value: false, symbol: "hand.thumbsdown", label: "No")
                     }
                 }
             }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Statystyki" tab + supporting tiles. Renders only the metrics present
+/// "Stats" tab + supporting tiles. Renders only the metrics present
 /// in the snapshot — empties out to a placeholder when nothing is shared.
 extension FriendProfileView {
     struct StatTile: Identifiable {
@@ -46,14 +46,15 @@ extension FriendProfileView {
         tiles.append(contentsOf: identityStatTiles(snapshot))
         tiles.append(contentsOf: weeklyStatTiles(snapshot.weeklyStats))
         if let weight = snapshot.weightKg {
-            tiles.append(StatTile(
-                id: "weight",
-                symbol: "scalemass.fill",
-                value: String(format: "%.1f", weight),
-                unit: "kg",
-                label: "Aktualna waga",
-                tint: Tokens.Palette.success
-            ))
+            tiles.append(
+                StatTile(
+                    id: "weight",
+                    symbol: "scalemass.fill",
+                    value: String(format: "%.1f", weight),
+                    unit: "kg",
+                    label: "Aktualna waga",
+                    tint: Tokens.Palette.success
+                ))
         }
         return tiles
     }
@@ -61,34 +62,37 @@ extension FriendProfileView {
     private func identityStatTiles(_ snapshot: FriendProfileSnapshot) -> [StatTile] {
         var tiles: [StatTile] = []
         if let streak = snapshot.currentStreak {
-            tiles.append(StatTile(
-                id: "streak",
-                symbol: "flame.fill",
-                value: "\(streak)",
-                unit: String(localized: "dni"),
-                label: "Aktualna seria",
-                tint: Tokens.Palette.warning
-            ))
+            tiles.append(
+                StatTile(
+                    id: "streak",
+                    symbol: "flame.fill",
+                    value: "\(streak)",
+                    unit: L("dni"),
+                    label: "Aktualna seria",
+                    tint: Tokens.Palette.warning
+                ))
         }
         if let achievements = snapshot.achievements {
-            tiles.append(StatTile(
-                id: "badges",
-                symbol: "rosette",
-                value: "\(achievements.count)",
-                unit: "",
-                label: "Odznaki",
-                tint: Tokens.Palette.accent
-            ))
+            tiles.append(
+                StatTile(
+                    id: "badges",
+                    symbol: "rosette",
+                    value: "\(achievements.count)",
+                    unit: "",
+                    label: "Achievements",
+                    tint: Tokens.Palette.accent
+                ))
         }
         if let level = snapshot.level {
-            tiles.append(StatTile(
-                id: "level",
-                symbol: "star.fill",
-                value: "\(level.number)",
-                unit: level.label,
-                label: "Poziom",
-                tint: Tokens.Palette.primary
-            ))
+            tiles.append(
+                StatTile(
+                    id: "level",
+                    symbol: "star.fill",
+                    value: "\(level.number)",
+                    unit: level.label,
+                    label: "Poziom",
+                    tint: Tokens.Palette.primary
+                ))
         }
         return tiles
     }
@@ -170,54 +174,55 @@ extension FriendProfileView {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Tokens.Space.md)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .overlay(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                        .stroke(tile.tint.opacity(0.18), lineWidth: 1)
-                )
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Tokens.Palette.surface.opacity(0.82))
         )
-        .mealgramShadow(Tokens.Shadow.card)
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(tile.tint.opacity(0.24), lineWidth: 1)
+        )
+        .shadow(color: tile.tint.opacity(0.10), radius: 14, y: 8)
     }
 
     func topFoodsCard(_ foods: [String]) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: Tokens.Space.md) {
+            HStack(spacing: Tokens.Space.sm) {
+                Image(systemName: "fork.knife")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.primary)
+                    .frame(width: 30, height: 30)
+                    .background(Circle().fill(Tokens.Palette.primarySoft))
+                Text("Top produkty")
+                    .font(Tokens.Font.headline)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Spacer()
+            }
+            ForEach(Array(foods.enumerated()), id: \.offset) { idx, food in
                 HStack(spacing: Tokens.Space.sm) {
-                    ZStack {
-                        Circle()
-                            .fill(Tokens.Palette.primary.opacity(0.18))
-                            .frame(width: 28, height: 28)
-                        Image(systemName: "fork.knife")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    Text("Top produkty")
-                        .font(Tokens.Font.headline)
+                    Text("\(idx + 1)")
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .frame(width: 24, height: 24)
+                        .background(Circle().fill(Tokens.Palette.primary))
+                    Text(food)
+                        .font(Tokens.Font.body)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                 }
-                ForEach(Array(foods.enumerated()), id: \.offset) { idx, food in
-                    HStack(spacing: Tokens.Space.sm) {
-                        Text("\(idx + 1)")
-                            .font(.system(size: 13, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
-                            .frame(width: 22, height: 22)
-                            .background(Circle().fill(Tokens.Palette.primary))
-                        Text(food)
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Spacer()
-                    }
-                    if idx < foods.count - 1 {
-                        Rectangle()
-                            .fill(Tokens.Palette.separator)
-                            .frame(height: 0.5)
-                            .padding(.leading, 30)
-                    }
+                if idx < foods.count - 1 {
+                    Rectangle()
+                        .fill(Tokens.Palette.separator.opacity(0.7))
+                        .frame(height: 0.5)
+                        .padding(.leading, 34)
                 }
             }
         }
+        .padding(Tokens.Space.lg)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(.white.opacity(0.34), lineWidth: 1))
+        .shadow(color: Tokens.Palette.primary.opacity(0.07), radius: 16, y: 9)
     }
 }

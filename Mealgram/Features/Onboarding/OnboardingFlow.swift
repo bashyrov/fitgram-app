@@ -10,6 +10,9 @@ import Observation
 final class OnboardingFlow {
     enum Step: Int, CaseIterable, Identifiable {
         case welcome
+        /// Name + email capture. Lives right after Welcome so the rest
+        /// of the flow can address the user by name.
+        case account
         case goal
         case profile
         /// Pace + target-weight picker. Skipped when goal is not
@@ -155,7 +158,7 @@ final class OnboardingFlow {
 
     /// Steps that don't apply to the current profile snapshot get
     /// skipped both forward and back so the user never sees a dead-end
-    /// "Dalej" / "Wróć" tap.
+    /// "Next" / "Back" tap.
     private func shouldSkip(step: Step) -> Bool {
         switch step {
         case .pace:
@@ -175,7 +178,7 @@ final class OnboardingFlow {
 
     /// Skip-ahead from the welcome screen — finishes onboarding with
     /// whatever defaults are in the OnboardingProfile (typically the
-    /// pristine values). Used by the "Później" link so users who just
+    /// pristine values). Used by the "Later" link so users who just
     /// want to peek at the app aren't forced through every step.
     func skipToEnd() {
         Task { await complete() }
@@ -201,7 +204,7 @@ final class OnboardingFlow {
             onFinished(.completed)
         } catch {
             Logger.ui.error("Onboarding completion failed: \(String(describing: error))")
-            lastError = String(localized: "Nie udało się zapisać profilu. Spróbuj ponownie.")
+            lastError = L("Couldn't save your profile. Please try again.")
             onFinished(.failed(reason: String(describing: error)))
         }
     }

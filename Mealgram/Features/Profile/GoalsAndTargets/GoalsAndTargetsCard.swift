@@ -4,7 +4,7 @@ import SwiftUI
 
 // Profile section "Twoje cele i normy" — three independently renderable
 // cards: main goal, daily targets, profile metrics. ProfileView places
-// them where it wants in the scroll. Each row's "Edytuj" action opens
+// them where it wants in the scroll. Each row's "Edit" action opens
 // a focused bottom sheet routed through UserProfileService so override
 // flags + recalculation fire automatically on save.
 // swiftlint:disable:next type_body_length
@@ -68,7 +68,7 @@ struct GoalsAndTargetsCard: View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
                 sectionHeader(
-                    title: "Twoje cele",
+                    title: "Your goals",
                     symbol: "target",
                     tint: Tokens.Palette.primary,
                     editAction: { sheet = .mainGoal }
@@ -120,9 +120,11 @@ struct GoalsAndTargetsCard: View {
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(1)
                 if let current = user.weightKg {
-                    Text(String(format: "Z obecnej wagi %.1f kg", current).replacingOccurrences(of: ".", with: ","))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    Text(
+                        String(format: "From current weight %.1f kg", current).replacingOccurrences(of: ".", with: ",")
+                    )
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
                 }
             }
             Spacer()
@@ -144,20 +146,20 @@ struct GoalsAndTargetsCard: View {
         case .lose:
             if let target = user.goalTargetWeightKg, let current = user.weightKg {
                 let diff = current - target
-                return String(format: String(localized: "Schudnąć %.1f kg"), abs(diff))
+                return String(format: L("Lose %.1f kg"), abs(diff))
                     .replacingOccurrences(of: ".", with: ",")
             }
-            return String(localized: "Schudnąć")
+            return L("Lose weight")
         case .gain:
             if let target = user.goalTargetWeightKg, let current = user.weightKg {
                 let diff = target - current
-                return String(format: String(localized: "Nabrać %.1f kg"), abs(diff))
+                return String(format: L("Gain %.1f kg"), abs(diff))
                     .replacingOccurrences(of: ".", with: ",")
             }
-            return String(localized: "Nabrać masy")
-        case .maintain: return String(localized: "Utrzymać wagę")
-        case .healthCondition: return String(localized: "Cel zdrowotny")
-        case .justTracking: return String(localized: "Bez celu, tylko śledzenie")
+            return L("Gain weight")
+        case .maintain: return L("Maintain weight")
+        case .healthCondition: return L("Health goal")
+        case .justTracking: return L("No goal, just tracking")
         }
     }
 
@@ -167,7 +169,7 @@ struct GoalsAndTargetsCard: View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
                 sectionHeader(
-                    title: "Twoja dzienna norma",
+                    title: "Your daily target",
                     symbol: "flame.fill",
                     tint: Tokens.Palette.warning,
                     editAction: nil
@@ -177,7 +179,7 @@ struct GoalsAndTargetsCard: View {
                     macroTile(
                         MacroTileSpec(
                             emoji: "💪",
-                            label: "Białko",
+                            label: "Protein",
                             value: user.proteinGoalGrams,
                             overridden: user.macrosOverridden,
                             tint: Tokens.Palette.primary
@@ -187,7 +189,7 @@ struct GoalsAndTargetsCard: View {
                     macroTile(
                         MacroTileSpec(
                             emoji: "🥑",
-                            label: "Tłuszcz",
+                            label: "Fat",
                             value: user.fatGoalGrams,
                             overridden: user.macrosOverridden,
                             tint: Tokens.Palette.accent
@@ -197,7 +199,7 @@ struct GoalsAndTargetsCard: View {
                     macroTile(
                         MacroTileSpec(
                             emoji: "🍞",
-                            label: "Węgle",
+                            label: "Carbs",
                             value: user.carbsGoalGrams,
                             overridden: user.macrosOverridden,
                             tint: Tokens.Palette.warning
@@ -208,7 +210,7 @@ struct GoalsAndTargetsCard: View {
                 HStack(spacing: Tokens.Space.sm) {
                     secondaryTargetTile(
                         emoji: "🌾",
-                        label: "Błonnik",
+                        label: "Fiber",
                         value: "\(user.fiberGoalGrams) g",
                         overridden: user.fiberOverridden,
                         action: { sheet = .macros }
@@ -226,7 +228,9 @@ struct GoalsAndTargetsCard: View {
     }
 
     private var caloriesHero: some View {
-        Button { sheet = .calories } label: {
+        Button {
+            sheet = .calories
+        } label: {
             HStack(spacing: Tokens.Space.md) {
                 ZStack {
                     Circle()
@@ -371,7 +375,7 @@ struct GoalsAndTargetsCard: View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
                 sectionHeader(
-                    title: "Twoje dane",
+                    title: "Your data",
                     symbol: "person.fill",
                     tint: Tokens.Palette.inkMuted,
                     editAction: { sheet = .profileData }
@@ -385,14 +389,14 @@ struct GoalsAndTargetsCard: View {
                 ) {
                     statTile(
                         symbol: sexSymbol,
-                        label: "Płeć",
+                        label: "Sex",
                         value: sexLabelText,
                         tint: Color(red: 0.55, green: 0.45, blue: 0.85)
                     )
                     if let age = ageString {
                         statTile(
                             symbol: "calendar",
-                            label: "Wiek",
+                            label: "Age",
                             value: age,
                             tint: Tokens.Palette.accent
                         )
@@ -400,7 +404,7 @@ struct GoalsAndTargetsCard: View {
                     if let height = user.heightCm {
                         statTile(
                             symbol: "ruler",
-                            label: "Wzrost",
+                            label: "Height",
                             value: "\(height) cm",
                             tint: Color(red: 0.42, green: 0.68, blue: 0.95)
                         )
@@ -408,7 +412,7 @@ struct GoalsAndTargetsCard: View {
                     if let weight = user.weightKg {
                         statTile(
                             symbol: "scalemass.fill",
-                            label: "Waga",
+                            label: "Weight",
                             value: String(format: "%.1f kg", weight)
                                 .replacingOccurrences(of: ".", with: ","),
                             tint: Tokens.Palette.success,
@@ -417,7 +421,7 @@ struct GoalsAndTargetsCard: View {
                     }
                     statTile(
                         symbol: activitySymbol,
-                        label: "Aktywność",
+                        label: "Activity",
                         value: activityShortLabel,
                         tint: Tokens.Palette.warning,
                         action: { sheet = .activity }
@@ -492,7 +496,7 @@ struct GoalsAndTargetsCard: View {
 
     private var sexSymbol: String {
         switch user.biologicalSex {
-        case .female: return "figure.dress"
+        case .female: return "figure.stand.dress"
         case .male: return "figure.stand"
         case .undisclosed: return "person.fill"
         }
@@ -500,9 +504,9 @@ struct GoalsAndTargetsCard: View {
 
     private var sexLabelText: String {
         switch user.biologicalSex {
-        case .female: return String(localized: "Kobieta")
-        case .male: return String(localized: "Mężczyzna")
-        case .undisclosed: return String(localized: "—")
+        case .female: return L("Female")
+        case .male: return L("Male")
+        case .undisclosed: return L("—")
         }
     }
 
@@ -518,18 +522,18 @@ struct GoalsAndTargetsCard: View {
 
     private var activityShortLabel: String {
         switch user.activityLevel {
-        case .sedentary: return String(localized: "Siedzący")
-        case .light: return String(localized: "Lekki")
-        case .moderate: return String(localized: "Umiark.")
-        case .active: return String(localized: "Aktywny")
-        case .veryActive: return String(localized: "B. aktyw.")
+        case .sedentary: return L("Siedzący")
+        case .light: return L("Lekki")
+        case .moderate: return L("Umiark.")
+        case .active: return L("Aktywny")
+        case .veryActive: return L("B. aktyw.")
         }
     }
 
     private var bmiValue: Double? {
-        guard let h = user.heightCm, let w = user.weightKg, h > 0 else { return nil }
-        let meters = Double(h) / 100.0
-        return w / (meters * meters)
+        guard let heightCm = user.heightCm, let weightKg = user.weightKg, heightCm > 0 else { return nil }
+        let meters = Double(heightCm) / 100.0
+        return weightKg / (meters * meters)
     }
 
     private func bmiTint(_ bmi: Double) -> Color {
@@ -572,7 +576,7 @@ struct GoalsAndTargetsCard: View {
                             Circle().fill(Tokens.Palette.primarySoft)
                         )
                 }
-                .accessibilityLabel(Text("Edytuj"))
+                .accessibilityLabel(Text("Edit"))
             }
         }
     }
@@ -596,9 +600,9 @@ struct GoalsAndTargetsCard: View {
 
     private var sexLabel: String {
         switch user.biologicalSex {
-        case .male: return String(localized: "Mężczyzna")
-        case .female: return String(localized: "Kobieta")
-        case .undisclosed: return String(localized: "Wolę nie podawać")
+        case .male: return L("Male")
+        case .female: return L("Female")
+        case .undisclosed: return L("Wolę nie podawać")
         }
     }
 
@@ -610,11 +614,11 @@ struct GoalsAndTargetsCard: View {
 
     private var activityLabel: String {
         switch user.activityLevel {
-        case .sedentary: return String(localized: "Siedzący")
-        case .light: return String(localized: "Lekko aktywny")
-        case .moderate: return String(localized: "Umiarkowany")
-        case .active: return String(localized: "Aktywny")
-        case .veryActive: return String(localized: "Bardzo aktywny")
+        case .sedentary: return L("Siedzący")
+        case .light: return L("Lekko aktywny")
+        case .moderate: return L("Umiarkowany")
+        case .active: return L("Aktywny")
+        case .veryActive: return L("Very active")
         }
     }
 

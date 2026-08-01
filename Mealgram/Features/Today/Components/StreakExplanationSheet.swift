@@ -16,20 +16,20 @@ struct StreakExplanationSheet: View {
     private let bullets: [Bullet] = [
         Bullet(
             symbol: "fork.knife.circle.fill",
-            title: "Co liczy się jako dzień",
-            body: "Każdy zalogowany posiłek z dzisiejszego dnia podtrzymuje serię."
+            title: "What counts as a day",
+            body: "Any meal logged today keeps your streak going."
         ),
         Bullet(
             symbol: "snowflake",
-            title: "Freeze ratuje przerwę",
+            title: "Freeze saves a missed day",
             body:
-                "Po południu, gdy nic nie wpisałeś, pojawia się przycisk freeze. Zużywa jeden z dwóch tygodniowych zapasów."
+                "In the afternoon, if you haven't entered anything, a freeze button appears. It uses up one of your two weekly saves."
         ),
         Bullet(
             symbol: "moon.zzz",
             title: "Reset po cichu",
             body:
-                "Pominięcie pełnej doby bez freeze cofa licznik do zera. Nic strasznego — od razu możesz zacząć nową serię."
+                "Skipping a full 24-hour period without a freeze resets the counter to zero. No big deal — you can start a new streak right away."
         ),
         Bullet(
             symbol: "calendar",
@@ -55,11 +55,11 @@ struct StreakExplanationSheet: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Jak działa streak"))
+            .navigationTitle(Text("How the streak works"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -72,13 +72,17 @@ struct StreakExplanationSheet: View {
                     .font(.system(size: 32, weight: .semibold))
                     .foregroundStyle(Tokens.Palette.warning)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(streakLength > 0 ? "\(streakLength) dni z rzędu" : "Jeszcze nie ma serii")
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
                     Text(
                         streakLength > 0
-                            ? "Brawo — utrzymuj rytm, freezy pojawiają się gdy ich potrzebujesz."
-                            : "Zaloguj posiłek, żeby zacząć liczyć dni."
+                            ? LocalizedStringKey("\(streakLength) dni z rzędu")
+                            : LocalizedStringKey("Jeszcze nie ma serii")
+                    )
+                    .font(Tokens.Font.title3)
+                    .foregroundStyle(Tokens.Palette.ink)
+                    Text(
+                        streakLength > 0
+                            ? LocalizedStringKey("Brawo — utrzymuj rytm, freezy pojawiają się gdy ich potrzebujesz.")
+                            : LocalizedStringKey("Zaloguj posiłek, żeby zacząć liczyć dni.")
                     )
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)

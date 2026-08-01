@@ -57,8 +57,8 @@ Plus, threaded across the app:
 | Language | Swift 5.10, strict concurrency |
 | UI | SwiftUI iOS 17+, Observable, NavigationStack, Charts |
 | Persistence | SwiftData (schema v1.0) |
-| Auth | Apple Sign In (real); Google + Email magic link (stubs awaiting creds) |
-| Backend | Supabase (Postgres + Auth + pgvector) — wired but credentials-blocked |
+| Auth | Apple Sign In; Google OAuth exchanged into Supabase; Email magic link via Supabase |
+| Backend | Supabase (Postgres + Auth + pgvector) for social/profile data when configured |
 | AI proxy | Cloudflare Worker (TypeScript) at `worker/` |
 | Vision | Gemini 2.5 Flash / Pro through the Worker |
 | Subscriptions | RevenueCat (lazy-wired) |

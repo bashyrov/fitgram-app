@@ -39,8 +39,8 @@ struct SecondaryButton: View {
 
 #Preview("Secondary") {
     VStack(spacing: Tokens.Space.lg) {
-        SecondaryButton(title: "Pomiń", systemImage: "arrow.right") {}
-        SecondaryButton(title: "Anuluj") {}
+        SecondaryButton(title: "Skip", systemImage: "arrow.right") {}
+        SecondaryButton(title: "Cancel") {}
     }
     .padding(Tokens.Space.xl)
     .background(Tokens.Palette.background)

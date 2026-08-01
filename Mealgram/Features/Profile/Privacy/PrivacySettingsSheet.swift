@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Co widzą moi znajomi" — granular privacy controls in Profile.
+/// "What my friends see" — granular privacy controls in Profile.
 /// Two-level: top picks the overall visibility (Tylko ja / Tylko znajomi
 /// / Wszyscy z linkiem); below, per-field toggles. Saving an empty
 /// state is fine — that's the privacy-first default.
@@ -33,14 +33,14 @@ struct PrivacySettingsSheet: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Prywatność"))
+            .navigationTitle(Text("Privacy"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zapisz") {
+                    Button("Save") {
                         store.replace(draft)
                         Haptics.success()
                         onDismiss()
@@ -57,7 +57,7 @@ struct PrivacySettingsSheet: View {
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.primary)
                 Text(
-                    "Domyślnie nie udostępniamy nic. Włącz tylko to, co naprawdę chcesz pokazać znajomym."
+                    "By default, we don't share anything. Enable only what you actually want to show your friends."
                 )
                 .font(Tokens.Font.footnote)
                 .foregroundStyle(Tokens.Palette.ink)
@@ -73,17 +73,20 @@ struct PrivacySettingsSheet: View {
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 visibilityRow(.privateOnly, label: "Tylko ja", subtitle: "Profil ukryty dla wszystkich")
                 visibilityRow(.friendsOnly, label: "Tylko znajomi", subtitle: "Widoczne dla osób, które dodały Cię")
-                visibilityRow(.publicLink, label: "Wszyscy z linkiem", subtitle: "Każdy, kto zna Twój kod, zobaczy profil")
+                visibilityRow(
+                    .publicLink, label: "Wszyscy z linkiem", subtitle: "Anyone with your code can see your profile")
             }
         }
     }
 
     private func visibilityRow(
         _ option: PrivacySettings.Visibility,
-        label: String,
-        subtitle: String
+        label: LocalizedStringKey,
+        subtitle: LocalizedStringKey
     ) -> some View {
-        Button { draft.visibility = option } label: {
+        Button {
+            draft.visibility = option
+        } label: {
             HStack(alignment: .top, spacing: Tokens.Space.sm) {
                 Image(systemName: draft.visibility == option ? "circle.inset.filled" : "circle")
                     .foregroundStyle(Tokens.Palette.primary)
@@ -104,7 +107,7 @@ struct PrivacySettingsSheet: View {
     private var toggleCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Co dokładnie udostępniać")
+                Text("What to share")
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 toggle(
@@ -151,7 +154,7 @@ struct PrivacySettingsSheet: View {
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
-                Text("Te dane są wyłączone domyślnie. Włączasz je tylko jeśli świadomie chcesz je pokazać.")
+                Text("This data is disabled by default. You only enable it if you consciously want to show it.")
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 toggle(
@@ -161,14 +164,14 @@ struct PrivacySettingsSheet: View {
                 )
                 toggle(
                     title: "Szczegóły posiłków",
-                    detail: "Co dokładnie jadłeś/aś",
+                    detail: "What exactly you ate",
                     bind: $draft.showMealDetails
                 )
             }
         }
     }
 
-    private func toggle(title: String, detail: String, bind: Binding<Bool>) -> some View {
+    private func toggle(title: LocalizedStringKey, detail: LocalizedStringKey, bind: Binding<Bool>) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Toggle(isOn: bind) {
                 Text(title)

@@ -1,195 +1,3045 @@
 {
   "schema_version": "1.0.0",
   "items": [
-    { "id": "trad.001", "name": "Schabowy z kotleta", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 234, "protein_100g": 22, "carbs_100g": 10, "fat_100g": 12, "default_portion_g": 180 },
-    { "id": "trad.002", "name": "Ziemniaki gotowane", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 80, "protein_100g": 2, "carbs_100g": 18, "fat_100g": 0.1, "default_portion_g": 200 },
-    { "id": "trad.003", "name": "Pierogi ruskie", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 195, "protein_100g": 6, "carbs_100g": 28, "fat_100g": 6, "default_portion_g": 250 },
-    { "id": "trad.004", "name": "Żurek z kiełbasą", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 92, "protein_100g": 4, "carbs_100g": 9, "fat_100g": 4, "default_portion_g": 300 },
-    { "id": "trad.005", "name": "Bigos", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 110, "protein_100g": 7, "carbs_100g": 5, "fat_100g": 7, "default_portion_g": 280 },
-    { "id": "trad.006", "name": "Gołąbki w sosie pomidorowym", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 118, "protein_100g": 7, "carbs_100g": 12, "fat_100g": 5, "default_portion_g": 250 },
-    { "id": "trad.007", "name": "Kotlet mielony", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 230, "protein_100g": 18, "carbs_100g": 8, "fat_100g": 14, "default_portion_g": 140 },
-    { "id": "trad.008", "name": "Surówka z kapusty", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 1.4, "carbs_100g": 8, "fat_100g": 2, "default_portion_g": 120 },
-    { "id": "trad.009", "name": "Rosół z makaronem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 38, "protein_100g": 3, "carbs_100g": 4, "fat_100g": 1, "default_portion_g": 300 },
-    { "id": "trad.010", "name": "Naleśniki z serem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 218, "protein_100g": 9, "carbs_100g": 26, "fat_100g": 8, "default_portion_g": 200 },
-
-    { "id": "ff.001", "name": "Big Mac", "category": "fast_food", "brand": "McDonald's", "restaurant": "McDonald's", "kcal_100g": 257, "protein_100g": 13, "carbs_100g": 19, "fat_100g": 14, "default_portion_g": 219 },
-    { "id": "ff.002", "name": "Frytki średnie", "category": "fast_food", "brand": "McDonald's", "restaurant": "McDonald's", "kcal_100g": 312, "protein_100g": 4, "carbs_100g": 41, "fat_100g": 15, "default_portion_g": 117 },
-    { "id": "ff.003", "name": "WieśMac", "category": "fast_food", "brand": "McDonald's", "restaurant": "McDonald's", "kcal_100g": 240, "protein_100g": 13, "carbs_100g": 18, "fat_100g": 13, "default_portion_g": 245 },
-    { "id": "ff.004", "name": "Cheeseburger", "category": "fast_food", "brand": "McDonald's", "restaurant": "McDonald's", "kcal_100g": 250, "protein_100g": 13, "carbs_100g": 21, "fat_100g": 12, "default_portion_g": 116 },
-    { "id": "ff.005", "name": "Whopper", "category": "fast_food", "brand": "Burger King", "restaurant": "Burger King", "kcal_100g": 222, "protein_100g": 12, "carbs_100g": 18, "fat_100g": 12, "default_portion_g": 295 },
-    { "id": "ff.006", "name": "Twister z kurczakiem", "category": "fast_food", "brand": "KFC", "restaurant": "KFC", "kcal_100g": 235, "protein_100g": 13, "carbs_100g": 22, "fat_100g": 11, "default_portion_g": 250 },
-    { "id": "ff.007", "name": "Hot Wings (6 szt.)", "category": "fast_food", "brand": "KFC", "restaurant": "KFC", "kcal_100g": 250, "protein_100g": 21, "carbs_100g": 8, "fat_100g": 15, "default_portion_g": 120 },
-    { "id": "ff.008", "name": "Pizza Margherita 30 cm", "category": "fast_food", "brand": "Pizza Hut", "restaurant": "Pizza Hut", "kcal_100g": 265, "protein_100g": 12, "carbs_100g": 33, "fat_100g": 9, "default_portion_g": 400 },
-    { "id": "ff.009", "name": "Sub Włoski 15 cm", "category": "fast_food", "brand": "Subway", "restaurant": "Subway", "kcal_100g": 215, "protein_100g": 11, "carbs_100g": 27, "fat_100g": 7, "default_portion_g": 225 },
-    { "id": "ff.010", "name": "Pasibus Texan", "category": "fast_food", "brand": "Pasibus", "restaurant": "Pasibus", "kcal_100g": 268, "protein_100g": 14, "carbs_100g": 22, "fat_100g": 14, "default_portion_g": 300 },
-
-    { "id": "bakery.001", "name": "Bułka pszenna kajzerka", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 270, "protein_100g": 9, "carbs_100g": 54, "fat_100g": 1.5, "default_portion_g": 60 },
-    { "id": "bakery.002", "name": "Chleb żytni razowy", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 220, "protein_100g": 8, "carbs_100g": 43, "fat_100g": 1.4, "default_portion_g": 40 },
-    { "id": "bakery.003", "name": "Croissant maślany", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 405, "protein_100g": 8, "carbs_100g": 42, "fat_100g": 22, "default_portion_g": 65 },
-    { "id": "bakery.004", "name": "Drożdżówka z serem", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 320, "protein_100g": 7, "carbs_100g": 45, "fat_100g": 12, "default_portion_g": 90 },
-    { "id": "bakery.005", "name": "Pączek z marmoladą", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 380, "protein_100g": 6, "carbs_100g": 50, "fat_100g": 17, "default_portion_g": 80 },
-
-    { "id": "drink.001", "name": "Coca-Cola 330 ml", "category": "beverage", "brand": "Coca-Cola", "restaurant": null, "kcal_100g": 42, "protein_100g": 0, "carbs_100g": 10.6, "fat_100g": 0, "default_portion_g": 330 },
-    { "id": "drink.002", "name": "Espresso", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 2, "protein_100g": 0.1, "carbs_100g": 0, "fat_100g": 0, "default_portion_g": 30 },
-    { "id": "drink.003", "name": "Latte z mlekiem 2%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 55, "protein_100g": 3, "carbs_100g": 4.7, "fat_100g": 2, "default_portion_g": 240 },
-    { "id": "drink.004", "name": "Sok pomarańczowy 100%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 45, "protein_100g": 0.7, "carbs_100g": 10, "fat_100g": 0.1, "default_portion_g": 250 },
-    { "id": "drink.005", "name": "Piwo 5% pilsner", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 43, "protein_100g": 0.5, "carbs_100g": 3.6, "fat_100g": 0, "default_portion_g": 500 },
-
-    { "id": "dairy.001", "name": "Twaróg półtłusty", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 132, "protein_100g": 18.5, "carbs_100g": 3.2, "fat_100g": 5, "default_portion_g": 200 },
-    { "id": "dairy.002", "name": "Jogurt naturalny 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 60, "protein_100g": 4.3, "carbs_100g": 6, "fat_100g": 2, "default_portion_g": 200 },
-    { "id": "dairy.003", "name": "Mleko 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 49, "protein_100g": 3.3, "carbs_100g": 4.7, "fat_100g": 2, "default_portion_g": 250 },
-    { "id": "dairy.004", "name": "Ser żółty gouda", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 356, "protein_100g": 25, "carbs_100g": 2.2, "fat_100g": 28, "default_portion_g": 30 },
-    { "id": "dairy.005", "name": "Jajko gotowane", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 155, "protein_100g": 13, "carbs_100g": 1, "fat_100g": 11, "default_portion_g": 60 },
-
-    { "id": "meat.001", "name": "Kurczak grillowany", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 165, "protein_100g": 31, "carbs_100g": 0, "fat_100g": 3.6, "default_portion_g": 150 },
-    { "id": "meat.002", "name": "Łosoś pieczony", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 208, "protein_100g": 20, "carbs_100g": 0, "fat_100g": 13, "default_portion_g": 150 },
-    { "id": "meat.003", "name": "Tuńczyk w sosie własnym", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 116, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 1, "default_portion_g": 80 },
-
-    { "id": "produce.001", "name": "Banan", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 89, "protein_100g": 1.1, "carbs_100g": 23, "fat_100g": 0.3, "default_portion_g": 120 },
-    { "id": "produce.002", "name": "Jabłko", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 0.3, "carbs_100g": 14, "fat_100g": 0.2, "default_portion_g": 150 },
-    { "id": "produce.003", "name": "Marchew gotowana", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 35, "protein_100g": 0.8, "carbs_100g": 8, "fat_100g": 0.2, "default_portion_g": 80 },
-
-    { "id": "grain.001", "name": "Owsianka na mleku", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 105, "protein_100g": 4, "carbs_100g": 16, "fat_100g": 2.5, "default_portion_g": 250 },
-    { "id": "grain.002", "name": "Ryż biały gotowany", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 130, "protein_100g": 2.7, "carbs_100g": 28, "fat_100g": 0.3, "default_portion_g": 150 },
-    { "id": "grain.003", "name": "Kasza gryczana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 110, "protein_100g": 4, "carbs_100g": 22, "fat_100g": 0.8, "default_portion_g": 150 },
-    { "id": "grain.004", "name": "Kasza jaglana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 119, "protein_100g": 3.5, "carbs_100g": 23, "fat_100g": 1, "default_portion_g": 150 },
-    { "id": "grain.005", "name": "Makaron pełnoziarnisty", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 124, "protein_100g": 5, "carbs_100g": 25, "fat_100g": 0.8, "default_portion_g": 150 },
-    { "id": "grain.006", "name": "Quinoa gotowana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 120, "protein_100g": 4.4, "carbs_100g": 21, "fat_100g": 1.9, "default_portion_g": 150 },
-
-    { "id": "trad.011", "name": "Placki ziemniaczane", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 195, "protein_100g": 4, "carbs_100g": 25, "fat_100g": 9, "default_portion_g": 180 },
-    { "id": "trad.012", "name": "Krupnik", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 75, "protein_100g": 3, "carbs_100g": 11, "fat_100g": 2, "default_portion_g": 300 },
-    { "id": "trad.013", "name": "Pierogi z mięsem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 232, "protein_100g": 11, "carbs_100g": 28, "fat_100g": 8, "default_portion_g": 250 },
-    { "id": "trad.014", "name": "Pierogi z kapustą i grzybami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 175, "protein_100g": 5, "carbs_100g": 30, "fat_100g": 4, "default_portion_g": 250 },
-    { "id": "trad.015", "name": "Mizeria", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 45, "protein_100g": 1.3, "carbs_100g": 4, "fat_100g": 2.5, "default_portion_g": 120 },
-    { "id": "trad.016", "name": "Zupa pomidorowa z ryżem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 55, "protein_100g": 2, "carbs_100g": 10, "fat_100g": 1, "default_portion_g": 300 },
-    { "id": "trad.017", "name": "Barszcz czerwony", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 36, "protein_100g": 1.2, "carbs_100g": 6, "fat_100g": 0.8, "default_portion_g": 300 },
-    { "id": "trad.018", "name": "Schabowy z kością", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 245, "protein_100g": 25, "carbs_100g": 8, "fat_100g": 13, "default_portion_g": 200 },
-    { "id": "trad.019", "name": "Karkówka pieczona", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 275, "protein_100g": 22, "carbs_100g": 0, "fat_100g": 21, "default_portion_g": 180 },
-    { "id": "trad.020", "name": "Kapuśniak", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 65, "protein_100g": 3, "carbs_100g": 7, "fat_100g": 3, "default_portion_g": 300 },
-    { "id": "trad.021", "name": "Fasolka po bretońsku", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 130, "protein_100g": 8, "carbs_100g": 14, "fat_100g": 5, "default_portion_g": 250 },
-    { "id": "trad.022", "name": "Sernik wiedeński", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 290, "protein_100g": 9, "carbs_100g": 28, "fat_100g": 17, "default_portion_g": 120 },
-    { "id": "trad.023", "name": "Szarlotka", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 248, "protein_100g": 3, "carbs_100g": 38, "fat_100g": 9, "default_portion_g": 110 },
-    { "id": "trad.024", "name": "Kompot z truskawek", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 38, "protein_100g": 0.3, "carbs_100g": 9, "fat_100g": 0.1, "default_portion_g": 250 },
-
-    { "id": "produce.004", "name": "Pomidor", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 18, "protein_100g": 0.9, "carbs_100g": 3.9, "fat_100g": 0.2, "default_portion_g": 120 },
-    { "id": "produce.005", "name": "Ogórek świeży", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 15, "protein_100g": 0.7, "carbs_100g": 3.6, "fat_100g": 0.1, "default_portion_g": 150 },
-    { "id": "produce.006", "name": "Brokuł gotowany", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 35, "protein_100g": 2.4, "carbs_100g": 7, "fat_100g": 0.4, "default_portion_g": 150 },
-    { "id": "produce.007", "name": "Truskawki", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 32, "protein_100g": 0.7, "carbs_100g": 7.7, "fat_100g": 0.3, "default_portion_g": 150 },
-    { "id": "produce.008", "name": "Awokado", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 160, "protein_100g": 2, "carbs_100g": 9, "fat_100g": 15, "default_portion_g": 100 },
-    { "id": "produce.009", "name": "Szpinak świeży", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 23, "protein_100g": 2.9, "carbs_100g": 3.6, "fat_100g": 0.4, "default_portion_g": 80 },
-
-    { "id": "meat.004", "name": "Polędwica wołowa", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 27, "carbs_100g": 0, "fat_100g": 10, "default_portion_g": 150 },
-    { "id": "meat.005", "name": "Indyk pieczony pierś", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 135, "protein_100g": 30, "carbs_100g": 0, "fat_100g": 1, "default_portion_g": 150 },
-    { "id": "meat.006", "name": "Kiełbasa śląska", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 280, "protein_100g": 15, "carbs_100g": 1, "fat_100g": 24, "default_portion_g": 100 },
-
-    { "id": "dairy.006", "name": "Skyr naturalny", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 63, "protein_100g": 11, "carbs_100g": 4, "fat_100g": 0.2, "default_portion_g": 150 },
-    { "id": "dairy.007", "name": "Kefir 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 3.5, "carbs_100g": 4.7, "fat_100g": 2, "default_portion_g": 250 },
-
-    { "id": "snack.001", "name": "Migdały", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 575, "protein_100g": 21, "carbs_100g": 22, "fat_100g": 49, "default_portion_g": 30 },
-    { "id": "snack.002", "name": "Orzechy włoskie", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 654, "protein_100g": 15, "carbs_100g": 14, "fat_100g": 65, "default_portion_g": 30 },
-    { "id": "snack.003", "name": "Hummus", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 166, "protein_100g": 8, "carbs_100g": 14, "fat_100g": 10, "default_portion_g": 50 },
-    { "id": "snack.004", "name": "Wafle ryżowe", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 387, "protein_100g": 8, "carbs_100g": 82, "fat_100g": 3, "default_portion_g": 20 },
-
-    { "id": "drink.006", "name": "Herbata zielona bez cukru", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 1, "protein_100g": 0, "carbs_100g": 0.2, "fat_100g": 0, "default_portion_g": 250 },
-    { "id": "drink.007", "name": "Woda z cytryną", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 2, "protein_100g": 0, "carbs_100g": 0.6, "fat_100g": 0, "default_portion_g": 300 },
-    { "id": "drink.008", "name": "Smoothie owocowe", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 55, "protein_100g": 1, "carbs_100g": 13, "fat_100g": 0.3, "default_portion_g": 300 },
-    { "id": "drink.009", "name": "Cappuccino", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 35, "protein_100g": 2, "carbs_100g": 3, "fat_100g": 1.5, "default_portion_g": 200 },
-
-    { "id": "ff.011", "name": "Pizza pepperoni 30 cm", "category": "fast_food", "brand": "Domino's", "restaurant": "Domino's", "kcal_100g": 290, "protein_100g": 12, "carbs_100g": 33, "fat_100g": 12, "default_portion_g": 350 },
-    { "id": "ff.012", "name": "Kebab w bułce", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 215, "protein_100g": 13, "carbs_100g": 22, "fat_100g": 9, "default_portion_g": 350 },
-    { "id": "ff.013", "name": "Sushi California Roll (8 szt.)", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 170, "protein_100g": 6, "carbs_100g": 28, "fat_100g": 3.5, "default_portion_g": 220 },
-    { "id": "ff.014", "name": "Sushi Philadelphia Roll (8 szt.)", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 8, "carbs_100g": 26, "fat_100g": 7, "default_portion_g": 220 },
-    { "id": "ff.015", "name": "Pad Thai z kurczakiem", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 175, "protein_100g": 9, "carbs_100g": 22, "fat_100g": 6, "default_portion_g": 400 },
-    { "id": "ff.016", "name": "Ramen z kurczakiem", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 110, "protein_100g": 6, "carbs_100g": 14, "fat_100g": 3.5, "default_portion_g": 450 },
-    { "id": "ff.017", "name": "Gyros z mięsem", "category": "fast_food", "brand": null, "restaurant": null, "kcal_100g": 195, "protein_100g": 14, "carbs_100g": 17, "fat_100g": 9, "default_portion_g": 350 },
-
-    { "id": "trad.025", "name": "Zupa ogórkowa", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 48, "protein_100g": 2, "carbs_100g": 6, "fat_100g": 2, "default_portion_g": 300 },
-    { "id": "trad.026", "name": "Chłodnik", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 42, "protein_100g": 2.5, "carbs_100g": 5, "fat_100g": 1.5, "default_portion_g": 300 },
-    { "id": "trad.027", "name": "Frytki domowe pieczone", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 165, "protein_100g": 3, "carbs_100g": 30, "fat_100g": 4, "default_portion_g": 200 },
-    { "id": "trad.028", "name": "Jajecznica na maśle (3 jajka)", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 14, "carbs_100g": 2, "fat_100g": 16, "default_portion_g": 180 },
-    { "id": "trad.029", "name": "Kanapka z szynką i serem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 248, "protein_100g": 11, "carbs_100g": 30, "fat_100g": 9, "default_portion_g": 150 },
-
-    { "id": "produce.010", "name": "Borówki amerykańskie", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 57, "protein_100g": 0.7, "carbs_100g": 14, "fat_100g": 0.3, "default_portion_g": 100 },
-    { "id": "produce.011", "name": "Maliny", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 1.2, "carbs_100g": 12, "fat_100g": 0.7, "default_portion_g": 100 },
-    { "id": "produce.012", "name": "Pomarańcza", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 47, "protein_100g": 0.9, "carbs_100g": 12, "fat_100g": 0.1, "default_portion_g": 180 },
-    { "id": "produce.013", "name": "Kiwi", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 61, "protein_100g": 1.1, "carbs_100g": 15, "fat_100g": 0.5, "default_portion_g": 75 },
-
-    { "id": "snack.005", "name": "Granola", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 471, "protein_100g": 10, "carbs_100g": 64, "fat_100g": 20, "default_portion_g": 50 },
-    { "id": "snack.006", "name": "Masło orzechowe", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 588, "protein_100g": 25, "carbs_100g": 20, "fat_100g": 50, "default_portion_g": 20 },
-    { "id": "snack.007", "name": "Czekolada gorzka 70%", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 600, "protein_100g": 8, "carbs_100g": 46, "fat_100g": 42, "default_portion_g": 25 },
-    { "id": "snack.008", "name": "Baton Snickers", "category": "sweets", "brand": "Mars", "restaurant": null, "kcal_100g": 482, "protein_100g": 9, "carbs_100g": 60, "fat_100g": 23, "default_portion_g": 50 },
-    { "id": "snack.009", "name": "Lody waniliowe", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 207, "protein_100g": 3.5, "carbs_100g": 24, "fat_100g": 11, "default_portion_g": 100 },
-
-    { "id": "meat.007", "name": "Tofu naturalne", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 76, "protein_100g": 8, "carbs_100g": 1.9, "fat_100g": 4.8, "default_portion_g": 150 },
-    { "id": "meat.008", "name": "Soczewica gotowana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 116, "protein_100g": 9, "carbs_100g": 20, "fat_100g": 0.4, "default_portion_g": 200 },
-    { "id": "meat.009", "name": "Ciecierzyca z puszki", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 139, "protein_100g": 8.4, "carbs_100g": 22, "fat_100g": 2.6, "default_portion_g": 200 },
-
-    { "id": "trad.030", "name": "Pyzy z mięsem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 195, "protein_100g": 8, "carbs_100g": 28, "fat_100g": 6, "default_portion_g": 250 },
-    { "id": "trad.031", "name": "Krokiety z mięsem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 245, "protein_100g": 9, "carbs_100g": 26, "fat_100g": 11, "default_portion_g": 150 },
-    { "id": "trad.032", "name": "Łazanki z kapustą i grzybami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 170, "protein_100g": 6, "carbs_100g": 24, "fat_100g": 5, "default_portion_g": 280 },
-    { "id": "trad.033", "name": "Schab pieczony", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 215, "protein_100g": 27, "carbs_100g": 0.5, "fat_100g": 11, "default_portion_g": 150 },
-    { "id": "trad.034", "name": "Karkówka z grilla", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 270, "protein_100g": 24, "carbs_100g": 0.5, "fat_100g": 19, "default_portion_g": 180 },
-    { "id": "trad.035", "name": "Ryba po grecku", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 130, "protein_100g": 12, "carbs_100g": 8, "fat_100g": 6, "default_portion_g": 220 },
-    { "id": "trad.036", "name": "Sałatka jarzynowa", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 138, "protein_100g": 3, "carbs_100g": 12, "fat_100g": 8, "default_portion_g": 200 },
-    { "id": "trad.037", "name": "Mizeria ze śmietaną", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 58, "protein_100g": 1.6, "carbs_100g": 4, "fat_100g": 4, "default_portion_g": 150 },
-    { "id": "trad.038", "name": "Zupa pomidorowa z ryżem", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 64, "protein_100g": 2, "carbs_100g": 10, "fat_100g": 2, "default_portion_g": 300 },
-    { "id": "trad.039", "name": "Kapuśniak", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 52, "protein_100g": 3, "carbs_100g": 5, "fat_100g": 2.5, "default_portion_g": 300 },
-    { "id": "trad.040", "name": "Pierogi z kapustą i grzybami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 180, "protein_100g": 5, "carbs_100g": 28, "fat_100g": 5, "default_portion_g": 250 },
-
-    { "id": "bakery.014", "name": "Bagietka pszenna", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 274, "protein_100g": 9, "carbs_100g": 55, "fat_100g": 2, "default_portion_g": 80 },
-    { "id": "bakery.015", "name": "Bułka grahamka", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 240, "protein_100g": 9, "carbs_100g": 46, "fat_100g": 2, "default_portion_g": 65 },
-    { "id": "bakery.016", "name": "Sernik na zimno", "category": "sweets", "brand": null, "restaurant": null, "kcal_100g": 285, "protein_100g": 7, "carbs_100g": 28, "fat_100g": 16, "default_portion_g": 110 },
-
-    { "id": "dairy.008", "name": "Twaróg półtłusty", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 132, "protein_100g": 18, "carbs_100g": 3.5, "fat_100g": 4.7, "default_portion_g": 100 },
-    { "id": "dairy.009", "name": "Kefir 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 49, "protein_100g": 3.3, "carbs_100g": 4.5, "fat_100g": 2, "default_portion_g": 250 },
-    { "id": "dairy.010", "name": "Maślanka naturalna", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 40, "protein_100g": 3.3, "carbs_100g": 4.3, "fat_100g": 1, "default_portion_g": 250 },
-
-    { "id": "produce.014", "name": "Pomidor", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 18, "protein_100g": 0.9, "carbs_100g": 3.9, "fat_100g": 0.2, "default_portion_g": 120 },
-    { "id": "produce.015", "name": "Ogórek zielony", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 16, "protein_100g": 0.7, "carbs_100g": 3.6, "fat_100g": 0.1, "default_portion_g": 100 },
-    { "id": "produce.016", "name": "Papryka czerwona", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 31, "protein_100g": 1, "carbs_100g": 6, "fat_100g": 0.3, "default_portion_g": 150 },
-    { "id": "produce.017", "name": "Marchew", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 41, "protein_100g": 0.9, "carbs_100g": 10, "fat_100g": 0.2, "default_portion_g": 100 },
-    { "id": "produce.018", "name": "Banan", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 89, "protein_100g": 1.1, "carbs_100g": 23, "fat_100g": 0.3, "default_portion_g": 120 },
-
-    { "id": "drink.010", "name": "Sok jabłkowy 100%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 46, "protein_100g": 0.1, "carbs_100g": 11, "fat_100g": 0.1, "default_portion_g": 250 },
-    { "id": "drink.011", "name": "Piwo jasne 5%", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 43, "protein_100g": 0.5, "carbs_100g": 3.6, "fat_100g": 0, "default_portion_g": 500 },
-    { "id": "drink.012", "name": "Wino czerwone wytrawne", "category": "beverage", "brand": null, "restaurant": null, "kcal_100g": 85, "protein_100g": 0.1, "carbs_100g": 2.6, "fat_100g": 0, "default_portion_g": 150 },
-
-    { "id": "trad.041", "name": "Pierogi z jagodami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 200, "protein_100g": 4, "carbs_100g": 38, "fat_100g": 3, "default_portion_g": 250 },
-    { "id": "trad.042", "name": "Knedle ze śliwkami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 178, "protein_100g": 4, "carbs_100g": 36, "fat_100g": 1.5, "default_portion_g": 250 },
-    { "id": "trad.043", "name": "Racuchy z jabłkami", "category": "homemade", "brand": null, "restaurant": null, "kcal_100g": 215, "protein_100g": 5, "carbs_100g": 30, "fat_100g": 8, "default_portion_g": 200 },
-    { "id": "trad.044", "name": "Kasza gryczana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 343, "protein_100g": 13, "carbs_100g": 72, "fat_100g": 3.4, "default_portion_g": 50 },
-    { "id": "trad.045", "name": "Kasza jaglana", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 378, "protein_100g": 11, "carbs_100g": 73, "fat_100g": 4, "default_portion_g": 50 },
-    { "id": "trad.046", "name": "Makaron pełnoziarnisty", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 348, "protein_100g": 14, "carbs_100g": 70, "fat_100g": 2.5, "default_portion_g": 80 },
-    { "id": "trad.047", "name": "Ryż basmati", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 360, "protein_100g": 7.5, "carbs_100g": 79, "fat_100g": 0.5, "default_portion_g": 60 },
-    { "id": "trad.048", "name": "Quinoa", "category": "grain", "brand": null, "restaurant": null, "kcal_100g": 368, "protein_100g": 14, "carbs_100g": 64, "fat_100g": 6, "default_portion_g": 50 },
-
-    { "id": "meat.010", "name": "Pierś z indyka", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 135, "protein_100g": 30, "carbs_100g": 0, "fat_100g": 1, "default_portion_g": 150 },
-    { "id": "meat.011", "name": "Wołowina krzyżowa", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 168, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 7, "default_portion_g": 150 },
-    { "id": "meat.012", "name": "Polędwiczki wieprzowe", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 143, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 4, "default_portion_g": 150 },
-    { "id": "meat.013", "name": "Kabanos", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 460, "protein_100g": 28, "carbs_100g": 1, "fat_100g": 38, "default_portion_g": 30 },
-    { "id": "meat.014", "name": "Parówka z indyka", "category": "meat", "brand": null, "restaurant": null, "kcal_100g": 175, "protein_100g": 13, "carbs_100g": 4, "fat_100g": 12, "default_portion_g": 50 },
-
-    { "id": "seafood.001", "name": "Łosoś pieczony", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 208, "protein_100g": 22, "carbs_100g": 0, "fat_100g": 13, "default_portion_g": 150 },
-    { "id": "seafood.002", "name": "Tuńczyk z puszki w sosie własnym", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 116, "protein_100g": 26, "carbs_100g": 0, "fat_100g": 1, "default_portion_g": 80 },
-    { "id": "seafood.003", "name": "Sardynka w pomidorach", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 186, "protein_100g": 21, "carbs_100g": 1, "fat_100g": 11, "default_portion_g": 80 },
-    { "id": "seafood.004", "name": "Krewetki gotowane", "category": "seafood", "brand": null, "restaurant": null, "kcal_100g": 99, "protein_100g": 24, "carbs_100g": 0.2, "fat_100g": 0.3, "default_portion_g": 120 },
-
-    { "id": "produce.019", "name": "Awokado", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 160, "protein_100g": 2, "carbs_100g": 9, "fat_100g": 15, "default_portion_g": 100 },
-    { "id": "produce.020", "name": "Brokuł gotowany", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 35, "protein_100g": 2.4, "carbs_100g": 7, "fat_100g": 0.4, "default_portion_g": 200 },
-    { "id": "produce.021", "name": "Kalafior gotowany", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 23, "protein_100g": 1.8, "carbs_100g": 4, "fat_100g": 0.3, "default_portion_g": 200 },
-    { "id": "produce.022", "name": "Szpinak surowy", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 23, "protein_100g": 2.9, "carbs_100g": 3.6, "fat_100g": 0.4, "default_portion_g": 70 },
-    { "id": "produce.023", "name": "Cukinia", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 17, "protein_100g": 1.2, "carbs_100g": 3.1, "fat_100g": 0.3, "default_portion_g": 200 },
-    { "id": "produce.024", "name": "Bakłażan", "category": "produce", "brand": null, "restaurant": null, "kcal_100g": 25, "protein_100g": 1, "carbs_100g": 6, "fat_100g": 0.2, "default_portion_g": 200 },
-
-    { "id": "bakery.017", "name": "Tortilla pszenna", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 304, "protein_100g": 8, "carbs_100g": 50, "fat_100g": 7, "default_portion_g": 60 },
-    { "id": "bakery.018", "name": "Naan", "category": "bakery", "brand": null, "restaurant": null, "kcal_100g": 310, "protein_100g": 9, "carbs_100g": 53, "fat_100g": 6, "default_portion_g": 90 },
-
-    { "id": "snack.010", "name": "Orzechy włoskie", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 654, "protein_100g": 15, "carbs_100g": 14, "fat_100g": 65, "default_portion_g": 30 },
-    { "id": "snack.011", "name": "Pestki dyni", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 559, "protein_100g": 30, "carbs_100g": 11, "fat_100g": 49, "default_portion_g": 25 },
-    { "id": "snack.012", "name": "Daktyle suszone", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 282, "protein_100g": 2.5, "carbs_100g": 75, "fat_100g": 0.4, "default_portion_g": 30 },
-    { "id": "snack.013", "name": "Suszone żurawiny", "category": "snack", "brand": null, "restaurant": null, "kcal_100g": 325, "protein_100g": 0.2, "carbs_100g": 83, "fat_100g": 1.4, "default_portion_g": 25 },
-
-    { "id": "drink.013", "name": "Mleko 2%", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 50, "protein_100g": 3.3, "carbs_100g": 4.8, "fat_100g": 2, "default_portion_g": 250 },
-    { "id": "drink.014", "name": "Mleko owsiane", "category": "dairy", "brand": null, "restaurant": null, "kcal_100g": 42, "protein_100g": 0.8, "carbs_100g": 6.5, "fat_100g": 1.4, "default_portion_g": 250 }
+    {
+      "id": "trad.001",
+      "name": "Schabowy z kotleta",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 234,
+      "protein_100g": 22,
+      "carbs_100g": 10,
+      "fat_100g": 12,
+      "default_portion_g": 180,
+      "localized_names": {
+        "pl": "Schabowy z kotleta",
+        "en": "Schabowy",
+        "uk": "Схабовий з котлета",
+        "ru": "Схабовы",
+        "es": "Schabowy"
+      }
+    },
+    {
+      "id": "trad.002",
+      "name": "Ziemniaki gotowane",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 80,
+      "protein_100g": 2,
+      "carbs_100g": 18,
+      "fat_100g": 0.1,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Ziemniaki gotowane",
+        "en": "Boiled potatoes",
+        "uk": "Варена картопля",
+        "ru": "Отварной картофель",
+        "es": "Patatas cocidas"
+      }
+    },
+    {
+      "id": "trad.003",
+      "name": "Pierogi ruskie",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 195,
+      "protein_100g": 6,
+      "carbs_100g": 28,
+      "fat_100g": 6,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Pierogi ruskie",
+        "en": "Pierogi ruskie",
+        "uk": "Пироги руські",
+        "ru": "Пироги русские",
+        "es": "Pierogi ruskie"
+      }
+    },
+    {
+      "id": "trad.004",
+      "name": "Żurek z kiełbasą",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 92,
+      "protein_100g": 4,
+      "carbs_100g": 9,
+      "fat_100g": 4,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Żurek z kiełbasą",
+        "en": "Żurek with sausage",
+        "uk": "Журек з ковбасою",
+        "ru": "Журек с колбасой",
+        "es": "Żurek con salchicha"
+      }
+    },
+    {
+      "id": "trad.005",
+      "name": "Bigos",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 110,
+      "protein_100g": 7,
+      "carbs_100g": 5,
+      "fat_100g": 7,
+      "default_portion_g": 280,
+      "localized_names": {
+        "pl": "Bigos",
+        "en": "Bigos",
+        "uk": "Бігос",
+        "ru": "Бигос",
+        "es": "Bigos"
+      }
+    },
+    {
+      "id": "trad.006",
+      "name": "Gołąbki w sosie pomidorowym",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 118,
+      "protein_100g": 7,
+      "carbs_100g": 12,
+      "fat_100g": 5,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Gołąbki w sosie pomidorowym",
+        "en": "Gołąbki in tomato sauce",
+        "uk": "Голубці в томатному соусі",
+        "ru": "Голубцы в томатном соусе",
+        "es": "Gołąbki en salsa de tomate"
+      }
+    },
+    {
+      "id": "trad.007",
+      "name": "Kotlet mielony",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 230,
+      "protein_100g": 18,
+      "carbs_100g": 8,
+      "fat_100g": 14,
+      "default_portion_g": 140,
+      "localized_names": {
+        "pl": "Kotlet mielony",
+        "en": "Minced pork cutlet",
+        "uk": "Котлета мелена",
+        "ru": "Котлета милона",
+        "es": "Albóndiga de carne picada"
+      }
+    },
+    {
+      "id": "trad.008",
+      "name": "Surówka z kapusty",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 52,
+      "protein_100g": 1.4,
+      "carbs_100g": 8,
+      "fat_100g": 2,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Surówka z kapusty",
+        "en": "Cabbage salad",
+        "uk": "Салат зі свіжої капусти",
+        "ru": "Салат из свежей капусты",
+        "es": "Ensalada de col"
+      }
+    },
+    {
+      "id": "trad.009",
+      "name": "Rosół z makaronem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 38,
+      "protein_100g": 3,
+      "carbs_100g": 4,
+      "fat_100g": 1,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Rosół z makaronem",
+        "en": "Chicken soup with noodles",
+        "uk": "Росул з макаронами",
+        "ru": "Бульон с лапшой",
+        "es": "Sopa de pollo con fideos"
+      }
+    },
+    {
+      "id": "trad.010",
+      "name": "Naleśniki z serem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 218,
+      "protein_100g": 9,
+      "carbs_100g": 26,
+      "fat_100g": 8,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Naleśniki z serem",
+        "en": "Crepes with sweet cheese",
+        "uk": "Налисники з сиром",
+        "ru": "Блины с творогом",
+        "es": "Crepes con queso dulce"
+      }
+    },
+    {
+      "id": "ff.001",
+      "name": "Big Mac",
+      "category": "fast_food",
+      "brand": "McDonald's",
+      "restaurant": "McDonald's",
+      "kcal_100g": 257,
+      "protein_100g": 13,
+      "carbs_100g": 19,
+      "fat_100g": 14,
+      "default_portion_g": 219,
+      "localized_names": {
+        "pl": "Big Mac",
+        "en": "Big Mac",
+        "uk": "Біг Мак",
+        "ru": "Биг Мак",
+        "es": "Big Mac"
+      }
+    },
+    {
+      "id": "ff.002",
+      "name": "Frytki średnie",
+      "category": "fast_food",
+      "brand": "McDonald's",
+      "restaurant": "McDonald's",
+      "kcal_100g": 312,
+      "protein_100g": 4,
+      "carbs_100g": 41,
+      "fat_100g": 15,
+      "default_portion_g": 117,
+      "localized_names": {
+        "pl": "Frytki średnie",
+        "en": "Medium fries",
+        "uk": "Картопля фрі середня",
+        "ru": "Картофель фри средний",
+        "es": "Patatas fritas medianas"
+      }
+    },
+    {
+      "id": "ff.003",
+      "name": "WieśMac",
+      "category": "fast_food",
+      "brand": "McDonald's",
+      "restaurant": "McDonald's",
+      "kcal_100g": 240,
+      "protein_100g": 13,
+      "carbs_100g": 18,
+      "fat_100g": 13,
+      "default_portion_g": 245,
+      "localized_names": {
+        "pl": "WieśMac",
+        "en": "WieśMac",
+        "uk": "ВісьМак",
+        "ru": "ВисМак",
+        "es": "WieśMac"
+      }
+    },
+    {
+      "id": "ff.004",
+      "name": "Cheeseburger",
+      "category": "fast_food",
+      "brand": "McDonald's",
+      "restaurant": "McDonald's",
+      "kcal_100g": 250,
+      "protein_100g": 13,
+      "carbs_100g": 21,
+      "fat_100g": 12,
+      "default_portion_g": 116,
+      "localized_names": {
+        "pl": "Cheeseburger",
+        "en": "Cheeseburger",
+        "uk": "Чізбургер",
+        "ru": "Чизбургер",
+        "es": "Cheeseburger"
+      }
+    },
+    {
+      "id": "ff.005",
+      "name": "Whopper",
+      "category": "fast_food",
+      "brand": "Burger King",
+      "restaurant": "Burger King",
+      "kcal_100g": 222,
+      "protein_100g": 12,
+      "carbs_100g": 18,
+      "fat_100g": 12,
+      "default_portion_g": 295,
+      "localized_names": {
+        "pl": "Whopper",
+        "en": "Whopper",
+        "uk": "Воппер",
+        "ru": "Воппер",
+        "es": "Whopper"
+      }
+    },
+    {
+      "id": "ff.006",
+      "name": "Twister z kurczakiem",
+      "category": "fast_food",
+      "brand": "KFC",
+      "restaurant": "KFC",
+      "kcal_100g": 235,
+      "protein_100g": 13,
+      "carbs_100g": 22,
+      "fat_100g": 11,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Twister z kurczakiem",
+        "en": "Chicken Twister",
+        "uk": "Твістер з куркою",
+        "ru": "Твистер с курицей",
+        "es": "Twister de pollo"
+      }
+    },
+    {
+      "id": "ff.007",
+      "name": "Hot Wings (6 szt.)",
+      "category": "fast_food",
+      "brand": "KFC",
+      "restaurant": "KFC",
+      "kcal_100g": 250,
+      "protein_100g": 21,
+      "carbs_100g": 8,
+      "fat_100g": 15,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Hot Wings (6 szt.)",
+        "en": "Hot Wings (6 pcs)",
+        "uk": "Гострі крильця (6 шт.)",
+        "ru": "Острые крылышки (6 шт.)",
+        "es": "Alitas picantes (6 uds.)"
+      }
+    },
+    {
+      "id": "ff.008",
+      "name": "Pizza Margherita 30 cm",
+      "category": "fast_food",
+      "brand": "Pizza Hut",
+      "restaurant": "Pizza Hut",
+      "kcal_100g": 265,
+      "protein_100g": 12,
+      "carbs_100g": 33,
+      "fat_100g": 9,
+      "default_portion_g": 400,
+      "localized_names": {
+        "pl": "Pizza Margherita 30 cm",
+        "en": "Pizza Margherita 30 cm",
+        "uk": "Піца Маргарита 30 см",
+        "ru": "Пицца Маргарита 30 см",
+        "es": "Pizza Margherita 30 cm"
+      }
+    },
+    {
+      "id": "ff.009",
+      "name": "Sub Włoski 15 cm",
+      "category": "fast_food",
+      "brand": "Subway",
+      "restaurant": "Subway",
+      "kcal_100g": 215,
+      "protein_100g": 11,
+      "carbs_100g": 27,
+      "fat_100g": 7,
+      "default_portion_g": 225,
+      "localized_names": {
+        "pl": "Sub Włoski 15 cm",
+        "en": "Italian Sub 15 cm",
+        "uk": "Італійський саб 15 см",
+        "ru": "Итальянский саб 15 см",
+        "es": "Sub Italiano 15 cm"
+      }
+    },
+    {
+      "id": "ff.010",
+      "name": "Pasibus Texan",
+      "category": "fast_food",
+      "brand": "Pasibus",
+      "restaurant": "Pasibus",
+      "kcal_100g": 268,
+      "protein_100g": 14,
+      "carbs_100g": 22,
+      "fat_100g": 14,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Pasibus Texan",
+        "en": "Pasibus Texan",
+        "uk": "Пасібус Тексан",
+        "ru": "Пасибус Тексан",
+        "es": "Pasibus Texan"
+      }
+    },
+    {
+      "id": "bakery.001",
+      "name": "Bułka pszenna kajzerka",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 270,
+      "protein_100g": 9,
+      "carbs_100g": 54,
+      "fat_100g": 1.5,
+      "default_portion_g": 60,
+      "localized_names": {
+        "pl": "Bułka pszenna kajzerka",
+        "en": "Kaiser roll",
+        "uk": "Булочка пшенична кайзерка",
+        "ru": "Пшеничная булочка кайзерка",
+        "es": "Panecillo kaiser"
+      }
+    },
+    {
+      "id": "bakery.002",
+      "name": "Chleb żytni razowy",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 220,
+      "protein_100g": 8,
+      "carbs_100g": 43,
+      "fat_100g": 1.4,
+      "default_portion_g": 40,
+      "localized_names": {
+        "pl": "Chleb żytni razowy",
+        "en": "Wholemeal rye bread",
+        "uk": "Хліб житній житньо-пшеничний",
+        "ru": "Ржаной цельнозерновой хлеб",
+        "es": "Pan de centeno integral"
+      }
+    },
+    {
+      "id": "bakery.003",
+      "name": "Croissant maślany",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 405,
+      "protein_100g": 8,
+      "carbs_100g": 42,
+      "fat_100g": 22,
+      "default_portion_g": 65,
+      "localized_names": {
+        "pl": "Croissant maślany",
+        "en": "Butter croissant",
+        "uk": "Круасан вершковий",
+        "ru": "Сливочный круассан",
+        "es": "Cruasán de mantequilla"
+      }
+    },
+    {
+      "id": "bakery.004",
+      "name": "Drożdżówka z serem",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 320,
+      "protein_100g": 7,
+      "carbs_100g": 45,
+      "fat_100g": 12,
+      "default_portion_g": 90,
+      "localized_names": {
+        "pl": "Drożdżówka z serem",
+        "en": "Sweet cheese yeast bun",
+        "uk": "Дріжджова булочка з сиром",
+        "ru": "Ватрушка с творогом",
+        "es": "Bollo dulce con queso"
+      }
+    },
+    {
+      "id": "bakery.005",
+      "name": "Pączek z marmoladą",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 380,
+      "protein_100g": 6,
+      "carbs_100g": 50,
+      "fat_100g": 17,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Pączek z marmoladą",
+        "en": "Donut with marmalade",
+        "uk": "Пончик з мармеладом",
+        "ru": "Пончик с повидлом",
+        "es": "Berlina con mermelada"
+      }
+    },
+    {
+      "id": "drink.001",
+      "name": "Coca-Cola 330 ml",
+      "category": "beverage",
+      "brand": "Coca-Cola",
+      "restaurant": null,
+      "kcal_100g": 42,
+      "protein_100g": 0,
+      "carbs_100g": 10.6,
+      "fat_100g": 0,
+      "default_portion_g": 330,
+      "localized_names": {
+        "pl": "Coca-Cola 330 ml",
+        "en": "Coca-Cola 330 ml",
+        "uk": "Кока-Кола 330 мл",
+        "ru": "Кока-Кола 330 мл",
+        "es": "Coca-Cola 330 ml"
+      }
+    },
+    {
+      "id": "drink.002",
+      "name": "Espresso",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 2,
+      "protein_100g": 0.1,
+      "carbs_100g": 0,
+      "fat_100g": 0,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Espresso",
+        "en": "Espresso",
+        "uk": "Еспресо",
+        "ru": "Эспрессо",
+        "es": "Café espresso"
+      }
+    },
+    {
+      "id": "drink.003",
+      "name": "Latte z mlekiem 2%",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 55,
+      "protein_100g": 3,
+      "carbs_100g": 4.7,
+      "fat_100g": 2,
+      "default_portion_g": 240,
+      "localized_names": {
+        "pl": "Latte z mlekiem 2%",
+        "en": "Latte with 2% milk",
+        "uk": "Лате з молоком 2%",
+        "ru": "Латте с молоком 2%",
+        "es": "Café latte con leche 2%"
+      }
+    },
+    {
+      "id": "drink.004",
+      "name": "Sok pomarańczowy 100%",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 45,
+      "protein_100g": 0.7,
+      "carbs_100g": 10,
+      "fat_100g": 0.1,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Sok pomarańczowy 100%",
+        "en": "100% orange juice",
+        "uk": "Апельсиновий сік 100%",
+        "ru": "Апельсиновый сок 100%",
+        "es": "Zumo de naranja 100%"
+      }
+    },
+    {
+      "id": "drink.005",
+      "name": "Piwo 5% pilsner",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 43,
+      "protein_100g": 0.5,
+      "carbs_100g": 3.6,
+      "fat_100g": 0,
+      "default_portion_g": 500,
+      "localized_names": {
+        "pl": "Piwo 5% pilsner",
+        "en": "5% pilsner beer",
+        "uk": "Пиво 5% пільзнер",
+        "ru": "Пиво пилснер 5%",
+        "es": "Cerveza pilsner 5%"
+      }
+    },
+    {
+      "id": "dairy.001",
+      "name": "Twaróg półtłusty",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 132,
+      "protein_100g": 18.5,
+      "carbs_100g": 3.2,
+      "fat_100g": 5,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Twaróg półtłusty",
+        "en": "Semi-fat quark",
+        "uk": "Сир кисломолочний напівжирний",
+        "ru": "Полужирный творог",
+        "es": "Queso fresco requesón semidesnatado"
+      }
+    },
+    {
+      "id": "dairy.002",
+      "name": "Jogurt naturalny 2%",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 60,
+      "protein_100g": 4.3,
+      "carbs_100g": 6,
+      "fat_100g": 2,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Jogurt naturalny 2%",
+        "en": "Plain yogurt 2%",
+        "uk": "Йогурт натуральний 2%",
+        "ru": "Йогурт натуральный 2%",
+        "es": "Yogur natural 2%"
+      }
+    },
+    {
+      "id": "dairy.003",
+      "name": "Mleko 2%",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 49,
+      "protein_100g": 3.3,
+      "carbs_100g": 4.7,
+      "fat_100g": 2,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Mleko 2%",
+        "en": "2% milk",
+        "uk": "Молоко 2%",
+        "ru": "Молоко 2%",
+        "es": "Leche 2%"
+      }
+    },
+    {
+      "id": "dairy.004",
+      "name": "Ser żółty gouda",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 356,
+      "protein_100g": 25,
+      "carbs_100g": 2.2,
+      "fat_100g": 28,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Ser żółty gouda",
+        "en": "Gouda cheese",
+        "uk": "Сир твердий гауда",
+        "ru": "Желтый сыр гауда",
+        "es": "Queso gouda"
+      }
+    },
+    {
+      "id": "dairy.005",
+      "name": "Jajko gotowane",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 155,
+      "protein_100g": 13,
+      "carbs_100g": 1,
+      "fat_100g": 11,
+      "default_portion_g": 60,
+      "localized_names": {
+        "pl": "Jajko gotowane",
+        "en": "Boiled egg",
+        "uk": "Варене яйце",
+        "ru": "Вареное яйцо",
+        "es": "Huevo cocido"
+      }
+    },
+    {
+      "id": "meat.001",
+      "name": "Kurczak grillowany",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 165,
+      "protein_100g": 31,
+      "carbs_100g": 0,
+      "fat_100g": 3.6,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Kurczak grillowany",
+        "en": "Grilled chicken",
+        "uk": "Курка на грилі",
+        "ru": "Курица на гриле",
+        "es": "Pollo a la parrilla"
+      }
+    },
+    {
+      "id": "meat.002",
+      "name": "Łosoś pieczony",
+      "category": "seafood",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 208,
+      "protein_100g": 20,
+      "carbs_100g": 0,
+      "fat_100g": 13,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Łosoś pieczony",
+        "en": "Baked salmon",
+        "uk": "Лосось запечений",
+        "ru": "Запеченный лосось",
+        "es": "Salmón al horno"
+      }
+    },
+    {
+      "id": "meat.003",
+      "name": "Tuńczyk w sosie własnym",
+      "category": "seafood",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 116,
+      "protein_100g": 26,
+      "carbs_100g": 0,
+      "fat_100g": 1,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Tuńczyk w sosie własnym",
+        "en": "Tuna in brine",
+        "uk": "Тунець у власному соку",
+        "ru": "Тунец в собственном соку",
+        "es": "Atún al natural"
+      }
+    },
+    {
+      "id": "produce.001",
+      "name": "Banan",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 89,
+      "protein_100g": 1.1,
+      "carbs_100g": 23,
+      "fat_100g": 0.3,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Banan",
+        "en": "Banana",
+        "uk": "Банан",
+        "ru": "Банан",
+        "es": "Plátano"
+      }
+    },
+    {
+      "id": "produce.002",
+      "name": "Jabłko",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 52,
+      "protein_100g": 0.3,
+      "carbs_100g": 14,
+      "fat_100g": 0.2,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Jabłko",
+        "en": "Apple",
+        "uk": "Яблуко",
+        "ru": "Яблоко",
+        "es": "Manzana"
+      }
+    },
+    {
+      "id": "produce.003",
+      "name": "Marchew gotowana",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 35,
+      "protein_100g": 0.8,
+      "carbs_100g": 8,
+      "fat_100g": 0.2,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Marchew gotowana",
+        "en": "Boiled carrots",
+        "uk": "Варена морква",
+        "ru": "Вареная морковь",
+        "es": "Zanahoria hervida"
+      }
+    },
+    {
+      "id": "grain.001",
+      "name": "Owsianka na mleku",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 105,
+      "protein_100g": 4,
+      "carbs_100g": 16,
+      "fat_100g": 2.5,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Owsianka na mleku",
+        "en": "Oatmeal with milk",
+        "uk": "Вівсянка на молоці",
+        "ru": "Овсянка на молоке",
+        "es": "Gachas de avena con leche"
+      }
+    },
+    {
+      "id": "grain.002",
+      "name": "Ryż biały gotowany",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 130,
+      "protein_100g": 2.7,
+      "carbs_100g": 28,
+      "fat_100g": 0.3,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Ryż biały gotowany",
+        "en": "Boiled white rice",
+        "uk": "Варений білий рис",
+        "ru": "Отварной белый рис",
+        "es": "Arroz blanco hervido"
+      }
+    },
+    {
+      "id": "grain.003",
+      "name": "Kasza gryczana",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 110,
+      "protein_100g": 4,
+      "carbs_100g": 22,
+      "fat_100g": 0.8,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Kasza gryczana",
+        "en": "Buckwheat groats",
+        "uk": "Гречана крупа",
+        "ru": "Гречневая крупа",
+        "es": "Trigo sarraceno"
+      }
+    },
+    {
+      "id": "grain.004",
+      "name": "Kasza jaglana",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 119,
+      "protein_100g": 3.5,
+      "carbs_100g": 23,
+      "fat_100g": 1,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Kasza jaglana",
+        "en": "Millet groats",
+        "uk": "Пшоняна крупа",
+        "ru": "Пшенная крупа",
+        "es": "Mijo"
+      }
+    },
+    {
+      "id": "grain.005",
+      "name": "Makaron pełnoziarnisty",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 124,
+      "protein_100g": 5,
+      "carbs_100g": 25,
+      "fat_100g": 0.8,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Makaron pełnoziarnisty",
+        "en": "Whole grain pasta",
+        "uk": "Цільнозернові макарони",
+        "ru": "Цельнозерновые макароны",
+        "es": "Pasta integral"
+      }
+    },
+    {
+      "id": "grain.006",
+      "name": "Quinoa gotowana",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 120,
+      "protein_100g": 4.4,
+      "carbs_100g": 21,
+      "fat_100g": 1.9,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Quinoa gotowana",
+        "en": "Boiled quinoa",
+        "uk": "Варена кіноа",
+        "ru": "Вареное киноа",
+        "es": "Quinoa hervida"
+      }
+    },
+    {
+      "id": "trad.011",
+      "name": "Placki ziemniaczane",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 195,
+      "protein_100g": 4,
+      "carbs_100g": 25,
+      "fat_100g": 9,
+      "default_portion_g": 180,
+      "localized_names": {
+        "pl": "Placki ziemniaczane",
+        "en": "Potato pancakes",
+        "uk": "Деруни",
+        "ru": "Драники",
+        "es": "Placki ziemniaczane"
+      }
+    },
+    {
+      "id": "trad.012",
+      "name": "Krupnik",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 75,
+      "protein_100g": 3,
+      "carbs_100g": 11,
+      "fat_100g": 2,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Krupnik",
+        "en": "Krupnik",
+        "uk": "Крупник",
+        "ru": "Крупник",
+        "es": "Krupnik"
+      }
+    },
+    {
+      "id": "trad.013",
+      "name": "Pierogi z mięsem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 232,
+      "protein_100g": 11,
+      "carbs_100g": 28,
+      "fat_100g": 8,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Pierogi z mięsem",
+        "en": "Pierogi with meat",
+        "uk": "Пироги з м'ясом",
+        "ru": "Пироги с мясом",
+        "es": "Pierogi con carne"
+      }
+    },
+    {
+      "id": "trad.014",
+      "name": "Pierogi z kapustą i grzybami",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 175,
+      "protein_100g": 5,
+      "carbs_100g": 30,
+      "fat_100g": 4,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Pierogi z kapustą i grzybami",
+        "en": "Pierogi with cabbage and mushrooms",
+        "uk": "Пироги з капустою та грибами",
+        "ru": "Пироги с капустой и грибами",
+        "es": "Pierogi con col y setas"
+      }
+    },
+    {
+      "id": "trad.015",
+      "name": "Mizeria",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 45,
+      "protein_100g": 1.3,
+      "carbs_100g": 4,
+      "fat_100g": 2.5,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Mizeria",
+        "en": "Mizeria",
+        "uk": "Мізерія",
+        "ru": "Мизерия",
+        "es": "Mizeria"
+      }
+    },
+    {
+      "id": "trad.016",
+      "name": "Zupa pomidorowa z ryżem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 55,
+      "protein_100g": 2,
+      "carbs_100g": 10,
+      "fat_100g": 1,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Zupa pomidorowa z ryżem",
+        "en": "Tomato soup with rice",
+        "uk": "Томатний суп з рисом",
+        "ru": "Томатный суп с рисом",
+        "es": "Sopa de tomate con arroz"
+      }
+    },
+    {
+      "id": "trad.017",
+      "name": "Barszcz czerwony",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 36,
+      "protein_100g": 1.2,
+      "carbs_100g": 6,
+      "fat_100g": 0.8,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Barszcz czerwony",
+        "en": "Barszcz",
+        "uk": "Червоний борщ",
+        "ru": "Красный борщ",
+        "es": "Barszcz czerwony"
+      }
+    },
+    {
+      "id": "trad.018",
+      "name": "Schabowy z kością",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 245,
+      "protein_100g": 25,
+      "carbs_100g": 8,
+      "fat_100g": 13,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Schabowy z kością",
+        "en": "Schabowy with bone",
+        "uk": "Схабовий з кісткою",
+        "ru": "Схабовы с костью",
+        "es": "Schabowy con hueso"
+      }
+    },
+    {
+      "id": "trad.019",
+      "name": "Karkówka pieczona",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 275,
+      "protein_100g": 22,
+      "carbs_100g": 0,
+      "fat_100g": 21,
+      "default_portion_g": 180,
+      "localized_names": {
+        "pl": "Karkówka pieczona",
+        "en": "Roasted pork neck",
+        "uk": "Запечена корейка",
+        "ru": "Запеченная свиная шея",
+        "es": "Cabecero de lomo asado"
+      }
+    },
+    {
+      "id": "trad.020",
+      "name": "Kapuśniak",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 65,
+      "protein_100g": 3,
+      "carbs_100g": 7,
+      "fat_100g": 3,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Kapuśniak",
+        "en": "Kapuśniak",
+        "uk": "Капусняк",
+        "ru": "Капусняк",
+        "es": "Kapuśniak"
+      }
+    },
+    {
+      "id": "trad.021",
+      "name": "Fasolka po bretońsku",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 130,
+      "protein_100g": 8,
+      "carbs_100g": 14,
+      "fat_100g": 5,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Fasolka po bretońsku",
+        "en": "Baked beans Polish style",
+        "uk": "Квасоля по-бретонськи",
+        "ru": "Фасоль по-бретонски",
+        "es": "Alubias a la bretona"
+      }
+    },
+    {
+      "id": "trad.022",
+      "name": "Sernik wiedeński",
+      "category": "sweets",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 290,
+      "protein_100g": 9,
+      "carbs_100g": 28,
+      "fat_100g": 17,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Sernik wiedeński",
+        "en": "Viennese cheesecake",
+        "uk": "Віденський сирник",
+        "ru": "Венский сырник",
+        "es": "Tarta de queso vienesa"
+      }
+    },
+    {
+      "id": "trad.023",
+      "name": "Szarlotka",
+      "category": "sweets",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 248,
+      "protein_100g": 3,
+      "carbs_100g": 38,
+      "fat_100g": 9,
+      "default_portion_g": 110,
+      "localized_names": {
+        "pl": "Szarlotka",
+        "en": "Apple pie",
+        "uk": "Шарлотка",
+        "ru": "Шарлотка",
+        "es": "Tarta de manzana"
+      }
+    },
+    {
+      "id": "trad.024",
+      "name": "Kompot z truskawek",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 38,
+      "protein_100g": 0.3,
+      "carbs_100g": 9,
+      "fat_100g": 0.1,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Kompot z truskawek",
+        "en": "Strawberry kompot",
+        "uk": "Полуничний компот",
+        "ru": "Клубничный компот",
+        "es": "Compota de fresa"
+      }
+    },
+    {
+      "id": "produce.004",
+      "name": "Pomidor",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 18,
+      "protein_100g": 0.9,
+      "carbs_100g": 3.9,
+      "fat_100g": 0.2,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Pomidor",
+        "en": "Tomato",
+        "uk": "Помідор",
+        "ru": "Помидор",
+        "es": "Tomate"
+      }
+    },
+    {
+      "id": "produce.005",
+      "name": "Ogórek świeży",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 15,
+      "protein_100g": 0.7,
+      "carbs_100g": 3.6,
+      "fat_100g": 0.1,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Ogórek świeży",
+        "en": "Fresh cucumber",
+        "uk": "Свіжий огірок",
+        "ru": "Свежий огурец",
+        "es": "Pepino fresco"
+      }
+    },
+    {
+      "id": "produce.006",
+      "name": "Brokuł gotowany",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 35,
+      "protein_100g": 2.4,
+      "carbs_100g": 7,
+      "fat_100g": 0.4,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Brokuł gotowany",
+        "en": "Boiled broccoli",
+        "uk": "Броколі варена",
+        "ru": "Вареная брокколи",
+        "es": "Brócoli cocido"
+      }
+    },
+    {
+      "id": "produce.007",
+      "name": "Truskawki",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 32,
+      "protein_100g": 0.7,
+      "carbs_100g": 7.7,
+      "fat_100g": 0.3,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Truskawki",
+        "en": "Strawberries",
+        "uk": "Полуниця",
+        "ru": "Клубника",
+        "es": "Fresas"
+      }
+    },
+    {
+      "id": "produce.008",
+      "name": "Awokado",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 160,
+      "protein_100g": 2,
+      "carbs_100g": 9,
+      "fat_100g": 15,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Awokado",
+        "en": "Avocado",
+        "uk": "Авокадо",
+        "ru": "Авокадо",
+        "es": "Aguacate"
+      }
+    },
+    {
+      "id": "produce.009",
+      "name": "Szpinak świeży",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 23,
+      "protein_100g": 2.9,
+      "carbs_100g": 3.6,
+      "fat_100g": 0.4,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Szpinak świeży",
+        "en": "Fresh spinach",
+        "uk": "Свіжий шпинат",
+        "ru": "Свежий шпинат",
+        "es": "Espinacas frescas"
+      }
+    },
+    {
+      "id": "meat.004",
+      "name": "Polędwica wołowa",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 200,
+      "protein_100g": 27,
+      "carbs_100g": 0,
+      "fat_100g": 10,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Polędwica wołowa",
+        "en": "Beef tenderloin",
+        "uk": "Яловича вирізка",
+        "ru": "Говяжья вырезка",
+        "es": "Solomillo de ternera"
+      }
+    },
+    {
+      "id": "meat.005",
+      "name": "Indyk pieczony pierś",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 135,
+      "protein_100g": 30,
+      "carbs_100g": 0,
+      "fat_100g": 1,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Indyk pieczony pierś",
+        "en": "Roasted turkey breast",
+        "uk": "Запечене філе індички",
+        "ru": "Запеченная грудка индейки",
+        "es": "Pechuga de pavo asada"
+      }
+    },
+    {
+      "id": "meat.006",
+      "name": "Kiełbasa śląska",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 280,
+      "protein_100g": 15,
+      "carbs_100g": 1,
+      "fat_100g": 24,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Kiełbasa śląska",
+        "en": "Silesian sausage",
+        "uk": "Шльонська ковбаса",
+        "ru": "Силезская колбаса",
+        "es": "Kiełbasa de Silesia"
+      }
+    },
+    {
+      "id": "dairy.006",
+      "name": "Skyr naturalny",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 63,
+      "protein_100g": 11,
+      "carbs_100g": 4,
+      "fat_100g": 0.2,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Skyr naturalny",
+        "en": "Natural skyr",
+        "uk": "Натуральний скир",
+        "ru": "Натуральный скир",
+        "es": "Skyr natural"
+      }
+    },
+    {
+      "id": "dairy.007",
+      "name": "Kefir 2%",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 52,
+      "protein_100g": 3.5,
+      "carbs_100g": 4.7,
+      "fat_100g": 2,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Kefir 2%",
+        "en": "Kefir 2%",
+        "uk": "Кефір 2%",
+        "ru": "Кефир 2%",
+        "es": "Kéfir 2%"
+      }
+    },
+    {
+      "id": "snack.001",
+      "name": "Migdały",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 575,
+      "protein_100g": 21,
+      "carbs_100g": 22,
+      "fat_100g": 49,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Migdały",
+        "en": "Almonds",
+        "uk": "Мигдаль",
+        "ru": "Миндаль",
+        "es": "Almendras"
+      }
+    },
+    {
+      "id": "snack.002",
+      "name": "Orzechy włoskie",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 654,
+      "protein_100g": 15,
+      "carbs_100g": 14,
+      "fat_100g": 65,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Orzechy włoskie",
+        "en": "Walnuts",
+        "uk": "Волоські горіхи",
+        "ru": "Грецкие орехи",
+        "es": "Nueces"
+      }
+    },
+    {
+      "id": "snack.003",
+      "name": "Hummus",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 166,
+      "protein_100g": 8,
+      "carbs_100g": 14,
+      "fat_100g": 10,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Hummus",
+        "en": "Hummus",
+        "uk": "Хумус",
+        "ru": "Хумус",
+        "es": "Hummus"
+      }
+    },
+    {
+      "id": "snack.004",
+      "name": "Wafle ryżowe",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 387,
+      "protein_100g": 8,
+      "carbs_100g": 82,
+      "fat_100g": 3,
+      "default_portion_g": 20,
+      "localized_names": {
+        "pl": "Wafle ryżowe",
+        "en": "Rice cakes",
+        "uk": "Рисові хлібці",
+        "ru": "Рисовые хлебцы",
+        "es": "Tortitas de arroz"
+      }
+    },
+    {
+      "id": "drink.006",
+      "name": "Herbata zielona bez cukru",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 1,
+      "protein_100g": 0,
+      "carbs_100g": 0.2,
+      "fat_100g": 0,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Herbata zielona bez cukru",
+        "en": "Unsweetened green tea",
+        "uk": "Зелений чай без цукру",
+        "ru": "Зеленый чай без сахара",
+        "es": "Té verde sin azúcar"
+      }
+    },
+    {
+      "id": "drink.007",
+      "name": "Woda z cytryną",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 2,
+      "protein_100g": 0,
+      "carbs_100g": 0.6,
+      "fat_100g": 0,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Woda z cytryną",
+        "en": "Water with lemon",
+        "uk": "Вода з лимоном",
+        "ru": "Вода с лимоном",
+        "es": "Agua con limón"
+      }
+    },
+    {
+      "id": "drink.008",
+      "name": "Smoothie owocowe",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 55,
+      "protein_100g": 1,
+      "carbs_100g": 13,
+      "fat_100g": 0.3,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Smoothie owocowe",
+        "en": "Fruit smoothie",
+        "uk": "Фруктовий смузі",
+        "ru": "Фруктовый смузи",
+        "es": "Batido de frutas"
+      }
+    },
+    {
+      "id": "drink.009",
+      "name": "Cappuccino",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 35,
+      "protein_100g": 2,
+      "carbs_100g": 3,
+      "fat_100g": 1.5,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Cappuccino",
+        "en": "Cappuccino",
+        "uk": "Капучино",
+        "ru": "Капучино",
+        "es": "Capuchino"
+      }
+    },
+    {
+      "id": "ff.011",
+      "name": "Pizza pepperoni 30 cm",
+      "category": "fast_food",
+      "brand": "Domino's",
+      "restaurant": "Domino's",
+      "kcal_100g": 290,
+      "protein_100g": 12,
+      "carbs_100g": 33,
+      "fat_100g": 12,
+      "default_portion_g": 350,
+      "localized_names": {
+        "pl": "Pizza pepperoni 30 cm",
+        "en": "Pepperoni pizza 30 cm",
+        "uk": "Піца пепероні 30 см",
+        "ru": "Пицца пепперони 30 см",
+        "es": "Pizza pepperoni 30 cm"
+      }
+    },
+    {
+      "id": "ff.012",
+      "name": "Kebab w bułce",
+      "category": "fast_food",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 215,
+      "protein_100g": 13,
+      "carbs_100g": 22,
+      "fat_100g": 9,
+      "default_portion_g": 350,
+      "localized_names": {
+        "pl": "Kebab w bułce",
+        "en": "Kebab in a bun",
+        "uk": "Кебаб у булці",
+        "ru": "Кебаб в булке",
+        "es": "Kebab en pan"
+      }
+    },
+    {
+      "id": "ff.013",
+      "name": "Sushi California Roll (8 szt.)",
+      "category": "fast_food",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 170,
+      "protein_100g": 6,
+      "carbs_100g": 28,
+      "fat_100g": 3.5,
+      "default_portion_g": 220,
+      "localized_names": {
+        "pl": "Sushi California Roll (8 szt.)",
+        "en": "California Roll Sushi (8 pcs)",
+        "uk": "Суші Каліфорнія рол (8 шт.)",
+        "ru": "Суши Калифорния (8 шт.)",
+        "es": "Sushi California Roll (8 uds.)"
+      }
+    },
+    {
+      "id": "ff.014",
+      "name": "Sushi Philadelphia Roll (8 szt.)",
+      "category": "fast_food",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 200,
+      "protein_100g": 8,
+      "carbs_100g": 26,
+      "fat_100g": 7,
+      "default_portion_g": 220,
+      "localized_names": {
+        "pl": "Sushi Philadelphia Roll (8 szt.)",
+        "en": "Philadelphia Roll Sushi (8 pcs)",
+        "uk": "Суші Філадельфія рол (8 шт.)",
+        "ru": "Суши Филадельфия (8 шт.)",
+        "es": "Sushi Philadelphia Roll (8 uds.)"
+      }
+    },
+    {
+      "id": "ff.015",
+      "name": "Pad Thai z kurczakiem",
+      "category": "fast_food",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 175,
+      "protein_100g": 9,
+      "carbs_100g": 22,
+      "fat_100g": 6,
+      "default_portion_g": 400,
+      "localized_names": {
+        "pl": "Pad Thai z kurczakiem",
+        "en": "Chicken Pad Thai",
+        "uk": "Пад Тай з куркою",
+        "ru": "Пад Тай с курицей",
+        "es": "Pad Thai con pollo"
+      }
+    },
+    {
+      "id": "ff.016",
+      "name": "Ramen z kurczakiem",
+      "category": "fast_food",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 110,
+      "protein_100g": 6,
+      "carbs_100g": 14,
+      "fat_100g": 3.5,
+      "default_portion_g": 450,
+      "localized_names": {
+        "pl": "Ramen z kurczakiem",
+        "en": "Chicken Ramen",
+        "uk": "Рамен з куркою",
+        "ru": "Рамен с курицей",
+        "es": "Ramen con pollo"
+      }
+    },
+    {
+      "id": "ff.017",
+      "name": "Gyros z mięsem",
+      "category": "fast_food",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 195,
+      "protein_100g": 14,
+      "carbs_100g": 17,
+      "fat_100g": 9,
+      "default_portion_g": 350,
+      "localized_names": {
+        "pl": "Gyros z mięsem",
+        "en": "Gyros with meat",
+        "uk": "Гірос з м'ясом",
+        "ru": "Гирос с мясом",
+        "es": "Gyros de carne"
+      }
+    },
+    {
+      "id": "trad.025",
+      "name": "Zupa ogórkowa",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 48,
+      "protein_100g": 2,
+      "carbs_100g": 6,
+      "fat_100g": 2,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Zupa ogórkowa",
+        "en": "Polish cucumber soup",
+        "uk": "Огірковий суп",
+        "ru": "Огуречный суп",
+        "es": "Sopa de pepinillos"
+      }
+    },
+    {
+      "id": "trad.026",
+      "name": "Chłodnik",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 42,
+      "protein_100g": 2.5,
+      "carbs_100g": 5,
+      "fat_100g": 1.5,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Chłodnik",
+        "en": "Chłodnik",
+        "uk": "Хлодник",
+        "ru": "Хлодник",
+        "es": "Chłodnik"
+      }
+    },
+    {
+      "id": "trad.027",
+      "name": "Frytki domowe pieczone",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 165,
+      "protein_100g": 3,
+      "carbs_100g": 30,
+      "fat_100g": 4,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Frytki domowe pieczone",
+        "en": "Baked homemade fries",
+        "uk": "Домашня запечена картопля фрі",
+        "ru": "Домашний запеченный картофель фри",
+        "es": "Patatas fritas caseras al horno"
+      }
+    },
+    {
+      "id": "trad.028",
+      "name": "Jajecznica na maśle (3 jajka)",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 200,
+      "protein_100g": 14,
+      "carbs_100g": 2,
+      "fat_100g": 16,
+      "default_portion_g": 180,
+      "localized_names": {
+        "pl": "Jajecznica na maśle (3 jajka)",
+        "en": "Scrambled eggs in butter (3 eggs)",
+        "uk": "Яєчня на вершковому маслі",
+        "ru": "Яичница на сливочном масле",
+        "es": "Huevos revueltos con mantequilla"
+      }
+    },
+    {
+      "id": "trad.029",
+      "name": "Kanapka z szynką i serem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 248,
+      "protein_100g": 11,
+      "carbs_100g": 30,
+      "fat_100g": 9,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Kanapka z szynką i serem",
+        "en": "Ham and cheese sandwich",
+        "uk": "Сендвіч з шинкою та сиром",
+        "ru": "Бутерброд с ветчиной и сыром",
+        "es": "Sándwich de jamón y queso"
+      }
+    },
+    {
+      "id": "produce.010",
+      "name": "Borówki amerykańskie",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 57,
+      "protein_100g": 0.7,
+      "carbs_100g": 14,
+      "fat_100g": 0.3,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Borówki amerykańskie",
+        "en": "Blueberries",
+        "uk": "Лохина",
+        "ru": "Голубика",
+        "es": "Arándanos azules"
+      }
+    },
+    {
+      "id": "produce.011",
+      "name": "Maliny",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 52,
+      "protein_100g": 1.2,
+      "carbs_100g": 12,
+      "fat_100g": 0.7,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Maliny",
+        "en": "Raspberries",
+        "uk": "Малина",
+        "ru": "Малина",
+        "es": "Frambuesas"
+      }
+    },
+    {
+      "id": "produce.012",
+      "name": "Pomarańcza",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 47,
+      "protein_100g": 0.9,
+      "carbs_100g": 12,
+      "fat_100g": 0.1,
+      "default_portion_g": 180,
+      "localized_names": {
+        "pl": "Pomarańcza",
+        "en": "Orange",
+        "uk": "Апельсин",
+        "ru": "Апельсин",
+        "es": "Naranja"
+      }
+    },
+    {
+      "id": "produce.013",
+      "name": "Kiwi",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 61,
+      "protein_100g": 1.1,
+      "carbs_100g": 15,
+      "fat_100g": 0.5,
+      "default_portion_g": 75,
+      "localized_names": {
+        "pl": "Kiwi",
+        "en": "Kiwi",
+        "uk": "Ківі",
+        "ru": "Киви",
+        "es": "Kiwi"
+      }
+    },
+    {
+      "id": "snack.005",
+      "name": "Granola",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 471,
+      "protein_100g": 10,
+      "carbs_100g": 64,
+      "fat_100g": 20,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Granola",
+        "en": "Granola",
+        "uk": "Гранола",
+        "ru": "Гранола",
+        "es": "Granola"
+      }
+    },
+    {
+      "id": "snack.006",
+      "name": "Masło orzechowe",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 588,
+      "protein_100g": 25,
+      "carbs_100g": 20,
+      "fat_100g": 50,
+      "default_portion_g": 20,
+      "localized_names": {
+        "pl": "Masło orzechowe",
+        "en": "Peanut butter",
+        "uk": "Арахісова паста",
+        "ru": "Арахисовая паста",
+        "es": "Mantequilla de cacahuete"
+      }
+    },
+    {
+      "id": "snack.007",
+      "name": "Czekolada gorzka 70%",
+      "category": "sweets",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 600,
+      "protein_100g": 8,
+      "carbs_100g": 46,
+      "fat_100g": 42,
+      "default_portion_g": 25,
+      "localized_names": {
+        "pl": "Czekolada gorzka 70%",
+        "en": "Dark chocolate 70%",
+        "uk": "Гіркий шоколад 70%",
+        "ru": "Горький шоколад 70%",
+        "es": "Chocolate negro 70%"
+      }
+    },
+    {
+      "id": "snack.008",
+      "name": "Baton Snickers",
+      "category": "sweets",
+      "brand": "Mars",
+      "restaurant": null,
+      "kcal_100g": 482,
+      "protein_100g": 9,
+      "carbs_100g": 60,
+      "fat_100g": 23,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Baton Snickers",
+        "en": "Snickers bar",
+        "uk": "Батончик Снікерс",
+        "ru": "Батончик Сникерс",
+        "es": "Barrita Snickers"
+      }
+    },
+    {
+      "id": "snack.009",
+      "name": "Lody waniliowe",
+      "category": "sweets",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 207,
+      "protein_100g": 3.5,
+      "carbs_100g": 24,
+      "fat_100g": 11,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Lody waniliowe",
+        "en": "Vanilla ice cream",
+        "uk": "Ванільне морозиво",
+        "ru": "Ванильное мороженое",
+        "es": "Helado de vainilla"
+      }
+    },
+    {
+      "id": "meat.007",
+      "name": "Tofu naturalne",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 76,
+      "protein_100g": 8,
+      "carbs_100g": 1.9,
+      "fat_100g": 4.8,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Tofu naturalne",
+        "en": "Plain tofu",
+        "uk": "Тофу натуральний",
+        "ru": "Тофу натуральный",
+        "es": "Tofu natural"
+      }
+    },
+    {
+      "id": "meat.008",
+      "name": "Soczewica gotowana",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 116,
+      "protein_100g": 9,
+      "carbs_100g": 20,
+      "fat_100g": 0.4,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Soczewica gotowana",
+        "en": "Boiled lentils",
+        "uk": "Варена сочевиця",
+        "ru": "Вареная чечевица",
+        "es": "Lentejas cocidas"
+      }
+    },
+    {
+      "id": "meat.009",
+      "name": "Ciecierzyca z puszki",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 139,
+      "protein_100g": 8.4,
+      "carbs_100g": 22,
+      "fat_100g": 2.6,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Ciecierzyca z puszki",
+        "en": "Canned chickpeas",
+        "uk": "Консервований нут",
+        "ru": "Консервированный нут",
+        "es": "Garbanzos en conserva"
+      }
+    },
+    {
+      "id": "trad.030",
+      "name": "Pyzy z mięsem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 195,
+      "protein_100g": 8,
+      "carbs_100g": 28,
+      "fat_100g": 6,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Pyzy z mięsem",
+        "en": "Pyzy with meat",
+        "uk": "Пизи з м'ясом",
+        "ru": "Пызы с мясом",
+        "es": "Pyzy con carne"
+      }
+    },
+    {
+      "id": "trad.031",
+      "name": "Krokiety z mięsem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 245,
+      "protein_100g": 9,
+      "carbs_100g": 26,
+      "fat_100g": 11,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Krokiety z mięsem",
+        "en": "Krokiety with meat",
+        "uk": "Крокети з м'ясом",
+        "ru": "Крокеты с мясом",
+        "es": "Krokiety con carne"
+      }
+    },
+    {
+      "id": "trad.032",
+      "name": "Łazanki z kapustą i grzybami",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 170,
+      "protein_100g": 6,
+      "carbs_100g": 24,
+      "fat_100g": 5,
+      "default_portion_g": 280,
+      "localized_names": {
+        "pl": "Łazanki z kapustą i grzybami",
+        "en": "Łazanki with cabbage and mushrooms",
+        "uk": "Лазанки з капустою та грибами",
+        "ru": "Лазанки с капустой и грибами",
+        "es": "Łazanki con col y setas"
+      }
+    },
+    {
+      "id": "trad.033",
+      "name": "Schab pieczony",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 215,
+      "protein_100g": 27,
+      "carbs_100g": 0.5,
+      "fat_100g": 11,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Schab pieczony",
+        "en": "Roasted pork loin",
+        "uk": "Запечена свиняча корейка",
+        "ru": "Запеченная свиная корейка",
+        "es": "Lomo de cerdo asado"
+      }
+    },
+    {
+      "id": "trad.034",
+      "name": "Karkówka z grilla",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 270,
+      "protein_100g": 24,
+      "carbs_100g": 0.5,
+      "fat_100g": 19,
+      "default_portion_g": 180,
+      "localized_names": {
+        "pl": "Karkówka z grilla",
+        "en": "Grilled pork neck",
+        "uk": "Свинячий ошийок на грилі",
+        "ru": "Шея на гриле",
+        "es": "Cabezada de cerdo a la parrilla"
+      }
+    },
+    {
+      "id": "trad.035",
+      "name": "Ryba po grecku",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 130,
+      "protein_100g": 12,
+      "carbs_100g": 8,
+      "fat_100g": 6,
+      "default_portion_g": 220,
+      "localized_names": {
+        "pl": "Ryba po grecku",
+        "en": "Greek-style fish",
+        "uk": "Риба по-грецьки",
+        "ru": "Рыба по-гречески",
+        "es": "Pescado a la griega"
+      }
+    },
+    {
+      "id": "trad.036",
+      "name": "Sałatka jarzynowa",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 138,
+      "protein_100g": 3,
+      "carbs_100g": 12,
+      "fat_100g": 8,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Sałatka jarzynowa",
+        "en": "Polish vegetable salad",
+        "uk": "Овочевий салат",
+        "ru": "Салатка яжинова",
+        "es": "Ensaladilla rusa polaca"
+      }
+    },
+    {
+      "id": "trad.037",
+      "name": "Mizeria ze śmietaną",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 58,
+      "protein_100g": 1.6,
+      "carbs_100g": 4,
+      "fat_100g": 4,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Mizeria ze śmietaną",
+        "en": "Mizeria with sour cream",
+        "uk": "Мізерія зі сметаною",
+        "ru": "Мизерия со сметаной",
+        "es": "Mizeria con crema agria"
+      }
+    },
+    {
+      "id": "trad.038",
+      "name": "Zupa pomidorowa z ryżem",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 64,
+      "protein_100g": 2,
+      "carbs_100g": 10,
+      "fat_100g": 2,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Zupa pomidorowa z ryżem",
+        "en": "Tomato soup with rice",
+        "uk": "Томатний суп з рисом",
+        "ru": "Томатный суп с рисом",
+        "es": "Sopa de tomate con arroz"
+      }
+    },
+    {
+      "id": "trad.039",
+      "name": "Kapuśniak",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 52,
+      "protein_100g": 3,
+      "carbs_100g": 5,
+      "fat_100g": 2.5,
+      "default_portion_g": 300,
+      "localized_names": {
+        "pl": "Kapuśniak",
+        "en": "Kapuśniak",
+        "uk": "Капусняк",
+        "ru": "Капусняк",
+        "es": "Kapuśniak"
+      }
+    },
+    {
+      "id": "trad.040",
+      "name": "Pierogi z kapustą i grzybami",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 180,
+      "protein_100g": 5,
+      "carbs_100g": 28,
+      "fat_100g": 5,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Pierogi z kapustą i grzybami",
+        "en": "Pierogi with cabbage and mushrooms",
+        "uk": "Пироги з капустою та грибами",
+        "ru": "Пироги с капустой и грибами",
+        "es": "Pierogi con col y setas"
+      }
+    },
+    {
+      "id": "bakery.014",
+      "name": "Bagietka pszenna",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 274,
+      "protein_100g": 9,
+      "carbs_100g": 55,
+      "fat_100g": 2,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Bagietka pszenna",
+        "en": "Wheat baguette",
+        "uk": "Пшеничний багет",
+        "ru": "Пшеничный багет",
+        "es": "Bagueto de trigo"
+      }
+    },
+    {
+      "id": "bakery.015",
+      "name": "Bułka grahamka",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 240,
+      "protein_100g": 9,
+      "carbs_100g": 46,
+      "fat_100g": 2,
+      "default_portion_g": 65,
+      "localized_names": {
+        "pl": "Bułka grahamka",
+        "en": "Graham roll",
+        "uk": "Грехемка",
+        "ru": "Грэхемка",
+        "es": "Panecillo integral graham"
+      }
+    },
+    {
+      "id": "bakery.016",
+      "name": "Sernik na zimno",
+      "category": "sweets",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 285,
+      "protein_100g": 7,
+      "carbs_100g": 28,
+      "fat_100g": 16,
+      "default_portion_g": 110,
+      "localized_names": {
+        "pl": "Sernik na zimno",
+        "en": "No-bake cheesecake",
+        "uk": "Холодний сирник",
+        "ru": "Холодный чизкейк",
+        "es": "Tarta de queso fría"
+      }
+    },
+    {
+      "id": "dairy.008",
+      "name": "Twaróg półtłusty",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 132,
+      "protein_100g": 18,
+      "carbs_100g": 3.5,
+      "fat_100g": 4.7,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Twaróg półtłusty",
+        "en": "Semi-fat quark",
+        "uk": "Сир кисломолочний напівжирний",
+        "ru": "Полужирный творог",
+        "es": "Queso fresco requesón semidesnatado"
+      }
+    },
+    {
+      "id": "dairy.009",
+      "name": "Kefir 2%",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 49,
+      "protein_100g": 3.3,
+      "carbs_100g": 4.5,
+      "fat_100g": 2,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Kefir 2%",
+        "en": "Kefir 2%",
+        "uk": "Кефір 2%",
+        "ru": "Кефир 2%",
+        "es": "Kéfir 2%"
+      }
+    },
+    {
+      "id": "dairy.010",
+      "name": "Maślanka naturalna",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 40,
+      "protein_100g": 3.3,
+      "carbs_100g": 4.3,
+      "fat_100g": 1,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Maślanka naturalna",
+        "en": "Natural buttermilk",
+        "uk": "Маслянка натуральна",
+        "ru": "Пахта натуральная",
+        "es": "Suero de leche natural"
+      }
+    },
+    {
+      "id": "produce.014",
+      "name": "Pomidor",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 18,
+      "protein_100g": 0.9,
+      "carbs_100g": 3.9,
+      "fat_100g": 0.2,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Pomidor",
+        "en": "Tomato",
+        "uk": "Помідор",
+        "ru": "Помидор",
+        "es": "Tomate"
+      }
+    },
+    {
+      "id": "produce.015",
+      "name": "Ogórek zielony",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 16,
+      "protein_100g": 0.7,
+      "carbs_100g": 3.6,
+      "fat_100g": 0.1,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Ogórek zielony",
+        "en": "Cucumber",
+        "uk": "Огірок зелений",
+        "ru": "Огурец свежий",
+        "es": "Pepino"
+      }
+    },
+    {
+      "id": "produce.016",
+      "name": "Papryka czerwona",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 31,
+      "protein_100g": 1,
+      "carbs_100g": 6,
+      "fat_100g": 0.3,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Papryka czerwona",
+        "en": "Red bell pepper",
+        "uk": "Перець червоний",
+        "ru": "Перец красный",
+        "es": "Pimiento rojo"
+      }
+    },
+    {
+      "id": "produce.017",
+      "name": "Marchew",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 41,
+      "protein_100g": 0.9,
+      "carbs_100g": 10,
+      "fat_100g": 0.2,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Marchew",
+        "en": "Carrot",
+        "uk": "Морква",
+        "ru": "Морковь",
+        "es": "Zanahoria"
+      }
+    },
+    {
+      "id": "produce.018",
+      "name": "Banan",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 89,
+      "protein_100g": 1.1,
+      "carbs_100g": 23,
+      "fat_100g": 0.3,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Banan",
+        "en": "Banana",
+        "uk": "Банан",
+        "ru": "Банан",
+        "es": "Plátano"
+      }
+    },
+    {
+      "id": "drink.010",
+      "name": "Sok jabłkowy 100%",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 46,
+      "protein_100g": 0.1,
+      "carbs_100g": 11,
+      "fat_100g": 0.1,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Sok jabłkowy 100%",
+        "en": "100% apple juice",
+        "uk": "Сік яблучний 100%",
+        "ru": "Яблочный сок 100%",
+        "es": "Zumo de manzana 100%"
+      }
+    },
+    {
+      "id": "drink.011",
+      "name": "Piwo jasne 5%",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 43,
+      "protein_100g": 0.5,
+      "carbs_100g": 3.6,
+      "fat_100g": 0,
+      "default_portion_g": 500,
+      "localized_names": {
+        "pl": "Piwo jasne 5%",
+        "en": "Light beer 5%",
+        "uk": "Пиво світле 5%",
+        "ru": "Светлое пиво 5%",
+        "es": "Cerveza rubia 5%"
+      }
+    },
+    {
+      "id": "drink.012",
+      "name": "Wino czerwone wytrawne",
+      "category": "beverage",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 85,
+      "protein_100g": 0.1,
+      "carbs_100g": 2.6,
+      "fat_100g": 0,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Wino czerwone wytrawne",
+        "en": "Dry red wine",
+        "uk": "Вино червоне сухе",
+        "ru": "Сухое красное вино",
+        "es": "Vino tinto seco"
+      }
+    },
+    {
+      "id": "trad.041",
+      "name": "Pierogi z jagodami",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 200,
+      "protein_100g": 4,
+      "carbs_100g": 38,
+      "fat_100g": 3,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Pierogi z jagodami",
+        "en": "Pierogi with blueberries",
+        "uk": "Пироги з чорницею",
+        "ru": "Пироги с черникой",
+        "es": "Pierogi con arándanos"
+      }
+    },
+    {
+      "id": "trad.042",
+      "name": "Knedle ze śliwkami",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 178,
+      "protein_100g": 4,
+      "carbs_100g": 36,
+      "fat_100g": 1.5,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Knedle ze śliwkami",
+        "en": "Plum dumplings",
+        "uk": "Кнедлі зі сливами",
+        "ru": "Кнедли со сливами",
+        "es": "Knedle con ciruelas"
+      }
+    },
+    {
+      "id": "trad.043",
+      "name": "Racuchy z jabłkami",
+      "category": "homemade",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 215,
+      "protein_100g": 5,
+      "carbs_100g": 30,
+      "fat_100g": 8,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Racuchy z jabłkami",
+        "en": "Apple pancakes",
+        "uk": "Рацухи з яблуками",
+        "ru": "Рацухи с яблоками",
+        "es": "Racuchy con manzanas"
+      }
+    },
+    {
+      "id": "trad.044",
+      "name": "Kasza gryczana",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 343,
+      "protein_100g": 13,
+      "carbs_100g": 72,
+      "fat_100g": 3.4,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Kasza gryczana",
+        "en": "Buckwheat groats",
+        "uk": "Гречана крупа",
+        "ru": "Гречневая крупа",
+        "es": "Trigo sarraceno"
+      }
+    },
+    {
+      "id": "trad.045",
+      "name": "Kasza jaglana",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 378,
+      "protein_100g": 11,
+      "carbs_100g": 73,
+      "fat_100g": 4,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Kasza jaglana",
+        "en": "Millet groats",
+        "uk": "Пшоняна крупа",
+        "ru": "Пшенная крупа",
+        "es": "Mijo"
+      }
+    },
+    {
+      "id": "trad.046",
+      "name": "Makaron pełnoziarnisty",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 348,
+      "protein_100g": 14,
+      "carbs_100g": 70,
+      "fat_100g": 2.5,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Makaron pełnoziarnisty",
+        "en": "Whole grain pasta",
+        "uk": "Цільнозернові макарони",
+        "ru": "Цельнозерновые макароны",
+        "es": "Pasta integral"
+      }
+    },
+    {
+      "id": "trad.047",
+      "name": "Ryż basmati",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 360,
+      "protein_100g": 7.5,
+      "carbs_100g": 79,
+      "fat_100g": 0.5,
+      "default_portion_g": 60,
+      "localized_names": {
+        "pl": "Ryż basmati",
+        "en": "Basmati rice",
+        "uk": "Рис басматі",
+        "ru": "Рис басмати",
+        "es": "Arroz basmati"
+      }
+    },
+    {
+      "id": "trad.048",
+      "name": "Quinoa",
+      "category": "grain",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 368,
+      "protein_100g": 14,
+      "carbs_100g": 64,
+      "fat_100g": 6,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Quinoa",
+        "en": "Quinoa",
+        "uk": "Кіноа",
+        "ru": "Киноа",
+        "es": "Quinoa"
+      }
+    },
+    {
+      "id": "meat.010",
+      "name": "Pierś z indyka",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 135,
+      "protein_100g": 30,
+      "carbs_100g": 0,
+      "fat_100g": 1,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Pierś z indyka",
+        "en": "Turkey breast",
+        "uk": "Філе індички",
+        "ru": "Индюшиная грудка",
+        "es": "Pechuga de pavo"
+      }
+    },
+    {
+      "id": "meat.011",
+      "name": "Wołowina krzyżowa",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 168,
+      "protein_100g": 26,
+      "carbs_100g": 0,
+      "fat_100g": 7,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Wołowina krzyżowa",
+        "en": "Beef rump",
+        "uk": "Яловичина огузок",
+        "ru": "Говяжий огузок",
+        "es": "Cadera de ternera"
+      }
+    },
+    {
+      "id": "meat.012",
+      "name": "Polędwiczki wieprzowe",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 143,
+      "protein_100g": 26,
+      "carbs_100g": 0,
+      "fat_100g": 4,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Polędwiczki wieprzowe",
+        "en": "Pork tenderloin",
+        "uk": "Свиняча вирізка",
+        "ru": "Свиная вырезка",
+        "es": "Solomillo de cerdo"
+      }
+    },
+    {
+      "id": "meat.013",
+      "name": "Kabanos",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 460,
+      "protein_100g": 28,
+      "carbs_100g": 1,
+      "fat_100g": 38,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Kabanos",
+        "en": "Kabanos",
+        "uk": "Кабанос",
+        "ru": "Кабанос",
+        "es": "Kabanos"
+      }
+    },
+    {
+      "id": "meat.014",
+      "name": "Parówka z indyka",
+      "category": "meat",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 175,
+      "protein_100g": 13,
+      "carbs_100g": 4,
+      "fat_100g": 12,
+      "default_portion_g": 50,
+      "localized_names": {
+        "pl": "Parówka z indyka",
+        "en": "Turkey frankfurter",
+        "uk": "Сосиска з індички",
+        "ru": "Сосиска из индейки",
+        "es": "Salchicha de pavo"
+      }
+    },
+    {
+      "id": "seafood.001",
+      "name": "Łosoś pieczony",
+      "category": "seafood",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 208,
+      "protein_100g": 22,
+      "carbs_100g": 0,
+      "fat_100g": 13,
+      "default_portion_g": 150,
+      "localized_names": {
+        "pl": "Łosoś pieczony",
+        "en": "Baked salmon",
+        "uk": "Лосось запечений",
+        "ru": "Запеченный лосось",
+        "es": "Salmón al horno"
+      }
+    },
+    {
+      "id": "seafood.002",
+      "name": "Tuńczyk z puszki w sosie własnym",
+      "category": "seafood",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 116,
+      "protein_100g": 26,
+      "carbs_100g": 0,
+      "fat_100g": 1,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Tuńczyk z puszki w sosie własnym",
+        "en": "Canned tuna in brine",
+        "uk": "Тунець консервований у власному соку",
+        "ru": "Консервированный тунец в собственном соку",
+        "es": "Atún al natural"
+      }
+    },
+    {
+      "id": "seafood.003",
+      "name": "Sardynka w pomidorach",
+      "category": "seafood",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 186,
+      "protein_100g": 21,
+      "carbs_100g": 1,
+      "fat_100g": 11,
+      "default_portion_g": 80,
+      "localized_names": {
+        "pl": "Sardynka w pomidorach",
+        "en": "Sardines in tomato sauce",
+        "uk": "Сардина в томатах",
+        "ru": "Сардины в томате",
+        "es": "Sardinas en tomate"
+      }
+    },
+    {
+      "id": "seafood.004",
+      "name": "Krewetki gotowane",
+      "category": "seafood",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 99,
+      "protein_100g": 24,
+      "carbs_100g": 0.2,
+      "fat_100g": 0.3,
+      "default_portion_g": 120,
+      "localized_names": {
+        "pl": "Krewetki gotowane",
+        "en": "Boiled shrimp",
+        "uk": "Креветки варені",
+        "ru": "Вареные креветки",
+        "es": "Langostinos cocidos"
+      }
+    },
+    {
+      "id": "produce.019",
+      "name": "Awokado",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 160,
+      "protein_100g": 2,
+      "carbs_100g": 9,
+      "fat_100g": 15,
+      "default_portion_g": 100,
+      "localized_names": {
+        "pl": "Awokado",
+        "en": "Avocado",
+        "uk": "Авокадо",
+        "ru": "Авокадо",
+        "es": "Aguacate"
+      }
+    },
+    {
+      "id": "produce.020",
+      "name": "Brokuł gotowany",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 35,
+      "protein_100g": 2.4,
+      "carbs_100g": 7,
+      "fat_100g": 0.4,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Brokuł gotowany",
+        "en": "Boiled broccoli",
+        "uk": "Броколі варена",
+        "ru": "Вареная брокколи",
+        "es": "Brócoli cocido"
+      }
+    },
+    {
+      "id": "produce.021",
+      "name": "Kalafior gotowany",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 23,
+      "protein_100g": 1.8,
+      "carbs_100g": 4,
+      "fat_100g": 0.3,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Kalafior gotowany",
+        "en": "Boiled cauliflower",
+        "uk": "Цвітна капуста варена",
+        "ru": "Вареная цветная капуста",
+        "es": "Coliflor cocida"
+      }
+    },
+    {
+      "id": "produce.022",
+      "name": "Szpinak surowy",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 23,
+      "protein_100g": 2.9,
+      "carbs_100g": 3.6,
+      "fat_100g": 0.4,
+      "default_portion_g": 70,
+      "localized_names": {
+        "pl": "Szpinak surowy",
+        "en": "Raw spinach",
+        "uk": "Шпинат свіжий",
+        "ru": "Свежий шпинат",
+        "es": "Espinacas crudas"
+      }
+    },
+    {
+      "id": "produce.023",
+      "name": "Cukinia",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 17,
+      "protein_100g": 1.2,
+      "carbs_100g": 3.1,
+      "fat_100g": 0.3,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Cukinia",
+        "en": "Zucchini",
+        "uk": "Кабачок",
+        "ru": "Кабачок",
+        "es": "Calabacín"
+      }
+    },
+    {
+      "id": "produce.024",
+      "name": "Bakłażan",
+      "category": "produce",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 25,
+      "protein_100g": 1,
+      "carbs_100g": 6,
+      "fat_100g": 0.2,
+      "default_portion_g": 200,
+      "localized_names": {
+        "pl": "Bakłażan",
+        "en": "Eggplant",
+        "uk": "Баклажан",
+        "ru": "Баклажан",
+        "es": "Berenjena"
+      }
+    },
+    {
+      "id": "bakery.017",
+      "name": "Tortilla pszenna",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 304,
+      "protein_100g": 8,
+      "carbs_100g": 50,
+      "fat_100g": 7,
+      "default_portion_g": 60,
+      "localized_names": {
+        "pl": "Tortilla pszenna",
+        "en": "Wheat tortilla",
+        "uk": "Тортилья пшенична",
+        "ru": "Пшеничная тортилья",
+        "es": "Tortilla de trigo"
+      }
+    },
+    {
+      "id": "bakery.018",
+      "name": "Naan",
+      "category": "bakery",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 310,
+      "protein_100g": 9,
+      "carbs_100g": 53,
+      "fat_100g": 6,
+      "default_portion_g": 90,
+      "localized_names": {
+        "pl": "Naan",
+        "en": "Naan",
+        "uk": "Наан",
+        "ru": "Наан",
+        "es": "Pan naan"
+      }
+    },
+    {
+      "id": "snack.010",
+      "name": "Orzechy włoskie",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 654,
+      "protein_100g": 15,
+      "carbs_100g": 14,
+      "fat_100g": 65,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Orzechy włoskie",
+        "en": "Walnuts",
+        "uk": "Волоські горіхи",
+        "ru": "Грецкие орехи",
+        "es": "Nueces"
+      }
+    },
+    {
+      "id": "snack.011",
+      "name": "Pestki dyni",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 559,
+      "protein_100g": 30,
+      "carbs_100g": 11,
+      "fat_100g": 49,
+      "default_portion_g": 25,
+      "localized_names": {
+        "pl": "Pestki dyni",
+        "en": "Pumpkin seeds",
+        "uk": "Гарбузове насіння",
+        "ru": "Тыквенные семечки",
+        "es": "Semillas de calabaza"
+      }
+    },
+    {
+      "id": "snack.012",
+      "name": "Daktyle suszone",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 282,
+      "protein_100g": 2.5,
+      "carbs_100g": 75,
+      "fat_100g": 0.4,
+      "default_portion_g": 30,
+      "localized_names": {
+        "pl": "Daktyle suszone",
+        "en": "Dried dates",
+        "uk": "Сушені фініки",
+        "ru": "Сушеные финики",
+        "es": "Dátiles secos"
+      }
+    },
+    {
+      "id": "snack.013",
+      "name": "Suszone żurawiny",
+      "category": "snack",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 325,
+      "protein_100g": 0.2,
+      "carbs_100g": 83,
+      "fat_100g": 1.4,
+      "default_portion_g": 25,
+      "localized_names": {
+        "pl": "Suszone żurawiny",
+        "en": "Dried cranberries",
+        "uk": "Сушена журавлина",
+        "ru": "Сушеная клюква",
+        "es": "Arándanos rojos secos"
+      }
+    },
+    {
+      "id": "drink.013",
+      "name": "Mleko 2%",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 50,
+      "protein_100g": 3.3,
+      "carbs_100g": 4.8,
+      "fat_100g": 2,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Mleko 2%",
+        "en": "2% milk",
+        "uk": "Молоко 2%",
+        "ru": "Молоко 2%",
+        "es": "Leche 2%"
+      }
+    },
+    {
+      "id": "drink.014",
+      "name": "Mleko owsiane",
+      "category": "dairy",
+      "brand": null,
+      "restaurant": null,
+      "kcal_100g": 42,
+      "protein_100g": 0.8,
+      "carbs_100g": 6.5,
+      "fat_100g": 1.4,
+      "default_portion_g": 250,
+      "localized_names": {
+        "pl": "Mleko owsiane",
+        "en": "Oat milk",
+        "uk": "Вівсяне молоко",
+        "ru": "Овсяное молоко",
+        "es": "Leche de avena"
+      }
+    }
   ]
 }

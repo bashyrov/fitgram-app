@@ -56,7 +56,7 @@ final class CalibrationService {
     }
 
     /// Restores the calibration row to defaults (factor 1.0, reference
-    /// .creditCard, sample count 0). Used by the "Resetuj" button on the
+    /// .creditCard, sample count 0). Used by the "Reset" button on the
     /// Profile → Kalibracja screen when the user wants to start fresh.
     func reset(forUser userRemoteID: String) throws {
         let context = ModelContext(container)

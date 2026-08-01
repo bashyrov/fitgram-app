@@ -63,8 +63,8 @@ Wigilia, Wielkanoc, Tłusty Czwartek з контекстом. Pączki, mazurek, 
 
 ▸ КОНТАКТ
 
-hello@mealgram.pl
-mealgram.pl/privacy
+hello@mealgram.xyz
+mealgram.xyz/privacy
 
 Mealgram — бо дієта це не в'язниця, а ритм.
 ```
@@ -84,5 +84,5 @@ Mealgram — бо дієта це не в'язниця, а ритм.
 • Віджет і Siri Shortcuts
 • Експорт JSON / CSV / ZIP
 
-Пишіть на hello@mealgram.pl якщо чогось не вистачає!
+Пишіть на hello@mealgram.xyz якщо чогось не вистачає!
 ```

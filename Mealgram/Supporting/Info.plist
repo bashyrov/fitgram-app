@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>pl</string>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>Mealgram</string>
 	<key>CFBundleExecutable</key>
@@ -26,8 +26,35 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>app.mealgram.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mealgram</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>app.mealgram.google</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.849312185535-mlidbn8lrhfdsro4f9t2a1ruuqmucgi3</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GOOGLE_OAUTH_CLIENT_ID</key>
+	<string>$(GOOGLE_OAUTH_CLIENT_ID)</string>
+	<key>IS_PAYMENTS_ENABLED</key>
+	<string>$(IS_PAYMENTS_ENABLED)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -40,14 +67,24 @@
 	<string>Mealgram zapisuje posiłki i kalorie w Apple Health.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Mealgram używa mikrofonu do szybkiego dodawania posiłków głosem.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Mealgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Mealgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Mealgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Pozwól na śledzenie, żeby otrzymywać spersonalizowane podpowiedzi.</string>
+	<key>REVENUECAT_API_KEY</key>
+	<string>$(REVENUECAT_API_KEY)</string>
+	<key>SUPABASE_ANON_KEY</key>
+	<string>$(SUPABASE_ANON_KEY)</string>
+	<key>SUPABASE_URL</key>
+	<string>$(SUPABASE_URL)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Agbalumo-Regular.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -79,5 +116,7 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Automatic</string>
+	<key>WORKER_BASE_URL</key>
+	<string>$(WORKER_BASE_URL)</string>
 </dict>
 </plist>

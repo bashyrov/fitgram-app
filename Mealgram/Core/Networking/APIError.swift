@@ -42,13 +42,17 @@ extension APIError {
     var userMessage: String {
         switch self {
         case .notConfigured:
-            return String(localized: "Brak konfiguracji serwera. Spróbuj zaktualizować aplikację.")
+            return L("Server not configured. Try updating the app.")
         case .transport, .http(503, _), .http(504, _):
-            return String(localized: "Brak połączenia. Sprawdź internet i spróbuj jeszcze raz.")
+            return L("Brak połączenia. Sprawdź internet i spróbuj jeszcze raz.")
+        case .http(429, _):
+            return L("AI odpocznie do jutra. Dzienny limit bezpieczeństwa został wykorzystany.")
+        case .http(502, _):
+            return L("AI chwilowo nie odpowiada. Możesz dodać posiłek ręcznie.")
         case .unauthorized:
-            return String(localized: "Sesja wygasła. Zaloguj się ponownie.")
+            return L("Sesja wygasła. Zaloguj się ponownie.")
         case .http, .decoding, .unknown:
-            return String(localized: "Coś poszło nie tak. Spróbuj ponownie za chwilę.")
+            return L("Something went wrong. Try again in a moment.")
         }
     }
 }

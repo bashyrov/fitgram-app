@@ -26,7 +26,7 @@ struct ChallengesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -38,10 +38,12 @@ struct ChallengesView: View {
                 Text("Twój tydzień")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("Wszystkie wyzwania działają równolegle. Nic nie wybierasz — każdy posiłek liczy się sam.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
+                Text(
+                    "All challenges run in parallel. You don't have to choose anything — every meal counts on its own."
+                )
+                .font(Tokens.Font.footnote)
+                .foregroundStyle(Tokens.Palette.inkMuted)
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

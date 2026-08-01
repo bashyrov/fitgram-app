@@ -14,15 +14,15 @@ struct CulturalEvent: Equatable, Sendable {
 extension CulturalEvent {
     static let wigilia = CulturalEvent(
         id: "wigilia",
-        name: "Wigilia",
+        name: "Christmas Eve",
         summary: "Wieczór 24 grudnia — kolacja z 12 daniami.",
         symbol: "snowflake",
-        foodNote: "Tradycyjnie 12 potraw: barszcz, pierogi z kapustą i grzybami, karp, kompot z suszu."
+        foodNote: "Traditionally 12 dishes: borscht, pierogi with cabbage and mushrooms, carp, dried fruit compote."
     )
 
     static let tlustyCzwartek = CulturalEvent(
         id: "tlustyczwartek",
-        name: "Tłusty Czwartek",
+        name: "Fat Thursday",
         summary: "Ostatni czwartek karnawału — dzień pączków.",
         symbol: "birthday.cake.fill",
         foodNote: "Pączki tradycyjnie z marmoladą różaną. Średnio ~380 kcal za sztukę."
@@ -38,18 +38,18 @@ extension CulturalEvent {
 
     static let wielkanoc = CulturalEvent(
         id: "wielkanoc",
-        name: "Wielkanoc",
+        name: "Easter",
         summary: "Niedziela Wielkanocna — śniadanie ze święconką.",
         symbol: "sun.max.fill",
-        foodNote: "Jajka, biała kiełbasa, żurek, mazurek, babka. Łatwo przekroczyć dzienny cel — wpisuj na bieżąco."
+        foodNote: "Eggs, white sausage, sour rye soup, mazurek, bundt cake. It's easy to exceed your daily goal — log them as you go."
     )
 
     static let andrzejki = CulturalEvent(
         id: "andrzejki",
         name: "Andrzejki",
-        summary: "30 listopada — wieczór wróżb i potańcówek.",
+        summary: "November 30 — fortune-telling evening and dancing.",
         symbol: "sparkles",
-        foodNote: "Domówki z przekąskami i drinkami — pamiętaj o wodzie między kieliszkami."
+        foodNote: "House parties with snacks and drinks — remember water between glasses."
     )
 
     static let sylwester = CulturalEvent(
@@ -57,23 +57,23 @@ extension CulturalEvent {
         name: "Sylwester",
         summary: "Noc 31 grudnia — pożegnanie roku.",
         symbol: "fireworks",
-        foodNote: "Drobne przekąski liczą się bardziej niż myślisz — wpisz je razem na koniec wieczoru."
+        foodNote: "Small snacks count more than you think — log them all together at the end of the evening."
     )
 
     static let dzienMatki = CulturalEvent(
         id: "dzienmatki",
-        name: "Dzień Matki",
-        summary: "26 maja — święto wszystkich Mam.",
+        name: "Mother's Day",
+        summary: "May 26 — a holiday for all moms.",
         symbol: "gift.fill",
         foodNote: "Mama często prosi tylko o miły obiad i kawałek tortu — wpisz go bez wyrzutów."
     )
 
     static let dzienDziecka = CulturalEvent(
         id: "dziendziecka",
-        name: "Dzień Dziecka",
-        summary: "1 czerwca — lody, gofry, dzień przyjemności.",
+        name: "Children's Day",
+        summary: "June 1 — ice cream, waffles, a day of treats.",
         symbol: "cup.and.saucer.fill",
-        foodNote: "Słodkości w plenerze sumują się szybciej, niż się wydaje — kilka pyszności + ruch = ok."
+        foodNote: "Sweet treats outdoors add up faster than it seems — a few delicacies + movement = ok."
     )
 
     static let truskawkowySezon = CulturalEvent(
@@ -86,7 +86,7 @@ extension CulturalEvent {
 
     static let dzienBabci = CulturalEvent(
         id: "dzienbabci",
-        name: "Dzień Babci",
+        name: "Grandmother's Day",
         summary: "21 stycznia — odwiedziny u Babci.",
         symbol: "heart.text.square.fill",
         foodNote: "Babcina szarlotka, pierogi, rosół — wpisz to, co naprawdę zjadłeś, nie połowę."
@@ -102,10 +102,10 @@ extension CulturalEvent {
 
     static let nocSwietojanska = CulturalEvent(
         id: "nocswietojanska",
-        name: "Noc Świętojańska",
+        name: "Midsummer Night",
         summary: "23 czerwca — wianki, ogniska, grill.",
         symbol: "flame.fill",
-        foodNote: "Grillowane mięso + piwo + przekąski — łatwy wieczór 1500+ kcal. Notuj na bieżąco."
+        foodNote: "Grilled meat + beer + snacks — an easy 1500+ kcal evening. Log as you go."
     )
 
     static let catalog: [CulturalEvent] = [

@@ -5,8 +5,8 @@ Concrete steps in execution order. Tick each box as you go. Total estimated time
 ## Phase 0: Money + accounts (1 day calendar, blocked by approvals)
 
 - [ ] Buy [Apple Developer Program](https://developer.apple.com/programs/) ($99/year). **24-72h verification.**
-- [ ] Register `mealgram.pl` (any PL registrar, ~80 zł)
-- [ ] Set up business email `hello@mealgram.pl` (Google Workspace $6/mo or self-hosted)
+- [ ] Register `mealgram.xyz` (any PL registrar, ~80 zł)
+- [ ] Set up business email `hello@mealgram.xyz` (Google Workspace $6/mo or self-hosted)
 - [ ] Register JDG / sp. z o.o. with PL tax office — needed for receiving Apple payouts
 - [ ] Sign up [revenuecat.com](https://www.revenuecat.com) (free)
 - [ ] Sign up [supabase.com](https://supabase.com) (free)
@@ -42,9 +42,9 @@ Concrete steps in execution order. Tick each box as you go. Total estimated time
   - Subtitle: **Polski licznik kalorii bez stresu**
   - Category: Health & Fitness / Lifestyle
   - Content Rights: **No** (we don't display third-party content beyond OFF attribution)
-- [ ] Paste Privacy Policy URL: `https://mealgram.pl/privacy`
-- [ ] Paste Support URL: `mailto:hello@mealgram.pl`
-- [ ] Paste Marketing URL: `https://mealgram.pl`
+- [ ] Paste Privacy Policy URL: `https://mealgram.xyz/privacy`
+- [ ] Paste Support URL: `mailto:hello@mealgram.xyz`
+- [ ] Paste Marketing URL: `https://mealgram.xyz`
 - [ ] Localizations: add **English (US)** + **Ukrainian** + **Polish**
 - [ ] For each language, paste from `docs/app-store/metadata-{pl,en,uk}.md`:
   - [ ] Name, Subtitle, Description, Keywords, Promotional text, What's New

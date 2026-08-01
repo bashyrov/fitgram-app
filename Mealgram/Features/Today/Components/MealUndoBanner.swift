@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Snackbar shown after a meal delete. Five-second window with a single
-/// "Cofnij" action; tapping it re-saves the meal through the normal
+/// "Undo" action; tapping it re-saves the meal through the normal
 /// MealSaving pipeline so streak/achievements re-fire naturally.
 struct MealUndoBanner: View {
     let snapshot: MealEntrySnapshot
@@ -26,7 +26,7 @@ struct MealUndoBanner: View {
                 Haptics.light()
                 onUndo()
             } label: {
-                Text("Cofnij")
+                Text("Undo")
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.primary)
                     .padding(.horizontal, Tokens.Space.md)
@@ -39,7 +39,7 @@ struct MealUndoBanner: View {
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.7))
             }
-            .accessibilityLabel(Text("Zamknij"))
+            .accessibilityLabel(Text("Close"))
         }
         .padding(Tokens.Space.md)
         .background(
@@ -52,10 +52,11 @@ struct MealUndoBanner: View {
 
     private var summary: String {
         guard let first = snapshot.items.first?.name else {
-            return String(localized: "Wpis bez nazwy")
+            return L("Wpis bez nazwy")
         }
         if snapshot.items.count > 1 {
-            return "\(first) i \(snapshot.items.count - 1) więcej"
+            let format = L("%@ i %lld więcej")
+            return String.localizedStringWithFormat(format, first, snapshot.items.count - 1)
         }
         return first
     }

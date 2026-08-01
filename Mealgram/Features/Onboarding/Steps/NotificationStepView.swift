@@ -11,10 +11,10 @@ struct NotificationStepView: View {
     var body: some View {
         OnboardingStepScaffold(
             title: "Lekkie przypomnienia",
-            subtitle: "Krótka notka rano, gdy zaczynasz dzień, i wieczorem, żeby uzupełnić wpisy.",
-            primaryTitle: "Włącz przypomnienia",
+            subtitle: "A short note in the morning when your day begins, and one in the evening to wrap up.",
+            primaryTitle: "Enable reminders",
             primarySystemImage: "bell.fill",
-            secondaryTitle: "Może później",
+            secondaryTitle: "Maybe later",
             secondaryAction: onContinue,
             onPrimary: { Task { await request() } },
             content: {
@@ -25,10 +25,10 @@ struct NotificationStepView: View {
                                 .font(.title2)
                                 .foregroundStyle(Tokens.Palette.warning)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("8:00 — Cześć!")
+                                Text("8:00 — Hi there!")
                                     .font(Tokens.Font.bodyEmphasized)
                                     .foregroundStyle(Tokens.Palette.ink)
-                                Text("Gotów na śniadanie? Stuknij, żeby dodać.")
+                                Text("Ready for breakfast? Tap to add it.")
                                     .font(Tokens.Font.footnote)
                                     .foregroundStyle(Tokens.Palette.inkMuted)
                             }
@@ -44,7 +44,7 @@ struct NotificationStepView: View {
                                 Text("21:00 — Podsumowanie")
                                     .font(Tokens.Font.bodyEmphasized)
                                     .foregroundStyle(Tokens.Palette.ink)
-                                Text("Zobacz, jak minął dzień.")
+                                Text("Look back at your day.")
                                     .font(Tokens.Font.footnote)
                                     .foregroundStyle(Tokens.Palette.inkMuted)
                             }

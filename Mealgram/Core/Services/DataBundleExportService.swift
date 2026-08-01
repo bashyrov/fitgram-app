@@ -100,11 +100,13 @@ final class DataBundleExportService {
         case zipFailed
     }
 
-    private static let fileTimestamp: DateFormatter = {
+    private static var fileTimestamp: DateFormatter {
+
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd-HHmmss"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter
-    }()
+    
+}
 }

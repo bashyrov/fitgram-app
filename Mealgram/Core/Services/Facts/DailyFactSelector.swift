@@ -32,18 +32,37 @@ final class DailyFactSelector {
         fact(for: now())
     }
 
+    /// Today's fact inside a specific category. This keeps the daily
+    /// highlight aligned with the user's current goal instead of picking
+    /// randomly from the whole library.
+    func factForToday(in category: NutritionFact.Category) -> NutritionFact? {
+        fact(for: now(), in: category)
+    }
+
     /// Visible for tests — fact for any arbitrary date.
     func fact(for date: Date) -> NutritionFact? {
+        fact(for: date, in: nil)
+    }
+
+    /// Visible for tests — fact for any arbitrary date and optional
+    /// category. Falls back to the full catalog when the category has no
+    /// entries, so the Today screen never goes blank.
+    func fact(for date: Date, in category: NutritionFact.Category?) -> NutritionFact? {
         guard !catalog.isEmpty else {
             Self.logger.error("Empty fact catalog — nothing to pick")
             return nil
         }
+        let scoped = category.map { wanted in
+            catalog.filter { $0.category == wanted }
+        } ?? catalog
+        let pool = scoped.isEmpty ? catalog : scoped
         let key = Self.dayKey(for: date, calendar: calendar)
         // Stable FNV-1a 32-bit hash so we don't depend on Swift's
         // randomly seeded String.hashValue (which differs per process).
-        let hash = Self.fnv1a32(key)
-        let index = Int(hash % UInt32(catalog.count))
-        return catalog[index]
+        let categorySalt = category?.rawValue ?? "all"
+        let hash = Self.fnv1a32("\(key).\(categorySalt)")
+        let index = Int(hash % UInt32(pool.count))
+        return pool[index]
     }
 
     /// Public so callers (e.g. the "facts" sheet) can derive the same

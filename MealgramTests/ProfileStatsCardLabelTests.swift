@@ -3,6 +3,16 @@ import XCTest
 @testable import Mealgram
 
 final class ProfileStatsCardLabelTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
+    }
+
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "app.language")
+        super.tearDown()
+    }
 
     func testZeroDaysShowsTodayCopy() {
         XCTAssertEqual(ProfileStatsCard.daysWithUsLabel(0), "Dzisiaj dołączyłeś")

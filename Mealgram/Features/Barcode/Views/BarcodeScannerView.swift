@@ -34,7 +34,7 @@ struct BarcodeScannerView: View {
                     if isLooking, let code = state.lastBarcode {
                         HStack(spacing: Tokens.Space.sm) {
                             ProgressView().tint(.white)
-                            Text("Sprawdzam \(code)")
+                            Text(String.localizedStringWithFormat(L("Sprawdzam %@"), code))
                                 .font(.system(.footnote, design: .rounded))
                                 .foregroundStyle(.white)
                         }

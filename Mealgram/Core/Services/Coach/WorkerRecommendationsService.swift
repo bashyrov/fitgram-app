@@ -30,7 +30,8 @@ final class WorkerRecommendationsService: RecommendationsServing {
             payload: request,
             requiresAuth: false  // anonymous payload
         )
-        Logger.coach.notice("WorkerRecommendationsService dispatching to \(self.baseURL.absoluteString, privacy: .public)")
+        Logger.coach.notice(
+            "WorkerRecommendationsService dispatching to \(self.baseURL.absoluteString, privacy: .public)")
         return try await client.send(endpoint, expecting: Recommendations.self)
     }
 }

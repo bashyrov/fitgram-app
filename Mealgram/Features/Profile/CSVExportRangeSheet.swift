@@ -40,7 +40,7 @@ struct CSVExportRangeSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Anuluj", action: onDismiss)
+                    Button("Cancel", action: onDismiss)
                 }
             }
         }
@@ -49,14 +49,14 @@ struct CSVExportRangeSheet: View {
     private var presetCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Co eksportować?")
+                Text("What to export?")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
-                presetRow(.all, label: "Cała historia", note: "Wszystkie wpisy.")
+                presetRow(.all, label: "Full history", note: "Wszystkie wpisy.")
                 Divider().background(Tokens.Palette.separator)
-                presetRow(.last30, label: "Ostatnie 30 dni", note: "Świetne na miesięczny przegląd.")
+                presetRow(.last30, label: "Last 30 days", note: "Świetne na miesięczny przegląd.")
                 Divider().background(Tokens.Palette.separator)
-                presetRow(.last7, label: "Ostatnie 7 dni", note: "Krótki tydzień.")
+                presetRow(.last7, label: "Last 7 days", note: "Short week.")
                 Divider().background(Tokens.Palette.separator)
                 presetRow(.custom, label: "Własny zakres", note: "Wybierz daty Od i Do.")
             }

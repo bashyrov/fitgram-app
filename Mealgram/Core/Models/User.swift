@@ -154,12 +154,12 @@ enum DietaryPreference: String, Codable, CaseIterable, Sendable, Identifiable, H
 
     var label: String {
         switch self {
-        case .vegetarian: return String(localized: "Wegetariańskie")
-        case .vegan: return String(localized: "Wegańskie")
-        case .glutenFree: return String(localized: "Bez glutenu")
-        case .dairyFree: return String(localized: "Bez nabiału")
-        case .keto: return String(localized: "Keto")
-        case .pescatarian: return String(localized: "Pescatariańskie")
+        case .vegetarian: return L("Wegetariańskie")
+        case .vegan: return L("Wegańskie")
+        case .glutenFree: return L("Bez glutenu")
+        case .dairyFree: return L("Dairy-free")
+        case .keto: return L("Keto")
+        case .pescatarian: return L("Pescatariańskie")
         }
     }
 

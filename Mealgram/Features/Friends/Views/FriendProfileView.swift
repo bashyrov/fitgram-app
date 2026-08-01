@@ -18,7 +18,7 @@ struct FriendProfileView: View {
     /// their own library.
     var onCopyRecipe: ((PublicRecipeReference) -> Void)?
     /// Optional — when present, the bottom action bar exposes a
-    /// destructive "Usuń znajomość" CTA.
+    /// destructive "Unfriend" CTA.
     var onUnfriend: (() -> Void)?
 
     @Environment(ToastCenter.self) var toasts
@@ -38,10 +38,10 @@ struct FriendProfileView: View {
 
         var label: LocalizedStringKey {
             switch self {
-            case .stats: return "Statystyki"
-            case .goals: return "Cele"
-            case .activity: return "Aktywność"
-            case .reactions: return "Reakcje"
+            case .stats: return "Stats"
+            case .goals: return "Goals"
+            case .activity: return "Activity"
+            case .reactions: return "Reactions"
             }
         }
 
@@ -58,9 +58,17 @@ struct FriendProfileView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
+                profileBackground
                 if isLoading {
-                    ProgressView()
+                    ScrollView {
+                        VStack(spacing: Tokens.Space.md) {
+                            LoadingShimmer(cornerRadius: 28).frame(height: 260)
+                            LoadingShimmer(cornerRadius: 22).frame(height: 58)
+                            LoadingShimmer(cornerRadius: 22).frame(height: 110)
+                            LoadingShimmer(cornerRadius: 22).frame(height: 180)
+                        }
+                        .padding(Tokens.Space.screenPadding)
+                    }
                 } else if let snapshot {
                     content(snapshot)
                 } else {
@@ -71,31 +79,53 @@ struct FriendProfileView: View {
             .toolbar { toolbarContent }
             .task { await load() }
             .confirmationDialog(
-                "Zablokować tego użytkownika?",
+                "Block this user?",
                 isPresented: $isBlockConfirmed,
                 titleVisibility: .visible
             ) {
-                Button("Zablokuj", role: .destructive) { Task { await block() } }
-                Button("Anuluj", role: .cancel) {}
+                Button("Block", role: .destructive) { Task { await block() } }
+                Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Stracisz znajomość, a osoba ta przestanie widzieć Twój profil.")
+                Text("You'll lose the connection and they won't see your profile.")
             }
             .confirmationDialog(
-                "Usunąć znajomość?",
+                "Unfriend?",
                 isPresented: $isUnfriendConfirmed,
                 titleVisibility: .visible
             ) {
-                Button("Usuń znajomość", role: .destructive) {
+                Button("Unfriend", role: .destructive) {
                     onUnfriend?()
                     onDismiss()
                 }
-                Button("Anuluj", role: .cancel) {}
+                Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Możesz w każdej chwili wysłać nowe zaproszenie.")
+                Text("You can send a new invitation any time.")
             }
             .sheet(isPresented: $isReportPresented) { reportSheet }
         }
         .toastSurface()
+    }
+
+    private var profileBackground: some View {
+        ZStack {
+            Tokens.Palette.background
+            Circle()
+                .fill(Tokens.Palette.primarySoft.opacity(0.42))
+                .frame(width: 360, height: 360)
+                .blur(radius: 110)
+                .offset(x: -160, y: -220)
+            Circle()
+                .fill(Tokens.Palette.accentSoft.opacity(0.24))
+                .frame(width: 320, height: 320)
+                .blur(radius: 116)
+                .offset(x: 160, y: -10)
+            Circle()
+                .fill(Tokens.Palette.warning.opacity(0.09))
+                .frame(width: 260, height: 260)
+                .blur(radius: 105)
+                .offset(x: -90, y: 390)
+        }
+        .ignoresSafeArea()
     }
 
     @ToolbarContentBuilder
@@ -108,19 +138,19 @@ struct FriendProfileView: View {
                     .frame(width: 32, height: 32)
                     .background(Circle().fill(Tokens.Palette.surfaceMuted))
             }
-            .accessibilityLabel(Text("Zamknij"))
+            .accessibilityLabel(Text("Close"))
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
                 Button(role: .destructive) {
                     isBlockConfirmed = true
                 } label: {
-                    Label("Zablokuj", systemImage: "hand.raised.fill")
+                    Label("Block", systemImage: "hand.raised.fill")
                 }
                 Button(role: .destructive) {
                     isReportPresented = true
                 } label: {
-                    Label("Zgłoś", systemImage: "exclamationmark.bubble.fill")
+                    Label("Report", systemImage: "exclamationmark.bubble.fill")
                 }
             } label: {
                 Image(systemName: "ellipsis")
@@ -129,7 +159,7 @@ struct FriendProfileView: View {
                     .frame(width: 32, height: 32)
                     .background(Circle().fill(Tokens.Palette.surfaceMuted))
             }
-            .accessibilityLabel(Text("Więcej"))
+            .accessibilityLabel(Text("More"))
         }
     }
 
@@ -200,23 +230,25 @@ struct FriendProfileView: View {
     }
 
     private var heroBackdrop: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .mealgramShadow(Tokens.Shadow.card)
-            Circle()
-                .fill(Tokens.Palette.primary.opacity(0.22))
-                .frame(width: 180, height: 180)
-                .blur(radius: 60)
-                .offset(x: -120, y: -60)
-            Circle()
-                .fill(Tokens.Palette.accent.opacity(0.22))
-                .frame(width: 200, height: 200)
-                .blur(radius: 70)
-                .offset(x: 130, y: 70)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
-        .allowsHitTesting(false)
+        RoundedRectangle(cornerRadius: 30, style: .continuous)
+            .fill(
+                LinearGradient(
+                    colors: [
+                        Tokens.Palette.surface.opacity(0.92),
+                        Tokens.Palette.primarySoft.opacity(0.54),
+                        Tokens.Palette.accentSoft.opacity(0.36),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .stroke(.white.opacity(0.44), lineWidth: 1)
+            )
+            .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 26, y: 16)
+            .allowsHitTesting(false)
     }
 
     private func avatarHero(_ snapshot: FriendProfileSnapshot) -> some View {
@@ -284,7 +316,7 @@ struct FriendProfileView: View {
                 HeroChip(
                     id: "streak",
                     symbol: "flame.fill",
-                    text: String(localized: "\(streak) dni z rzędu"),
+                    text: String.localizedStringWithFormat(L("%lld days in a row"), streak),
                     tint: Tokens.Palette.warning,
                     isProminent: true
                 )
@@ -296,7 +328,7 @@ struct FriendProfileView: View {
                 HeroChip(
                     id: "member",
                     symbol: "leaf.fill",
-                    text: String(localized: "Mealgram-er od \(formatted)"),
+                    text: String.localizedStringWithFormat(L("Mealgram-er since %@"), formatted),
                     tint: Tokens.Palette.success,
                     isProminent: false
                 )
@@ -305,7 +337,7 @@ struct FriendProfileView: View {
                 HeroChip(
                     id: "friend",
                     symbol: "person.2.fill",
-                    text: String(localized: "Znajomi od \(formatted)"),
+                    text: String.localizedStringWithFormat(L("Friends since %@"), formatted),
                     tint: Tokens.Palette.primary,
                     isProminent: false
                 )
@@ -379,8 +411,13 @@ struct FriendProfileView: View {
         .padding(4)
         .background(
             RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                .fill(Tokens.Palette.surfaceMuted)
+                .fill(Tokens.Palette.surface.opacity(0.78))
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
+                .stroke(.white.opacity(0.34), lineWidth: 1)
+        )
+        .shadow(color: Tokens.Palette.primary.opacity(0.06), radius: 12, y: 7)
     }
 
     private func tabPill(_ tab: Tab) -> some View {
@@ -468,7 +505,7 @@ struct FriendProfileView: View {
                         .mealgramShadow(Tokens.Shadow.card)
                 }
                 .buttonStyle(.pressable)
-                .accessibilityLabel(Text("Usuń znajomość"))
+                .accessibilityLabel(Text("Unfriend"))
             }
         }
         .padding(.horizontal, Tokens.Space.screenPadding)
@@ -523,6 +560,10 @@ struct FriendProfileView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, Tokens.Space.xxl)
+        .padding(.horizontal, Tokens.Space.lg)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.80)))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(.white.opacity(0.34), lineWidth: 1))
     }
 
     private var fallback: some View {
@@ -535,7 +576,7 @@ struct FriendProfileView: View {
                     .font(.system(size: 32))
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
-            Text(loadError ?? String(localized: "Profil niedostępny."))
+            Text(loadError ?? L("Profil niedostępny."))
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.inkMuted)
         }
@@ -544,18 +585,31 @@ struct FriendProfileView: View {
     private var reportSheet: some View {
         NavigationStack {
             ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
+                profileBackground
                 ScrollView {
                     VStack(spacing: Tokens.Space.md) {
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                                Text("Powód zgłoszenia")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                                TextEditor(text: $reportReason)
-                                    .frame(minHeight: 120)
-                            }
+                        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                            Text("Powód zgłoszenia")
+                                .font(Tokens.Font.footnote)
+                                .foregroundStyle(Tokens.Palette.inkMuted)
+                            TextEditor(text: $reportReason)
+                                .scrollContentBackground(.hidden)
+                                .frame(minHeight: 120)
+                                .padding(Tokens.Space.sm)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                        .fill(Tokens.Palette.surfaceMuted.opacity(0.82))
+                                )
                         }
+                        .padding(Tokens.Space.lg)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .background(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous).fill(
+                                Tokens.Palette.surface.opacity(0.84))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(
+                                .white.opacity(0.36), lineWidth: 1))
                         Text("Zgłoszenie trafia do naszego zespołu moderacji. Nie informujemy o decyzjach.")
                             .font(Tokens.Font.caption)
                             .foregroundStyle(Tokens.Palette.inkMuted)
@@ -564,11 +618,11 @@ struct FriendProfileView: View {
                     .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text("Zgłoś"))
+            .navigationTitle(Text("Report"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Anuluj") { isReportPresented = false }
+                    Button("Cancel") { isReportPresented = false }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Wyślij") {
@@ -587,7 +641,7 @@ struct FriendProfileView: View {
         do {
             snapshot = try await service.snapshot(forUserID: userID, viewer: viewerID)
         } catch {
-            loadError = String(localized: "Nie udało się załadować profilu.")
+            loadError = L("Nie udało się załadować profilu.")
             Logger.persistence.error("Snapshot load failed: \(String(describing: error))")
         }
         isLoading = false
@@ -599,7 +653,10 @@ struct FriendProfileView: View {
             toasts.success(intent.toastTitle, message: intent.toastSubtitle(name: snapshot?.displayName))
             Haptics.success()
         } catch {
-            toasts.error("Nie udało się wysłać", message: "Spróbuj jeszcze raz za chwilę.")
+            toasts.error(
+                L("Nie udało się wysłać"),
+                message: L("Spróbuj jeszcze raz za chwilę.")
+            )
         }
     }
 
@@ -613,7 +670,10 @@ struct FriendProfileView: View {
         try? await service.report(userID, reason: reportReason, as: viewerID)
         Haptics.success()
         isReportPresented = false
-        toasts.info("Zgłoszenie wysłane", message: "Dzięki, nasz zespół moderacji się tym zajmie.")
+        toasts.info(
+            L("Zgłoszenie wysłane"),
+            message: L("Thanks — our moderation team will look into it.")
+        )
         reportReason = ""
     }
 }

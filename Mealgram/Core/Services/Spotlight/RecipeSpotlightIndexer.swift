@@ -83,7 +83,7 @@ final class RecipeSpotlightIndexer: RecipeSpotlightIndexing {
         if !summary.isEmpty { return summary }
         let ingredientNames = recipe.ingredients.prefix(4).map(\.name)
         if ingredientNames.isEmpty {
-            return String(localized: "Twój przepis Mealgram")
+            return L("Twój przepis Mealgram")
         }
         return ingredientNames.joined(separator: ", ")
     }

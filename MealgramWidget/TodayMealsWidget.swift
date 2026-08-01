@@ -12,8 +12,8 @@ struct TodayMealsWidget: Widget {
             TodayMealsWidgetEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
         }
-        .configurationDisplayName(String(localized: "Dzisiejsze posiłki"))
-        .description(String(localized: "Lista ostatnich posiłków z kaloriami."))
+        .configurationDisplayName(WL("Dzisiejsze posiłki"))
+        .description(WL("Lista ostatnich posiłków z kaloriami."))
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
@@ -29,12 +29,12 @@ struct TodayMealsProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (TodayMealsEntry) -> Void) {
-        let snap = WidgetSnapshotStore.shared.load() ?? .placeholder
+        let snap = WidgetSnapshotStore.shared.load() ?? .preview
         completion(TodayMealsEntry(date: Date(), snapshot: snap))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<TodayMealsEntry>) -> Void) {
-        let snap = WidgetSnapshotStore.shared.load() ?? .placeholder
+        let snap = WidgetSnapshotStore.shared.load() ?? .preview
         let entry = TodayMealsEntry(date: Date(), snapshot: snap)
         let nextRefresh = Date().addingTimeInterval(30 * 60)
         completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
@@ -57,7 +57,7 @@ struct TodayMealsWidgetEntryView: View {
     private func content(rowLimit: Int, showFooter: Bool) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(String(localized: "Dziś"))
+                Text(WL("Dziś"))
                     .font(.headline.weight(.bold))
                     .foregroundStyle(.primary)
                 Spacer()
@@ -88,10 +88,10 @@ struct TodayMealsWidgetEntryView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(String(localized: "Brak posiłków"))
+            Text(WL("Brak posiłków"))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
-            Text(String(localized: "Stuknij, żeby dodać pierwszy."))
+            Text(WL("Stuknij, żeby dodać pierwszy."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -100,7 +100,7 @@ struct TodayMealsWidgetEntryView: View {
 
     private var footer: some View {
         HStack {
-            Text(String(localized: "Pozostało"))
+            Text(WL("Pozostało"))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Spacer()

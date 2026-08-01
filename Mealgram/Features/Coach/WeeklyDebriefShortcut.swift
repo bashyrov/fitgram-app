@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Compact "Co u Ciebie" link on Today — opens the weekly debrief sheet.
+/// Compact "How you're doing" link on Today — opens the weekly debrief sheet.
 struct WeeklyDebriefShortcut: View {
     let onTap: () -> Void
 
@@ -16,7 +16,7 @@ struct WeeklyDebriefShortcut: View {
                         .foregroundStyle(Tokens.Palette.accent)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Co u Ciebie")
+                    Text("How you're doing")
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("Podsumowanie tygodnia od Oli")

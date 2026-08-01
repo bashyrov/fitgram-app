@@ -32,7 +32,7 @@ struct RecipeModificationsSheet: View {
                                 }
                                 ShareLink(
                                     item: bulletList,
-                                    subject: Text("Modyfikacje: \(recipe.title)"),
+                                    subject: Text(String.localizedStringWithFormat(L("Modyfikacje: %@"), recipe.title)),
                                     preview: SharePreview(
                                         "Modyfikacje: \(recipe.title)",
                                         icon: Image(systemName: intent.symbol)
@@ -60,7 +60,7 @@ struct RecipeModificationsSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
@@ -118,7 +118,14 @@ struct RecipeModificationsSheet: View {
     }
 
     private var bulletList: String {
-        var lines = ["Modyfikacje: \(recipe.title)", "(\(intent.label))", ""]
+        var lines = [
+            String.localizedStringWithFormat(
+                L("Modyfikacje: %@"),
+                recipe.title
+            ),
+            "(\(intent.label))",
+            "",
+        ]
         for suggestion in suggestions {
             lines.append("• \(suggestion.ingredient.capitalized): \(suggestion.replacement)")
         }

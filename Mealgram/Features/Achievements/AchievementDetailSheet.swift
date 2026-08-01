@@ -66,35 +66,20 @@ struct AchievementDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
             }
         }
     }
 
     private var badge: some View {
-        ZStack {
-            Circle()
-                .fill(isEarned ? Tokens.Palette.primarySoft : Tokens.Palette.surfaceMuted)
-                .frame(width: 128, height: 128)
-            Image(systemName: definition.symbol)
-                .font(.system(size: 52, weight: .semibold))
-                .foregroundStyle(isEarned ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
-            if !isEarned {
-                Circle()
-                    .fill(Color.black.opacity(0.18))
-                    .frame(width: 128, height: 128)
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 36, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-        }
+        AchievementMedallion(definition: definition, isEarned: isEarned, size: 136)
     }
 
     @ViewBuilder
     private var statusLine: some View {
         if let earnedAt {
-            Text("Zdobyte \(Self.dateFormatter.string(from: earnedAt))")
+            Text(String.localizedStringWithFormat(L("Zdobyte %@"), Self.dateFormatter.string(from: earnedAt)))
                 .font(Tokens.Font.subheadline)
                 .foregroundStyle(Tokens.Palette.primary)
         } else {
@@ -104,10 +89,12 @@ struct AchievementDetailSheet: View {
         }
     }
 
-    private static let dateFormatter: DateFormatter = {
+    private static var dateFormatter: DateFormatter {
+
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         formatter.dateFormat = "d MMMM yyyy"
         return formatter
-    }()
+
+    }
 }

@@ -130,7 +130,8 @@ final class GoalTrackingService {
         default: isReached = false
         }
 
-        let points = goalEntries
+        let points =
+            goalEntries
             .sorted(by: { $0.recordedAt < $1.recordedAt })
             .map { entry in
                 WeighInPoint(

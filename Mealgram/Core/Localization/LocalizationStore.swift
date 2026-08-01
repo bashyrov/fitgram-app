@@ -1,6 +1,7 @@
 import Foundation
-import Observation
 import ObjectiveC
+import Observation
+import WidgetKit
 
 /// In-app language switcher. Lets the user pick a language without
 /// leaving Mealgram and applies it immediately — no app restart needed,
@@ -46,6 +47,9 @@ final class LocalizationStore {
 
     private(set) var locale: Locale
 
+    /// App Group used to mirror the chosen language to the widget process.
+    private static let appGroupID = "group.app.mealgram.shared"
+
     init() {
         let code = LocalizationStore.resolveInitialLanguage()
         self.locale = Locale(identifier: code)
@@ -55,6 +59,7 @@ final class LocalizationStore {
         // Mirror into AppleLanguages so any third-party framework that
         // reads the system preferred list also follows the user's pick.
         UserDefaults.standard.set([code], forKey: "AppleLanguages")
+        LocalizationStore.mirrorToAppGroup(code)
     }
 
     /// Switches the app language immediately. After this returns, the
@@ -67,14 +72,47 @@ final class LocalizationStore {
         UserDefaults.standard.set([code], forKey: "AppleLanguages")
         Bundle.setLanguage(code)
         locale = Locale(identifier: code)
+        LocalizationStore.mirrorToAppGroup(code)
+        // Coach + Recommendations are localised at *generation* time and
+        // cached on the user row, so a fresh language pick won't repaint
+        // them until something else triggers a refresh. Tell observers to
+        // rebuild now so the "Porady od Oli" hero matches the new locale.
+        NotificationCenter.default.post(
+            name: Notification.Name("MealgramLanguageChanged"),
+            object: nil
+        )
+    }
+
+    /// Mirrors the chosen language into the shared App Group so the widget
+    /// extension (a separate process) can render in the same language, then
+    /// asks WidgetKit to redraw so the change shows without waiting for the
+    /// next timeline refresh.
+    private static func mirrorToAppGroup(_ code: String) {
+        UserDefaults(suiteName: appGroupID)?.set(code, forKey: storageKey)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     /// Returns either the user's saved choice or — on first launch —
     /// the best match between iOS preferred languages and our supported
     /// list. Falls back to Polish (the development language).
+    /// Current ISO-639-1 code the app is running in. Honours the in-app
+    /// switcher (`app.language` UserDefault) over `Locale.current`, which
+    /// is cached at thread init and does not reflect mid-session changes.
+    /// Use this when sending `locale` to the Worker / Gemini so AI replies
+    /// match what the user picked in Settings.
+    nonisolated static func currentLanguageCode() -> String {
+        if let saved = UserDefaults.standard.string(forKey: storageKey),
+            supportedLanguages.contains(where: { $0.code == saved })
+        {
+            return saved
+        }
+        return Locale.current.language.languageCode?.identifier ?? "en"
+    }
+
     private static func resolveInitialLanguage() -> String {
         if let saved = UserDefaults.standard.string(forKey: storageKey),
-            supportedLanguages.contains(where: { $0.code == saved }) {
+            supportedLanguages.contains(where: { $0.code == saved })
+        {
             return saved
         }
         let supportedCodes = supportedLanguages.map(\.code)
@@ -85,6 +123,34 @@ final class LocalizationStore {
             }
         }
         return "en"
+    }
+}
+
+/// Routes a string-key lookup through the swapped Bundle so the runtime
+/// language switcher (`Bundle.setLanguage`) takes effect — `String(localized:)`
+/// goes through `LocalizedStringResource` which honours `Locale.current` (a
+/// per-thread cache that doesn't update mid-session), bypassing our bundle
+/// swap. This helper hits the swapped bundle's `localizedString(forKey:...)`
+/// directly so every call site honours the in-app picker.
+func L(_ key: String, comment: String = "") -> String {
+    Bundle.main.localizedString(forKey: key, value: key, table: nil)
+}
+
+/// Inline fallback for generated data catalogs whose strings are built
+/// dynamically and therefore cannot be extracted reliably into
+/// Localizable.xcstrings by Xcode.
+func TL(pl: String, en: String, uk: String, ru: String, es: String) -> String {
+    switch LocalizationStore.currentLanguageCode() {
+    case "pl":
+        return pl
+    case "uk":
+        return uk
+    case "ru":
+        return ru
+    case "es":
+        return es
+    default:
+        return en
     }
 }
 
@@ -134,14 +200,14 @@ extension Bundle {
     }
 }
 
-private extension DispatchQueue {
+extension DispatchQueue {
     private static var onceTracker = Set<String>()
     private static let onceLock = NSLock()
 
     /// Runs the block exactly once across the lifetime of the process.
     /// We swap `Bundle.main`'s class only once — re-running
     /// `object_setClass` with the same class is harmless but pointless.
-    static func once(file: String = #file, line: Int = #line, block: () -> Void) {
+    fileprivate static func once(file: String = #file, line: Int = #line, block: () -> Void) {
         let token = "\(file):\(line)"
         onceLock.lock()
         defer { onceLock.unlock() }

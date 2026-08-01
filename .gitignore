@@ -6,6 +6,7 @@ Icon?
 
 # Xcode
 build/
+build-*/
 DerivedData/
 *.xcuserstate
 *.xcuserdatad/
@@ -49,6 +50,9 @@ GoogleService-Info.plist
 
 # Logs
 *.log
+
+# Local Codex scratch/backups
+.codex-backups/
 
 # fastlane
 fastlane/report.xml

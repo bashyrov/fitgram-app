@@ -3,7 +3,7 @@ import SwiftUI
 
 // swiftlint:disable type_body_length
 
-/// History + trend chart for weigh-ins. Reachable from Profile → "Waga".
+/// History + trend chart for weigh-ins. Reachable from Profile → "Weight".
 struct WeightLogView: View {
     let userRemoteID: String
     let initialWeight: Double?
@@ -21,13 +21,14 @@ struct WeightLogView: View {
 
     @AppStorage("weight.targetKg") private var targetWeightStored: Double = 0
 
-    private static let dayFormatter: DateFormatter = {
+    private static var dayFormatter: DateFormatter {
+
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
         return formatter
-    }()
-
+    
+}
     var body: some View {
         NavigationStack {
             ZStack {
@@ -53,11 +54,11 @@ struct WeightLogView: View {
                 }
                 .refreshable { await state.refresh(for: userRemoteID) }
             }
-            .navigationTitle(Text("Waga"))
+            .navigationTitle(Text("Weight"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Zamknij", action: onDismiss)
+                    Button("Close", action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -65,7 +66,7 @@ struct WeightLogView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .accessibilityLabel(Text("Dodaj wpis wagi"))
+                    .accessibilityLabel(Text("Add weight entry"))
                 }
             }
             .task { await state.refresh(for: userRemoteID) }
@@ -82,7 +83,7 @@ struct WeightLogView: View {
                 AddWeightSheet(
                     initialWeight: entry.weightKg,
                     initialNote: entry.note,
-                    title: "Edytuj wpis",
+                    title: "Edit entry",
                     onCommit: { weight, note in
                         Task {
                             await state.update(
@@ -94,21 +95,32 @@ struct WeightLogView: View {
                     onDismiss: { editingEntry = nil }
                 )
             }
-            .alert("Cel wagi", isPresented: $isEditingTarget) {
+            .alert("Weight goal", isPresented: $isEditingTarget) {
                 TextField("kg", value: $targetDraftKg, format: .number)
                     .keyboardType(.decimalPad)
-                Button("Zapisz") {
+                Button("Save") {
                     targetWeightStored = targetDraftKg
                     Haptics.light()
                 }
                 if targetWeightStored > 0 {
-                    Button("Wyczyść", role: .destructive) {
+                    Button("Clear", role: .destructive) {
                         targetWeightStored = 0
                     }
                 }
-                Button("Anuluj", role: .cancel) {}
+                Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Linia celu pojawi się na wykresie.")
+                Text("Goal line will appear on the chart.")
+            }
+            .alert(
+                "Nie udało się zapisać zmian",
+                isPresented: Binding(
+                    get: { state.errorMessage != nil },
+                    set: { if !$0 { state.errorMessage = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { state.errorMessage = nil }
+            } message: {
+                Text(state.errorMessage ?? L("Couldn't save. Try again."))
             }
         }
     }
@@ -117,7 +129,7 @@ struct WeightLogView: View {
         Card(elevation: Tokens.Shadow.float) {
             HStack(alignment: .firstTextBaseline, spacing: Tokens.Space.lg) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Ostatnio")
+                    Text("Latest")
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                     Text(String(format: "%.1f kg", summary.latest.weightKg))
@@ -127,7 +139,7 @@ struct WeightLogView: View {
                 Spacer(minLength: 0)
                 if let avg = summary.sevenDayAverageKg {
                     VStack(alignment: .center, spacing: 2) {
-                        Text("Średnia 7d")
+                        Text("7-day average")
                             .font(Tokens.Font.footnote)
                             .foregroundStyle(Tokens.Palette.inkMuted)
                         Text(String(format: "%.1f kg", avg))
@@ -137,7 +149,7 @@ struct WeightLogView: View {
                     Spacer(minLength: 0)
                 }
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("30 dni")
+                    Text("30 days")
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                     Text(deltaText(summary.thirtyDayDelta))
@@ -170,7 +182,7 @@ struct WeightLogView: View {
     }
 
     private func rateText(_ value: Double) -> String {
-        if abs(value) < 0.05 { return "≈ stabilnie" }
+        if abs(value) < 0.05 { return "≈ stable" }
         let sign = value > 0 ? "+" : ""
         return "\(sign)\(String(format: "%.2f", value)) kg/tyg."
     }
@@ -194,8 +206,8 @@ struct WeightLogView: View {
                             Image(systemName: "flag.checkered")
                             Text(
                                 targetWeightStored > 0
-                                    ? String(format: "Cel %.1f kg", targetWeightStored)
-                                    : "Ustaw cel")
+                                    ? String(format: "%.1f kg", targetWeightStored)
+                                    : "Set")
                         }
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.primary)
@@ -205,25 +217,28 @@ struct WeightLogView: View {
                 if state.entries.count >= 2 {
                     Chart(state.entries.reversed()) { entry in
                         LineMark(
-                            x: .value("Data", entry.recordedAt),
-                            y: .value("Waga", entry.weightKg)
+                            x: .value("Date", entry.recordedAt),
+                            y: .value("Weight", entry.weightKg)
                         )
                         .interpolationMethod(.monotone)
                         .foregroundStyle(Tokens.Palette.primary)
                         PointMark(
-                            x: .value("Data", entry.recordedAt),
-                            y: .value("Waga", entry.weightKg)
+                            x: .value("Date", entry.recordedAt),
+                            y: .value("Weight", entry.weightKg)
                         )
                         .symbolSize(28)
                         .foregroundStyle(Tokens.Palette.primary)
                         if targetWeightStored > 0 {
-                            RuleMark(y: .value("Cel", targetWeightStored))
-                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                                .foregroundStyle(Tokens.Palette.warning)
-                                .annotation(position: .top, alignment: .trailing) {
-                                    Text(String(format: "%.1f kg", targetWeightStored))
-                                        .font(Tokens.Font.caption2)
-                                        .foregroundStyle(Tokens.Palette.warning)
+                            // Dashed warning line + small dot anchor on the
+                            // right. No "Goal/Cel" text — the chip button
+                            // below carries the numeric value.
+                            RuleMark(y: .value("Target", targetWeightStored))
+                                .lineStyle(StrokeStyle(lineWidth: 1.2, dash: [4, 4]))
+                                .foregroundStyle(Tokens.Palette.warning.opacity(0.85))
+                                .annotation(position: .top, alignment: .trailing, spacing: 2) {
+                                    Circle()
+                                        .fill(Tokens.Palette.warning)
+                                        .frame(width: 6, height: 6)
                                 }
                         }
                     }
@@ -246,7 +261,7 @@ struct WeightLogView: View {
                     }
                     .frame(height: 180)
                 } else {
-                    Text("Dodaj jeszcze jeden wpis, żeby zobaczyć trend.")
+                    Text("Add one more entry to see a trend.")
                         .font(Tokens.Font.footnote)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
@@ -281,7 +296,7 @@ struct WeightLogView: View {
                         } else {
                             Image(systemName: "arrow.down.circle.fill")
                         }
-                        Text(isImporting ? "Importuję…" : "Importuj z Apple Health")
+                        Text(isImporting ? "Importing…" : "Importuj z Apple Health")
                     }
                     .font(Tokens.Font.bodyEmphasized)
                     .foregroundStyle(Tokens.Palette.primary)
@@ -297,7 +312,7 @@ struct WeightLogView: View {
                 Image(systemName: "scalemass.fill")
                     .font(.system(size: 36))
                     .foregroundStyle(Tokens.Palette.primary)
-                Text("Brak wpisów wagi")
+                Text("No weight entries")
                     .font(Tokens.Font.headline)
                     .foregroundStyle(Tokens.Palette.ink)
                 Text("Dodaj pierwszy wpis, żeby śledzić trend. Aktualizujemy też wagę w Twoim profilu.")
@@ -334,12 +349,12 @@ struct WeightLogView: View {
                             Button {
                                 editingEntry = entry
                             } label: {
-                                Label("Edytuj", systemImage: "pencil")
+                                Label("Edit", systemImage: "pencil")
                             }
                             Button(role: .destructive) {
                                 Task { await state.delete(entry, for: userRemoteID) }
                             } label: {
-                                Label("Usuń", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                         if entry.id != state.entries.last?.id {
@@ -449,11 +464,11 @@ struct WeightLogView: View {
 
     private static func statusMessage(for result: HealthImporter.ImportResult) -> String {
         switch result {
-        case .unavailable: return String(localized: "Apple Health niedostępne na tym urządzeniu.")
-        case .denied: return String(localized: "Brak zgody na dostęp do wagi z Apple Health.")
-        case .imported(let count): return String(localized: "Zaimportowano \(count) wpisów.")
-        case .noNewSamples: return String(localized: "Brak nowych wpisów.")
-        case .failed(let reason): return String(localized: "Nie udało się zaimportować: \(reason)")
+        case .unavailable: return L("Apple Health is unavailable on this device.")
+        case .denied: return L("Apple Health access denied.")
+        case .imported(let count): return String.localizedStringWithFormat(L("Imported %lld entries."), count)
+        case .noNewSamples: return L("No new entries.")
+        case .failed(let reason): return String.localizedStringWithFormat(L("Import failed: %@"), reason)
         }
     }
 }

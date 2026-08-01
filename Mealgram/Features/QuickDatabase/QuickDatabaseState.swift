@@ -15,7 +15,7 @@ final class QuickDatabaseState {
     var customOnly: Bool = false
     private(set) var isLoading = false
     /// True when the catalogue holds at least one user-authored row;
-    /// drives whether the "Tylko moje" filter chip should appear.
+    /// drives whether the "My only" filter chip should appear.
     private(set) var hasCustomFoods: Bool = false
 
     private let catalog: any FoodCatalog
@@ -40,7 +40,7 @@ final class QuickDatabaseState {
     }
 
     /// Returns true when the user hasn't typed a query or picked a
-    /// category — the moment the "Ostatnie" + "Częste" carousels make
+    /// category — the moment the "Ostatnie" + "Frequent" carousels make
     /// sense to display at the top of the list.
     var shouldShowSuggestions: Bool {
         query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -99,7 +99,7 @@ final class QuickDatabaseState {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return base }
         return base.filter { food in
-            food.name.localizedCaseInsensitiveContains(trimmed)
+            food.allSearchableNames.contains { $0.localizedCaseInsensitiveContains(trimmed) }
                 || (food.brand?.localizedCaseInsensitiveContains(trimmed) ?? false)
                 || (food.restaurantName?.localizedCaseInsensitiveContains(trimmed) ?? false)
         }

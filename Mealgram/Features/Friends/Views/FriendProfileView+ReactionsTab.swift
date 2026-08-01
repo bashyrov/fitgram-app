@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Reakcje" tab — three large gradient cards mapping the three positive
+/// "Reactions" tab — three large gradient cards mapping the three positive
 /// reaction intents. Each card fires `service.sendPositiveReaction` and
 /// shows a toast on success.
 extension FriendProfileView {
@@ -10,7 +10,7 @@ extension FriendProfileView {
             reactionCard(
                 intent: .encourage,
                 title: "Zachęć",
-                subtitle: "Daj sygnał, że trzymasz kciuki za dzisiaj.",
+                subtitle: "Send a sign you're rooting for them today.",
                 symbol: "hand.thumbsup.fill",
                 tint: Tokens.Palette.primary
             )
@@ -24,7 +24,7 @@ extension FriendProfileView {
             reactionCard(
                 intent: .congratulate,
                 title: "Brawo",
-                subtitle: "Doceń serię i wytrwałość.",
+                subtitle: "Honor the streak and persistence.",
                 symbol: "rosette",
                 tint: Tokens.Palette.warning
             )
@@ -72,15 +72,16 @@ extension FriendProfileView {
                     .foregroundStyle(tint)
             }
             .padding(Tokens.Space.md)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                            .stroke(tint.opacity(0.22), lineWidth: 1)
-                    )
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(Tokens.Palette.surface.opacity(0.82))
             )
-            .mealgramShadow(Tokens.Shadow.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(tint.opacity(0.24), lineWidth: 1)
+            )
+            .shadow(color: tint.opacity(0.10), radius: 16, y: 9)
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(Text(title))

@@ -20,13 +20,18 @@ struct StreakFreezeCard: View {
                         .foregroundStyle(Tokens.Palette.warning)
                 }
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Seria \(streakLength) dni czeka")
+                    Text(String.localizedStringWithFormat(L("Seria %lld dni czeka"), streakLength))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(Tokens.Palette.ink)
-                    Text("Użyj freeze (zostało \(freezesAvailable)), żeby utrzymać serię bez wpisu.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
+                    Text(
+                        String.localizedStringWithFormat(
+                            L("Użyj freeze (zostało %lld), żeby utrzymać serię bez wpisu."),
+                            freezesAvailable
+                        )
+                    )
+                    .font(Tokens.Font.footnote)
+                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .fixedSize(horizontal: false, vertical: true)
                     Button(action: onUse) {
                         HStack(spacing: 4) {
                             Text("Użyj freeze")

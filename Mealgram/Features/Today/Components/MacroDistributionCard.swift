@@ -21,9 +21,9 @@ struct MacroDistributionCard: View {
 
     private var slices: [Slice] {
         [
-            Slice(name: "Białko", kcal: protein * 4, color: Tokens.Palette.primary),
-            Slice(name: "Węgle", kcal: carbs * 4, color: Tokens.Palette.warning),
-            Slice(name: "Tłuszcz", kcal: fat * 9, color: Tokens.Palette.accent),
+            Slice(name: "Protein", kcal: protein * 4, color: Tokens.Palette.primary),
+            Slice(name: "Carbs", kcal: carbs * 4, color: Tokens.Palette.warning),
+            Slice(name: "Fat", kcal: fat * 9, color: Tokens.Palette.accent),
         ]
     }
 
@@ -44,19 +44,19 @@ struct MacroDistributionCard: View {
                     }
                 }
                 macroRow(
-                    label: "Białko",
+                    label: "Protein",
                     grams: protein,
                     goal: proteinGoal,
                     color: Tokens.Palette.primary
                 )
                 macroRow(
-                    label: "Węgle",
+                    label: "Carbs",
                     grams: carbs,
                     goal: carbsGoal,
                     color: Tokens.Palette.warning
                 )
                 macroRow(
-                    label: "Tłuszcz",
+                    label: "Fat",
                     grams: fat,
                     goal: fatGoal,
                     color: Tokens.Palette.accent
@@ -91,7 +91,7 @@ struct MacroDistributionCard: View {
                     .font(Tokens.Font.subheadline)
                     .foregroundStyle(Tokens.Palette.ink)
                 Spacer()
-                Text("\(Int(grams)) / \(goal) g")
+                Text(String.localizedStringWithFormat(L("%lld / %lld g"), Int(grams), goal))
                     .font(Tokens.Font.footnote)
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
@@ -109,6 +109,6 @@ struct MacroDistributionCard: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(label))
-        .accessibilityValue(Text("\(Int(grams)) z \(goal) gramów"))
+        .accessibilityValue(Text(String.localizedStringWithFormat(L("%lld z %lld gramów"), Int(grams), goal)))
     }
 }
