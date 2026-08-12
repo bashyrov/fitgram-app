@@ -45,8 +45,13 @@ body::before {
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--citrus); }
 img { max-width: 100%; display: block; }
-.container { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
-.narrow { width: min(820px, calc(100% - 40px)); margin: 0 auto; }
+.container,
+.narrow {
+  width: min(1160px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+.narrow { width: min(860px, calc(100% - 40px)); }
 
 .site-header {
   position: sticky;
@@ -75,11 +80,12 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.02em;
 }
 .brand img {
-  width: 58px;
-  height: 23px;
+  width: 64px;
+  height: auto;
   object-fit: contain;
   border-radius: 0;
   box-shadow: none;
+  transform: translateZ(0);
 }
 
 .nav-links {
@@ -128,13 +134,14 @@ img { max-width: 100%; display: block; }
 }
 
 .hero {
-  padding: 76px 0 72px;
+  padding: 72px 0 70px;
 }
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(340px, .82fr);
   gap: 56px;
   align-items: center;
+  justify-items: stretch;
 }
 .eyebrow {
   display: inline-flex;
@@ -204,11 +211,15 @@ h1,
 
 .showcase {
   position: relative;
-  min-height: 800px;
+  min-height: 860px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 .phone {
   position: relative;
-  width: min(390px, 88vw);
+  width: min(393px, 88vw);
+  aspect-ratio: 393 / 852;
   margin-left: auto;
   padding: 13px;
   border-radius: 56px;
@@ -216,7 +227,8 @@ h1,
   box-shadow: 0 34px 82px rgba(32, 40, 38, 0.27);
 }
 .screen {
-  min-height: 844px;
+  height: 100%;
+  min-height: 0;
   border-radius: 44px;
   padding: 28px 18px 18px;
   overflow: hidden;
@@ -545,7 +557,7 @@ h1,
 .floating-card {
   position: absolute;
   left: 0;
-  bottom: 96px;
+  bottom: 116px;
   width: 250px;
   padding: 18px;
   border-radius: 24px;
@@ -706,7 +718,8 @@ section { padding: 74px 0; }
 }
 
 .page-hero {
-  padding: 72px 0 34px;
+  padding: 78px 0 24px;
+  text-align: center;
 }
 .page-hero .narrow,
 main > section > .narrow {
@@ -714,10 +727,21 @@ main > section > .narrow {
   margin-left: auto;
   margin-right: auto;
 }
+.page-hero .eyebrow {
+  margin-left: auto;
+  margin-right: auto;
+}
+.page-hero .page-lead,
+.page-hero .trust-row {
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
 .legal-card {
   width: min(860px, calc(100% - 40px));
   padding: clamp(24px, 4vw, 42px);
-  margin: 22px auto;
+  margin: 18px auto;
+  text-align: left;
 }
 .legal-card h2 {
   margin: 34px 0 12px;
@@ -841,7 +865,10 @@ code {
   .support-grid {
     grid-template-columns: 1fr;
   }
-  .showcase { min-height: auto; }
+  .showcase {
+    min-height: auto;
+    justify-content: center;
+  }
   .phone { margin: 20px auto 0; }
   .floating-card {
     position: relative;
@@ -870,6 +897,14 @@ code {
   .footer-grid {
     grid-template-columns: 1fr;
   }
-  .screen { min-height: 760px; }
+  .phone {
+    width: min(360px, calc(100vw - 30px));
+    border-radius: 48px;
+    padding: 10px;
+  }
+  .screen {
+    border-radius: 39px;
+    padding: 26px 14px 14px;
+  }
   section { padding: 52px 0; }
 }
