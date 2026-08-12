@@ -1,7 +1,4 @@
-# Clean URLs — old paths some users might guess
-/privacy              /privacy.html   200
-/support              /support.html   200
-/terms                /terms.html     200
+# Old paths some users might guess
 /polityka-prywatnosci  /privacy.html  301
 /pomoc                 /support.html  301
 /wsparcie              /support.html  301
