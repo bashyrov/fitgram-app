@@ -3,601 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mealgram — AI calorie tracker for Polish cuisine</title>
-<meta name="description" content="Mealgram is an AI-powered calorie tracker built for Polish food. No scales, no gram-counting — just snap your plate.">
-<meta property="og:title" content="Mealgram — AI calorie tracker for Polish cuisine">
-<meta property="og:description" content="160+ Polish dishes, AI Coach Ola, iCloud sync, Apple Watch. Crafted in Poland.">
+<title>Fitgram — AI calorie tracker for real life</title>
+<meta name="description" content="Fitgram is an iOS calorie tracker with AI food logging, Coach Ola, recipes, activity, streaks and a 7-day Pro trial.">
+<meta property="og:title" content="Fitgram — AI calorie tracker for real life">
+<meta property="og:description" content="Log food by photo, voice, barcode or manually. Built around fast corrections, calm progress and Fitgram Pro.">
 <meta property="og:image" content="/assets/icon.png">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#84CC16">
+<meta name="theme-color" content="#ff7a2f">
+<link rel="canonical" href="https://fitgram.space/">
 <link rel="icon" type="image/png" href="/assets/icon.png">
 <link rel="apple-touch-icon" href="/assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --primary: #84CC16;
-  --primary-dark: #65A30D;
-  --accent: #FB7185;
-  --ink: #1C1917;
-  --ink-muted: #57534E;
-  --ink-subtle: #A8A29E;
-  --bg: #FAFAF9;
-  --bg-soft: #F5F5F4;
-  --primary-soft: #ECFCCB;
-  --accent-soft: #FCE7E9;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-.container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; border: none; background: none; }
-img { display: block; max-width: 100%; }
-
-/* Background ornament */
-.ornament {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-.ornament .blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.25;
-}
-.ornament .blob1 {
-  width: 500px; height: 500px;
-  background: var(--primary);
-  top: -200px; right: -150px;
-}
-.ornament .blob2 {
-  width: 600px; height: 600px;
-  background: var(--accent);
-  bottom: -300px; left: -200px;
-}
-
-/* Header */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(250, 250, 249, 0.8);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 800;
-  font-size: 20px;
-}
-.brand img { width: 36px; height: 36px; border-radius: 9px; }
-.nav-links { display: flex; gap: 28px; font-weight: 500; font-size: 14px; color: var(--ink-muted); }
-.nav-links a:hover { color: var(--ink); }
-.cta-mini {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--ink);
-  color: white;
-  padding: 9px 16px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 13px;
-}
-@media (max-width: 700px) { .nav-links { display: none; } }
-
-/* Hero */
-.hero {
-  position: relative;
-  z-index: 1;
-  padding: 80px 0 100px;
-  text-align: center;
-}
-.hero .pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--primary-soft);
-  color: var(--primary-dark);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.hero h1 {
-  font-size: clamp(36px, 6vw, 72px);
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin-bottom: 24px;
-}
-.hero h1 .grad {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.hero p {
-  font-size: clamp(18px, 2.5vw, 22px);
-  color: var(--ink-muted);
-  max-width: 640px;
-  margin: 0 auto 40px;
-}
-.hero-ctas {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 64px;
-}
-
-/* App Store badge */
-.app-store-badge {
-  display: inline-block;
-  transition: transform .2s, opacity .2s;
-}
-.app-store-badge:hover { transform: translateY(-2px); opacity: 0.92; }
-.app-store-badge svg { display: block; height: 56px; width: auto; }
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-soft);
-  color: var(--ink);
-  padding: 16px 28px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-.btn-secondary:hover { background: white; }
-
-.hero-stats {
-  display: flex;
-  gap: 48px;
-  justify-content: center;
-  flex-wrap: wrap;
-  color: var(--ink-muted);
-  font-size: 14px;
-}
-.hero-stats strong { display: block; color: var(--ink); font-size: 28px; font-weight: 800; }
-
-/* Hero phone mockup */
-.hero-phone {
-  position: relative;
-  z-index: 1;
-  margin: 40px auto 0;
-  max-width: 280px;
-}
-.hero-phone .phone-shell {
-  background: linear-gradient(180deg, #1C1917, #292524);
-  border-radius: 44px;
-  padding: 12px;
-  box-shadow:
-    0 50px 100px rgba(0, 0, 0, 0.18),
-    0 30px 60px rgba(0, 0, 0, 0.12),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-.hero-phone .phone-screen {
-  background: linear-gradient(180deg, var(--primary-soft) 0%, var(--bg) 50%, var(--accent-soft) 100%);
-  border-radius: 34px;
-  aspect-ratio: 9/19;
-  position: relative;
-  overflow: hidden;
-  padding: 24px 18px;
-}
-.hero-phone .phone-screen::before {
-  content: '';
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 24px;
-  background: #1C1917;
-  border-radius: 18px;
-}
-.mock-card {
-  background: white;
-  border-radius: 18px;
-  padding: 16px;
-  margin-top: 32px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-.mock-ring {
-  width: 120px;
-  height: 120px;
-  margin: 4px auto;
-  border-radius: 50%;
-  background: conic-gradient(var(--primary) 65%, #E7E5E4 65%);
-  display: grid;
-  place-items: center;
-}
-.mock-ring-inner {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: white;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  font-size: 22px;
-  color: var(--ink);
-}
-.mock-label { text-align: center; font-size: 11px; color: var(--ink-muted); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-
-/* Sections */
-section { position: relative; z-index: 1; padding: 80px 0; }
-section h2 {
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
-}
-section .lead {
-  font-size: clamp(16px, 2vw, 20px);
-  color: var(--ink-muted);
-  max-width: 640px;
-  margin-bottom: 56px;
-}
-.section-header { text-align: center; }
-.section-header .lead { margin-left: auto; margin-right: auto; }
-
-/* Features grid */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-}
-.feature {
-  background: white;
-  border-radius: 24px;
-  padding: 32px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  transition: transform .3s, box-shadow .3s;
-}
-.feature:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
-}
-.feature .icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  font-size: 26px;
-  margin-bottom: 20px;
-}
-.feature h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-.feature p { color: var(--ink-muted); font-size: 15px; }
-
-.feature.c1 .icon { background: var(--primary-soft); }
-.feature.c2 .icon { background: var(--accent-soft); }
-.feature.c3 .icon { background: #FEF3C7; }
-.feature.c4 .icon { background: #DBEAFE; }
-.feature.c5 .icon { background: #EDE9FE; }
-.feature.c6 .icon { background: #D1FAE5; }
-
-/* Premium section */
-.premium {
-  background: linear-gradient(135deg, var(--ink) 0%, #292524 100%);
-  color: white;
-  border-radius: 32px;
-  padding: clamp(40px, 6vw, 80px);
-  position: relative;
-  overflow: hidden;
-  margin: 40px 0;
-}
-.premium::before {
-  content: '';
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: var(--primary);
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.4;
-  top: -100px;
-  right: -100px;
-}
-.premium > * { position: relative; z-index: 1; }
-.premium .premium-pill {
-  display: inline-flex;
-  gap: 6px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.premium h2 { color: white; }
-.premium .lead { color: #D6D3D1; }
-.premium-list { display: grid; gap: 16px; margin-top: 40px; }
-.premium-list li { display: flex; align-items: start; gap: 16px; color: #E7E5E4; font-size: 16px; list-style: none; }
-.premium-list .check {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  font-size: 14px;
-}
-.premium-price { margin-top: 40px; }
-.premium-price .num { font-size: 56px; font-weight: 900; letter-spacing: -0.02em; }
-.premium-price .sub { color: #D6D3D1; }
-.premium-price .free { display: block; color: var(--primary); font-weight: 700; margin-top: 8px; }
-
-/* Privacy callout */
-.privacy-callout {
-  background: var(--primary-soft);
-  border-radius: 24px;
-  padding: clamp(32px, 5vw, 56px);
-  text-align: center;
-  border: 1px solid rgba(132, 204, 22, 0.2);
-}
-.privacy-callout .lock {
-  font-size: 48px;
-  margin-bottom: 16px;
-  display: block;
-}
-.privacy-callout h2 { margin-bottom: 12px; }
-.privacy-callout p { color: var(--ink-muted); font-size: 17px; max-width: 580px; margin: 0 auto 24px; }
-.privacy-callout a {
-  color: var(--primary-dark);
-  font-weight: 700;
-  border-bottom: 2px solid var(--primary);
-  padding-bottom: 2px;
-}
-
-/* Footer */
-footer {
-  background: var(--ink);
-  color: #D6D3D1;
-  padding: 60px 0 40px;
-  position: relative;
-  z-index: 1;
-}
-footer .footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 48px;
-  margin-bottom: 40px;
-}
-footer h4 { color: white; font-size: 14px; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-footer ul { list-style: none; }
-footer ul li { margin-bottom: 8px; font-size: 14px; }
-footer ul li a:hover { color: white; }
-footer .brand-mark {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  color: white;
-  font-weight: 800;
-  font-size: 22px;
-}
-footer .brand-mark img { width: 40px; height: 40px; border-radius: 10px; }
-footer .tagline { color: #A8A29E; max-width: 320px; font-size: 14px; }
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 13px;
-  color: #A8A29E;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-@media (max-width: 700px) {
-  footer .footer-grid { grid-template-columns: 1fr; }
-}
-</style>
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
-
-<div class="ornament">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-</div>
-
-<header>
+<header class="site-header">
   <div class="container nav">
-    <a href="/" class="brand">
-      <img src="/assets/icon.png" alt="Mealgram">
-      <span>Mealgram</span>
+    <a href="/" class="brand" aria-label="Fitgram home">
+      <img src="/assets/icon.png" alt="">
+      <span>Fitgram</span>
     </a>
-    <nav class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#premium">Premium</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="#log">Log food</a>
+      <a href="#coach">Ola</a>
+      <a href="#pro">Pro</a>
       <a href="/privacy.html">Privacy</a>
-      <a href="/support.html">Support</a>
     </nav>
-    <a href="#download" class="cta-mini">Download</a>
+    <a class="nav-action" href="#download">Get the app</a>
   </div>
 </header>
 
 <main>
-<section class="hero">
-  <div class="container">
-    <span class="pill">🇵🇱 Crafted in Poland · iOS</span>
-    <h1>Polish flavours, <span class="grad">AI without a scale</span></h1>
-    <p>An intelligent calorie tracker built for Polish cuisine. No scales, no gram-counting — just snap your plate.</p>
-    <div class="hero-ctas" id="download">
-      <a href="#" class="app-store-badge" aria-label="Download on the App Store">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 60" role="img" aria-hidden="true">
-          <rect width="180" height="60" rx="11" fill="#000"/>
-          <g fill="#fff">
-            <path d="M30.6 23.6c-.9-1.1-2.3-1.9-3.7-2-1.5-.2-3 .9-3.7.9-.8 0-2.1-.9-3.4-.9-1.8 0-3.4 1-4.3 2.6-1.9 3.2-.5 8 1.3 10.6.9 1.3 2 2.7 3.3 2.6 1.3 0 1.8-.8 3.4-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.2-2.6.6-.8 1-1.7 1.3-2.5-2.7-1-3.2-4.7-3.2-4.9 0-.1.1-3.7 2.9-4.5l-.5-.3zm-3-3.4c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.6-3 1.5-.7.8-1.3 2-1.2 3.2 1.2.1 2.4-.5 3.1-1.4z"/>
-            <text x="46" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" font-size="9" font-weight="400" letter-spacing="0.3">Download on the</text>
-            <text x="46" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" font-size="20" font-weight="600" letter-spacing="-0.3">App Store</text>
-          </g>
-        </svg>
-      </a>
-      <a href="#features" class="btn-secondary">
-        See features ↓
-      </a>
-    </div>
-    <div class="hero-phone">
-      <div class="phone-shell">
-        <div class="phone-screen">
-          <div class="mock-card">
-            <div class="mock-ring">
-              <div class="mock-ring-inner">1340<br><span style="font-size:9px;color:#888">/ 2100</span></div>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Fitgram for iPhone</span>
+        <h1>Calories that feel <span class="accent-word">effortless</span>.</h1>
+        <p class="hero-copy">Photo, voice, barcode, manual logging and Coach Ola in one calm iOS app. Built for people who want progress without turning food into homework.</p>
+        <div class="hero-actions" id="download">
+          <a class="button" href="#pro">Start with 7 days free</a>
+          <a class="button-ghost" href="#log">See how it works</a>
+        </div>
+        <div class="trust-row" aria-label="Fitgram highlights">
+          <span>5 app languages</span>
+          <span>AI corrections before saving</span>
+          <span>Private by design</span>
+        </div>
+      </div>
+
+      <div class="showcase" aria-label="Fitgram app preview">
+        <div class="phone">
+          <div class="screen">
+            <div class="island"></div>
+            <div class="app-top">
+              <strong>Today</strong>
+              <div class="avatar" aria-hidden="true"></div>
             </div>
-            <div class="mock-label">Calories today</div>
+            <div class="calorie-panel">
+              <small>remaining</small>
+              <div class="calorie-number">760</div>
+              <div class="progress-line"><span></span></div>
+            </div>
+            <div class="macro-grid">
+              <div><b>82g</b><span>protein</span></div>
+              <div><b>168g</b><span>carbs</span></div>
+              <div><b>51g</b><span>fat</span></div>
+            </div>
+            <div class="mini-card">
+              <strong>Ola suggests</strong>
+              <span>Choose a high-protein dinner and keep the streak easy tonight.</span>
+            </div>
+            <div class="timeline-item">
+              <div><strong>Risotto with prawns</strong><span>general mode · 420 g</span></div>
+              <b>612</b>
+            </div>
+            <div class="timeline-item">
+              <div><strong>Strength training</strong><span>manual activity · 45 min</span></div>
+              <b>-310</b>
+            </div>
           </div>
+        </div>
+        <div class="floating-card">
+          <strong>Always confirm before logging</strong>
+          <p>Fitgram shows a clear portion screen first, so AI never writes mystery calories into your day.</p>
         </div>
       </div>
     </div>
-    <div class="hero-stats" style="margin-top: 64px;">
-      <div><strong>160+</strong> Polish dishes</div>
-      <div><strong>5</strong> languages</div>
-      <div><strong>150</strong> AI facts</div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="features">
-  <div class="container section-header">
-    <h2>Everything you need</h2>
-    <p class="lead">Mealgram combines AI speed with Polish cuisine. No privacy compromises.</p>
-  </div>
-  <div class="container features-grid">
-    <div class="feature c1">
-      <div class="icon">📸</div>
-      <h3>Snap to log</h3>
-      <p>AI recognises pierogi, schabowy, kasza and 160+ Polish dishes. No typing, no scale.</p>
-    </div>
-    <div class="feature c2">
-      <div class="icon">📦</div>
-      <h3>Barcode scanner</h3>
-      <p>Open Food Facts straight from the wrapper in 2 seconds. Thousands of products from Polish stores.</p>
-    </div>
-    <div class="feature c3">
-      <div class="icon">🎙</div>
-      <h3>Voice logging</h3>
-      <p>"I had tomato soup and a sandwich" — Mealgram understands Polish, English, Ukrainian and more.</p>
-    </div>
-    <div class="feature c4">
-      <div class="icon">🧠</div>
-      <h3>AI Coach Ola</h3>
-      <p>Daily insights plus 150 facts about calories, training and Polish cooking.</p>
-    </div>
-    <div class="feature c5">
-      <div class="icon">🎯</div>
-      <h3>Goal tracking</h3>
-      <p>Weight trend chart, smart reminders, AI hints tuned to where you want to be.</p>
-    </div>
-    <div class="feature c6">
-      <div class="icon">⌚</div>
-      <h3>Apple Watch + widgets</h3>
-      <p>Calories on your wrist, Live Activity, lock screen widgets. Everything syncs over iCloud.</p>
-    </div>
-  </div>
-</section>
-
-<section id="premium">
-  <div class="container">
-    <div class="premium">
-      <span class="premium-pill">✨ Premium</span>
-      <h2>The full power of Mealgram</h2>
-      <p class="lead">Everything you need to stay on track for the long haul.</p>
-      <ul class="premium-list">
-        <li><span class="check">✓</span>Daily weight, trend chart, reminder — keep your goal in sight</li>
-        <li><span class="check">✓</span>Daily AI summaries from Coach Ola, not just weekly</li>
-        <li><span class="check">✓</span>Full history + JSON/CSV/ZIP export — no 30-day cap</li>
-        <li><span class="check">✓</span>Unlimited photo, barcode and voice scans</li>
-        <li><span class="check">✓</span>Unlimited "My recipes" + friends community</li>
-      </ul>
-      <div class="premium-price">
-        <span class="num">$3.99</span>
-        <span class="sub">/ month · billed once a year</span>
-        <span class="free">+ 7 days free · cancel with one tap</span>
+  <section id="log">
+    <div class="container">
+      <p class="section-kicker">Food logging</p>
+      <h2 class="section-title">Five ways to add a meal. One clean confirmation flow.</h2>
+      <p class="section-lead">Every route ends on the same portion screen: general mode for the whole dish, detailed mode for ingredients, and fast AI refresh when the name or product data needs a correction.</p>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="glyph">01</div>
+          <h3>Photo scan</h3>
+          <p>Take a picture, get a meal estimate, adjust grams, then save only when it looks right.</p>
+        </article>
+        <article class="feature-card">
+          <div class="glyph">02</div>
+          <h3>Voice input</h3>
+          <p>Say what you ate. Fitgram parses products and weights, then asks you to confirm.</p>
+        </article>
+        <article class="feature-card">
+          <div class="glyph">03</div>
+          <h3>Barcode</h3>
+          <p>Scan packaged food and adjust the amount. No AI needed for barcode products.</p>
+        </article>
+        <article class="feature-card">
+          <div class="glyph">04</div>
+          <h3>Manual meals</h3>
+          <p>Add your own dish, use general or detailed mode, and save it to your kitchen.</p>
+        </article>
+        <article class="feature-card">
+          <div class="glyph">05</div>
+          <h3>Food base</h3>
+          <p>Use the built-in library and recent meals when you already know what you ate.</p>
+        </article>
+        <article class="feature-card">
+          <div class="glyph">06</div>
+          <h3>Ola Kitchen</h3>
+          <p>Pick a calorie target and get meal ideas with portions, products and recipe details.</p>
+        </article>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section>
-  <div class="container">
-    <div class="privacy-callout">
-      <span class="lock">🔒</span>
-      <h2>Your data stays with you</h2>
-      <p>Your core data lives on your iPhone and syncs through your private iCloud. Online features use limited, transparent processing. No ads, no data sales. Ever.</p>
-      <a href="/privacy.html">Read the privacy policy →</a>
+  <section id="coach">
+    <div class="container split-band">
+      <div class="dark-panel">
+        <p class="section-kicker">Coach Ola</p>
+        <h2 class="section-title">Advice that knows the situation.</h2>
+        <p class="section-lead">Ola is separated from facts. She gives practical guidance for your current goal, streak, protein gap, evening calories, activity and progress trend.</p>
+        <ul class="check-list">
+          <li>Daily context-aware advice for losing, maintaining or gaining weight.</li>
+          <li>Helpful and not helpful reactions, so advice can become calmer over time.</li>
+          <li>Facts of the day stay in their own library, separate from coaching.</li>
+        </ul>
+      </div>
+      <div class="plan-stack">
+        <article class="plan-card">
+          <h3>Goals and macros</h3>
+          <p>Balanced, high-protein, high-carb, low-carb and keto-style presets help users start with a realistic plan instead of a blank spreadsheet.</p>
+          <div class="pill-row"><span>Calories</span><span>Protein</span><span>Carbs</span><span>Fat</span></div>
+        </article>
+        <article class="plan-card">
+          <h3>Activity included</h3>
+          <p>Manual workouts and imported activity can adjust the day immediately, using clear calorie math and your latest weight.</p>
+          <div class="pill-row"><span>MET workouts</span><span>Timeline</span><span>Live updates</span></div>
+        </article>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <section id="pro">
+    <div class="container split-band">
+      <div>
+        <p class="section-kicker">Fitgram Pro</p>
+        <h2 class="section-title">A softer paywall, clear limits, no confusion.</h2>
+        <p class="section-lead">Free users can test the core experience. Pro removes limits and unlocks deeper coaching, recipes, history and AI usage.</p>
+      </div>
+      <div class="plan-stack">
+        <article class="plan-card">
+          <h3>Free</h3>
+          <p>3 AI meal requests per day, 3 AI refreshes during portion editing, 2 product AI requests, 5 recipes and locked Pro previews.</p>
+        </article>
+        <article class="plan-card featured">
+          <h3>Pro</h3>
+          <div class="price">7 days <span>free trial</span></div>
+          <p>Unlimited AI meal requests, unlimited product lookups, Coach Ola, full recipes, achievements, friends, exports and goal tracking.</p>
+          <div class="pill-row"><span>Auto-renewable</span><span>Cancel in Apple ID</span><span>Monthly or yearly</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="dark-panel">
+        <p class="section-kicker">Privacy</p>
+        <h2 class="section-title">No ads. No selling personal data. Clear processing.</h2>
+        <p class="section-lead">Core data lives on the device and may sync through private iCloud. Online features use providers only when needed, and the legal pages are available for App Store review.</p>
+        <div class="hero-actions">
+          <a class="mail-button" href="/privacy.html">Privacy Policy</a>
+          <a class="mail-button" href="/terms.html">Terms of Use</a>
+          <a class="mail-button" href="/support.html">Support</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer>
+<footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="brand-mark">
-          <img src="/assets/icon.png" alt="Mealgram">
-          <span>Mealgram</span>
-        </div>
-        <p class="tagline">Made with love in Poland. For the Polish market, Polish flavours and Polish goals.</p>
+        <a href="/" class="brand">
+          <img src="/assets/icon.png" alt="">
+          <span>Fitgram</span>
+        </a>
+        <p>AI calorie tracking for real food, real routines and calmer progress.</p>
       </div>
       <div>
-        <h4>App</h4>
+        <h4>Product</h4>
         <ul>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#premium">Premium</a></li>
-          <li><a href="#download">Download</a></li>
+          <li><a href="#log">Log food</a></li>
+          <li><a href="#coach">Coach Ola</a></li>
+          <li><a href="#pro">Fitgram Pro</a></li>
         </ul>
       </div>
       <div>
-        <h4>Support</h4>
+        <h4>Company</h4>
         <ul>
-          <li><a href="/support.html">Help / FAQ</a></li>
+          <li><a href="/support.html">Support</a></li>
           <li><a href="/privacy.html">Privacy</a></li>
           <li><a href="/terms.html">Terms</a></li>
-          <li><a href="mailto:hello@mealgram.xyz">hello@mealgram.xyz</a></li>
+          <li><a href="mailto:onefitgram@gmail.com">onefitgram@gmail.com</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Mealgram. All rights reserved.</span>
-      <span>v0.1.0 · 🇵🇱</span>
+      <span>© 2026 Fitgram. All rights reserved.</span>
+      <span>fitgram.space</span>
     </div>
   </div>
 </footer>
-
 </body>
 </html>

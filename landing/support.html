@@ -3,273 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Support — Mealgram</title>
-<meta name="description" content="Mealgram support and FAQ. Contact: hello@mealgram.xyz">
+<title>Support — Fitgram</title>
+<meta name="description" content="Fitgram support, FAQ and contact.">
+<meta name="theme-color" content="#ff7a2f">
+<link rel="canonical" href="https://fitgram.space/support">
 <link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --primary: #84CC16;
-  --primary-dark: #65A30D;
-  --accent: #FB7185;
-  --ink: #1C1917;
-  --ink-muted: #57534E;
-  --ink-subtle: #A8A29E;
-  --bg: #FAFAF9;
-  --bg-soft: #F5F5F4;
-  --primary-soft: #ECFCCB;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-.container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
-a { color: var(--primary-dark); }
-
-header {
-  background: white;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 16px 0;
-}
-.nav { display: flex; align-items: center; justify-content: space-between; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-.brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 18px; color: var(--ink); text-decoration: none; }
-.brand img { width: 32px; height: 32px; border-radius: 8px; }
-.back { color: var(--ink-muted); text-decoration: none; font-weight: 500; font-size: 14px; }
-
-main { padding: 60px 0 100px; }
-h1 {
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
-}
-.lead { font-size: 18px; color: var(--ink-muted); margin-bottom: 40px; }
-
-.contact-card {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: white;
-  border-radius: 24px;
-  padding: 36px;
-  margin-bottom: 48px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.contact-card .emoji { font-size: 56px; }
-.contact-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
-.contact-card p { color: rgba(255,255,255,0.85); }
-.contact-card a {
-  display: inline-block;
-  margin-top: 16px;
-  background: white;
-  color: var(--ink);
-  padding: 12px 24px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-h2 {
-  font-size: 22px;
-  font-weight: 800;
-  margin-top: 48px;
-  margin-bottom: 20px;
-  letter-spacing: -0.01em;
-}
-
-details {
-  background: white;
-  border-radius: 14px;
-  padding: 20px 24px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: box-shadow .2s;
-}
-details:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-details[open] { box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-summary {
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-summary::-webkit-details-marker { display: none; }
-summary::after {
-  content: '+';
-  font-size: 24px;
-  color: var(--ink-subtle);
-  font-weight: 300;
-  transition: transform .2s;
-}
-details[open] summary::after { transform: rotate(45deg); }
-details p, details ul { margin-top: 14px; color: var(--ink-muted); font-size: 15px; }
-details ul { padding-left: 20px; }
-details li { margin-bottom: 6px; }
-details a { color: var(--primary-dark); }
-
-footer {
-  background: var(--ink);
-  color: #A8A29E;
-  padding: 32px 0;
-  text-align: center;
-  font-size: 13px;
-}
-footer a { color: white; }
-</style>
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
-
-<header>
-  <div class="nav">
-    <a href="/" class="brand">
-      <img src="/assets/icon.png" alt="Mealgram">
-      <span>Mealgram</span>
+<header class="site-header">
+  <div class="container nav">
+    <a href="/" class="brand" aria-label="Fitgram home">
+      <img src="/assets/icon.png" alt="">
+      <span>Fitgram</span>
     </a>
-    <a href="/" class="back">← Back</a>
+    <nav class="nav-links" aria-label="Support navigation">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/">Home</a>
+    </nav>
+    <a class="nav-action" href="mailto:onefitgram@gmail.com">Email us</a>
   </div>
 </header>
 
 <main>
-<div class="container">
-  <h1>Support & FAQ</h1>
-  <p class="lead">Everything you need to get rolling with Mealgram. Don't see your question below? Drop us a line and we'll reply within 24 hours.</p>
-
-  <div class="contact-card">
-    <div class="emoji">📩</div>
-    <div style="flex: 1; min-width: 200px;">
-      <h2>Contact</h2>
-      <p>Write in English, Polish, Ukrainian or Russian — we reply within 24 hours on business days.</p>
-      <a href="mailto:hello@mealgram.xyz">hello@mealgram.xyz</a>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Support</span>
+      <h1 class="page-title">Help when you need it.</h1>
+      <p class="page-lead">Questions about AI logging, subscriptions, account deletion, iCloud, widgets or Apple Watch? Start here, then email us if anything still feels unclear.</p>
     </div>
-  </div>
+  </section>
 
-  <h2>Frequently asked</h2>
+  <section>
+    <div class="container support-grid">
+      <aside class="contact-card">
+        <h2>Contact Fitgram</h2>
+        <p>Write in English, Polish, Ukrainian, Russian or Spanish. We usually reply within 24 hours on business days.</p>
+        <a class="mail-button" href="mailto:onefitgram@gmail.com">onefitgram@gmail.com</a>
+        <div class="pill-row">
+          <span>Privacy requests</span>
+          <span>Billing help</span>
+          <span>Bug reports</span>
+        </div>
+      </aside>
 
-  <details>
-    <summary>Is Mealgram free?</summary>
-    <p>Yes. The basic version of Mealgram is fully free — meal logging, calorie tracking, macros, water, achievements, streaks. <strong>Premium</strong> ($3.99/month or 199 PLN/year with a 7-day free trial) unlocks weight goal tracking, daily AI summaries, full history export and unlimited scans.</p>
-  </details>
+      <div class="faq-list">
+        <details class="faq-card" open>
+          <summary>Is Fitgram free?</summary>
+          <p>Yes. The free version includes core meal logging, calorie tracking, macros, water, achievements and streaks. Pro unlocks deeper AI usage, Coach Ola, recipes, exports and goal tracking with a 7-day free trial when available.</p>
+        </details>
 
-  <details>
-    <summary>How does photo scanning work?</summary>
-    <p>Tap the camera icon in "+Add" → point the camera at your full plate → AI recognises the items in 5-10 seconds.</p>
-    <p>Best results: good lighting, plate centred in frame, portion proportions visible (cutlery in shot helps).</p>
-  </details>
+        <details class="faq-card">
+          <summary>How does photo scanning work?</summary>
+          <p>Open Add, choose photo scan, capture the whole plate and review the result on the portion screen. Fitgram asks you to confirm before anything is written to your day.</p>
+        </details>
 
-  <details>
-    <summary>Does Mealgram work offline?</summary>
-    <p>Yes — all core features work without internet: manual logging, barcode scanner, Quick DB (160+ Polish dishes), widgets, Apple Watch.</p>
-    <p>Internet is only needed for: AI photo scanning (Gemini), Open Food Facts (barcodes), iCloud sync between devices.</p>
-  </details>
+        <details class="faq-card">
+          <summary>Why do I see General and Detailed modes?</summary>
+          <p>General mode saves the whole dish as one item. Detailed mode splits the dish into ingredients so you can edit each product and gram amount separately.</p>
+        </details>
 
-  <details>
-    <summary>How do I sync data between iPhone and iPad?</summary>
-    <p>Mealgram uses <strong>iCloud Drive</strong>. Check:</p>
-    <ul>
-      <li>Both devices signed in to the same <strong>Apple ID</strong></li>
-      <li>iCloud Drive enabled: Settings → [Your name] → iCloud → iCloud Drive</li>
-      <li>Mealgram is toggled on under "Apps using iCloud"</li>
-    </ul>
-    <p>First sync can take 30-60 seconds. Data converges automatically — no manual step needed.</p>
-  </details>
+        <details class="faq-card">
+          <summary>Does Fitgram work offline?</summary>
+          <p>Core manual logging, saved foods and many local features can work without internet. AI analysis, online product lookup, account services and subscription status require network access.</p>
+        </details>
 
-  <details>
-    <summary>How do I change the app language?</summary>
-    <p>In the app: <strong>Profile → ⚙️ Settings → App language</strong> — choose Polski / English / Українська / Русский / Español. The change applies instantly, no restart needed.</p>
-    <p>Some system dialogs (e.g., camera permission prompts) will remain in the previous language until you restart your phone — this is an iOS limitation, not ours.</p>
-  </details>
+        <details class="faq-card">
+          <summary>How do I change the app language?</summary>
+          <p>Open Profile, Settings, then App language. Fitgram supports Polish, English, Ukrainian, Russian and Spanish, and the change applies immediately inside the app.</p>
+        </details>
 
-  <details>
-    <summary>How do I cancel my Premium subscription?</summary>
-    <p>Subscriptions are managed by Apple:</p>
-    <ul>
-      <li>Open <strong>App Store → profile icon → Subscriptions</strong></li>
-      <li>Select <strong>Mealgram Premium</strong></li>
-      <li>Tap <strong>Cancel Subscription</strong></li>
-    </ul>
-    <p>Premium stays active until the end of your paid period. No retention dark patterns, no 5-screen confirmation maze — Apple designed this properly.</p>
-  </details>
+        <details class="faq-card">
+          <summary>How do I cancel Fitgram Pro?</summary>
+          <p>Subscriptions are managed by Apple. Open App Store, tap your profile icon, open Subscriptions, choose Fitgram Pro and cancel there. Pro remains active until the end of the paid period.</p>
+        </details>
 
-  <details>
-    <summary>How do I delete my account and all data?</summary>
-    <p>In the app: <strong>Profile → ⚙️ Settings → Account → Delete account</strong>. This clears the local database + iCloud data (if any).</p>
-    <p>Alternative: just uninstall Mealgram — all local data is wiped by iOS, and you can remove iCloud data from <strong>Settings → [Your name] → iCloud → Manage Storage → Mealgram → Delete</strong>.</p>
-  </details>
+        <details class="faq-card">
+          <summary>How do I delete my account and data?</summary>
+          <p>In the app, open Profile, Settings, Account, Delete account. You can also contact us at <a href="mailto:onefitgram@gmail.com">onefitgram@gmail.com</a>.</p>
+        </details>
 
-  <details>
-    <summary>Mealgram freezes / won't launch. What can I do?</summary>
-    <ol style="padding-left: 24px;">
-      <li>Force quit: swipe up from the gesture bar, close Mealgram</li>
-      <li>Restart your iPhone (hold power + volume down → slider)</li>
-      <li>Uninstall and reinstall (local data is lost, iCloud restores after sign-in)</li>
-      <li>Still crashing? Email <a href="mailto:hello@mealgram.xyz">hello@mealgram.xyz</a> with your iPhone model + iOS version</li>
-    </ol>
-  </details>
-
-  <details>
-    <summary>Can I use Mealgram on iPad?</summary>
-    <p>Yes — Mealgram is a universal app. Once installed on iPad, data syncs over iCloud so you pick up where you left off on iPhone. The layout adapts to the larger screen.</p>
-  </details>
-
-  <details>
-    <summary>Apple Watch — how do I set it up?</summary>
-    <p>After installing Mealgram on iPhone:</p>
-    <ol style="padding-left: 24px;">
-      <li>Open the <strong>Watch</strong> app on your iPhone</li>
-      <li>Scroll to <strong>Available Apps</strong> → find Mealgram</li>
-      <li>Tap <strong>Install</strong></li>
-    </ol>
-    <p>On the watch you'll see 3 colour rings (calories / protein / water) + a "+1 glass" button. Data syncs over WatchConnectivity.</p>
-  </details>
-
-  <details>
-    <summary>My home-screen widget shows stale data</summary>
-    <p>Widgets refresh roughly every 30 minutes per iOS policy. You can force a refresh:</p>
-    <ol style="padding-left: 24px;">
-      <li>Open Mealgram and add a meal (or leave and come back — that triggers a refresh)</li>
-      <li>Or: long-press the widget → Edit Widget → pick another and switch back</li>
-    </ol>
-  </details>
-
-  <details>
-    <summary>Does Mealgram share my data with dietitians / doctors?</summary>
-    <p>Never. Your data stays only with you. But <strong>you</strong> can export it in readable formats:</p>
-    <ul>
-      <li><strong>Profile → Your data → Download JSON export</strong> — full history</li>
-      <li><strong>Export CSV (Excel)</strong> — Excel-friendly, perfect for a dietitian</li>
-      <li><strong>Full ZIP bundle</strong> — JSON + CSV + all meal photos</li>
-    </ul>
-    <p>After downloading, you can send the file via email, AirDrop, or print it.</p>
-  </details>
-
-  <details>
-    <summary>Suggestion / bug / request?</summary>
-    <p>All ideas are welcome. The best path:</p>
-    <ul>
-      <li><strong>Email:</strong> <a href="mailto:hello@mealgram.xyz?subject=Mealgram%20suggestion">hello@mealgram.xyz</a></li>
-      <li>Subject: "Suggestion: ..." or "Bug: ..."</li>
-      <li>If it's a bug — add a screenshot or short reproduction steps</li>
-    </ul>
-    <p>Mealgram is built by a small independent team — your feedback goes <strong>directly</strong> to the people writing the code. No five layers of support.</p>
-  </details>
-
-</div>
+        <details class="faq-card">
+          <summary>What should I send with a bug report?</summary>
+          <p>Please include your iPhone model, iOS version, app version, what you tapped, what you expected and what happened instead. A screenshot or screen recording helps a lot.</p>
+        </details>
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer>
-  © 2026 Mealgram · <a href="/">Home</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a>
+<footer class="site-footer">
+  <div class="container footer-bottom">
+    <span>© 2026 Fitgram</span>
+    <span><a href="/">Home</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></span>
+  </div>
 </footer>
-
 </body>
 </html>

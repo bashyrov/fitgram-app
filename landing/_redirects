@@ -1,9 +1,12 @@
 # Clean URLs — old paths some users might guess
+/privacy              /privacy.html   200
+/support              /support.html   200
+/terms                /terms.html     200
 /polityka-prywatnosci  /privacy.html  301
 /pomoc                 /support.html  301
 /wsparcie              /support.html  301
 /faq                   /support.html  301
-/eula                  /terms         301
+/eula                  /terms.html    301
 
 # App Store / TestFlight quick redirect (update once App ID is live)
 # /download              https://apps.apple.com/app/id000000000  302

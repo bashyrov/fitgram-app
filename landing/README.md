@@ -1,6 +1,6 @@
-# Mealgram landing — Cloudflare Pages
+# Fitgram landing — Cloudflare Pages
 
-Static site for `mealgram.xyz`. Four pages — `/`, `/privacy.html`, `/support.html`, `/terms.html`.
+Static Fitgram site currently hosted at `fitgram.space`. Four pages — `/`, `/privacy.html`, `/support.html`, `/terms.html`.
 No build step, pure HTML + inline CSS + Manrope from Google Fonts.
 
 ## Files
@@ -22,8 +22,8 @@ landing/
 
 ### Option A — via Git (recommended, auto-deploys on push)
 
-1. Push the repo to GitHub (you've already done this — origin `bashyrov/mealgram-app`).
-2. https://pages.cloudflare.com → **Create a project** → **Connect to Git** → select `mealgram-app`.
+1. Push the repo to GitHub.
+2. https://pages.cloudflare.com → **Create a project** → **Connect to Git** → select the Fitgram app repository.
 3. **Build settings:**
    - Framework preset: **None**
    - Build command: *(leave empty)*
@@ -39,7 +39,7 @@ landing/
 ### Custom domain
 
 1. CF Pages project → **Custom domains** → **Set up a custom domain**.
-2. Enter `mealgram.xyz` (and optionally `www.mealgram.xyz`).
+2. Enter `fitgram.space` (and optionally `www.fitgram.space`).
 3. CF gives DNS records to add. If your domain is already on Cloudflare DNS, it sets them automatically.
 
 That's it — TLS, CDN, DDoS, HTTP/3 included free.
