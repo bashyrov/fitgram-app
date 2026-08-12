@@ -1,6 +1,6 @@
 # Fitgram landing — Cloudflare Pages
 
-Static Fitgram site currently hosted at `fitgram.space`. Four pages — `/`, `/privacy.html`, `/support.html`, `/terms.html`.
+Static Fitgram site currently hosted at `fitgram.space`. Four public pages — `/`, `/privacy`, `/support`, `/terms`.
 No build step, pure HTML + inline CSS + Manrope from Google Fonts.
 
 ## Files
@@ -8,9 +8,9 @@ No build step, pure HTML + inline CSS + Manrope from Google Fonts.
 ```
 landing/
 ├── index.html          Hero + features + premium + privacy callout
-├── privacy.html        Privacy Policy (GDPR + Apple-compliant)
-├── support.html        FAQ + contact mailto
-├── terms.html          Terms of Use / EULA for App Store subscriptions
+├── privacy.html        Privacy Policy (GDPR + Apple-compliant), mirrored to /privacy/
+├── support.html        FAQ + contact mailto, mirrored to /support/
+├── terms.html          Terms of Use / EULA for App Store subscriptions, mirrored to /terms/
 ├── _headers            Security + cache (CF Pages parses this)
 ├── _redirects          Vanity URLs (CF Pages parses this)
 └── assets/

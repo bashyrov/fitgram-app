@@ -1,9 +1,9 @@
 # Old paths some users might guess
-/polityka-prywatnosci  /privacy.html  301
-/pomoc                 /support.html  301
-/wsparcie              /support.html  301
-/faq                   /support.html  301
-/eula                  /terms.html    301
-
-# App Store / TestFlight quick redirect (update once App ID is live)
-# /download              https://apps.apple.com/app/id000000000  302
+/privacy.html           /privacy       301
+/terms.html             /terms         301
+/support.html           /support       301
+/polityka-prywatnosci  /privacy       301
+/pomoc                 /support       301
+/wsparcie              /support       301
+/faq                   /support       301
+/eula                  /terms         301
