@@ -75,11 +75,11 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.02em;
 }
 .brand img {
-  width: 52px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
-  border-radius: 0;
-  box-shadow: none;
+  border-radius: 11px;
+  box-shadow: 0 10px 24px rgba(255, 122, 47, 0.18);
 }
 
 .nav-links {
@@ -802,9 +802,6 @@ code {
   margin-bottom: 32px;
 }
 .site-footer .brand { color: white; }
-.site-footer .brand img {
-  filter: brightness(0) invert(1);
-}
 .site-footer p { color: rgba(255, 255, 255, .58); max-width: 360px; }
 .site-footer h4 {
   margin: 0 0 14px;
