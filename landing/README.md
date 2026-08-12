@@ -15,7 +15,7 @@ landing/
 ├── _redirects          Vanity URLs (CF Pages parses this)
 └── assets/
     ├── icon.png        1024×1024 app icon (no alpha)
-    └── logo.svg        Original brand SVG
+    └── logo.svg        Fitgram brand mark SVG
 ```
 
 ## Deploy to Cloudflare Pages
