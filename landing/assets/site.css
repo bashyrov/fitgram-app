@@ -69,17 +69,17 @@ img { max-width: 100%; display: block; }
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
   font-weight: 900;
   font-size: 20px;
   letter-spacing: -0.02em;
 }
 .brand img {
-  width: 40px;
-  height: 40px;
+  width: 58px;
+  height: 23px;
   object-fit: contain;
-  border-radius: 11px;
-  box-shadow: 0 10px 24px rgba(255, 122, 47, 0.18);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .nav-links {
@@ -204,21 +204,21 @@ h1,
 
 .showcase {
   position: relative;
-  min-height: 620px;
+  min-height: 800px;
 }
 .phone {
   position: relative;
-  width: min(360px, 88vw);
+  width: min(390px, 88vw);
   margin-left: auto;
-  padding: 12px;
-  border-radius: 48px;
+  padding: 13px;
+  border-radius: 56px;
   background: linear-gradient(155deg, #111615, #343d39);
   box-shadow: 0 34px 82px rgba(32, 40, 38, 0.27);
 }
 .screen {
-  min-height: 720px;
-  border-radius: 38px;
-  padding: 28px 16px 16px;
+  min-height: 844px;
+  border-radius: 44px;
+  padding: 28px 18px 18px;
   overflow: hidden;
   background:
     radial-gradient(circle at 92% 15%, rgba(255, 122, 47, .14), transparent 28%),
@@ -545,7 +545,7 @@ h1,
 .floating-card {
   position: absolute;
   left: 0;
-  bottom: 76px;
+  bottom: 96px;
   width: 250px;
   padding: 18px;
   border-radius: 24px;
@@ -708,9 +708,16 @@ section { padding: 74px 0; }
 .page-hero {
   padding: 72px 0 34px;
 }
+.page-hero .narrow,
+main > section > .narrow {
+  width: min(860px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
 .legal-card {
+  width: min(860px, calc(100% - 40px));
   padding: clamp(24px, 4vw, 42px);
-  margin: 22px 0;
+  margin: 22px auto;
 }
 .legal-card h2 {
   margin: 34px 0 12px;
@@ -863,6 +870,6 @@ code {
   .footer-grid {
     grid-template-columns: 1fr;
   }
-  .screen { min-height: 610px; }
+  .screen { min-height: 760px; }
   section { padding: 52px 0; }
 }
