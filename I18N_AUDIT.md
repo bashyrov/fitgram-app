@@ -1,5 +1,11 @@
 # Fitgram i18n audit — unverified surfaces
 
+> Update 2026-09-25: every `L("…")` key used in code now has PL/EN/UK/RU/ES
+> entries in `Localizable.xcstrings` (56 keys added, 17 copy-of-source
+> "translations" fixed), and `NSPhotoLibraryAddUsageDescription` is
+> translated. No `L("…\(…)…")` interpolated keys remain. The ⚠️ items below
+> are still *visual* checks that need simulator screenshots per locale.
+
 Generated 2026-05-28. Status per screen across 5 langs (en/pl/uk/ru/es).
 
 Legend:
@@ -19,7 +25,7 @@ Legend:
 | Shopping list share (Recipe) | 🟡 | Fixed Subject string but not visually confirmed |
 | Recipe modifications bullet-list share | ⚠️ | `RecipeModificationsSheet.swift:bulletList` |
 | Friend QR share | ⚠️ | `MyCodeSheet.swift` invite message |
-| CSV export (Excel) | ⚠️ | `MealCSVExportService.swift` headers are Polish |
+| CSV export (Excel) | ✅ | `MealCSVExportService.swift` headers are fixed English identifiers by design |
 | JSON export | ⚠️ | `DataExportService.swift` — keys/labels |
 | ZIP bundle export | ⚠️ | `DataBundleExportService.swift` |
 
