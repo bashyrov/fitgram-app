@@ -89,6 +89,11 @@ final class HealthImporterTests: XCTestCase {
             durationMinutes: 30,
             caloriesBurnedKcal: 310,
             distanceMeters: 5_000,
+            steps: 0,
+            flightsClimbed: 0,
+            averageHeartRateBpm: nil,
+            maxHeartRateBpm: nil,
+            minHeartRateBpm: nil,
             sourceName: "Apple Watch"
         )
         let stub = StubHealth(isAvailable: true, authorize: { true }, workoutSamples: { _, _ in [sample] })

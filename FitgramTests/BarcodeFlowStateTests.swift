@@ -11,7 +11,7 @@ final class BarcodeFlowStateTests: XCTestCase {
     }
 
     private func makeState(
-        lookupResult: Result<BarcodeProduct, Error>
+        lookupResult: Result<BarcodeProduct, any Error>
     ) -> BarcodeFlowState {
         BarcodeFlowState(
             captureSession: BarcodeCaptureSession(),
@@ -78,8 +78,8 @@ final class BarcodeFlowStateTests: XCTestCase {
 }
 
 private final class SpyLookup: BarcodeLookupService, @unchecked Sendable {
-    var result: Result<BarcodeProduct, Error>
-    init(result: Result<BarcodeProduct, Error>) { self.result = result }
+    var result: Result<BarcodeProduct, any Error>
+    init(result: Result<BarcodeProduct, any Error>) { self.result = result }
     func lookup(barcode _: String) async throws -> BarcodeProduct {
         try result.get()
     }

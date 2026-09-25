@@ -4,6 +4,7 @@ import OSLog
 
 /// Test seam so the repository can call the indexer without dragging
 /// CoreSpotlight into unit tests.
+@MainActor
 protocol RecipeSpotlightIndexing: AnyObject {
     func index(_ recipe: Recipe)
     func remove(recipeID: UUID)

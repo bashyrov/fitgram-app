@@ -33,7 +33,7 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
     override func startLoading() {
         MockURLProtocol.lock.lock()
         MockURLProtocol.capturedRequests.append(request)
-        let result: Result<(HTTPURLResponse, Data?), Error>
+        let result: Result<(HTTPURLResponse, Data?), any Error>
         if !MockURLProtocol.requestSequence.isEmpty {
             let index = min(MockURLProtocol.sequenceIndex, MockURLProtocol.requestSequence.count - 1)
             result = MockURLProtocol.requestSequence[index]

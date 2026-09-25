@@ -2,6 +2,7 @@ import XCTest
 
 @testable import Fitgram
 
+@MainActor
 final class ProfileStatsCardLabelTests: XCTestCase {
     override func setUp() {
         super.setUp()

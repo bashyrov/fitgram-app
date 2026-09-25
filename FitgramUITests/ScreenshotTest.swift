@@ -4,6 +4,7 @@ import XCTest
 /// **sleeps between steps** so an external `xcrun simctl io booted
 /// screenshot` runner can capture each tab at known offsets. See
 /// `scripts/capture-screenshots.sh` for the matching runner.
+@MainActor
 final class ScreenshotTest: XCTestCase {
     override func setUp() {
         super.setUp()
