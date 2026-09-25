@@ -3444,7 +3444,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld kcal · ugotowane %lld×"
+            "value" : "%lld kcal · cooked %lld×"
           }
         },
         "es" : {
@@ -4210,7 +4210,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld z %lld kilokalorii, %lld procent"
+            "value" : "%lld of %lld kilocalories, %lld percent"
           }
         },
         "es" : {
@@ -10041,7 +10041,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klasyk, ze świeżymi warzywami."
+            "value" : "Класика зі свіжими овочами."
           }
         }
       }
@@ -14724,25 +14724,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Banana pancakes"
+            "value" : "Tortitas de plátano"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Banana pancakes"
+            "value" : "Pancakes bananowe"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Banana pancakes"
+            "value" : "Банановые панкейки"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Banana pancakes"
+            "value" : "Бананові панкейки"
           }
         }
       }
@@ -16890,25 +16890,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cabbage slaw"
+            "value" : "Ensalada de col"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cabbage slaw"
+            "value" : "Surówka z kapusty"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cabbage slaw"
+            "value" : "Салат из капусты"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cabbage slaw"
+            "value" : "Салат з капусти"
           }
         }
       }
@@ -30102,25 +30102,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Greek salad with feta"
+            "value" : "Ensalada griega con feta"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Greek salad with feta"
+            "value" : "Sałatka grecka z fetą"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Greek salad with feta"
+            "value" : "Греческий салат с фетой"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Greek salad with feta"
+            "value" : "Грецький салат з фетою"
           }
         }
       }
@@ -31954,19 +31954,19 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Implementation intention"
+            "value" : "Intencja wdrożeniowa"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Implementation intention"
+            "value" : "Намерение реализации"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Implementation intention"
+            "value" : "Намір реалізації"
           }
         }
       }
@@ -36158,7 +36158,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kotlet schabowy"
+            "value" : "Chuleta de cerdo empanada (schabowy)"
           }
         },
         "pl" : {
@@ -36170,13 +36170,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kotlet schabowy"
+            "value" : "Свиная отбивная (schabowy)"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kotlet schabowy"
+            "value" : "Свиняча відбивна (schabowy)"
           }
         }
       }
@@ -36256,7 +36256,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Krok %lld z %lld"
+            "value" : "Step %lld of %lld"
           }
         },
         "es" : {
@@ -46466,25 +46466,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oat flour"
+            "value" : "Harina de avena"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oat flour"
+            "value" : "Mąka owsiana"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oat flour"
+            "value" : "Овсяная мука"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oat flour"
+            "value" : "Вівсяне борошно"
           }
         }
       }
@@ -48647,7 +48647,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oliwa z oliwek"
+            "value" : "Оливкова олія"
           }
         }
       }
@@ -51486,25 +51486,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plain tofu"
+            "value" : "Tofu natural"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plain tofu"
+            "value" : "Tofu naturalne"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plain tofu"
+            "value" : "Тофу натуральный"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plain tofu"
+            "value" : "Тофу натуральний"
           }
         }
       }
@@ -62339,7 +62339,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pokaż ten dzień"
+            "value" : "Показати цей день"
           }
         }
       }
@@ -66882,7 +66882,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Surówka z kapusty"
+            "value" : "Ensalada de col"
           }
         },
         "pl" : {
@@ -66894,13 +66894,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Surówka z kapusty"
+            "value" : "Салат из капусты"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Surówka z kapusty"
+            "value" : "Салат з капусти"
           }
         }
       }
@@ -67440,7 +67440,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Szarlotka vs sernik"
+            "value" : "Tarta de manzana vs tarta de queso"
           }
         },
         "pl" : {
@@ -70888,25 +70888,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tofu Buddha bowl"
+            "value" : "Buddha bowl de tofu"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tofu Buddha bowl"
+            "value" : "Buddha bowl z tofu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tofu Buddha bowl"
+            "value" : "Будда-боул с тофу"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tofu Buddha bowl"
+            "value" : "Будда-боул з тофу"
           }
         }
       }
@@ -88285,7 +88285,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziemniaki gotowane"
+            "value" : "Patatas cocidas"
           }
         },
         "pl" : {
@@ -88297,13 +88297,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziemniaki gotowane"
+            "value" : "Варёный картофель"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziemniaki gotowane"
+            "value" : "Варена картопля"
           }
         }
       }
@@ -89276,6 +89276,1966 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "збільште порцію кисломолочного сиру на 50 %"
+          }
+        }
+      }
+    },
+    "Odblokował serię 47 dni i domknął białko przed kolacją." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlocked a 47-day streak and hit his protein before dinner."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloqueó una racha de 47 días y cumplió su proteína antes de la cena."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odblokował serię 47 dni i domknął białko przed kolacją."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыл серию 47 дней и закрыл белок ещё до ужина."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відкрив серію 47 днів і закрив білок ще до вечері."
+          }
+        }
+      }
+    },
+    "Zamknęła tydzień z 6 dniami w celu i idealnym białkiem." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closed the week with 6 days on target and perfect protein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerró la semana con 6 días en su objetivo y proteína perfecta."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknęła tydzień z 6 dniami w celu i idealnym białkiem."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыла неделю: 6 дней в цели и идеальный белок."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершила тиждень із 6 днями в цілі та ідеальним білком."
+          }
+        }
+      }
+    },
+    "Zrobiła lekki obiad 520 kcal i domknęła wodę przed wieczorem." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Made a light 520 kcal lunch and hit her water goal before evening."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparó un almuerzo ligero de 520 kcal y cumplió su meta de agua antes de la noche."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrobiła lekki obiad 520 kcal i domknęła wodę przed wieczorem."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приготовила лёгкий обед на 520 ккал и закрыла воду ещё до вечера."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приготувала легкий обід на 520 ккал і закрила воду ще до вечора."
+          }
+        }
+      }
+    },
+    "Skyr z malinami" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skyr with raspberries"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skyr con frambuesas"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skyr z malinami"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скир с малиной"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скір з малиною"
+          }
+        }
+      }
+    },
+    "Łosoś z ryżem" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salmon with rice"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salmón con arroz"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Łosoś z ryżem"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лосось с рисом"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лосось з рисом"
+          }
+        }
+      }
+    },
+    "Jajka z awokado" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eggs with avocado"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huevos con aguacate"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jajka z awokado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Яйца с авокадо"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Яйця з авокадо"
+          }
+        }
+      }
+    },
+    "Kurczak z kaszą" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chicken with groats"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pollo con trigo sarraceno"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurczak z kaszą"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Курица с кашей"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Курка з кашею"
+          }
+        }
+      }
+    },
+    "Twaróg z owocami" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quark with fruit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queso quark con fruta"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twaróg z owocami"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Творог с фруктами"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сир з фруктами"
+          }
+        }
+      }
+    },
+    "Łosoś teriyaki z ryżem" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teriyaki salmon with rice"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salmón teriyaki con arroz"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Łosoś teriyaki z ryżem"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лосось терияки с рисом"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лосось теріякі з рисом"
+          }
+        }
+      }
+    },
+    "Proteinowe pankejki" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protein pancakes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tortitas proteicas"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proteinowe pankejki"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Протеиновые панкейки"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Протеїнові панкейки"
+          }
+        }
+      }
+    },
+    "Krem pomidorowy z mozzarellą" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomato soup with mozzarella"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crema de tomate con mozzarella"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Krem pomidorowy z mozzarellą"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Томатный крем-суп с моцареллой"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Томатний крем-суп з моцарелою"
+          }
+        }
+      }
+    },
+    "Citrus chicken bowl" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Citrus chicken bowl"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bowl de pollo cítrico"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miska z kurczakiem cytrusowym"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Боул с цитрусовой курицей"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Боул з цитрусовою куркою"
+          }
+        }
+      }
+    },
+    "High-protein salmon plate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High-protein salmon plate"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plato de salmón alto en proteína"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wysokobiałkowy talerz z łososiem"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высокобелковая тарелка с лососем"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Високобілкова тарілка з лососем"
+          }
+        }
+      }
+    },
+    "Evening skyr with berries" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evening skyr with berries"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skyr de la noche con frutos rojos"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wieczorny skyr z owocami jagodowymi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вечерний скир с ягодами"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вечірній скір з ягодами"
+          }
+        }
+      }
+    },
+    "Kurczak cytrusowy z kaszą" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Citrus chicken with groats"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pollo cítrico con trigo sarraceno"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurczak cytrusowy z kaszą"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цитрусовая курица с кашей"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цитрусова курка з кашею"
+          }
+        }
+      }
+    },
+    "Omlet białkowy z warzywami" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egg-white omelette with vegetables"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tortilla de claras con verduras"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omlet białkowy z warzywami"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белковый омлет с овощами"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Білковий омлет з овочами"
+          }
+        }
+      }
+    },
+    "Twaróg z malinami" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quark with raspberries"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queso quark con frambuesas"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twaróg z malinami"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Творог с малиной"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сир з малиною"
+          }
+        }
+      }
+    },
+    "Testowy znajomy do sprawdzania profilu, reakcji, osiągnięć i rankingu w Fitgram." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test friend for checking the profile, reactions, achievements and leaderboard in Fitgram."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amigo de prueba para revisar el perfil, las reacciones, los logros y la clasificación en Fitgram."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testowy znajomy do sprawdzania profilu, reakcji, osiągnięć i rankingu w Fitgram."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тестовый друг для проверки профиля, реакций, достижений и рейтинга в Fitgram."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тестовий друг для перевірки профілю, реакцій, досягнень і рейтингу у Fitgram."
+          }
+        }
+      }
+    },
+    "Legend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leyenda"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legenda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Легенда"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Легенда"
+          }
+        }
+      }
+    },
+    "Maintain weight and keep protein high" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintain weight and keep protein high"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantener el peso con proteína alta"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utrzymać wagę i trzymać wysokie białko"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удержать вес и держать белок высоким"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Утримати вагу й тримати високий білок"
+          }
+        }
+      }
+    },
+    "Testowy profil: spokojne odchudzanie, dużo białka i proste obiady bez presji." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test profile: calm weight loss, plenty of protein and simple lunches without pressure."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil de prueba: pérdida de peso tranquila, mucha proteína y almuerzos sencillos sin presión."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testowy profil: spokojne odchudzanie, dużo białka i proste obiady bez presji."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тестовый профиль: спокойное похудение, много белка и простые обеды без давления."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тестовий профіль: спокійне схуднення, багато білка й прості обіди без тиску."
+          }
+        }
+      }
+    },
+    "Lose 5 kg with high protein" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lose 5 kg with high protein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perder 5 kg con proteína alta"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schudnąć 5 kg przy wysokim białku"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Похудеть на 5 кг с высоким белком"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схуднути на 5 кг з високим білком"
+          }
+        }
+      }
+    },
+    "Spokojne tempo, dużo spacerów i kolacje bez chaosu. Cel: czuć się lekko, nie idealnie." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calm pace, lots of walks and dinners without chaos. Goal: feel light, not perfect."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ritmo tranquilo, muchos paseos y cenas sin caos. Objetivo: sentirse ligera, no perfecta."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spokojne tempo, dużo spacerów i kolacje bez chaosu. Cel: czuć się lekko, nie idealnie."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спокойный темп, много прогулок и ужины без хаоса. Цель: чувствовать лёгкость, а не идеальность."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спокійний темп, багато прогулянок і вечері без хаосу. Мета: почуватися легко, а не ідеально."
+          }
+        }
+      }
+    },
+    "Lose 4 kg while keeping strength" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lose 4 kg while keeping strength"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perder 4 kg sin perder fuerza"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schudnąć 4 kg bez utraty siły"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Похудеть на 4 кг, сохранив силу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схуднути на 4 кг, зберігши силу"
+          }
+        }
+      }
+    },
+    "30-day rhythm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30-day rhythm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 días de ritmo"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 dni rytmu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 дней ритма"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 днів ритму"
+          }
+        }
+      }
+    },
+    "Logged meals for 30 days in a row." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logged meals for 30 days in a row."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registró comidas 30 días seguidos."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapisywał posiłki 30 dni z rzędu."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записывал еду 30 дней подряд."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записував їжу 30 днів поспіль."
+          }
+        }
+      }
+    },
+    "Hit the protein target for a full week." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hit the protein target for a full week."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cumplió su objetivo de proteína toda la semana."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trafił w cel białka przez cały tydzień."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Целую неделю выполнял цель по белку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цілий тиждень виконував ціль по білку."
+          }
+        }
+      }
+    },
+    "Challenge finisher" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Challenge finisher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reto completado"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyzwanie ukończone"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Челлендж пройден"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виклик виконано"
+          }
+        }
+      }
+    },
+    "Completed a weekly challenge." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed a weekly challenge."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completó un reto semanal."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukończył wyzwanie tygodnia."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прошёл недельный челлендж."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виконав тижневий виклик."
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji zapiszesz 5 przepisów. Pro daje bardzo duże limity, całą bibliotekę i import z URL." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the free version you can save 5 recipes. Pro gives very high limits, the full library and URL import."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la versión gratuita puedes guardar 5 recetas. Pro ofrece límites muy altos, toda la biblioteca e importación desde URL."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji zapiszesz 5 przepisów. Pro daje bardzo duże limity, całą bibliotekę i import z URL."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии можно сохранить 5 рецептов. Pro даёт очень большие лимиты, всю библиотеку и импорт по URL."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії можна зберегти 5 рецептів. Pro дає дуже великі ліміти, всю бібліотеку та імпорт за URL."
+          }
+        }
+      }
+    },
+    "7 dni za darmo. Pełne AI, bardzo duże limity, AI Coach i eksporty." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 days free. Full AI, very high limits, AI Coach and exports."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 días gratis. IA completa, límites muy altos, AI Coach y exportaciones."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 dni za darmo. Pełne AI, bardzo duże limity, AI Coach i eksporty."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 дней бесплатно. Полный AI, очень большие лимиты, AI-коуч и экспорт."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 днів безкоштовно. Повний AI, дуже великі ліміти, AI-коуч та експорт."
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji masz 3 zapytania AI dziennie. Pro daje bardzo duże limity i 7 dni próbne." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The free version includes 3 AI requests per day. Pro gives very high limits and a 7-day trial."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La versión gratuita incluye 3 consultas de IA al día. Pro ofrece límites muy altos y 7 días de prueba."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji masz 3 zapytania AI dziennie. Pro daje bardzo duże limity i 7 dni próbne."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии — 3 AI-запроса в день. Pro даёт очень большие лимиты и 7 дней пробного периода."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії — 3 AI-запити на день. Pro дає дуже великі ліміти та 7 днів пробного періоду."
+          }
+        }
+      }
+    },
+    "Limit skanowania wykorzystany" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan limit reached"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límite de escaneos alcanzado"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit skanowania wykorzystany"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит сканирований исчерпан"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ліміт сканувань вичерпано"
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji masz bardzo dużo miejsca na testy, a Pro daje jeszcze większy zapas." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The free version gives you plenty of room to try things out, and Pro gives you even more headroom."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La versión gratuita te da mucho margen para probar, y Pro te da todavía más."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji masz bardzo dużo miejsca na testy, a Pro daje jeszcze większy zapas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии много места для тестов, а Pro даёт ещё больший запас."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії багато місця для тестів, а Pro дає ще більший запас."
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji możesz zapisać 3 posiłki AI dziennie. Premium ma bardzo duże limity, żeby wszystko działało płynnie." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the free version you can save 3 AI meals per day. Premium has very high limits so everything runs smoothly."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la versión gratuita puedes guardar 3 comidas con IA al día. Premium tiene límites muy altos para que todo funcione sin interrupciones."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji możesz zapisać 3 posiłki AI dziennie. Premium ma bardzo duże limity, żeby wszystko działało płynnie."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии можно сохранить 3 AI-блюда в день. В Premium очень большие лимиты, чтобы всё работало плавно."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії можна зберегти 3 AI-страви на день. Premium має дуже великі ліміти, щоб усе працювало плавно."
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji możesz odświeżyć dane dania 3 razy dziennie. Premium daje bardzo duże limity poprawek." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the free version you can refresh a dish's data 3 times per day. Premium gives very high correction limits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la versión gratuita puedes actualizar los datos de un plato 3 veces al día. Premium ofrece límites muy altos de correcciones."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji możesz odświeżyć dane dania 3 razy dziennie. Premium daje bardzo duże limity poprawek."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии можно обновить данные блюда 3 раза в день. Premium даёт очень большие лимиты на исправления."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії можна оновити дані страви 3 рази на день. Premium дає дуже великі ліміти на виправлення."
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji AI uzupełni 2 pojedyncze produkty dziennie. Premium ma bardzo duże limity." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the free version AI fills in 2 individual products per day. Premium has very high limits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la versión gratuita la IA completa 2 productos individuales al día. Premium tiene límites muy altos."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji AI uzupełni 2 pojedyncze produkty dziennie. Premium ma bardzo duże limity."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии AI заполнит 2 отдельных продукта в день. В Premium очень большие лимиты."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії AI заповнить 2 окремі продукти на день. Premium має дуже великі ліміти."
+          }
+        }
+      }
+    },
+    "Kuchnia Oli z dużym limitem w Pro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola's Kitchen with a high limit in Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cocina de Ola con límite alto en Pro"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuchnia Oli z dużym limitem w Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кухня Оли с большим лимитом в Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кухня Олі з великим лімітом у Pro"
+          }
+        }
+      }
+    },
+    "W bezpłatnej wersji Kuchnia Oli korzysta najpierw z lokalnej biblioteki dań, a AI tylko dopina szczegóły. Premium daje bardzo duże limity i więcej AI." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the free version Ola's Kitchen uses the local dish library first, and AI only fills in the details. Premium gives very high limits and more AI."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la versión gratuita, la cocina de Ola usa primero la biblioteca local de platos y la IA solo completa los detalles. Premium ofrece límites muy altos y más IA."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W bezpłatnej wersji Kuchnia Oli korzysta najpierw z lokalnej biblioteki dań, a AI tylko dopina szczegóły. Premium daje bardzo duże limity i więcej AI."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В бесплатной версии Кухня Оли сначала использует локальную библиотеку блюд, а AI только дополняет детали. Premium даёт очень большие лимиты и больше AI."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У безкоштовній версії Кухня Олі спершу використовує локальну бібліотеку страв, а AI лише доповнює деталі. Premium дає дуже великі ліміти та більше AI."
+          }
+        }
+      }
+    },
+    "Free pokazuje podgląd. Pro odblokowuje porady Oli, fakty w kontekście i tygodniowe podsumowania." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free shows a preview. Pro unlocks Ola's tips, facts in context and weekly summaries."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free muestra una vista previa. Pro desbloquea los consejos de Ola, datos en contexto y resúmenes semanales."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free pokazuje podgląd. Pro odblokowuje porady Oli, fakty w kontekście i tygodniowe podsumowania."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free показывает превью. Pro открывает советы Оли, факты в контексте и недельные итоги."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free показує попередній перегляд. Pro відкриває поради Олі, факти в контексті та тижневі підсумки."
+          }
+        }
+      }
+    },
+    "Badges" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badges"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insignias"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odznaki"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значки"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відзнаки"
+          }
+        }
+      }
+    },
+    "Level" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poziom"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровень"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рівень"
+          }
+        }
+      }
+    },
+    "Support" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoyar"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wesprzyj"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержать"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримати"
+          }
+        }
+      }
+    },
+    "Najpierw leci lokalna biblioteka, a potem AI dopina dania, porcje i makro." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The local library goes first, then AI fine-tunes dishes, portions and macros."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primero va la biblioteca local y luego la IA ajusta platos, porciones y macros."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Najpierw leci lokalna biblioteka, a potem AI dopina dania, porcje i makro."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сначала работает локальная библиотека, а затем AI доводит блюда, порции и макро."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спершу працює локальна бібліотека, а потім AI доточує страви, порції та макро."
+          }
+        }
+      }
+    },
+    "duży limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "high limit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "límite alto"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "duży limit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "большой лимит"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "великий ліміт"
+          }
+        }
+      }
+    },
+    "Recalculate with Ola" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recalculate with Ola"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recalcular con Ola"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przelicz z Olą"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пересчитать с Олей"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перерахувати з Олею"
+          }
+        }
+      }
+    },
+    "Gender" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sex"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sexo"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Płeć"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пол"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стать"
+          }
+        }
+      }
+    },
+    "Your requested pace is aggressive, so Fitgram protects the minimum calorie level." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your requested pace is aggressive, so Fitgram protects the minimum calorie level."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El ritmo que pediste es agresivo, así que Fitgram protege el nivel mínimo de calorías."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybrane tempo jest agresywne, więc Fitgram pilnuje minimalnego poziomu kalorii."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбранный темп агрессивный, поэтому Fitgram держит минимальный уровень калорий."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обраний темп агресивний, тому Fitgram тримає мінімальний рівень калорій."
+          }
+        }
+      }
+    },
+    "Fill in profile data to calculate your plan." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fill in profile data to calculate your plan."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completa los datos del perfil para calcular tu plan."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uzupełnij dane profilu, żeby obliczyć plan."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заполни данные профиля, чтобы рассчитать план."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заповни дані профілю, щоб розрахувати план."
+          }
+        }
+      }
+    },
+    "Polska baza opiera się na publicznych źródłach USDA + producent (gdzie znamy markę). Kody kreskowe ciągniemy z Open Food Facts." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Polish database is based on public USDA sources + the manufacturer (where we know the brand). Barcodes come from Open Food Facts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La base polaca se basa en fuentes públicas del USDA + el fabricante (cuando conocemos la marca). Los códigos de barras vienen de Open Food Facts."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polska baza opiera się na publicznych źródłach USDA + producent (gdzie znamy markę). Kody kreskowe ciągniemy z Open Food Facts."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Польская база опирается на публичные источники USDA + производителя (где мы знаем бренд). Штрихкоды берём из Open Food Facts."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Польська база спирається на публічні джерела USDA + виробника (де ми знаємо бренд). Штрихкоди беремо з Open Food Facts."
+          }
+        }
+      }
+    },
+    "Wysyłamy zdjęcie przez nasz proxy do Gemini, które rozpoznaje składniki + szacuje porcje. Nie zostawiamy zdjęcia poza Twoim telefonem ani naszym proxy." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We send the photo through our proxy to Gemini, which recognizes ingredients + estimates portions. We don't keep the photo anywhere outside your phone or our proxy."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviamos la foto a través de nuestro proxy a Gemini, que reconoce los ingredientes + estima las porciones. No guardamos la foto fuera de tu teléfono ni de nuestro proxy."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wysyłamy zdjęcie przez nasz proxy do Gemini, które rozpoznaje składniki + szacuje porcje. Nie zostawiamy zdjęcia poza Twoim telefonem ani naszym proxy."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мы отправляем фото через наш прокси в Gemini, который распознаёт ингредиенты + оценивает порции. Мы не храним фото нигде, кроме твоего телефона и нашего прокси."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ми надсилаємо фото через наш проксі до Gemini, який розпізнає інгредієнти + оцінює порції. Ми не зберігаємо фото ніде, крім твого телефона та нашого проксі."
+          }
+        }
+      }
+    },
+    "Streak to nawyk codzienny. Możesz użyć \"freeze\", żeby utrzymać serię (przycisk pojawia się po południu, gdy jeszcze nic nie wpisałeś)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A streak is a daily habit. You can use a \"freeze\" to keep your streak going (the button appears in the afternoon if you haven't logged anything yet)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La racha es un hábito diario. Puedes usar una \"congelación\" para mantenerla (el botón aparece por la tarde si todavía no has registrado nada)."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Streak to nawyk codzienny. Możesz użyć \"freeze\", żeby utrzymać serię (przycisk pojawia się po południu, gdy jeszcze nic nie wpisałeś)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серия — это ежедневная привычка. Можно использовать «заморозку», чтобы сохранить серию (кнопка появляется после обеда, если ты ещё ничего не записал)."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серія — це щоденна звичка. Можна використати «заморозку», щоб зберегти серію (кнопка зʼявляється після обіду, якщо ти ще нічого не записав)."
+          }
+        }
+      }
+    },
+    "Profil → Ustawienia → Konto → Usuń konto. Fitgram usuwa dane z urządzenia i wysyła żądanie usunięcia danych serwerowych. Subskrypcję anulujesz w Apple ID." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile → Settings → Account → Delete account. Fitgram deletes data from the device and sends a request to delete server data. Cancel your subscription in your Apple ID."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil → Ajustes → Cuenta → Eliminar cuenta. Fitgram borra los datos del dispositivo y envía una solicitud para eliminar los datos del servidor. La suscripción se cancela en tu Apple ID."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil → Ustawienia → Konto → Usuń konto. Fitgram usuwa dane z urządzenia i wysyła żądanie usunięcia danych serwerowych. Subskrypcję anulujesz w Apple ID."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профиль → Настройки → Аккаунт → Удалить аккаунт. Fitgram удаляет данные с устройства и отправляет запрос на удаление серверных данных. Подписку отменяют в Apple ID."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профіль → Налаштування → Акаунт → Видалити акаунт. Fitgram видаляє дані з пристрою та надсилає запит на видалення серверних даних. Підписку скасовують в Apple ID."
+          }
+        }
+      }
+    },
+    "Tak. Wszystko lokalnie w SwiftData. Eksport JSON + CSV w każdej chwili. RODO-zgodnie — nawet bez konta na serwerze, nikt poza Tobą ich nie widzi." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes. Everything is stored locally in SwiftData. Export JSON + CSV at any time. GDPR-compliant — even without a server account, nobody but you can see it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sí. Todo se guarda localmente en SwiftData. Exporta JSON + CSV cuando quieras. Conforme al RGPD: incluso sin cuenta en el servidor, nadie más que tú puede verlos."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tak. Wszystko lokalnie w SwiftData. Eksport JSON + CSV w każdej chwili. RODO-zgodnie — nawet bez konta na serwerze, nikt poza Tobą ich nie widzi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Да. Всё хранится локально в SwiftData. Экспорт JSON + CSV в любой момент. В соответствии с GDPR — даже без серверного аккаунта никто, кроме тебя, их не видит."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так. Усе зберігається локально у SwiftData. Експорт JSON + CSV будь-коли. Відповідно до GDPR — навіть без серверного акаунта ніхто, крім тебе, їх не бачить."
+          }
+        }
+      }
+    },
+    "Activity details" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles de la actividad"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szczegóły aktywności"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Детали активности"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Деталі активності"
+          }
+        }
+      }
+    },
+    "Duration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duración"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czas trwania"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Длительность"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тривалість"
           }
         }
       }

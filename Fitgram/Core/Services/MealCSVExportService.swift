@@ -22,9 +22,9 @@ final class MealCSVExportService {
     }
 
     /// Renders the meal log to a CSV file in tmp/exports/ and returns
-    /// the URL. Headers in PL so the Excel-using user has labels they'll
-    /// recognise; numeric values use a dot decimal separator regardless of
-    /// locale (Excel-pl auto-detects). `from`/`to` filter to a date range
+    /// the URL. Headers are fixed English identifiers (see `header`);
+    /// numeric values use a dot decimal separator regardless of locale
+    /// (Excel-pl auto-detects). `from`/`to` filter to a date range
     /// — pass nil for either bound to leave that end open.
     func export(from: Date? = nil, to: Date? = nil) throws -> URL {
         let csv = try buildCSV(from: from, to: to)

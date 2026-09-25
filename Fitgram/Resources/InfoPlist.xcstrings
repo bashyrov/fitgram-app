@@ -40,9 +40,33 @@
       "comment" : "Bundle name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram"
+          }
+        },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
+            "value" : "Fitgram"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Fitgram"
           }
         }
@@ -192,10 +216,34 @@
       "comment" : "Privacy - Photo Library Additions Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram saves generated cards (such as your streak) to your photo library."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram guarda las tarjetas generadas (por ejemplo, tu racha) en tu fototeca."
+          }
+        },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Fitgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram сохраняет созданные карточки (например, серию) в твою медиатеку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram зберігає створені картки (наприклад, серію) у твою фототеку."
           }
         }
       }
