@@ -263,9 +263,15 @@ struct OlaTipsView: View {
                         uk:
                             "AI зараз не відповідає, тому Fitgram показує розумний локальний план. Ти все ще можеш додавати їжу вручну.",
                         ru:
-                            "AI сейчас не отвечает, поэтому Fitgram показывает умный локальный план. Ты все еще можешь добавлять еду вручную.",
+                            """
+                            AI сейчас не отвечает, поэтому Fitgram показывает умный локальный план. Ты все еще можешь добавлять еду \
+                            вручную.
+                            """,
                         es:
-                            "La IA no responde ahora, así que Fitgram muestra un plan local inteligente. Aún puedes añadir comidas manualmente."
+                            """
+                            La IA no responde ahora, así que Fitgram muestra un plan local inteligente. Aún puedes añadir comidas \
+                            manualmente.
+                            """
                     )
                 )
                 .font(Tokens.Font.footnote)

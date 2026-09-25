@@ -275,11 +275,13 @@ enum DailyOlaPlanBuilder {
             ),
             focuses: focuses(
                 context: context,
-                consumed: consumed,
-                remainingCalories: remainingCalories,
-                protein: protein,
-                remainingProtein: remainingProtein,
-                todayWorkoutCalories: todayWorkoutCalories,
+                today: TodayNumbers(
+                    consumed: consumed,
+                    protein: protein,
+                    remainingCalories: remainingCalories,
+                    remainingProtein: remainingProtein,
+                    workoutCalories: todayWorkoutCalories
+                ),
                 now: now
             ),
             generatedAt: now
@@ -359,15 +361,30 @@ enum DailyOlaPlanBuilder {
             return String.localizedStringWithFormat(
                 TL(
                     pl:
-                        "Widzę dzisiejszy ruch: około %lld kcal aktywności. Traktujemy to jako kontekst dnia i spokojnie domykamy białko, wodę oraz kalorie.",
+                        """
+                        Widzę dzisiejszy ruch: około %lld kcal aktywności. Traktujemy to jako kontekst dnia i spokojnie domykamy \
+                        białko, wodę oraz kalorie.
+                        """,
                     en:
-                        "I see today's movement: about %lld kcal of activity. We use it as context for the day and calmly close protein, water, and calories.",
+                        """
+                        I see today's movement: about %lld kcal of activity. We use it as context for the day and calmly close \
+                        protein, water, and calories.
+                        """,
                     uk:
-                        "Бачу сьогоднішню активність: близько %lld ккал руху. Використовуємо це як контекст дня і спокійно закриваємо білок, воду та калорії.",
+                        """
+                        Бачу сьогоднішню активність: близько %lld ккал руху. Використовуємо це як контекст дня і спокійно закриваємо \
+                        білок, воду та калорії.
+                        """,
                     ru:
-                        "Вижу сегодняшнюю активность: около %lld ккал движения. Используем это как контекст дня и спокойно закрываем белок, воду и калории.",
+                        """
+                        Вижу сегодняшнюю активность: около %lld ккал движения. Используем это как контекст дня и спокойно закрываем \
+                        белок, воду и калории.
+                        """,
                     es:
-                        "Veo movimiento hoy: unas %lld kcal de actividad. Lo usamos como contexto del día y cerramos proteína, agua y calorías con calma."
+                        """
+                        Veo movimiento hoy: unas %lld kcal de actividad. Lo usamos como contexto del día y cerramos proteína, agua y \
+                        calorías con calma.
+                        """
                 ),
                 todayWorkoutCalories
             )
@@ -526,19 +543,24 @@ enum DailyOlaPlanBuilder {
         return nil
     }
 
+    /// Today's rounded intake against goals, as shown in the focus tiles.
+    private struct TodayNumbers {
+        let consumed: Int
+        let protein: Int
+        let remainingCalories: Int
+        let remainingProtein: Int
+        let workoutCalories: Int
+    }
+
     private static func focuses(
         context: CoachContext,
-        consumed: Int,
-        remainingCalories: Int,
-        protein: Int,
-        remainingProtein: Int,
-        todayWorkoutCalories: Int,
+        today: TodayNumbers,
         now: Date
     ) -> [DailyOlaPlan.Focus] {
         var items: [DailyOlaPlan.Focus] = [
             .init(
                 title: TL(pl: "Kalorie", en: "Calories", uk: "Калорії", ru: "Калории", es: "Calorías"),
-                value: "\(consumed) / \(context.goals.calorieGoalKcal)",
+                value: "\(today.consumed) / \(context.goals.calorieGoalKcal)",
                 detail: String.localizedStringWithFormat(
                     TL(
                         pl: "zostało %lld kcal",
@@ -547,17 +569,17 @@ enum DailyOlaPlanBuilder {
                         ru: "осталось %lld ккал",
                         es: "quedan %lld kcal"
                     ),
-                    remainingCalories
+                    today.remainingCalories
                 )
             ),
             .init(
                 title: TL(pl: "Białko", en: "Protein", uk: "Білок", ru: "Белок", es: "Proteína"),
-                value: "\(protein) / \(context.goals.proteinGoalGrams) g",
+                value: "\(today.protein) / \(context.goals.proteinGoalGrams) g",
                 detail: String.localizedStringWithFormat(
                     TL(
                         pl: "zostało %lld g", en: "%lld g left", uk: "залишилось %lld г", ru: "осталось %lld г",
                         es: "quedan %lld g"),
-                    remainingProtein
+                    today.remainingProtein
                 )
             ),
             .init(
@@ -572,11 +594,11 @@ enum DailyOlaPlanBuilder {
                 )
             ),
         ]
-        if todayWorkoutCalories > 0 {
+        if today.workoutCalories > 0 {
             items.append(
                 .init(
                     title: TL(pl: "Ruch", en: "Activity", uk: "Активність", ru: "Активность", es: "Actividad"),
-                    value: "+\(todayWorkoutCalories) kcal",
+                    value: "+\(today.workoutCalories) kcal",
                     detail: TL(
                         pl: "Ola uwzględnia trening w dzisiejszym planie",
                         en: "Ola includes the workout in today's plan",

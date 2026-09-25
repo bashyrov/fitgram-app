@@ -70,9 +70,17 @@ cyclomatic_complexity:
   warning: 12
   error: 20
 
+# swift-format puts `{` on its own line after a wrapped `if`/`guard`
+# condition list; let it own that style (see ARCHITECTURE.md).
+opening_brace:
+  ignore_multiline_statement_conditions: true
+
 identifier_name:
   min_length: 2
   excluded:
+    # `L(_:)` is the app-wide localization lookup, named like
+    # NSLocalizedString shorthands (see ARCHITECTURE.md).
+    - L
     - id
     - x
     - y

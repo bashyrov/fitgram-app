@@ -38,7 +38,6 @@ struct AchievementEngine {
         )
     }
 
-    // swiftlint:disable function_body_length
     func evaluate(
         meals: [MealEntry],
         streak: Streak?,
@@ -46,64 +45,95 @@ struct AchievementEngine {
         inputs: Inputs = .empty,
         now: Date = Date()
     ) -> [String] {
-        var unlocked: [String] = []
+        // Order matters: unlocks are reported in evaluation order and the
+        // meta badges count everything unlocked earlier in this call.
+        let collector = UnlockCollector(alreadyEarned: alreadyEarned)
+        let dayBuckets = Self.groupByDay(meals, calendar: calendar)
+        considerEntryMilestones(meals, inputs: inputs, collector: collector)
+        if let streak {
+            considerStreakMilestones(streak, collector: collector)
+        }
+        considerDailyMilestones(dayBuckets, inputs: inputs, collector: collector)
+        considerConsistencyMilestones(meals, dayBuckets: dayBuckets, inputs: inputs, collector: collector)
+        considerLifetimeMilestones(meals, inputs: inputs, collector: collector)
+        considerMetaMilestones(inputs: inputs, collector: collector)
 
-        let consider: (String, () -> Bool) -> Void = { id, predicate in
+        _ = now  // future-dated predicates can reach for this without an API churn
+        return collector.unlocked
+    }
+
+    /// Collects unlock ids in evaluation order, skipping ones already earned.
+    private final class UnlockCollector {
+        private let alreadyEarned: Set<String>
+        private(set) var unlocked: [String] = []
+
+        init(alreadyEarned: Set<String>) {
+            self.alreadyEarned = alreadyEarned
+        }
+
+        func consider(_ id: String, _ predicate: () -> Bool) {
             guard !alreadyEarned.contains(id) else { return }
             if predicate() { unlocked.append(id) }
         }
+    }
 
+    private func considerEntryMilestones(_ meals: [MealEntry], inputs: Inputs, collector: UnlockCollector) {
         // Onboarding milestones — single positive sample is enough.
         let totalMeals = meals.count
-        consider("meal.first") { !meals.isEmpty }
-        consider("scan.first") { meals.contains(where: { $0.source == .photoScan }) }
-        consider("barcode.first") { meals.contains(where: { $0.source == .barcode }) }
-        consider("recipe.first") { meals.contains(where: { $0.source == .recipe }) }
-        consider("voice.first") { meals.contains(where: { $0.source == .voice }) }
-        consider("quickdb.first") { meals.contains(where: { $0.source == .quickDatabase }) }
-        consider("weight.tracked") { inputs.hasLoggedWeight }
+        collector.consider("meal.first") { !meals.isEmpty }
+        collector.consider("scan.first") { meals.contains(where: { $0.source == .photoScan }) }
+        collector.consider("barcode.first") { meals.contains(where: { $0.source == .barcode }) }
+        collector.consider("recipe.first") { meals.contains(where: { $0.source == .recipe }) }
+        collector.consider("voice.first") { meals.contains(where: { $0.source == .voice }) }
+        collector.consider("quickdb.first") { meals.contains(where: { $0.source == .quickDatabase }) }
+        collector.consider("weight.tracked") { inputs.hasLoggedWeight }
 
         for threshold in [5, 10, 25, 50, 100, 250, 500, 1000, 2000, 5000] {
-            consider("meal.count.\(threshold)") { totalMeals >= threshold }
+            collector.consider("meal.count.\(threshold)") { totalMeals >= threshold }
         }
 
         for source in MealSource.allCases {
             let count = meals.filter { $0.source == source }.count
             for threshold in [5, 25, 100, 250] {
-                consider("source.\(source.achievementSlug).\(threshold)") { count >= threshold }
+                collector.consider("source.\(source.achievementSlug).\(threshold)") { count >= threshold }
             }
         }
 
         for mealType in MealType.allCases {
             let count = meals.filter { $0.mealType == mealType }.count
             for threshold in [3, 7, 30, 100, 250] {
-                consider("mealtype.\(mealType.rawValue).\(threshold)") { count >= threshold }
+                collector.consider("mealtype.\(mealType.rawValue).\(threshold)") { count >= threshold }
             }
         }
+    }
 
+    private func considerStreakMilestones(_ streak: Streak, collector: UnlockCollector) {
         // Streak milestones — use longest length so backfills count.
-        if let streak {
-            consider("streak.3") { streak.longestLength >= 3 }
-            consider("streak.7") { streak.longestLength >= 7 }
-            consider("streak.14") { streak.longestLength >= 14 }
-            consider("streak.30") { streak.longestLength >= 30 }
-            consider("streak.50") { streak.longestLength >= 50 }
-            consider("streak.60") { streak.longestLength >= 60 }
-            consider("streak.100") { streak.longestLength >= 100 }
-            consider("streak.200") { streak.longestLength >= 200 }
-            consider("streak.365") { streak.longestLength >= 365 }
-            consider("streak.500") { streak.longestLength >= 500 }
-            consider("streak.730") { streak.longestLength >= 730 }
-        }
+        collector.consider("streak.3") { streak.longestLength >= 3 }
+        collector.consider("streak.7") { streak.longestLength >= 7 }
+        collector.consider("streak.14") { streak.longestLength >= 14 }
+        collector.consider("streak.30") { streak.longestLength >= 30 }
+        collector.consider("streak.50") { streak.longestLength >= 50 }
+        collector.consider("streak.60") { streak.longestLength >= 60 }
+        collector.consider("streak.100") { streak.longestLength >= 100 }
+        collector.consider("streak.200") { streak.longestLength >= 200 }
+        collector.consider("streak.365") { streak.longestLength >= 365 }
+        collector.consider("streak.500") { streak.longestLength >= 500 }
+        collector.consider("streak.730") { streak.longestLength >= 730 }
+    }
 
+    private func considerDailyMilestones(
+        _ dayBuckets: [Date: [MealEntry]],
+        inputs: Inputs,
+        collector: UnlockCollector
+    ) {
         // Per-day aggregates: bucket meals by day, evaluate predicates.
-        let dayBuckets = Self.groupByDay(meals, calendar: calendar)
-        consider("protein.heavy") {
+        collector.consider("protein.heavy") {
             dayBuckets.values.contains { entries in
                 entries.reduce(0) { $0 + $1.totalProteinGrams } >= 120
             }
         }
-        consider("variety.day") {
+        collector.consider("variety.day") {
             dayBuckets.values.contains { entries in
                 let kinds = Set(entries.map(\.mealType))
                 return kinds.contains(.breakfast) && kinds.contains(.lunch) && kinds.contains(.dinner)
@@ -114,9 +144,9 @@ struct AchievementEngine {
             return kinds.contains(.breakfast) && kinds.contains(.lunch) && kinds.contains(.dinner)
         }.count
         for threshold in [3, 10, 30, 100] {
-            consider("variety.days.\(threshold)") { varietyDayCount >= threshold }
+            collector.consider("variety.days.\(threshold)") { varietyDayCount >= threshold }
         }
-        consider("macros.balanced") {
+        collector.consider("macros.balanced") {
             guard let proteinGoal = inputs.proteinGoalGrams,
                 let carbsGoal = inputs.carbsGoalGrams,
                 let fatGoal = inputs.fatGoalGrams,
@@ -137,10 +167,18 @@ struct AchievementEngine {
                 return Self.within(calories, of: Double(calorieGoal), tolerance: 0.10)
             }.count
             for threshold in [3, 7, 14, 30, 60, 100] {
-                consider("calories.target.days.\(threshold)") { targetDays >= threshold }
+                collector.consider("calories.target.days.\(threshold)") { targetDays >= threshold }
             }
         }
-        consider("week.consistent") {
+    }
+
+    private func considerConsistencyMilestones(
+        _ meals: [MealEntry],
+        dayBuckets: [Date: [MealEntry]],
+        inputs: Inputs,
+        collector: UnlockCollector
+    ) {
+        collector.consider("week.consistent") {
             let days = Set(meals.map { calendar.startOfDay(for: $0.consumedAt) }).sorted()
             return Self.longestConsecutiveRun(days: days, calendar: calendar) >= 7
         }
@@ -150,10 +188,10 @@ struct AchievementEngine {
                 entries.reduce(0) { $0 + $1.totalProteinGrams } >= threshold
             }.count
             for dayThreshold in [3, 14, 30, 100, 250] {
-                consider("protein.days.\(dayThreshold)") { proteinDays >= dayThreshold }
+                collector.consider("protein.days.\(dayThreshold)") { proteinDays >= dayThreshold }
             }
         }
-        consider("protein.week") {
+        collector.consider("protein.week") {
             guard let proteinGoal = inputs.proteinGoalGrams, proteinGoal > 0 else { return false }
             let threshold = Double(proteinGoal) * 0.9
             let hitDays = Set(
@@ -164,35 +202,37 @@ struct AchievementEngine {
             ).sorted()
             return Self.longestConsecutiveRun(days: hitDays, calendar: calendar) >= 7
         }
-        consider("recipes.ten") { inputs.totalRecipeCooks >= 10 }
+    }
+
+    private func considerLifetimeMilestones(_ meals: [MealEntry], inputs: Inputs, collector: UnlockCollector) {
+        collector.consider("recipes.ten") { inputs.totalRecipeCooks >= 10 }
         for threshold in [3, 25, 50, 100] {
-            consider("recipes.cooked.\(threshold)") { inputs.totalRecipeCooks >= threshold }
+            collector.consider("recipes.cooked.\(threshold)") { inputs.totalRecipeCooks >= threshold }
         }
-        consider("weight.ten") { inputs.totalWeightEntries >= 10 }
+        collector.consider("weight.ten") { inputs.totalWeightEntries >= 10 }
         for threshold in [3, 25, 50, 100] {
-            consider("weight.entries.\(threshold)") { inputs.totalWeightEntries >= threshold }
+            collector.consider("weight.entries.\(threshold)") { inputs.totalWeightEntries >= threshold }
         }
-        consider("tag.first") { meals.contains { !$0.tags.isEmpty } }
+        collector.consider("tag.first") { meals.contains { !$0.tags.isEmpty } }
         let tagCount = meals.reduce(0) { $0 + $1.tags.count }
         for threshold in [5, 25, 100, 250] {
-            consider("tags.used.\(threshold)") { tagCount >= threshold }
+            collector.consider("tags.used.\(threshold)") { tagCount >= threshold }
         }
+    }
+
+    private func considerMetaMilestones(inputs: Inputs, collector: UnlockCollector) {
         // The meta achievement fires when the user is *about* to cross
         // their 10th badge — already-earned set includes everything that
         // unlocked in this very call, so we add the pending count.
-        consider("achievements.ten") {
-            inputs.totalAchievementsEarned + unlocked.count >= 10
+        collector.consider("achievements.ten") {
+            inputs.totalAchievementsEarned + collector.unlocked.count >= 10
         }
         for threshold in [25, 50, 75, 100] {
-            consider("achievements.\(threshold)") {
-                inputs.totalAchievementsEarned + unlocked.count >= threshold
+            collector.consider("achievements.\(threshold)") {
+                inputs.totalAchievementsEarned + collector.unlocked.count >= threshold
             }
         }
-
-        _ = now  // future-dated predicates can reach for this without an API churn
-        return unlocked
     }
-    // swiftlint:enable function_body_length
 
     private static func within(_ value: Double, of target: Double, tolerance: Double) -> Bool {
         guard target > 0 else { return false }

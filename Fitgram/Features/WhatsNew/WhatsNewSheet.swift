@@ -112,10 +112,10 @@ struct WhatsNewSheet: View {
     }
 
     private var primaryButton: some View {
-        Button(action: {
+        Button {
             Haptics.success()
             onDismiss()
-        }) {
+        } label: {
             HStack(spacing: 8) {
                 Text("Zaczynamy")
                     .font(Tokens.Font.bodyEmphasized)
@@ -170,7 +170,7 @@ struct IdentifiableWhatsNewEntry: Identifiable, Equatable {
 }
 
 /// "What's new" catalog. Append at the top when a release bumps
-/// MARKETING_VERSION's major or minor digits. Patch-only bumps don't
+/// `MARKETING_VERSION`'s major or minor digits. Patch-only bumps don't
 /// need an entry — the system silently keeps the previously-shown
 /// version in sync.
 enum WhatsNewCatalog {

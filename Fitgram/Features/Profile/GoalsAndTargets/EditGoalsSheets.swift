@@ -974,7 +974,7 @@ struct EditMacrosSheet: View {
             errorMessage: $errorMessage
         ) {
             macroEditorHeader
-            profileMacroRow(
+            MacroTargetEditorRow(
                 title: L("Protein"),
                 subtitle: TL(
                     pl: "Sytość i ochrona mięśni",
@@ -988,7 +988,7 @@ struct EditMacrosSheet: View {
                 value: $proteinGrams,
                 range: 40...260
             )
-            profileMacroRow(
+            MacroTargetEditorRow(
                 title: L("Carbs"),
                 subtitle: TL(
                     pl: "Energia na dzień i trening",
@@ -1002,7 +1002,7 @@ struct EditMacrosSheet: View {
                 value: $carbsGrams,
                 range: 40...520
             )
-            profileMacroRow(
+            MacroTargetEditorRow(
                 title: L("Fat"),
                 subtitle: TL(
                     pl: "Hormony, smak i stabilność",
@@ -1044,86 +1044,6 @@ struct EditMacrosSheet: View {
                 .foregroundStyle(Tokens.Palette.inkMuted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func profileMacroRow(
-        title: String,
-        subtitle: String,
-        symbol: String,
-        color: Color,
-        value: Binding<Int>,
-        range: ClosedRange<Int>
-    ) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack(spacing: Tokens.Space.md) {
-                    Image(systemName: symbol)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(color)
-                        .frame(width: 42, height: 42)
-                        .background(Circle().fill(color.opacity(0.14)))
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(title)
-                            .font(Tokens.Font.headline)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text(subtitle)
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
-                }
-
-                HStack(spacing: Tokens.Space.sm) {
-                    macroStepButton(symbol: "minus") {
-                        value.wrappedValue = max(range.lowerBound, value.wrappedValue - 5)
-                    }
-                    TextField("0", value: value, format: .number)
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.center)
-                        .font(.system(size: 32, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Tokens.Space.sm)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .fill(Tokens.Palette.surfaceMuted.opacity(0.86))
-                        )
-                        .overlay(alignment: .trailing) {
-                            Text("g")
-                                .font(Tokens.Font.footnote.weight(.bold))
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                                .padding(.trailing, Tokens.Space.md)
-                        }
-                    macroStepButton(symbol: "plus") {
-                        value.wrappedValue = min(range.upperBound, value.wrappedValue + 5)
-                    }
-                }
-
-                Slider(
-                    value: Binding(
-                        get: { Double(value.wrappedValue) },
-                        set: { value.wrappedValue = Int($0.rounded()) }
-                    ),
-                    in: Double(range.lowerBound)...Double(range.upperBound),
-                    step: 1
-                )
-                .tint(color)
-            }
-        }
-    }
-
-    private func macroStepButton(symbol: String, action: @escaping () -> Void) -> some View {
-        Button {
-            Haptics.light()
-            action()
-        } label: {
-            Image(systemName: symbol)
-                .font(.system(size: 16, weight: .heavy))
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 44, height: 44)
-                .background(Circle().fill(Tokens.Palette.primarySoft))
-        }
-        .buttonStyle(.plain)
     }
 
     private var profileMacroSummaryCard: some View {
@@ -1710,15 +1630,30 @@ struct EditMainGoalSheet: View {
     private var paceWarningText: String {
         TL(
             pl:
-                "To bardzo intensywne tempo. Trwałe rezultaty zwykle łatwiej utrzymać przy 0,25–0,5 kg/tydzień. W razie wątpliwości skonsultuj plan ze specjalistą.",
+                """
+                To bardzo intensywne tempo. Trwałe rezultaty zwykle łatwiej utrzymać przy 0,25–0,5 kg/tydzień. W razie \
+                wątpliwości skonsultuj plan ze specjalistą.
+                """,
             en:
-                "This is a very intense pace. Long-term results are usually easier to keep at 0.25–0.5 kg/week. If unsure, review the plan with a specialist.",
+                """
+                This is a very intense pace. Long-term results are usually easier to keep at 0.25–0.5 kg/week. If unsure, \
+                review the plan with a specialist.
+                """,
             uk:
-                "Це дуже інтенсивний темп. Довгострокові результати зазвичай легше втримати при 0,25–0,5 кг/тиждень. Якщо є сумніви, обговори план зі спеціалістом.",
+                """
+                Це дуже інтенсивний темп. Довгострокові результати зазвичай легше втримати при 0,25–0,5 кг/тиждень. Якщо є \
+                сумніви, обговори план зі спеціалістом.
+                """,
             ru:
-                "Это очень интенсивный темп. Долгосрочный результат обычно легче удержать при 0,25–0,5 кг в неделю. Если есть сомнения, обсуди план со специалистом.",
+                """
+                Это очень интенсивный темп. Долгосрочный результат обычно легче удержать при 0,25–0,5 кг в неделю. Если есть \
+                сомнения, обсуди план со специалистом.
+                """,
             es:
-                "Este ritmo es muy intenso. Los resultados duraderos suelen mantenerse mejor con 0,25–0,5 kg/semana. Si tienes dudas, revisa el plan con un especialista."
+                """
+                Este ritmo es muy intenso. Los resultados duraderos suelen mantenerse mejor con 0,25–0,5 kg/semana. Si tienes \
+                dudas, revisa el plan con un especialista.
+                """
         )
     }
 

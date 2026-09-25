@@ -211,13 +211,13 @@ enum AchievementCatalog {
     }
 
     private static var sourceMilestones: [AchievementDefinition] {
-        let sources: [(slug: String, title: String, symbol: String, order: Int)] = [
-            ("photo", "Skaner talerza", "camera.fill", 120),
-            ("barcode", "Łowca kodów", "barcode.viewfinder", 130),
-            ("voice", "Głosowy rytm", "mic.fill", 140),
-            ("quickdb", "Szybka baza", "tablecells.fill", 150),
-            ("manual", "Ręczna precyzja", "pencil.and.list.clipboard", 160),
-            ("recipe", "Gotowane w domu", "book.fill", 170),
+        let sources: [MilestoneTrack] = [
+            MilestoneTrack(slug: "photo", title: "Skaner talerza", symbol: "camera.fill", order: 120),
+            MilestoneTrack(slug: "barcode", title: "Łowca kodów", symbol: "barcode.viewfinder", order: 130),
+            MilestoneTrack(slug: "voice", title: "Głosowy rytm", symbol: "mic.fill", order: 140),
+            MilestoneTrack(slug: "quickdb", title: "Szybka baza", symbol: "tablecells.fill", order: 150),
+            MilestoneTrack(slug: "manual", title: "Ręczna precyzja", symbol: "pencil.and.list.clipboard", order: 160),
+            MilestoneTrack(slug: "recipe", title: "Gotowane w domu", symbol: "book.fill", order: 170),
         ]
         return sources.flatMap { source in
             [5, 25, 100, 250].enumerated().map { index, threshold in
@@ -233,11 +233,11 @@ enum AchievementCatalog {
     }
 
     private static var mealTypeMilestones: [AchievementDefinition] {
-        let types: [(slug: String, title: String, symbol: String, order: Int)] = [
-            ("breakfast", "Śniadania", "sunrise.fill", 200),
-            ("lunch", "Obiady", "sun.max.fill", 210),
-            ("dinner", "Kolacje", "moon.stars.fill", 220),
-            ("snack", "Przekąski", "takeoutbag.and.cup.and.straw.fill", 230),
+        let types: [MilestoneTrack] = [
+            MilestoneTrack(slug: "breakfast", title: "Śniadania", symbol: "sunrise.fill", order: 200),
+            MilestoneTrack(slug: "lunch", title: "Obiady", symbol: "sun.max.fill", order: 210),
+            MilestoneTrack(slug: "dinner", title: "Kolacje", symbol: "moon.stars.fill", order: 220),
+            MilestoneTrack(slug: "snack", title: "Przekąski", symbol: "takeoutbag.and.cup.and.straw.fill", order: 230),
         ]
         return types.flatMap { type in
             [3, 7, 30, 100, 250].enumerated().map { index, threshold in
@@ -324,6 +324,14 @@ enum AchievementCatalog {
             milestone("achievements.75", "Łowca postępów", "Siedemdziesiąt pięć zdobytych odznak.", "rosette", 402),
             milestone("achievements.100", "Legenda Fitgram", "Sto zdobytych odznak.", "trophy.fill", 403),
         ]
+    }
+
+    /// One entry-source / meal-type track that fans out into threshold badges.
+    private struct MilestoneTrack {
+        let slug: String
+        let title: String
+        let symbol: String
+        let order: Int
     }
 
     private static func milestone(

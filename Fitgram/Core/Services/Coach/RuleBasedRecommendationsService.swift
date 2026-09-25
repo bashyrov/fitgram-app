@@ -78,9 +78,15 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                     uk:
                         "Темп був занадто агресивний — ми поставили мінімум калорій, щоб захистити здоровʼя. Розглянь спокійніший план.",
                     ru:
-                        "Темп был слишком агрессивным — мы поставили минимум калорий, чтобы защитить здоровье. Рассмотри более спокойный план.",
+                        """
+                        Темп был слишком агрессивным — мы поставили минимум калорий, чтобы защитить здоровье. Рассмотри более \
+                        спокойный план.
+                        """,
                     es:
-                        "El ritmo era demasiado agresivo: fijamos un mínimo de calorías para proteger tu salud. Considera un plan más lento."
+                        """
+                        El ritmo era demasiado agresivo: fijamos un mínimo de calorías para proteger tu salud. Considera un plan más \
+                        lento.
+                        """
                 )
             )
         }
@@ -142,7 +148,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                 title: L("Lean on protein"),
                 description:
                     L(
-                        "Aim for 1.5-2 g of protein per kg of body weight — cottage cheese, eggs, chicken, lentils keep muscle while fat goes."
+                        """
+                        Aim for 1.5-2 g of protein per kg of body weight — cottage cheese, eggs, chicken, lentils keep muscle while \
+                        fat goes.
+                        """
                     )
             ),
             RecommendationTip(
@@ -176,7 +185,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                 icon: "🍽", title: L("Slow the meal down"),
                 description:
                     L(
-                        "20 minutes per meal lets satiety signals catch up. Most over-eating is finishing the plate before your gut knows it's full."
+                        """
+                        20 minutes per meal lets satiety signals catch up. Most over-eating is finishing the plate before your gut \
+                        knows it's full.
+                        """
                     )
             ),
             RecommendationTip(
@@ -218,7 +230,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                 icon: "👩‍⚕️", title: L("Follow your dietitian's plan"),
                 description:
                     L(
-                        "Fitgram helps you track what you're already supposed to do. Export weekly CSV from Profile and bring it to the visit."
+                        """
+                        Fitgram helps you track what you're already supposed to do. Export weekly CSV from Profile and bring it to the \
+                        visit.
+                        """
                     )
             )
         ]

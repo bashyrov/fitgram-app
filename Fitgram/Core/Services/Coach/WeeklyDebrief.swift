@@ -323,7 +323,10 @@ extension WeeklyDebrief {
                     ru:
                         "Тренировки добавили %lld мин и около %lld сожженных ккал. Это контекст, а не повод догонять едой.",
                     es:
-                        "El entrenamiento añadió %lld min y unas %lld kcal quemadas. Lo usamos como contexto, no como permiso para perseguir comida."
+                        """
+                        El entrenamiento añadió %lld min y unas %lld kcal quemadas. Lo usamos como contexto, no como permiso para \
+                        perseguir comida.
+                        """
                 ),
                 minutes,
                 kcal

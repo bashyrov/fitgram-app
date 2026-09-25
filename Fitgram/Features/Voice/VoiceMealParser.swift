@@ -206,8 +206,8 @@ struct VoiceMealParser {
         var best: Food?
         for food in catalog {
             var foodTokens: Set<String> = []
-            for n in food.allSearchableNames {
-                foodTokens.formUnion(Self.tokenize(n.lowercased()))
+            for name in food.allSearchableNames {
+                foodTokens.formUnion(Self.tokenize(name.lowercased()))
             }
             let shared = tokens.intersection(foodTokens).count
             if shared > bestScore {

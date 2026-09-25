@@ -139,7 +139,12 @@ final class CoachService {
             dietMacroPresetRaw: user?.dietMacroPreset.rawValue ?? DietMacroPreset.balanced.rawValue
         )
         let today = aggregateToday()
-        let week = aggregateWeek(
+        let week = CoachWeekAggregator(
+            container: container,
+            calendar: calendar,
+            now: now,
+            activityCaloriePolicyStore: activityCaloriePolicyStore
+        ).aggregate(
             userRemoteID: userRemoteID,
             registeredAt: user?.createdAt ?? user?.onboardingCompletedAt ?? currentNow,
             calorieGoal: goals.calorieGoalKcal,
@@ -245,163 +250,6 @@ final class CoachService {
             entryCount: entries.count,
             lastLoggedAt: entries.first?.consumedAt
         )
-    }
-
-    private func aggregateWeek(
-        userRemoteID: String,
-        registeredAt: Date,
-        calorieGoal: Int,
-        proteinGoal: Int
-    ) -> CoachContext.Week {
-        let context = ModelContext(container)
-        let today = calendar.startOfDay(for: now())
-        let weekStart = personalWeekStart(registeredAt: registeredAt, today: today)
-        guard let windowEnd = calendar.date(byAdding: .day, value: 7, to: weekStart)
-        else {
-            return CoachContext.Week(
-                startAt: today, endAt: today,
-                dailyCalorieAverages: [], dailyProteinAverages: [], dailyWaterMl: [],
-                workoutCalories: [], workoutMinutes: [], frequentFoods: [],
-                daysWithAnyEntry: 0, daysHittingProteinGoal: 0, daysWithinCalorieGoal: 0,
-                bestCalorieDayOffset: nil, weakestProteinDayOffset: nil
-            )
-        }
-        let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= weekStart && $0.consumedAt < windowEnd }
-        )
-        let entries = (try? context.fetch(descriptor)) ?? []
-        var caloriesByDay: [Date: Double] = [:]
-        var proteinByDay: [Date: Double] = [:]
-        var foodCounts: [String: Int] = [:]
-        for entry in entries {
-            let key = calendar.startOfDay(for: entry.consumedAt)
-            caloriesByDay[key, default: 0] += entry.totalCaloriesKcal
-            proteinByDay[key, default: 0] += entry.totalProteinGrams
-            for item in entry.items {
-                let name = item.name.trimmingCharacters(in: .whitespacesAndNewlines)
-                if !name.isEmpty {
-                    foodCounts[name, default: 0] += 1
-                }
-            }
-        }
-        let waterEntries = fetchWaterEntries(
-            context: context, userRemoteID: userRemoteID, from: weekStart, to: windowEnd)
-        let workouts = fetchWorkouts(context: context, userRemoteID: userRemoteID, from: weekStart, to: windowEnd)
-        var waterByDay: [Date: Int] = [:]
-        for entry in waterEntries {
-            waterByDay[calendar.startOfDay(for: entry.recordedAt), default: 0] += entry.milliliters
-        }
-        var workoutCaloriesByDay: [Date: Double] = [:]
-        var countedWorkoutCaloriesByDay: [Date: Double] = [:]
-        var workoutMinutesByDay: [Date: Int] = [:]
-        for workout in workouts {
-            let key = calendar.startOfDay(for: workout.recordedAt)
-            workoutCaloriesByDay[key, default: 0] += workout.caloriesBurnedKcal
-            if workout.countsTowardDailyGoal {
-                countedWorkoutCaloriesByDay[key, default: 0] += workout.caloriesBurnedKcal
-            }
-            workoutMinutesByDay[key, default: 0] += workout.durationMinutes
-        }
-        var dailyCalories: [Double] = []
-        var dailyProtein: [Double] = []
-        var dailyWater: [Int] = []
-        var dailyWorkoutCalories: [Double] = []
-        var dailyWorkoutMinutes: [Int] = []
-        var daysWithEntry = 0
-        var daysProteinHit = 0
-        var daysCalorieHit = 0
-        for offset in 0..<7 {
-            guard let day = calendar.date(byAdding: .day, value: offset, to: weekStart) else { continue }
-            let key = calendar.startOfDay(for: day)
-            let kcal = caloriesByDay[key] ?? 0
-            let protein = proteinByDay[key] ?? 0
-            dailyCalories.append(kcal)
-            dailyProtein.append(protein)
-            dailyWater.append(waterByDay[key] ?? 0)
-            let workoutCalories = workoutCaloriesByDay[key] ?? 0
-            let countedWorkoutCalories = countedWorkoutCaloriesByDay[key] ?? 0
-            let goalForDay =
-                calorieGoal
-                + (activityCaloriePolicyStore.includesActivityCalories(on: key, now: now())
-                    ? Int(countedWorkoutCalories.rounded())
-                    : 0)
-            dailyWorkoutCalories.append(workoutCalories)
-            dailyWorkoutMinutes.append(workoutMinutesByDay[key] ?? 0)
-            if kcal > 0 { daysWithEntry += 1 }
-            if proteinGoal > 0, protein >= Double(proteinGoal) * 0.9 { daysProteinHit += 1 }
-            if goalForDay > 0 {
-                let ratio = kcal / Double(goalForDay)
-                if ratio >= 0.85, ratio <= 1.15 { daysCalorieHit += 1 }
-            }
-        }
-        let bestCalorieDayOffset = dailyCalories.enumerated()
-            .filter { $0.element > 0 && calorieGoal > 0 }
-            .min { abs($0.element - Double(calorieGoal)) < abs($1.element - Double(calorieGoal)) }?
-            .offset
-        let weakestProteinDayOffset = dailyProtein.enumerated()
-            .filter { dailyCalories.indices.contains($0.offset) && dailyCalories[$0.offset] > 0 }
-            .min { $0.element < $1.element }?
-            .offset
-        let frequentFoods =
-            foodCounts
-            .sorted { lhs, rhs in
-                if lhs.value == rhs.value {
-                    return lhs.key.localizedCaseInsensitiveCompare(rhs.key) == .orderedAscending
-                }
-                return lhs.value > rhs.value
-            }
-            .prefix(5)
-            .map(\.key)
-        return CoachContext.Week(
-            startAt: weekStart,
-            endAt: windowEnd,
-            dailyCalorieAverages: dailyCalories,
-            dailyProteinAverages: dailyProtein,
-            dailyWaterMl: dailyWater,
-            workoutCalories: dailyWorkoutCalories,
-            workoutMinutes: dailyWorkoutMinutes,
-            frequentFoods: frequentFoods,
-            daysWithAnyEntry: daysWithEntry,
-            daysHittingProteinGoal: daysProteinHit,
-            daysWithinCalorieGoal: daysCalorieHit,
-            bestCalorieDayOffset: bestCalorieDayOffset,
-            weakestProteinDayOffset: weakestProteinDayOffset
-        )
-    }
-
-    private func personalWeekStart(registeredAt: Date, today: Date) -> Date {
-        let anchor = calendar.startOfDay(for: registeredAt)
-        let days = calendar.dateComponents([.day], from: anchor, to: today).day ?? 0
-        let cycleOffset = max(0, days) / 7 * 7
-        return calendar.date(byAdding: .day, value: cycleOffset, to: anchor) ?? today
-    }
-
-    private func fetchWaterEntries(
-        context: ModelContext,
-        userRemoteID: String,
-        from start: Date,
-        to end: Date
-    ) -> [WaterEntry] {
-        let descriptor = FetchDescriptor<WaterEntry>(
-            predicate: #Predicate {
-                $0.userRemoteID == userRemoteID && $0.recordedAt >= start && $0.recordedAt < end
-            }
-        )
-        return (try? context.fetch(descriptor)) ?? []
-    }
-
-    private func fetchWorkouts(
-        context: ModelContext,
-        userRemoteID: String,
-        from start: Date,
-        to end: Date
-    ) -> [WorkoutEntry] {
-        let descriptor = FetchDescriptor<WorkoutEntry>(
-            predicate: #Predicate {
-                $0.userRemoteID == userRemoteID && $0.recordedAt >= start && $0.recordedAt < end
-            }
-        )
-        return (try? context.fetch(descriptor)) ?? []
     }
 
     private func memorySnapshot(for userRemoteID: String) -> [CoachContext.MemoryNote] {

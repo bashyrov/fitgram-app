@@ -377,6 +377,13 @@ enum DebugBypass {
         }
     }
 
+    private struct SeedAchievement {
+        let kind: String
+        let title: String
+        let details: String
+        let daysAgo: Int
+    }
+
     @MainActor
     private static func seedAchievements(context: ModelContext, remoteID: String) throws {
         let descriptor = FetchDescriptor<Achievement>(
@@ -385,25 +392,32 @@ enum DebugBypass {
         guard try context.fetch(descriptor).count < 5 else { return }
         let calendar = Calendar.current
         let today = Date()
-        let unlocked: [(String, String, String, Int)] = [
-            ("meal.first", "First meal", "You logged your first meal.", 89),
-            ("scan.first", "First scan", "You scanned a plate with the camera.", 87),
-            ("barcode.first", "First barcode", "You scanned a barcode.", 80),
-            ("streak.7", "Week!", "Seven days of entries in a row.", 70),
-            ("streak.30", "Month of rhythm", "Thirty days in a row.", 30),
-            ("protein.heavy", "Protein day", "Ate ≥1g of protein per kg.", 25),
-            ("recipe.first", "First recipe", "You added your first recipe.", 60),
-            ("weight.tracked", "First weight", "You logged your weight.", 84),
-            ("voice.first", "Voice lunch", "You added a meal by voice.", 50),
+        let unlocked: [SeedAchievement] = [
+            SeedAchievement(
+                kind: "meal.first", title: "First meal", details: "You logged your first meal.", daysAgo: 89),
+            SeedAchievement(
+                kind: "scan.first", title: "First scan", details: "You scanned a plate with the camera.", daysAgo: 87),
+            SeedAchievement(
+                kind: "barcode.first", title: "First barcode", details: "You scanned a barcode.", daysAgo: 80),
+            SeedAchievement(kind: "streak.7", title: "Week!", details: "Seven days of entries in a row.", daysAgo: 70),
+            SeedAchievement(kind: "streak.30", title: "Month of rhythm", details: "Thirty days in a row.", daysAgo: 30),
+            SeedAchievement(
+                kind: "protein.heavy", title: "Protein day", details: "Ate ≥1g of protein per kg.", daysAgo: 25),
+            SeedAchievement(
+                kind: "recipe.first", title: "First recipe", details: "You added your first recipe.", daysAgo: 60),
+            SeedAchievement(
+                kind: "weight.tracked", title: "First weight", details: "You logged your weight.", daysAgo: 84),
+            SeedAchievement(
+                kind: "voice.first", title: "Voice lunch", details: "You added a meal by voice.", daysAgo: 50),
         ]
-        for (kind, title, details, daysAgo) in unlocked {
-            let when = calendar.date(byAdding: .day, value: -daysAgo, to: today) ?? today
+        for seed in unlocked {
+            let when = calendar.date(byAdding: .day, value: -seed.daysAgo, to: today) ?? today
             context.insert(
                 Achievement(
                     userRemoteID: remoteID,
-                    kind: kind,
-                    title: title,
-                    details: details,
+                    kind: seed.kind,
+                    title: seed.title,
+                    details: seed.details,
                     earnedAt: when
                 )
             )

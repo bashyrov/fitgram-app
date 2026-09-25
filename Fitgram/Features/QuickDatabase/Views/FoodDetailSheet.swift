@@ -365,10 +365,10 @@ struct FoodDetailSheet: View {
 
     private var detailedIngredientsCard: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(L("Składniki"))
-                            .font(Tokens.Font.headline)
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(L("Składniki"))
+                        .font(Tokens.Font.headline)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(L("Edytuj gramaturę produktu przed zapisem"))
                         .font(Tokens.Font.caption)

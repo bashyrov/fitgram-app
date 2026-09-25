@@ -53,7 +53,12 @@ extension PaywallTrigger {
         case .voiceEntryQuota:
             return Copy(
                 headline: L("Dzienny limit AI wykorzystany"),
-                body: L("W bezpłatnej wersji możesz zapisać 3 posiłki AI dziennie. Premium ma bardzo duże limity, żeby wszystko działało płynnie."),
+                body: L(
+                    """
+                    W bezpłatnej wersji możesz zapisać 3 posiłki AI dziennie. Premium ma bardzo duże limity, żeby wszystko \
+                    działało płynnie.
+                    """
+                ),
                 badge: L("Voice")
             )
         case .mealAIRefreshQuota:
@@ -74,7 +79,10 @@ extension PaywallTrigger {
             return Copy(
                 headline: L("Kuchnia Oli z dużym limitem w Pro"),
                 body: L(
-                    "W bezpłatnej wersji Kuchnia Oli korzysta najpierw z lokalnej biblioteki dań, a AI tylko dopina szczegóły. Premium daje bardzo duże limity i więcej AI."
+                    """
+                    W bezpłatnej wersji Kuchnia Oli korzysta najpierw z lokalnej biblioteki dań, a AI tylko dopina szczegóły. \
+                    Premium daje bardzo duże limity i więcej AI.
+                    """
                 ),
                 badge: L("Kuchnia Oli")
             )

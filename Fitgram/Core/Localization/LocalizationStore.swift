@@ -48,7 +48,7 @@ final class LocalizationStore {
     private(set) var locale: Locale
 
     /// App Group used to mirror the chosen language to the widget process.
-    private nonisolated static let appGroupID = "group.app.fitgram.shared"
+    nonisolated private static let appGroupID = "group.app.fitgram.shared"
 
     init() {
         let code = LocalizationStore.resolveInitialLanguage()

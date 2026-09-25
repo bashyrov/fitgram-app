@@ -58,9 +58,7 @@ struct MealTextAnalysisService: @unchecked Sendable {
         mealType: MealType,
         locale: String = LocalizationStore.currentLanguageCode(),
         quotaKind: QuotaKind = .mealRefresh
-    ) async
-        -> MealTextAnalysis
-    {
+    ) async -> MealTextAnalysis {
         if let client {
             do {
                 let payload = Request(

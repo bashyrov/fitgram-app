@@ -220,6 +220,12 @@ SwiftData store  (M1.2 schema v1.0)
 **Rationale:** Matches how real users think about their numbers — they don't customise as a unit. Per-axis means the calculator can keep working partially while the user owns the bits they care about.  
 **Consequences:** Slightly more state to keep in sync; we centralise mutation through UserProfileService so every edit path flips the right flag and saves through one method.
 
+### 2026-09-25: swift-format owns brace placement after wrapped conditions
+**Context:** swift-format puts `{` on its own line when an `if` / `guard` / `while` condition list wraps; SwiftLint's `opening_brace` flagged every such site (28 violations), so `make format` and `make lint` fought each other.  
+**Decision:** Keep `opening_brace` enabled but set `ignore_multiline_statement_conditions: true` in `.swiftlint.yml`.  
+**Rationale:** The formatter is the style authority (same reasoning as disabling `trailing_comma`); the rule still catches a misplaced brace on single-line declarations.  
+**Consequences:** Brace-on-own-line is accepted only after a wrapped condition list. Function signatures that wrap still need the brace on the return-type line.
+
 ## API Contracts
 
 ### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)

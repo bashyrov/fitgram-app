@@ -457,7 +457,10 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                             .foregroundStyle(Tokens.Palette.ink)
                             .lineLimit(1)
                         Text(
-                            "\(OlaChefCatalog.localizedCuisineName(suggestion.dish.cuisine)) · \(Int(suggestion.servingGrams.rounded())) g · \(suggestion.dish.prepMinutes) min"
+                            """
+                            \(OlaChefCatalog.localizedCuisineName(suggestion.dish.cuisine)) · \(Int(suggestion.servingGrams.rounded())) g \
+                            · \(suggestion.dish.prepMinutes) min
+                            """
                         )
                         .font(Tokens.Font.caption)
                         .foregroundStyle(Tokens.Palette.inkMuted)

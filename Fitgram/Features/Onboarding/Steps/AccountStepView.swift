@@ -14,6 +14,27 @@ struct AccountStepView: View {
     private enum Field {
         case displayName
         case email
+
+        var contentType: UITextContentType {
+            switch self {
+            case .displayName: .givenName
+            case .email: .emailAddress
+            }
+        }
+
+        var capitalization: TextInputAutocapitalization {
+            switch self {
+            case .displayName: .words
+            case .email: .never
+            }
+        }
+
+        var keyboard: UIKeyboardType {
+            switch self {
+            case .displayName: .default
+            case .email: .emailAddress
+            }
+        }
     }
 
     private var canProceed: Bool {
@@ -34,18 +55,13 @@ struct AccountStepView: View {
                         label: "Name",
                         placeholder: "Anna",
                         text: $profile.displayName,
-                        focusField: .displayName,
-                        contentType: .givenName,
-                        capitalization: .words
+                        focusField: .displayName
                     )
                     fieldCard(
                         label: "Adres e-mail",
                         placeholder: "ty@example.com",
                         text: $profile.emailAddress,
-                        focusField: .email,
-                        contentType: .emailAddress,
-                        capitalization: .never,
-                        keyboard: .emailAddress
+                        focusField: .email
                     )
                     Text("You can change this later in Profile.")
                         .font(Tokens.Font.caption)
@@ -63,10 +79,7 @@ struct AccountStepView: View {
         label: LocalizedStringKey,
         placeholder: LocalizedStringKey,
         text: Binding<String>,
-        focusField: Field,
-        contentType: UITextContentType,
-        capitalization: TextInputAutocapitalization,
-        keyboard: UIKeyboardType = .default
+        focusField: Field
     ) -> some View {
         VStack(alignment: .leading, spacing: Tokens.Space.xs) {
             Text(label)
@@ -75,9 +88,9 @@ struct AccountStepView: View {
                 .textCase(.uppercase)
             TextField(placeholder, text: text)
                 .focused($focused, equals: focusField)
-                .textContentType(contentType)
-                .textInputAutocapitalization(capitalization)
-                .keyboardType(keyboard)
+                .textContentType(focusField.contentType)
+                .textInputAutocapitalization(focusField.capitalization)
+                .keyboardType(focusField.keyboard)
                 .autocorrectionDisabled(focusField == .email)
                 .padding(.vertical, Tokens.Space.md)
                 .padding(.horizontal, Tokens.Space.lg)

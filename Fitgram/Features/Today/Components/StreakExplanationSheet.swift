@@ -29,7 +29,10 @@ struct StreakExplanationSheet: View {
             symbol: "moon.zzz",
             title: "Reset po cichu",
             body:
-                "Skipping a full 24-hour period without a freeze resets the counter to zero. No big deal — you can start a new streak right away."
+                """
+                Skipping a full 24-hour period without a freeze resets the counter to zero. No big deal — you can start a new \
+                streak right away.
+                """
         ),
         Bullet(
             symbol: "calendar",
