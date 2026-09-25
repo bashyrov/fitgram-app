@@ -127,6 +127,7 @@ final class LocalizationStore {
     }
 }
 
+// swift-format-ignore: AlwaysUseLowerCamelCase
 /// Routes a string-key lookup through the swapped Bundle so the runtime
 /// language switcher (`Bundle.setLanguage`) takes effect — `String(localized:)`
 /// goes through `LocalizedStringResource` which honours `Locale.current` (a
@@ -137,6 +138,7 @@ func L(_ key: String, comment: String = "") -> String {
     Bundle.main.localizedString(forKey: key, value: key, table: nil)
 }
 
+// swift-format-ignore: AlwaysUseLowerCamelCase
 /// Inline fallback for generated data catalogs whose strings are built
 /// dynamically and therefore cannot be extracted reliably into
 /// Localizable.xcstrings by Xcode.

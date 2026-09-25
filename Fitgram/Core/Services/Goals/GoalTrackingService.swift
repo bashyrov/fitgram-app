@@ -99,21 +99,8 @@ final class GoalTrackingService {
         let startOfStart = calendar.startOfDay(for: startDate)
         let goalEntries = allEntries.filter { $0.recordedAt >= startOfStart }
 
-        let startWeight: Double
-        if let storedStart = user.goalStartWeightKg {
-            startWeight = storedStart
-        } else if let earliest = goalEntries.min(by: { $0.recordedAt < $1.recordedAt }) {
-            startWeight = earliest.weightKg
-        } else {
-            startWeight = user.weightKg ?? target
-        }
-
-        let currentWeight: Double
-        if let latest = goalEntries.max(by: { $0.recordedAt < $1.recordedAt }) {
-            currentWeight = latest.weightKg
-        } else {
-            currentWeight = user.weightKg ?? startWeight
-        }
+        let startWeight = Self.startWeight(user: user, goalEntries: goalEntries, target: target)
+        let currentWeight = Self.currentWeight(user: user, goalEntries: goalEntries, startWeight: startWeight)
 
         let nowDate = now()
         let dayStartNow = calendar.startOfDay(for: nowDate)
@@ -155,6 +142,25 @@ final class GoalTrackingService {
             entries: points,
             isGoalReached: isReached
         )
+    }
+
+    /// The goal's stored start weight, else the first weigh-in since the
+    /// goal started, else the profile weight.
+    private static func startWeight(user: User, goalEntries: [WeightEntry], target: Double) -> Double {
+        if let storedStart = user.goalStartWeightKg {
+            return storedStart
+        }
+        if let earliest = goalEntries.min(by: { $0.recordedAt < $1.recordedAt }) {
+            return earliest.weightKg
+        }
+        return user.weightKg ?? target
+    }
+
+    private static func currentWeight(user: User, goalEntries: [WeightEntry], startWeight: Double) -> Double {
+        if let latest = goalEntries.max(by: { $0.recordedAt < $1.recordedAt }) {
+            return latest.weightKg
+        }
+        return user.weightKg ?? startWeight
     }
 
     /// Records a goal weigh-in for the user. One row per calendar day —

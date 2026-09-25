@@ -95,24 +95,30 @@ extension WeeklyDebrief {
         }
     }
 
-    private static func stats(for context: CoachContext) -> [Stat] {
-        let calorieAvg = average(context.week.dailyCalorieAverages)
-        let waterAvg = average(context.week.dailyWaterMl.map(Double.init))
-        let workoutMinutes = context.week.workoutMinutes.reduce(0, +)
-        let proteinCaption = TL(
+    private static var proteinDaysCaption: String {
+        TL(
             pl: "z 7 dni z domkniętym białkiem",
             en: "of 7 days hitting protein",
             uk: "з 7 днів із виконаним білком",
             ru: "из 7 дней с выполненным белком",
             es: "de 7 días cumpliendo proteína"
         )
-        let calorieCaption = TL(
+    }
+
+    private static var calorieDaysCaption: String {
+        TL(
             pl: "z 7 dni w celu kalorii",
             en: "of 7 days in calorie target",
             uk: "з 7 днів у цілі калорій",
             ru: "из 7 дней в цели калорий",
             es: "de 7 días dentro del objetivo"
         )
+    }
+
+    private static func stats(for context: CoachContext) -> [Stat] {
+        let calorieAvg = average(context.week.dailyCalorieAverages)
+        let waterAvg = average(context.week.dailyWaterMl.map(Double.init))
+        let workoutMinutes = context.week.workoutMinutes.reduce(0, +)
         return [
             Stat(
                 kind: .avgCalories,
@@ -124,12 +130,12 @@ extension WeeklyDebrief {
             Stat(
                 kind: .calorieDaysOnTarget,
                 value: "\(context.week.daysWithinCalorieGoal)",
-                caption: calorieCaption
+                caption: calorieDaysCaption
             ),
             Stat(
                 kind: .proteinDaysHit,
                 value: "\(context.week.daysHittingProteinGoal)",
-                caption: proteinCaption
+                caption: proteinDaysCaption
             ),
             Stat(
                 kind: .daysLogged,

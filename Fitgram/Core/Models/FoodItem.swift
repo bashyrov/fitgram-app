@@ -71,3 +71,20 @@ extension FoodItem {
         caloriesKcal <= 0 || proteinGrams <= 0 || carbsGrams <= 0 || fatGrams <= 0
     }
 }
+
+extension FoodItem {
+    /// A row built from an AI-detected item. Pass `id` to keep an existing
+    /// row's identity when replacing it.
+    convenience init(detected item: ScanResult.DetectedItem, id: UUID? = nil) {
+        self.init(
+            id: id ?? item.id,
+            name: item.name,
+            quantityGrams: item.quantityGrams,
+            caloriesKcal: item.caloriesKcal,
+            proteinGrams: item.proteinGrams,
+            carbsGrams: item.carbsGrams,
+            fatGrams: item.fatGrams,
+            confidence: item.confidence
+        )
+    }
+}

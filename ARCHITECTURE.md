@@ -226,6 +226,12 @@ SwiftData store  (M1.2 schema v1.0)
 **Rationale:** The formatter is the style authority (same reasoning as disabling `trailing_comma`); the rule still catches a misplaced brace on single-line declarations.  
 **Consequences:** Brace-on-own-line is accepted only after a wrapped condition list. Function signatures that wrap still need the brace on the return-type line.
 
+### 2026-09-25: `L` / `TL` keep their short uppercase names
+**Context:** The localization helpers `L(_:)` and `TL(pl:en:uk:ru:es:)` are called from well over a thousand sites; `identifier_name` (SwiftLint) and `AlwaysUseLowerCamelCase` (swift-format) both flag the names.  
+**Decision:** `L` is in `identifier_name.excluded` in `.swiftlint.yml`; both declarations carry `// swift-format-ignore: AlwaysUseLowerCamelCase`.  
+**Rationale:** Renaming would churn every screen for no behavioral gain, and the uppercase shorthand mirrors `NSLocalizedString`-style helpers.  
+**Consequences:** No other function may rely on these exemptions.
+
 ## API Contracts
 
 ### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)

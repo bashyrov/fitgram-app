@@ -60,10 +60,3 @@ private struct PrivacyUpsert: Encodable {
     let showWeightHeight: Bool = false
     let showMealDetails: Bool = false
 }
-
-extension String {
-    fileprivate var nilIfBlank: String? {
-        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? nil : trimmed
-    }
-}

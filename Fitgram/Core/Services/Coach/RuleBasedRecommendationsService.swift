@@ -173,7 +173,19 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
     }
 
     private func goalAnchorTip(for request: RecommendationsRequest, seed: Int) -> RecommendationTip {
-        let loseVariants: [RecommendationTip] = [
+        let variants: [RecommendationTip]
+        switch request.goal {
+        case .lose: variants = Self.loseAnchorTips
+        case .gain: variants = Self.gainAnchorTips
+        case .maintain: variants = Self.maintainAnchorTips
+        case .healthCondition: variants = Self.healthAnchorTips
+        case .justTracking: variants = Self.trackingAnchorTips
+        }
+        return Self.pick(variants, seed: seed)
+    }
+
+    private static var loseAnchorTips: [RecommendationTip] {
+        [
             RecommendationTip(
                 icon: "🥗", title: L("Half the plate is vegetables"),
                 description:
@@ -197,7 +209,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                     "A loose 8 PM cut-off saves most people 200-400 kcal a day without changing what they eat.")
             ),
         ]
-        let gainVariants: [RecommendationTip] = [
+    }
+
+    private static var gainAnchorTips: [RecommendationTip] {
+        [
             RecommendationTip(
                 icon: "🥜", title: L("Small high-calorie add-ons"),
                 description:
@@ -213,7 +228,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                     )
             ),
         ]
-        let maintainVariants: [RecommendationTip] = [
+    }
+
+    private static var maintainAnchorTips: [RecommendationTip] {
+        [
             RecommendationTip(
                 icon: "⚖️", title: L("Consistency beats perfection"),
                 description:
@@ -225,7 +243,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                 icon: "📊", title: L("Mind the trend, not the day"),
                 description: L("Daily weight swings 1-2 kg on water alone. Trust the 14-day moving average.")),
         ]
-        let healthVariants: [RecommendationTip] = [
+    }
+
+    private static var healthAnchorTips: [RecommendationTip] {
+        [
             RecommendationTip(
                 icon: "👩‍⚕️", title: L("Follow your dietitian's plan"),
                 description:
@@ -237,7 +258,10 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                     )
             )
         ]
-        let trackingVariants: [RecommendationTip] = [
+    }
+
+    private static var trackingAnchorTips: [RecommendationTip] {
+        [
             RecommendationTip(
                 icon: "🔎", title: L("Notice first, change later"),
                 description:
@@ -246,13 +270,6 @@ final class RuleBasedRecommendationsService: RecommendationsServing {
                 icon: "📝", title: L("Two weeks of honest logs"),
                 description: L("Don't change anything yet. The data points show you what's worth nudging.")),
         ]
-        switch request.goal {
-        case .lose: return Self.pick(loseVariants, seed: seed)
-        case .gain: return Self.pick(gainVariants, seed: seed)
-        case .maintain: return Self.pick(maintainVariants, seed: seed)
-        case .healthCondition: return Self.pick(healthVariants, seed: seed)
-        case .justTracking: return Self.pick(trackingVariants, seed: seed)
-        }
     }
 
     private func cuisineTip(seed: Int) -> RecommendationTip {

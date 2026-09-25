@@ -35,6 +35,36 @@ final class AchievementService {
         try evaluate(forUser: userRemoteID, afterSavingMealID: savedMeal.id)
     }
 
+    /// Goals and lifetime counters the engine needs besides meals + streak.
+    private func engineInputs(
+        for userRemoteID: String,
+        earnedCount: Int,
+        in context: ModelContext
+    ) throws -> AchievementEngine.Inputs {
+        let userDescriptor = FetchDescriptor<User>(
+            predicate: #Predicate { $0.remoteID == userRemoteID }
+        )
+        let user = try context.fetch(userDescriptor).first
+
+        let weightDescriptor = FetchDescriptor<WeightEntry>(
+            predicate: #Predicate { $0.userRemoteID == userRemoteID }
+        )
+        let weightCount = (try? context.fetchCount(weightDescriptor)) ?? 0
+
+        let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
+        let totalCooks = recipes.reduce(0) { $0 + $1.cookCount }
+        return AchievementEngine.Inputs(
+            proteinGoalGrams: user?.proteinGoalGrams,
+            carbsGoalGrams: user?.carbsGoalGrams,
+            fatGoalGrams: user?.fatGoalGrams,
+            calorieGoalKcal: user?.dailyCalorieGoalKcal,
+            hasLoggedWeight: weightCount > 0,
+            totalRecipeCooks: totalCooks,
+            totalWeightEntries: weightCount,
+            totalAchievementsEarned: earnedCount
+        )
+    }
+
     private func evaluate(
         forUser userRemoteID: String,
         afterSavingMealID savedMealID: UUID?
@@ -60,29 +90,7 @@ final class AchievementService {
         )
         let streak = try context.fetch(streakDescriptor).first
 
-        let userDescriptor = FetchDescriptor<User>(
-            predicate: #Predicate { $0.remoteID == userRemoteID }
-        )
-        let user = try context.fetch(userDescriptor).first
-
-        let weightDescriptor = FetchDescriptor<WeightEntry>(
-            predicate: #Predicate { $0.userRemoteID == userRemoteID }
-        )
-        let weightCount = (try? context.fetchCount(weightDescriptor)) ?? 0
-
-        let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
-        let totalCooks = recipes.reduce(0) { $0 + $1.cookCount }
-
-        let inputs = AchievementEngine.Inputs(
-            proteinGoalGrams: user?.proteinGoalGrams,
-            carbsGoalGrams: user?.carbsGoalGrams,
-            fatGoalGrams: user?.fatGoalGrams,
-            calorieGoalKcal: user?.dailyCalorieGoalKcal,
-            hasLoggedWeight: weightCount > 0,
-            totalRecipeCooks: totalCooks,
-            totalWeightEntries: weightCount,
-            totalAchievementsEarned: already.count
-        )
+        let inputs = try engineInputs(for: userRemoteID, earnedCount: already.count, in: context)
 
         let unlockedIDs = engine.evaluate(
             meals: meals, streak: streak,

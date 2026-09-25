@@ -372,29 +372,8 @@ struct ScanResultView: View {
     }
 
     private func itemRow(_ item: ScanResult.DetectedItem) -> some View {
-        let binding = Binding<Double>(
-            get: { detailGrams[item.id] ?? item.quantityGrams },
-            set: { detailGrams[item.id] = $0 }
-        )
-        let nameBinding = Binding<String>(
-            get: {
-                guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return item.name }
-                return result.items[index].name
-            },
-            set: { newValue in
-                guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return }
-                result.items[index] = ScanResult.DetectedItem(
-                    id: item.id,
-                    name: newValue,
-                    quantityGrams: result.items[index].quantityGrams,
-                    caloriesKcal: result.items[index].caloriesKcal,
-                    proteinGrams: result.items[index].proteinGrams,
-                    carbsGrams: result.items[index].carbsGrams,
-                    fatGrams: result.items[index].fatGrams,
-                    confidence: result.items[index].confidence
-                )
-            }
-        )
+        let binding = gramsBinding(for: item)
+        let name = nameBinding(for: item)
         let factor = item.quantityGrams > 0 ? binding.wrappedValue / item.quantityGrams : 1
         return HStack(spacing: Tokens.Space.md) {
             Circle()
@@ -402,7 +381,7 @@ struct ScanResultView: View {
                 .frame(width: 8, height: 8)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: Tokens.Space.xs) {
-                    TextField("Produkt", text: nameBinding)
+                    TextField("Produkt", text: name)
                         .font(Tokens.Font.bodyEmphasized)
                         .textFieldStyle(.roundedBorder)
                         .focused($isTextInputFocused)
@@ -438,6 +417,37 @@ struct ScanResultView: View {
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
         }
+    }
+
+    /// Edited grams for one detected item, defaulting to the AI estimate.
+    private func gramsBinding(for item: ScanResult.DetectedItem) -> Binding<Double> {
+        Binding<Double>(
+            get: { detailGrams[item.id] ?? item.quantityGrams },
+            set: { detailGrams[item.id] = $0 }
+        )
+    }
+
+    /// Edits the item's name in place; the other fields keep their values.
+    private func nameBinding(for item: ScanResult.DetectedItem) -> Binding<String> {
+        Binding<String>(
+            get: {
+                guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return item.name }
+                return result.items[index].name
+            },
+            set: { newValue in
+                guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return }
+                result.items[index] = ScanResult.DetectedItem(
+                    id: item.id,
+                    name: newValue,
+                    quantityGrams: result.items[index].quantityGrams,
+                    caloriesKcal: result.items[index].caloriesKcal,
+                    proteinGrams: result.items[index].proteinGrams,
+                    carbsGrams: result.items[index].carbsGrams,
+                    fatGrams: result.items[index].fatGrams,
+                    confidence: result.items[index].confidence
+                )
+            }
+        )
     }
 
     private func productAIButton(for item: ScanResult.DetectedItem) -> some View {

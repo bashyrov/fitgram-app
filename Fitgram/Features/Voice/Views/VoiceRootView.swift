@@ -913,18 +913,7 @@ private struct ConfirmationView: View {
         if analysis.items.count > 1,
             let index = parsedRows.firstIndex(where: { $0.key == row.key })
         {
-            let replacement = analysis.items.map {
-                FoodItem(
-                    id: $0.id,
-                    name: $0.name,
-                    quantityGrams: $0.quantityGrams,
-                    caloriesKcal: $0.caloriesKcal,
-                    proteinGrams: $0.proteinGrams,
-                    carbsGrams: $0.carbsGrams,
-                    fatGrams: $0.fatGrams,
-                    confidence: $0.confidence
-                )
-            }
+            let replacement = analysis.items.map { FoodItem(detected: $0) }
             analyzedItems.replaceSubrange(index...index, with: replacement)
             grams.removeValue(forKey: row.key)
             for replacementItem in replacement {
@@ -942,16 +931,7 @@ private struct ConfirmationView: View {
             usageMeter?.record(.productNutritionLookup, cap: cap)
         }
         if let index = parsedRows.firstIndex(where: { $0.key == row.key }) {
-            analyzedItems[index] = FoodItem(
-                id: row.item.id,
-                name: completed.name,
-                quantityGrams: completed.quantityGrams,
-                caloriesKcal: completed.caloriesKcal,
-                proteinGrams: completed.proteinGrams,
-                carbsGrams: completed.carbsGrams,
-                fatGrams: completed.fatGrams,
-                confidence: completed.confidence
-            )
+            analyzedItems[index] = FoodItem(detected: completed, id: row.item.id)
             grams[row.key] = completed.quantityGrams
             lastParsedKeys.insert(row.key)
         }

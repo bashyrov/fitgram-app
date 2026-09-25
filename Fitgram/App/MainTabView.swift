@@ -109,6 +109,8 @@ struct MainTabView: View {
     @State private var isAddWorkoutPresented = false
     @State private var saveError: String?
 
+    // Composition-root handoff: one assignment per injected service.
+    // swiftlint:disable:next function_body_length
     init(
         authUser: AuthUser,
         mealSaver: any MealSaving,
