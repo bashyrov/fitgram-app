@@ -1,4 +1,4 @@
-# Mealgram Functional Review TODO
+# Fitgram Functional Review TODO
 
 Last review: 2026-08-01
 

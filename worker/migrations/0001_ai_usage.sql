@@ -1,4 +1,4 @@
--- Mealgram AI usage accounting.
+-- Fitgram AI usage accounting.
 --
 -- One row per call to Gemini (or cache hit that would have called Gemini).
 -- The admin dashboard queries this table for daily/weekly/monthly aggregates

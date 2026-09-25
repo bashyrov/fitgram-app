@@ -10,15 +10,17 @@ import type { Logger } from "./log";
  * Cost is computed from token counts using the published Gemini 2.5
  * pricing — keep this table in sync with whatever Google has live:
  *
- *   gemini-2.5-flash   in: $0.075 / 1M   out: $0.30 / 1M
- *   gemini-2.5-pro     in: $1.25  / 1M   out: $5.00 / 1M
+ *   gemini-2.5-flash       in: $0.30 / 1M   out: $2.50 / 1M
+ *   gemini-2.5-flash-lite  in: $0.10 / 1M   out: $0.40 / 1M
+ *   gemini-2.5-pro         in: $1.25 / 1M   out: $10.00 / 1M
  *
  * Cache hits write `cached=1, cost_usd=0` so we can still count requests
  * but don't double-charge ourselves.
  */
 const PRICE_PER_MILLION: Record<string, { input: number; output: number }> = {
-    "gemini-2.5-flash": { input: 0.075, output: 0.3 },
-    "gemini-2.5-pro": { input: 1.25, output: 5.0 },
+    "gemini-2.5-flash": { input: 0.3, output: 2.5 },
+    "gemini-2.5-flash-lite": { input: 0.1, output: 0.4 },
+    "gemini-2.5-pro": { input: 1.25, output: 10.0 },
     // Fallback for older / variant model names.
     "gemini-1.5-flash": { input: 0.075, output: 0.3 },
     "gemini-1.5-pro": { input: 1.25, output: 5.0 },
@@ -32,15 +34,17 @@ export interface UsageRecord {
     outputTokens: number;
     cached: boolean;
     durationMs: number;
+    reservationID?: string | undefined;
 }
 
-const FALLBACK_PRICE = { input: 0.075, output: 0.3 };
+const FALLBACK_PRICE = { input: 0.3, output: 2.5 };
 export const DAILY_AI_REQUEST_SAFETY_CAP = 60;
 const FREE_DAILY_LIMITS: Partial<Record<AIQuotaKind, number>> = {
     ai_logged_meal: 3,
     ai_meal_refresh: 3,
     ai_product_nutrition: 2,
-    ola_chef: 1,
+    // Free uses the local Ola Chef catalog. The Worker endpoint is Pro-only.
+    ola_chef: 0,
     coach_debrief: 0,
 };
 
@@ -100,8 +104,28 @@ export async function recordUsage(env: Env, log: Logger, record: UsageRecord): P
                 record.durationMs
             )
             .run();
+        if (record.reservationID) {
+            await db.prepare("DELETE FROM ai_quota_reservations WHERE id = ? AND user_id = ?")
+                .bind(record.reservationID, record.userID)
+                .run();
+        }
     } catch (err) {
         log.error("usage write failed", { err: String(err) });
+    }
+}
+
+export async function releaseAIQuotaReservation(
+    env: Env,
+    log: Logger,
+    reservationID: string | undefined
+): Promise<void> {
+    if (!env.USAGE_DB || !reservationID) return;
+    try {
+        await env.USAGE_DB.prepare("DELETE FROM ai_quota_reservations WHERE id = ?")
+            .bind(reservationID)
+            .run();
+    } catch (error) {
+        log.warn("quota reservation release failed", { error: String(error) });
     }
 }
 
@@ -110,6 +134,7 @@ export interface DailyAIQuotaCheck {
     used: number;
     cap: number;
     reason?: "safety" | "free_tier";
+    reservationID?: string;
 }
 
 /**
@@ -132,14 +157,17 @@ export async function checkDailyAIQuota(
         return { allowed: true, used: 0, cap: DAILY_AI_REQUEST_SAFETY_CAP };
     }
     try {
-        const since = dayStartTimestamp(Date.now(), options.timeZoneOffsetMinutes);
+        const now = Date.now();
+        const since = dayStartTimestamp(now, options.timeZoneOffsetMinutes);
+        await db.prepare("DELETE FROM ai_quota_reservations WHERE expires_at_ms <= ?").bind(now).run();
         const safetyRow = await db
             .prepare(
-                `SELECT COUNT(*) AS requests
-                 FROM ai_usage
-                 WHERE user_id = ? AND ts >= ?`
+                `SELECT
+                    (SELECT COUNT(*) FROM ai_usage WHERE user_id = ? AND ts >= ?) +
+                    (SELECT COUNT(*) FROM ai_quota_reservations WHERE user_id = ? AND ts >= ?)
+                    AS requests`
             )
-            .bind(userID, since)
+            .bind(userID, since, userID, since)
             .first<{ requests: number }>();
         const safetyUsed = safetyRow?.requests ?? 0;
         if (safetyUsed >= DAILY_AI_REQUEST_SAFETY_CAP) {
@@ -151,20 +179,23 @@ export async function checkDailyAIQuota(
             };
         }
 
-        if (!options.isPremium && options.kind) {
+        letFeature: if (!options.isPremium && options.kind) {
             const cap = FREE_DAILY_LIMITS[options.kind];
             if (cap === undefined) {
-                return { allowed: true, used: safetyUsed, cap: DAILY_AI_REQUEST_SAFETY_CAP };
+                break letFeature;
             }
             const endpoints = endpointsForKind(options.kind);
             const placeholders = endpoints.map(() => "?").join(", ");
             const freeRow = await db
                 .prepare(
-                    `SELECT COUNT(*) AS requests
-                     FROM ai_usage
-                     WHERE user_id = ? AND ts >= ? AND endpoint IN (${placeholders})`
+                    `SELECT
+                        (SELECT COUNT(*) FROM ai_usage
+                         WHERE user_id = ? AND ts >= ? AND endpoint IN (${placeholders})) +
+                        (SELECT COUNT(*) FROM ai_quota_reservations
+                         WHERE user_id = ? AND ts >= ? AND quota_kind = ?)
+                        AS requests`
                 )
-                .bind(userID, since, ...endpoints)
+                .bind(userID, since, ...endpoints, userID, since, options.kind)
                 .first<{ requests: number }>();
             const used = freeRow?.requests ?? 0;
             if (used >= cap) {
@@ -172,7 +203,49 @@ export async function checkDailyAIQuota(
             }
         }
 
-        return { allowed: true, used: safetyUsed, cap: DAILY_AI_REQUEST_SAFETY_CAP };
+        const reservationID = crypto.randomUUID();
+        const kind = options.kind ?? "ai_draft_meal";
+        const featureCap = !options.isPremium ? FREE_DAILY_LIMITS[kind] : undefined;
+        const endpoints = endpointsForKind(kind);
+        const placeholders = endpoints.map(() => "?").join(", ");
+        const featureClause = featureCap === undefined
+            ? "1 = 1"
+            : `(
+                (SELECT COUNT(*) FROM ai_usage
+                 WHERE user_id = ? AND ts >= ? AND endpoint IN (${placeholders})) +
+                (SELECT COUNT(*) FROM ai_quota_reservations
+                 WHERE user_id = ? AND ts >= ? AND quota_kind = ?)
+              ) < ?`;
+        const bindings: unknown[] = [
+            reservationID, now, now + 2 * 60 * 1000, userID, kind,
+            userID, since, userID, since,
+        ];
+        if (featureCap !== undefined) {
+            bindings.push(userID, since, ...endpoints, userID, since, kind, featureCap);
+        }
+        const reserved = await db.prepare(
+            `INSERT INTO ai_quota_reservations (id, ts, expires_at_ms, user_id, quota_kind)
+             SELECT ?, ?, ?, ?, ?
+             WHERE (
+                (SELECT COUNT(*) FROM ai_usage WHERE user_id = ? AND ts >= ?) +
+                (SELECT COUNT(*) FROM ai_quota_reservations WHERE user_id = ? AND ts >= ?)
+             ) < ${DAILY_AI_REQUEST_SAFETY_CAP}
+             AND ${featureClause}`
+        ).bind(...bindings).run();
+        if ((reserved.meta.changes ?? 0) !== 1) {
+            return {
+                allowed: false,
+                used: safetyUsed,
+                cap: featureCap ?? DAILY_AI_REQUEST_SAFETY_CAP,
+                reason: featureCap === undefined ? "safety" : "free_tier",
+            };
+        }
+        return {
+            allowed: true,
+            used: safetyUsed,
+            cap: featureCap ?? DAILY_AI_REQUEST_SAFETY_CAP,
+            reservationID,
+        };
     } catch (err) {
         log.error("usage quota check failed", { err: String(err), user: userID });
         return { allowed: true, used: 0, cap: DAILY_AI_REQUEST_SAFETY_CAP };
@@ -180,7 +253,7 @@ export async function checkDailyAIQuota(
 }
 
 export function timeZoneOffsetMinutesFromRequest(request: Request): number | undefined {
-    const raw = request.headers.get("X-Mealgram-Time-Zone-Offset-Minutes");
+    const raw = request.headers.get("X-Fitgram-Time-Zone-Offset-Minutes");
     if (!raw) return undefined;
     const value = Number.parseInt(raw, 10);
     if (!Number.isFinite(value)) return undefined;
@@ -207,7 +280,8 @@ export function endpointsForKind(kind: AIQuotaKind): string[] {
         case "ai_draft_meal":
             return ["/api/v1/scan-food", "/api/v1/analyze-meal-text:ai_draft_meal"];
         case "ai_logged_meal":
-            return ["/api/v1/analyze-meal-text:ai_logged_meal"];
+            // Photo and voice share one three-use daily pool.
+            return ["/api/v1/scan-food", "/api/v1/analyze-meal-text:ai_logged_meal"];
         case "ai_meal_refresh":
             return ["/api/v1/analyze-meal-text:ai_meal_refresh"];
         case "ai_product_nutrition":
@@ -231,14 +305,38 @@ export interface UsageSummary {
     last24h: PeriodSlice;
     last7d: PeriodSlice;
     last30d: PeriodSlice;
-    byModel: { model: string; requests: number; costUSD: number }[];
-    daily: { day: string; requests: number; costUSD: number }[];
+    byModel: UsageBreakdown[];
+    byEndpoint: UsageBreakdown[];
+    topUsers: UserUsageBreakdown[];
+    daily: DailyUsageBreakdown[];
     generatedAt: number;
 }
 
 interface PeriodSlice {
     requests: number;
     costUSD: number;
+    promptTokens: number;
+    outputTokens: number;
+    cachedRequests: number;
+    activeUsers: number;
+}
+
+export interface UsageBreakdown {
+    label: string;
+    requests: number;
+    promptTokens: number;
+    outputTokens: number;
+    costUSD: number;
+    cachedRequests: number;
+    averageDurationMs: number;
+}
+
+export interface UserUsageBreakdown extends Omit<UsageBreakdown, "label"> {
+    user: string;
+}
+
+export interface DailyUsageBreakdown extends Omit<UsageBreakdown, "label"> {
+    day: string;
 }
 
 export async function summarizeUsage(env: Env, log: Logger): Promise<UsageSummary> {
@@ -249,7 +347,7 @@ export async function summarizeUsage(env: Env, log: Logger): Promise<UsageSummar
     const now = Date.now();
     const day = 24 * 3600 * 1000;
     try {
-        const [totals, last24, last7, last30, byModel, daily] = await Promise.all([
+        const [totals, last24, last7, last30, byModel, byEndpoint, topUsers, daily] = await Promise.all([
             db
                 .prepare(
                     `SELECT
@@ -265,22 +363,57 @@ export async function summarizeUsage(env: Env, log: Logger): Promise<UsageSummar
             slice(db, now - 30 * day),
             db
                 .prepare(
-                    `SELECT model, COUNT(*) AS requests, COALESCE(SUM(cost_usd), 0) AS cost
+                    `SELECT model AS label, COUNT(*) AS requests,
+                            COALESCE(SUM(prompt_tokens), 0) AS prompt_tokens,
+                            COALESCE(SUM(output_tokens), 0) AS output_tokens,
+                            COALESCE(SUM(cost_usd), 0) AS cost,
+                            SUM(CASE WHEN cached = 1 THEN 1 ELSE 0 END) AS cached,
+                            COALESCE(AVG(duration_ms), 0) AS avg_duration
                      FROM ai_usage
                      GROUP BY model ORDER BY cost DESC`
                 )
-                .all<{ model: string; requests: number; cost: number }>(),
+                .all<RawBreakdown>(),
+            db
+                .prepare(
+                    `SELECT endpoint AS label, COUNT(*) AS requests,
+                            COALESCE(SUM(prompt_tokens), 0) AS prompt_tokens,
+                            COALESCE(SUM(output_tokens), 0) AS output_tokens,
+                            COALESCE(SUM(cost_usd), 0) AS cost,
+                            SUM(CASE WHEN cached = 1 THEN 1 ELSE 0 END) AS cached,
+                            COALESCE(AVG(duration_ms), 0) AS avg_duration
+                     FROM ai_usage WHERE ts >= ?
+                     GROUP BY endpoint ORDER BY cost DESC, requests DESC LIMIT 20`
+                )
+                .bind(now - 30 * day)
+                .all<RawBreakdown>(),
+            db
+                .prepare(
+                    `SELECT user_id AS label, COUNT(*) AS requests,
+                            COALESCE(SUM(prompt_tokens), 0) AS prompt_tokens,
+                            COALESCE(SUM(output_tokens), 0) AS output_tokens,
+                            COALESCE(SUM(cost_usd), 0) AS cost,
+                            SUM(CASE WHEN cached = 1 THEN 1 ELSE 0 END) AS cached,
+                            COALESCE(AVG(duration_ms), 0) AS avg_duration
+                     FROM ai_usage WHERE ts >= ?
+                     GROUP BY user_id ORDER BY cost DESC, requests DESC LIMIT 20`
+                )
+                .bind(now - 30 * day)
+                .all<RawBreakdown>(),
             db
                 .prepare(
                     `SELECT date(ts / 1000, 'unixepoch') AS day,
                             COUNT(*) AS requests,
-                            COALESCE(SUM(cost_usd), 0) AS cost
+                            COALESCE(SUM(prompt_tokens), 0) AS prompt_tokens,
+                            COALESCE(SUM(output_tokens), 0) AS output_tokens,
+                            COALESCE(SUM(cost_usd), 0) AS cost,
+                            SUM(CASE WHEN cached = 1 THEN 1 ELSE 0 END) AS cached,
+                            COALESCE(AVG(duration_ms), 0) AS avg_duration
                      FROM ai_usage
                      WHERE ts >= ?
                      GROUP BY day ORDER BY day DESC`
                 )
                 .bind(now - 30 * day)
-                .all<{ day: string; requests: number; cost: number }>(),
+                .all<RawDailyBreakdown>(),
         ]);
 
         return {
@@ -291,15 +424,12 @@ export async function summarizeUsage(env: Env, log: Logger): Promise<UsageSummar
             last24h: last24,
             last7d: last7,
             last30d: last30,
-            byModel: (byModel.results ?? []).map((r) => ({
-                model: r.model,
-                requests: r.requests,
-                costUSD: round(r.cost),
-            })),
-            daily: (daily.results ?? []).map((r) => ({
-                day: r.day,
-                requests: r.requests,
-                costUSD: round(r.cost),
+            byModel: (byModel.results ?? []).map(mapBreakdown),
+            byEndpoint: (byEndpoint.results ?? []).map(mapBreakdown),
+            topUsers: await Promise.all((topUsers.results ?? []).map(mapUserBreakdown)),
+            daily: (daily.results ?? []).map((row) => ({
+                day: row.day,
+                ...mapBreakdown(row),
             })),
             generatedAt: now,
         };
@@ -312,19 +442,31 @@ export async function summarizeUsage(env: Env, log: Logger): Promise<UsageSummar
 async function slice(db: D1Database, sinceTs: number): Promise<PeriodSlice> {
     const row = await db
         .prepare(
-            `SELECT COUNT(*) AS requests, COALESCE(SUM(cost_usd), 0) AS cost
+            `SELECT COUNT(*) AS requests,
+                    COALESCE(SUM(cost_usd), 0) AS cost,
+                    COALESCE(SUM(prompt_tokens), 0) AS prompt_tokens,
+                    COALESCE(SUM(output_tokens), 0) AS output_tokens,
+                    SUM(CASE WHEN cached = 1 THEN 1 ELSE 0 END) AS cached,
+                    COUNT(DISTINCT user_id) AS active_users
              FROM ai_usage WHERE ts >= ?`
         )
         .bind(sinceTs)
-        .first<{ requests: number; cost: number }>();
+        .first<RawPeriodSlice>();
     return {
         requests: row?.requests ?? 0,
         costUSD: round(row?.cost ?? 0),
+        promptTokens: row?.prompt_tokens ?? 0,
+        outputTokens: row?.output_tokens ?? 0,
+        cachedRequests: row?.cached ?? 0,
+        activeUsers: row?.active_users ?? 0,
     };
 }
 
 function emptySummary(): UsageSummary {
-    const empty: PeriodSlice = { requests: 0, costUSD: 0 };
+    const empty: PeriodSlice = {
+        requests: 0, costUSD: 0, promptTokens: 0, outputTokens: 0,
+        cachedRequests: 0, activeUsers: 0,
+    };
     return {
         totalRequests: 0,
         cachedRequests: 0,
@@ -334,9 +476,60 @@ function emptySummary(): UsageSummary {
         last7d: empty,
         last30d: empty,
         byModel: [],
+        byEndpoint: [],
+        topUsers: [],
         daily: [],
         generatedAt: Date.now(),
     };
+}
+
+interface RawBreakdown {
+    label: string;
+    requests: number;
+    prompt_tokens: number;
+    output_tokens: number;
+    cost: number;
+    cached: number;
+    avg_duration: number;
+}
+
+interface RawDailyBreakdown extends RawBreakdown {
+    day: string;
+}
+
+interface RawPeriodSlice {
+    requests: number;
+    cost: number;
+    prompt_tokens: number;
+    output_tokens: number;
+    cached: number;
+    active_users: number;
+}
+
+function mapBreakdown(row: RawBreakdown): UsageBreakdown {
+    return {
+        label: row.label,
+        requests: row.requests,
+        promptTokens: row.prompt_tokens,
+        outputTokens: row.output_tokens,
+        costUSD: round(row.cost),
+        cachedRequests: row.cached,
+        averageDurationMs: Math.round(row.avg_duration),
+    };
+}
+
+async function mapUserBreakdown(row: RawBreakdown): Promise<UserUsageBreakdown> {
+    const breakdown = mapBreakdown(row);
+    const { label: _, ...metrics } = breakdown;
+    return { user: await pseudonymousUserID(row.label), ...metrics };
+}
+
+export async function pseudonymousUserID(userID: string): Promise<string> {
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(userID));
+    const prefix = Array.from(new Uint8Array(digest).slice(0, 6))
+        .map((byte) => byte.toString(16).padStart(2, "0"))
+        .join("");
+    return `user_${prefix}`;
 }
 
 function round(value: number): number {

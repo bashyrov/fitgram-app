@@ -1,7 +1,7 @@
 # fastlane deliver config — drives metadata + screenshots upload to App
 # Store Connect. Lives next to Fastfile so `fastlane deliver` picks it up.
 
-app_identifier "app.mealgram.ios.bashyrov"
+app_identifier "app.fitgram.ios.bashyrov"
 team_id "L55G3V9NJ3"
 
 # Don't push the binary again; we already did that via the `beta` lane.
@@ -23,7 +23,7 @@ app_review_information(
   last_name: "B.",
   email_address: "bashyroov@gmail.com",
   phone_number: "+48 883158877",
-  notes: "Onboarding kicks in on first launch and walks through goal setup before the Today screen unlocks. No demo account needed — Sign in with Apple lands directly inside the app. Photo scan flow needs internet to reach our Cloudflare Worker proxy, which forwards to Google Gemini and returns nutrition estimates without retaining the image. Auto-renewable subscription metadata includes Terms of Use / EULA at https://mealgram.xyz/terms and Privacy Policy at https://mealgram.xyz/privacy."
+  notes: "Onboarding kicks in on first launch and walks through goal setup before the Today screen unlocks. No demo account needed — Sign in with Apple lands directly inside the app. Photo scan flow needs internet to reach our Cloudflare Worker proxy, which forwards to Google Gemini and returns nutrition estimates without retaining the image. Auto-renewable subscription metadata includes Terms of Use / EULA at https://fitgram.space/terms and Privacy Policy at https://fitgram.space/privacy."
 )
 
 # Submit-time compliance answers.

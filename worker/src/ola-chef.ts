@@ -3,7 +3,12 @@ import type { Env } from "./env";
 import { generateJSON } from "./gemini";
 import type { Logger } from "./log";
 import { jsonResponse, problemResponse } from "./responses";
-import { checkDailyAIQuota, recordUsage, timeZoneOffsetMinutesFromRequest } from "./usage";
+import {
+    checkDailyAIQuota,
+    recordUsage,
+    releaseAIQuotaReservation,
+    timeZoneOffsetMinutesFromRequest,
+} from "./usage";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
@@ -56,6 +61,9 @@ export async function handleOlaChefSuggestions(
     if (request.method !== "POST") {
         return problemResponse(405, "Method not allowed");
     }
+    if (!auth.isPremium) {
+        return problemResponse(403, "Ola Chef AI requires Fitgram Pro");
+    }
 
     let payload: OlaChefRequest;
     try {
@@ -107,9 +115,11 @@ export async function handleOlaChefSuggestions(
             outputTokens: usage.outputTokens,
             cached: false,
             durationMs: Date.now() - startedAt,
+            reservationID: quota.reservationID,
         });
         return jsonResponse(toWireFormat(response));
     } catch (err) {
+        await releaseAIQuotaReservation(env, log, quota.reservationID);
         log.error("Ola Chef suggestions failed", { user: auth.userID, err: String(err) });
         return problemResponse(502, "Ola Chef AI unavailable");
     }
@@ -123,7 +133,7 @@ function buildPrompt(req: {
     excludeDishNames: string[];
 }): string {
     return [
-        "You generate realistic meals for Mealgram's feature called Kuchnia Oli.",
+        "You generate realistic meals for Fitgram's feature called Kuchnia Oli.",
         "Return strict JSON only. Do not include markdown fences.",
         `Write dish names, ingredient names, and recipe steps in ${languageName(req.locale)}.`,
         "",

@@ -39,11 +39,8 @@ function extractPremium(payload: JWTPayload): boolean {
         }
     }
 
-    const userMetadata = payload["user_metadata"];
-    if (isRecord(userMetadata)) {
-        const nested = userMetadata["is_premium"] ?? userMetadata["premium"] ?? userMetadata["pro"];
-        if (nested === true || nested === "true" || nested === 1) return true;
-    }
+    // Never trust user_metadata for billing access: authenticated users can
+    // edit it themselves. Only signed top-level/app_metadata claims count.
     return false;
 }
 
@@ -71,19 +68,44 @@ export async function authenticate(req: Request, env: Env): Promise<AuthContext>
             const { payload } = await jwtVerify(token, jwks);
             const userID = extractUserID(payload);
             if (!userID) throw new AuthError(401, "JWT missing user identifier");
-            return { userID, isPremium: extractPremium(payload) };
+            return {
+                userID,
+                isPremium: extractPremium(payload) || (await hasActiveServerEntitlement(env, userID)),
+            };
         }
         if (env.SUPABASE_JWT_SECRET) {
             const secret = new TextEncoder().encode(env.SUPABASE_JWT_SECRET);
             const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
             const userID = extractUserID(payload);
             if (!userID) throw new AuthError(401, "JWT missing user identifier");
-            return { userID, isPremium: extractPremium(payload) };
+            return {
+                userID,
+                isPremium: extractPremium(payload) || (await hasActiveServerEntitlement(env, userID)),
+            };
         }
         throw new AuthError(500, "Neither SUPABASE_URL nor SUPABASE_JWT_SECRET configured");
     } catch (err) {
         if (err instanceof AuthError) throw err;
         throw new AuthError(401, `Invalid token: ${(err as Error).message}`);
+    }
+}
+
+async function hasActiveServerEntitlement(env: Env, userID: string): Promise<boolean> {
+    if (!env.USAGE_DB) return false;
+    try {
+        const row = await env.USAGE_DB.prepare(
+            `SELECT 1 AS active
+             FROM subscription_entitlements
+             WHERE user_id = ? AND expires_at_ms > ? AND revoked_at_ms IS NULL
+             LIMIT 1`
+        )
+            .bind(userID, Date.now())
+            .first<{ active: number }>();
+        return row?.active === 1;
+    } catch {
+        // Keep auth available while a migration is rolling out. A missing or
+        // unavailable entitlement table must never grant Pro access.
+        return false;
     }
 }
 

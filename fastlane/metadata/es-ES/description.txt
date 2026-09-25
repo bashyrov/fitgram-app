@@ -1,4 +1,4 @@
-Mealgram es un contador de calorías inteligente sin fricciones. Sin báscula, sin contar gramos — solo haz una foto del plato, escanea un código de barras o di lo que comiste.
+Fitgram es un contador de calorías inteligente sin fricciones. Sin báscula, sin contar gramos — solo haz una foto del plato, escanea un código de barras o di lo que comiste.
 
 LO QUE OBTIENES
 • Escaneo de comidas por foto — la IA reconoce pierogi, schnitzel, sushi, pasta, ensaladas y más de 3000 platos del mundo
@@ -15,8 +15,8 @@ LO QUE OBTIENES
 PRIVACIDAD
 Tus datos siguen bajo tu control: sincronización con iCloud, sin anuncios, sin venta de datos personales y procesamiento de IA transparente.
 
-Mealgram está hecho por un pequeño equipo independiente — tu feedback va directo a las personas que escriben el código.
+Fitgram está hecho por un pequeño equipo independiente — tu feedback va directo a las personas que escriben el código.
 
 LEGAL
-Términos de uso: https://mealgram.xyz/terms
-Política de privacidad: https://mealgram.xyz/privacy
+Términos de uso: https://fitgram.space/terms
+Política de privacidad: https://fitgram.space/privacy

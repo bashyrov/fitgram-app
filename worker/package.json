@@ -1,8 +1,8 @@
 {
-  "name": "mealgram-worker",
+  "name": "fitgram-app",
   "version": "0.1.0",
   "private": true,
-  "description": "Cloudflare Worker: AI proxy + auth + cache for Mealgram iOS",
+  "description": "Cloudflare Worker: AI proxy + auth + cache for Fitgram iOS",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",

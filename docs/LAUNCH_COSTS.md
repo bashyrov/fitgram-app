@@ -1,4 +1,4 @@
-# Mealgram — Launch Costs Cheatsheet
+# Fitgram — Launch Costs Cheatsheet
 
 Last updated: 2026-05-13. All prices verified at provider docs/dashboards on that date.
 
@@ -24,9 +24,9 @@ Apple Dev costs renew annually ($99). Everything else is provider pay-as-you-go.
 - Buy: https://developer.apple.com/programs/
 - Renews annually; missing payment = app pulled from store + capability revoke
 
-### Domain `mealgram.xyz`
+### Domain `fitgram.space`
 - ~80 zł / year via OVH/nazwa.pl
-- Needed for: Universal Links (replace `mealgram://friend/<id>` deep links with `https://mealgram.xyz/u/<id>`), branded email (`hello@mealgram.xyz`), web landing
+- Needed for: Universal Links (replace `fitgram://friend/<id>` deep links with `https://fitgram.space/u/<id>`), web landing, and optional branded email later
 - Optional for TestFlight, required for App Store submission (Apple wants a privacy URL)
 
 ### Polish JDG / sp. z o.o.
@@ -67,7 +67,7 @@ Apple Dev costs renew annually ($99). Everything else is provider pay-as-you-go.
 | **Claude Sonnet 4.5** | Coach Ola weekly debriefs (M3.1) | $3 / 1M input + $15 / 1M output | None — pay from day 1 |
 | **OpenAI Whisper** | Voice → text (if not on-device) | $0.006 / minute | None |
 
-**Note:** Mealgram currently uses on-device SFSpeechRecognizer for voice (free). Skip Whisper unless you need non-iOS voice support.
+**Note:** Fitgram currently uses on-device SFSpeechRecognizer for voice (free). Skip Whisper unless you need non-iOS voice support.
 
 ---
 
@@ -206,7 +206,7 @@ Assuming 5% premium conversion (realistic for niche PL fitness/health):
 - **App Shortcuts / Siri intents** — free, no quotas
 - **Local notifications** — free, no APNS dependency
 
-This is why Mealgram can run with **zero per-user infrastructure cost** for everything except the photo→AI scan and the Coach LLM. Both of those have free tiers that cover the first 50-100 users comfortably.
+This is why Fitgram can run with **zero per-user infrastructure cost** for everything except the photo→AI scan and the Coach LLM. Both of those have free tiers that cover the first 50-100 users comfortably.
 
 ---
 
@@ -214,7 +214,7 @@ This is why Mealgram can run with **zero per-user infrastructure cost** for ever
 
 1. **Buy Apple Developer Program** — $99
    - Without this, none of the rest matters
-2. **Buy domain `mealgram.xyz`** — ~80 zł
+2. **Buy domain `fitgram.space`** — ~80 zł
    - Needed for App Store privacy URL + email
 3. **Register JDG** — ZUS Ulga na start ~150 zł/mo first 6 months
    - Needed to receive Apple payouts

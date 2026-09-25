@@ -1,7 +1,7 @@
-name: Mealgram
+name: Fitgram
 
 options:
-  bundleIdPrefix: app.mealgram
+  bundleIdPrefix: app.fitgram
   deploymentTarget:
     iOS: "17.0"
   developmentLanguage: pl
@@ -21,7 +21,7 @@ settings:
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     DEVELOPMENT_TEAM: "L55G3V9NJ3"
     MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "1"
+    CURRENT_PROJECT_VERSION: "7"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     ENABLE_MODULE_VERIFIER: YES
     GCC_TREAT_WARNINGS_AS_ERRORS: NO
@@ -42,30 +42,68 @@ configs:
   Release: release
 
 targets:
-  Mealgram:
+  Fitgram:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: Mealgram
+      - path: Fitgram
         excludes:
           - "Resources/Mock/**"
       - path: Shared
     dependencies:
-      - target: MealgramWidget
+      - target: FitgramWidget
         embed: true
         codeSign: true
     resources:
-      - path: Mealgram/Resources/Assets.xcassets
-      - path: Mealgram/Resources/Seeds
-      - path: Mealgram/Resources/Fonts
+      - path: Fitgram/Resources/Assets.xcassets
+      - path: Fitgram/Resources/Seeds
+      - path: Fitgram/Resources/Fonts
     info:
-      path: Mealgram/Supporting/Info.plist
+      path: Fitgram/Supporting/Info.plist
       properties:
-        CFBundleDisplayName: Mealgram
+        CFBundleDisplayName: Fitgram
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleDevelopmentRegion: en
+        CFBundleIcons:
+          CFBundlePrimaryIcon:
+            CFBundleIconName: AppIcon
+            UIPrerenderedIcon: false
+          CFBundleAlternateIcons:
+            AppIconGraphiteLime:
+              CFBundleIconName: AppIconGraphiteLime
+              UIPrerenderedIcon: false
+            AppIconGraphiteLimeInverted:
+              CFBundleIconName: AppIconGraphiteLimeInverted
+              UIPrerenderedIcon: false
+            AppIconOceanNight:
+              CFBundleIconName: AppIconOceanNight
+              UIPrerenderedIcon: false
+            AppIconOceanNightLight:
+              CFBundleIconName: AppIconOceanNightLight
+              UIPrerenderedIcon: false
+            AppIconOceanDay:
+              CFBundleIconName: AppIconOceanDay
+              UIPrerenderedIcon: false
+            AppIconCitrusWhite:
+              CFBundleIconName: AppIconCitrusWhite
+              UIPrerenderedIcon: false
+            AppIconCitrusWhiteSoft:
+              CFBundleIconName: AppIconCitrusWhiteSoft
+              UIPrerenderedIcon: false
+            AppIconDaylightLime:
+              CFBundleIconName: AppIconDaylightLime
+              UIPrerenderedIcon: false
+            AppIconPorcelainCoral:
+              CFBundleIconName: AppIconPorcelainCoral
+              UIPrerenderedIcon: false
+            AppIconMatchaCeramic:
+              CFBundleIconName: AppIconMatchaCeramic
+              UIPrerenderedIcon: false
+            AppIconNordicBerry:
+              CFBundleIconName: AppIconNordicBerry
+              UIPrerenderedIcon: false
         CFBundleLocalizations:
           - pl
           - en
@@ -88,13 +126,13 @@ targets:
         UIBackgroundModes:
           - remote-notification
         UIUserInterfaceStyle: Automatic
-        NSCameraUsageDescription: "Mealgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach."
-        NSPhotoLibraryUsageDescription: "Mealgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki."
-        NSPhotoLibraryAddUsageDescription: "Mealgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
-        NSMicrophoneUsageDescription: "Mealgram używa mikrofonu do szybkiego dodawania posiłków głosem."
-        NSSpeechRecognitionUsageDescription: "Mealgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
-        NSHealthShareUsageDescription: "Mealgram synchronizuje aktywność i wagę z Apple Health."
-        NSHealthUpdateUsageDescription: "Mealgram zapisuje posiłki i kalorie w Apple Health."
+        NSCameraUsageDescription: "Fitgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach."
+        NSPhotoLibraryUsageDescription: "Fitgram potrzebuje dostępu do zdjęć, aby analizować posiłki z biblioteki."
+        NSPhotoLibraryAddUsageDescription: "Fitgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
+        NSMicrophoneUsageDescription: "Fitgram używa mikrofonu do szybkiego dodawania posiłków głosem."
+        NSSpeechRecognitionUsageDescription: "Fitgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
+        NSHealthShareUsageDescription: "Fitgram synchronizuje aktywność i wagę z Apple Health."
+        NSHealthUpdateUsageDescription: "Fitgram zapisuje posiłki i kalorie w Apple Health."
         NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
         UIAppFonts:
@@ -102,11 +140,11 @@ targets:
         LSApplicationCategoryType: public.app-category.healthcare-fitness
         CFBundleURLTypes:
           - CFBundleTypeRole: Editor
-            CFBundleURLName: app.mealgram.auth
+            CFBundleURLName: app.fitgram.auth
             CFBundleURLSchemes:
-              - mealgram
+              - fitgram
           - CFBundleTypeRole: Editor
-            CFBundleURLName: app.mealgram.google
+            CFBundleURLName: app.fitgram.google
             CFBundleURLSchemes:
               - com.googleusercontent.apps.849312185535-mlidbn8lrhfdsro4f9t2a1ruuqmucgi3
         WORKER_BASE_URL: $(WORKER_BASE_URL)
@@ -116,56 +154,58 @@ targets:
         REVENUECAT_API_KEY: $(REVENUECAT_API_KEY)
         IS_PAYMENTS_ENABLED: $(IS_PAYMENTS_ENABLED)
     entitlements:
-      path: Mealgram/Supporting/Mealgram.entitlements
+      path: Fitgram/Supporting/Fitgram.entitlements
       properties:
         com.apple.developer.applesignin:
           - Default
         com.apple.developer.icloud-container-identifiers:
-          - iCloud.app.mealgram.ios.bashyrov
+          - iCloud.app.fitgram.ios.bashyrov
         com.apple.developer.icloud-services:
           - CloudKit
         com.apple.developer.ubiquity-container-identifiers:
-          - iCloud.app.mealgram.ios.bashyrov
+          - iCloud.app.fitgram.ios.bashyrov
         com.apple.security.application-groups:
-          - group.app.mealgram.shared
+          - group.app.fitgram.shared
+        com.apple.developer.healthkit: true
         aps-environment: production
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov
-        PRODUCT_NAME: Mealgram
+        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov
+        PRODUCT_NAME: Fitgram
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES: "AppIconGraphiteLime AppIconGraphiteLimeInverted AppIconOceanNight AppIconOceanNightLight AppIconOceanDay AppIconCitrusWhite AppIconCitrusWhiteSoft AppIconDaylightLime AppIconPorcelainCoral AppIconMatchaCeramic AppIconNordicBerry"
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
         TARGETED_DEVICE_FAMILY: "1,2"
         SUPPORTS_MACCATALYST: NO
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        INFOPLIST_FILE: Mealgram/Supporting/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Mealgram/Supporting/Mealgram.entitlements
-        WORKER_BASE_URL: "https://mealgram-worker.bashyroov.workers.dev"
+        INFOPLIST_FILE: Fitgram/Supporting/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Fitgram/Supporting/Fitgram.entitlements
+        WORKER_BASE_URL: "https://fitgram-app.bashyroov.workers.dev"
         SUPABASE_URL: "https://rrkvandbftozmwwfpfqi.supabase.co"
         SUPABASE_ANON_KEY: "sb_publishable_qVVIG9LKOXpTzIQAN8ve2w_-i26wrMl"
         GOOGLE_OAUTH_CLIENT_ID: "849312185535-mlidbn8lrhfdsro4f9t2a1ruuqmucgi3.apps.googleusercontent.com"
         REVENUECAT_API_KEY: ""
         IS_PAYMENTS_ENABLED: "true"
 
-  MealgramWidget:
+  FitgramWidget:
     type: app-extension
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: MealgramWidget
+      - path: FitgramWidget
       - path: Shared
-      - path: Mealgram/Resources/Localizable.xcstrings
+      - path: Fitgram/Resources/Localizable.xcstrings
     entitlements:
-      path: MealgramWidget/MealgramWidget.entitlements
+      path: FitgramWidget/FitgramWidget.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.app.mealgram.shared
+          - group.app.fitgram.shared
     info:
-      path: MealgramWidget/Info.plist
+      path: FitgramWidget/Info.plist
       properties:
-        CFBundleDisplayName: Mealgram
+        CFBundleDisplayName: Fitgram
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleLocalizations:
@@ -179,81 +219,81 @@ targets:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov.widget
-        PRODUCT_NAME: MealgramWidget
+        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.widget
+        PRODUCT_NAME: FitgramWidget
         SWIFT_VERSION: "5.10"
         CODE_SIGN_STYLE: Automatic
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: MealgramWidget/Info.plist
-        CODE_SIGN_ENTITLEMENTS: MealgramWidget/MealgramWidget.entitlements
+        INFOPLIST_FILE: FitgramWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: FitgramWidget/FitgramWidget.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
 
-  MealgramWatch:
+  FitgramWatch:
     type: application
     platform: watchOS
     deploymentTarget: "10.0"
     sources:
-      - path: MealgramWatch
+      - path: FitgramWatch
       - path: Shared
         excludes:
-          - MealgramActivityAttributes.swift
+          - FitgramActivityAttributes.swift
     resources:
-      - path: MealgramWatch/Assets.xcassets
+      - path: FitgramWatch/Assets.xcassets
     info:
-      path: MealgramWatch/Info.plist
+      path: FitgramWatch/Info.plist
       properties:
-        CFBundleDisplayName: Mealgram
+        CFBundleDisplayName: Fitgram
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
-        WKCompanionAppBundleIdentifier: app.mealgram.ios.bashyrov
+        WKCompanionAppBundleIdentifier: app.fitgram.ios.bashyrov
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov.watchkitapp
-        PRODUCT_NAME: MealgramWatch
+        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.watchkitapp
+        PRODUCT_NAME: FitgramWatch
         SWIFT_VERSION: "5.10"
         CODE_SIGN_STYLE: Automatic
         TARGETED_DEVICE_FAMILY: "4"
         SUPPORTS_MACCATALYST: NO
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: MealgramWatch/Info.plist
+        INFOPLIST_FILE: FitgramWatch/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
         IPHONEOS_DEPLOYMENT_TARGET: ""
         WATCHOS_DEPLOYMENT_TARGET: "10.0"
 
-  MealgramTests:
+  FitgramTests:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - MealgramTests
+      - FitgramTests
     dependencies:
-      - target: Mealgram
+      - target: Fitgram
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov.tests
+        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.tests
         GENERATE_INFOPLIST_FILE: YES
 
-  MealgramUITests:
+  FitgramUITests:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - MealgramUITests
+      - FitgramUITests
     dependencies:
-      - target: Mealgram
+      - target: Fitgram
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.bashyrov.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.uitests
         GENERATE_INFOPLIST_FILE: YES
 
 schemes:
-  MealgramWatch:
+  FitgramWatch:
     build:
       targets:
-        MealgramWatch: all
+        FitgramWatch: all
     run:
       config: Debug
     profile:
@@ -262,28 +302,28 @@ schemes:
       config: Debug
     archive:
       config: Release
-  Mealgram:
+  Fitgram:
     build:
       targets:
-        Mealgram: all
-        MealgramTests: [test]
-        MealgramUITests: [test]
+        Fitgram: all
+        FitgramTests: [test]
+        FitgramUITests: [test]
     run:
       config: Debug
       # Local StoreKit Configuration — when DEBUG, in-app purchases go
-      # through the fake products defined in Mealgram.storekit so we can
+      # through the fake products defined in Fitgram.storekit so we can
       # test paywall + restore without App Store Connect being wired.
-      storeKitConfiguration: Mealgram/Supporting/Mealgram.storekit
+      storeKitConfiguration: Fitgram/Supporting/Fitgram.storekit
       commandLineArguments:
         "-FIRDebugEnabled": false
     test:
       config: Debug
       gatherCoverageData: true
       coverageTargets:
-        - Mealgram
+        - Fitgram
       targets:
-        - MealgramTests
-        - MealgramUITests
+        - FitgramTests
+        - FitgramUITests
     profile:
       config: Release
     analyze:

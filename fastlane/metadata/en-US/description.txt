@@ -1,4 +1,4 @@
-Mealgram is a smart calorie tracker built around speed and zero friction. No scale, no gram counting — just snap a photo of your plate, scan a barcode, or say what you ate.
+Fitgram is a smart calorie tracker built around speed and zero friction. No scale, no gram counting — just snap a photo of your plate, scan a barcode, or say what you ate.
 
 WHAT YOU GET
 • Photo meal scanning — AI recognises pierogi, schnitzel, kasza, soups, pasta, sushi, salads and 3000+ other dishes worldwide
@@ -15,8 +15,8 @@ WHAT YOU GET
 PRIVACY & SECURITY
 Your data stays under your control with iCloud sync, no ads, no selling personal data, and transparent AI processing.
 
-Mealgram is built by a small independent team — feedback goes directly to the people writing the code.
+Fitgram is built by a small independent team — feedback goes directly to the people writing the code.
 
 LEGAL
-Terms of Use: https://mealgram.xyz/terms
-Privacy Policy: https://mealgram.xyz/privacy
+Terms of Use: https://fitgram.space/terms
+Privacy Policy: https://fitgram.space/privacy

@@ -1,15 +1,15 @@
-# Polityka prywatności Mealgram
+# Polityka prywatności Fitgram
 
 **Wersja:** 1.0
 **Data wejścia w życie:** 2026-06-01
 **Administrator:** [TWOJA_NAZWA_JDG], NIP [NIP], REGON [REGON], adres [ADRES]
-**Kontakt:** hello@mealgram.xyz
+**Kontakt:** onefitgram@gmail.com
 
 ## 1. Kto jest administratorem Twoich danych
 
-Administratorem Twoich danych osobowych zbieranych w aplikacji Mealgram (dalej "Aplikacja") jest [TWOJA_NAZWA_JDG] z siedzibą w [MIASTO], NIP [NIP].
+Administratorem Twoich danych osobowych zbieranych w aplikacji Fitgram (dalej "Aplikacja") jest [TWOJA_NAZWA_JDG] z siedzibą w [MIASTO], NIP [NIP].
 
-W sprawach związanych z ochroną danych osobowych możesz się z nami skontaktować pod adresem **hello@mealgram.xyz**.
+W sprawach związanych z ochroną danych osobowych możesz się z nami skontaktować pod adresem **onefitgram@gmail.com**.
 
 ## 2. Jakie dane zbieramy
 
@@ -121,11 +121,11 @@ Wszystkie nasze podmioty przetwarzające zobowiązały się do przestrzegania RO
 
 Masz prawo do:
 
-1. **Dostępu do swoich danych** — eksport w formacie JSON/CSV/ZIP dostępny w Profilu → "Pełna paczka (ZIP)" lub na żądanie pod adresem hello@mealgram.xyz
+1. **Dostępu do swoich danych** — eksport w formacie JSON/CSV/ZIP dostępny w Profilu → "Pełna paczka (ZIP)" lub na żądanie pod adresem onefitgram@gmail.com
 2. **Sprostowania danych** — edytuj w aplikacji lub napisz do nas
-3. **Usunięcia danych** ("prawo do bycia zapomnianym") — Profil → "Usuń konto", lub pod adresem hello@mealgram.xyz. Usuniemy w ciągu 30 dni
-4. **Ograniczenia przetwarzania** — napisz na hello@mealgram.xyz
-5. **Sprzeciwu wobec przetwarzania** — napisz na hello@mealgram.xyz
+3. **Usunięcia danych** ("prawo do bycia zapomnianym") — Profil → "Usuń konto", lub pod adresem onefitgram@gmail.com. Usuniemy w ciągu 30 dni
+4. **Ograniczenia przetwarzania** — napisz na onefitgram@gmail.com
+5. **Sprzeciwu wobec przetwarzania** — napisz na onefitgram@gmail.com
 6. **Przenoszenia danych** — eksport JSON zawiera wszystkie dane w czytelnym formacie
 7. **Cofnięcia zgody** w dowolnym momencie — bez wpływu na przetwarzanie sprzed cofnięcia
 8. **Skargi do organu nadzorczego** — Urząd Ochrony Danych Osobowych (UODO), ul. Stawki 2, 00-193 Warszawa, [uodo.gov.pl](https://uodo.gov.pl)
@@ -163,11 +163,11 @@ Możemy zaktualizować tę politykę. O istotnych zmianach poinformujemy Cię:
 - e-mailem (jeśli zostawiłeś adres)
 - z 30-dniowym wyprzedzeniem przed wejściem zmian
 
-Aktualna wersja jest zawsze dostępna pod adresem [mealgram.xyz/privacy](https://mealgram.xyz/privacy) i w aplikacji Profil → Pomoc / Polityka prywatności.
+Aktualna wersja jest zawsze dostępna pod adresem [fitgram.space/privacy](https://fitgram.space/privacy) i w aplikacji Profil → Pomoc / Polityka prywatności.
 
 ## 12. Kontakt
 
-E-mail: **hello@mealgram.xyz**
+E-mail: **onefitgram@gmail.com**
 Adres pocztowy: [TWÓJ_ADRES]
 Inspektor Ochrony Danych (DPO): nie powołano (jednoosobowa firma)
 

@@ -1,4 +1,4 @@
-# Mealgram — Claude Context
+# Fitgram — Claude Context
 
 ## Project Overview
 iOS-only AI calorie tracker for the Polish market. Three ways to log a meal: photo scan, recipe input, quick database. AI coach "Ola" with memory. Trial-then-paid via RevenueCat.
@@ -88,7 +88,7 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   currentLength > 0, freezesAvailable > 0, nothing logged today.
   One tap consumes a freeze via StreakService and refreshes.
 - Coach insight history: new @Model CoachInsightLog (added to
-  MealgramSchemaV1.models). CoachInsightLogStore idempotent on
+  FitgramSchemaV1.models). CoachInsightLogStore idempotent on
   (user, weekStart) — same-week debriefs update existing row.
   WeeklyDebriefView clock toolbar raises CoachHistoryView with
   expandable per-week cards.
@@ -130,7 +130,7 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   quoting, one row per FoodItem). "Eksport CSV (Excel)" row added in
   Profile data section alongside the existing JSON action.
 - Friend QR code: CIFilter.qrCodeGenerator-based QRCodeRenderer
-  encodes `mealgram://friend/<id>`. "Pokaż mój kod" sheet from
+  encodes `fitgram://friend/<id>`. "Pokaż mój kod" sheet from
   AddFriendSheet shows the QR + textual id with copy-to-clipboard.
 - Onboarding celebration: new .celebration step after paywall —
   spring-in badge + pure-SwiftUI confetti (36 pieces over a
@@ -192,13 +192,13 @@ Phase 1 + most of Phase 2 merged. Done & merged on `develop`:
   observes and routes.
 - WidgetKit Home Screen widget: small + medium families showing streak
   + calories remaining + last-meal name. Snapshot via shared
-  UserDefaults (suiteName: group.app.mealgram.shared, falls back to
+  UserDefaults (suiteName: group.app.fitgram.shared, falls back to
   standard without entitlement). TodayState publishes on every refresh
   + reloadAllTimelines.
 
 305 unit tests + 3 UI tests (1 pre-existing flake on Xcode 16
 sim — testGoogleSignInTapShowsNotConfiguredBanner), swiftlint --strict
-clean, swift-format clean. App + MealgramWidget appex both build.
+clean, swift-format clean. App + FitgramWidget appex both build.
 
 Five tabs: Dziś • Dodaj • Tydzień • Znajomi • Profil.
 Five meal-entry paths from "+Dodaj": 📸 photo • 📦 barcode • 🔎 Szybka baza • 🎙 voice • 📖 recipe.
@@ -255,7 +255,7 @@ Blocked / awaiting from user:
 ## Workflow
 - Branch from `develop` (`feature/*`), commit early/often per Conventional Commits.
 - After each Milestone: commit, brief status update, move to next.
-- Stop only for the events listed in `mealgram-master-prompt.md` (Bundle ID, credentials, physical-device tests, App Store assets, true architectural pivot).
+- Stop only for the events listed in `fitgram-master-prompt.md` (Bundle ID, credentials, physical-device tests, App Store assets, true architectural pivot).
 
 ## Last Session Summary
 2026-05-12 — long autonomous run, ~62 commits on `develop`. Closed Phase 1 entirely (auth, SwiftData v1, networking, onboarding, camera, Today, Profile, streaks, testing baseline, Worker code-complete), then most of Phase 2 (calibration manager, per-item edit + manual add, voice STT, barcode + OFF, Quick DB UI with 43-dish PL seed, achievements engine + grid, Weekly Progress tab) and selected Phase 3/4 (Recipe Library + cook-to-meal, suggested-recipe Today card, Polish cultural-event banner). Bonus: weight log + Apple Health read-only import, avatar picker, central A11yID catalog, `DebugBypass` for screenshot launches, ARCHITECTURE / CONTRIBUTING / README docs refresh. **129 unit + 3 UI tests green**, swiftlint --strict clean, swift-format clean. Next stoppers are external credentials — Supabase, Google OAuth, Cloudflare/Gemini, RevenueCat, Apple Team ID, physical iPhone.

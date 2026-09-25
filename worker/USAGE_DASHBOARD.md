@@ -8,7 +8,7 @@ How to set up and query the server-side accounting that tracks every Gemini API 
 
 ```bash
 cd worker
-npx wrangler d1 create mealgram-usage
+npx wrangler d1 create fitgram-usage
 ```
 
 This prints a `database_id`. Paste it into [wrangler.toml](wrangler.toml) under the `[[d1_databases]]` block (uncomment the lines):
@@ -16,14 +16,14 @@ This prints a `database_id`. Paste it into [wrangler.toml](wrangler.toml) under 
 ```toml
 [[d1_databases]]
 binding = "USAGE_DB"
-database_name = "mealgram-usage"
+database_name = "fitgram-usage"
 database_id = "<paste-from-step-above>"
 ```
 
 ### 2. Run the migration
 
 ```bash
-npx wrangler d1 execute mealgram-usage --remote --file=migrations/0001_ai_usage.sql
+npx wrangler d1 execute fitgram-usage --remote --file=migrations/0001_ai_usage.sql
 ```
 
 Creates the `ai_usage` table. Idempotent — safe to re-run.
@@ -56,7 +56,7 @@ The Worker now logs every Gemini call into `ai_usage` automatically. No iOS chan
 ### Browser dashboard (easiest)
 
 ```
-https://mealgram-worker.bashyroov.workers.dev/admin/dashboard?token=YOUR_ADMIN_TOKEN
+https://fitgram-app.bashyroov.workers.dev/admin/dashboard?token=YOUR_ADMIN_TOKEN
 ```
 
 Renders an HTML page with:
@@ -70,7 +70,7 @@ Bookmark this URL — it's safe to share with yourself across devices since the 
 
 ```bash
 TOKEN=YOUR_ADMIN_TOKEN
-curl -sS "https://mealgram-worker.bashyroov.workers.dev/admin/usage" \
+curl -sS "https://fitgram-app.bashyroov.workers.dev/admin/usage" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
@@ -100,7 +100,7 @@ Sample response:
 ### Direct D1 query (for ad-hoc analysis)
 
 ```bash
-npx wrangler d1 execute mealgram-usage --remote --command \
+npx wrangler d1 execute fitgram-usage --remote --command \
   "SELECT user_id, COUNT(*) AS calls, ROUND(SUM(cost_usd), 4) AS usd
    FROM ai_usage
    WHERE ts >= strftime('%s', 'now', '-7 days') * 1000

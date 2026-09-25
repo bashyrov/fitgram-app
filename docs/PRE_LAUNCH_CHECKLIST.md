@@ -1,12 +1,12 @@
-# Mealgram — Pre-Launch Checklist
+# Fitgram — Pre-Launch Checklist
 
 Concrete steps in execution order. Tick each box as you go. Total estimated time **2-3 weeks** solo developer.
 
 ## Phase 0: Money + accounts (1 day calendar, blocked by approvals)
 
 - [ ] Buy [Apple Developer Program](https://developer.apple.com/programs/) ($99/year). **24-72h verification.**
-- [ ] Register `mealgram.xyz` (any PL registrar, ~80 zł)
-- [ ] Set up business email `hello@mealgram.xyz` (Google Workspace $6/mo or self-hosted)
+- [ ] Register `fitgram.space` (any PL registrar, ~80 zł)
+- [ ] Use support email `onefitgram@gmail.com` (corporate domain email can be added later)
 - [ ] Register JDG / sp. z o.o. with PL tax office — needed for receiving Apple payouts
 - [ ] Sign up [revenuecat.com](https://www.revenuecat.com) (free)
 - [ ] Sign up [supabase.com](https://supabase.com) (free)
@@ -34,17 +34,17 @@ Concrete steps in execution order. Tick each box as you go. Total estimated time
 
 - [ ] [App Store Connect](https://appstoreconnect.apple.com) → My Apps → "+" → New App
   - Platform: iOS
-  - Name: **Mealgram**
+  - Name: **Fitgram**
   - Primary Language: **Polish**
-  - Bundle ID: **app.mealgram.ios**
-  - SKU: **mealgram-ios-001**
+  - Bundle ID: **app.fitgram.ios**
+  - SKU: **fitgram-ios-001**
 - [ ] App Information:
   - Subtitle: **Polski licznik kalorii bez stresu**
   - Category: Health & Fitness / Lifestyle
   - Content Rights: **No** (we don't display third-party content beyond OFF attribution)
-- [ ] Paste Privacy Policy URL: `https://mealgram.xyz/privacy`
-- [ ] Paste Support URL: `mailto:hello@mealgram.xyz`
-- [ ] Paste Marketing URL: `https://mealgram.xyz`
+- [ ] Paste Privacy Policy URL: `https://fitgram.space/privacy`
+- [ ] Paste Support URL: `https://fitgram.space/support`
+- [ ] Paste Marketing URL: `https://fitgram.space`
 - [ ] Localizations: add **English (US)** + **Ukrainian** + **Polish**
 - [ ] For each language, paste from `docs/app-store/metadata-{pl,en,uk}.md`:
   - [ ] Name, Subtitle, Description, Keywords, Promotional text, What's New
@@ -71,22 +71,22 @@ In ASC → your app → App Privacy:
 ## Phase 4: Subscriptions (45 min, requires #2 done)
 
 - [ ] ASC → your app → Monetization → Subscriptions → Create Subscription Group:
-  - Reference Name: **mealgram_premium**
-- [ ] Inside group, create **mealgram_premium_monthly**:
+  - Reference Name: **fitgram_premium**
+- [ ] Inside group, create **fitgram_premium_monthly**:
   - Duration: 1 Month
   - Price: 29 PLN
   - Display name (PL): "Premium Miesięczna"
   - Display name (EN): "Premium Monthly"
   - Description: paste from metadata
   - Introductory Offer: Free Trial, 7 days
-- [ ] Create **mealgram_premium_yearly**:
+- [ ] Create **fitgram_premium_yearly**:
   - Duration: 1 Year
   - Price: 199 PLN
   - Display name (PL): "Premium Roczna"
   - Display name (EN): "Premium Annual"
   - Introductory Offer: Free Trial, 7 days
 - [ ] App Information → Generate App-Specific Shared Secret → copy
-- [ ] [revenuecat.com](https://app.revenuecat.com) → New Project "Mealgram"
+- [ ] [revenuecat.com](https://app.revenuecat.com) → New Project "Fitgram"
 - [ ] Apps → "+" → App Store → paste Bundle ID + Shared Secret
 - [ ] Products → Import from App Store
 - [ ] Entitlements → "+" → `premium` → attach both products
@@ -101,13 +101,13 @@ In ASC → your app → App Privacy:
   REVENUECAT_API_KEY = appl_xxxxxxxxxx
   SUPABASE_URL = https://xxx.supabase.co
   SUPABASE_ANON_KEY = eyJxxx...
-  WORKER_BASE_URL = https://mealgram-worker.your-account.workers.dev
+  WORKER_BASE_URL = https://fitgram-app.bashyroov.workers.dev
   GEMINI_API_KEY = AIza...
   ANTHROPIC_API_KEY = sk-ant-...
   ```
 - [ ] Add `Config.xcconfig` to `.gitignore`
 - [ ] In `project.yml`, point each target's `baseConfig` at `Config.xcconfig`
-- [ ] In `MealgramApp.init()` read keys via `Bundle.main.infoDictionary` or `AppConfig`
+- [ ] In `FitgramApp.init()` read keys via `Bundle.main.infoDictionary` or `AppConfig`
 - [ ] Add RevenueCat SPM dependency in `project.yml`:
   ```yaml
   packages:
@@ -115,7 +115,7 @@ In ASC → your app → App Privacy:
       url: https://github.com/RevenueCat/purchases-ios-spm
       from: "5.0.0"
   targets:
-    Mealgram:
+    Fitgram:
       dependencies:
         - package: RevenueCat
   ```
@@ -127,14 +127,14 @@ In ASC → your app → App Privacy:
 ## Phase 6: Capabilities + Entitlements (20 min)
 
 - [ ] [developer.apple.com](https://developer.apple.com/account) → Identifiers → "+" → App IDs → App
-  - Description: Mealgram
-  - Bundle ID: **app.mealgram.ios** (explicit)
+  - Description: Fitgram
+  - Bundle ID: **app.fitgram.ios** (explicit)
   - Capabilities enable: ✅ Sign In with Apple, ✅ HealthKit, ✅ Push Notifications, ✅ App Groups
-- [ ] Create App ID for widget: **app.mealgram.ios.widget**
+- [ ] Create App ID for widget: **app.fitgram.ios.widget**
   - Capabilities: ✅ App Groups
-- [ ] Identifiers → App Groups → "+" → `group.app.mealgram.shared`
+- [ ] Identifiers → App Groups → "+" → `group.app.fitgram.shared`
 - [ ] Attach the App Group to both bundle IDs
-- [ ] In Xcode (after `make generate`): both targets → Signing & Capabilities → "+ Capability" → add App Groups → tick `group.app.mealgram.shared`
+- [ ] In Xcode (after `make generate`): both targets → Signing & Capabilities → "+ Capability" → add App Groups → tick `group.app.fitgram.shared`
 
 ## Phase 7: Cloudflare Worker deploy (15 min, if M1.6 photo→AI wanted)
 
@@ -149,16 +149,16 @@ In ASC → your app → App Privacy:
 - [ ] Create project at [supabase.com/dashboard](https://supabase.com/dashboard/projects)
 - [ ] Settings → API → copy Project URL + anon public key into `Config.xcconfig`
 - [ ] Authentication → Email Templates → customize magic link to PL
-- [ ] Authentication → URL Configuration → Site URL: `mealgram://auth-callback`
+- [ ] Authentication → URL Configuration → Site URL: `fitgram://auth-callback`
 - [ ] Authentication → Email → enable Magic Link, disable signup confirmations
 
 ## Phase 9: Sandbox test (1 hour)
 
 - [ ] ASC → Users and Access → Sandbox Testers → "+"
-  - Email: `mealgram-test+sandbox@gmail.com` (or any unused address)
+  - Email: `fitgram-test+sandbox@gmail.com` (or any unused address)
   - Password: any strong
 - [ ] On iPhone → Settings → App Store → Sandbox Account → sign in with the tester
-- [ ] Build & run Mealgram on device via Xcode
+- [ ] Build & run Fitgram on device via Xcode
 - [ ] Go through onboarding to paywall step
 - [ ] Buy monthly subscription with the sandbox account → should succeed, no charge
 - [ ] Verify `customerInfo.entitlements["premium"].isActive == true` (check logs)

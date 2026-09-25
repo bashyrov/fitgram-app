@@ -1,12 +1,12 @@
-# Mealgram — App Store Metadata (English)
+# Fitgram — App Store Metadata (English)
 
 ## Basic Info
 
 | Field | Value | Limit |
 |---|---|---|
-| **App Name** | Mealgram | 30 chars |
+| **App Name** | Fitgram | 30 chars |
 | **Subtitle** | Calm Polish calorie tracker | 30 chars |
-| **Bundle ID** | app.mealgram.ios | — |
+| **Bundle ID** | app.fitgram.ios | — |
 | **Primary Language** | Polish | — |
 | **Primary Category** | Health & Fitness | — |
 | **Secondary Category** | Lifestyle | — |
@@ -27,7 +27,7 @@ Calm pace, Polish tastes. Snap a photo, scan a barcode, or speak — Ola helps y
 ## Description (4000 chars)
 
 ```
-Mealgram is a Polish-market calorie tracker built for people who are tired of nagging diet apps. Instead of micro-counting every kcal, you get a calm companion that knows Polish flavours and respects your rhythm.
+Fitgram is a Polish-market calorie tracker built for people who are tired of nagging diet apps. Instead of micro-counting every kcal, you get a calm companion that knows Polish flavours and respects your rhythm.
 
 ▸ FIVE WAYS TO LOG A MEAL
 
@@ -73,7 +73,7 @@ Add friends via QR or link. See their streaks and achievements. Weekly leaderboa
 
 ▸ WIDGET AND SIRI
 
-Home screen widget shows streak, remaining calories, last meal. Siri shortcuts: "Hey Siri, log a meal in Mealgram". Spotlight indexes your recipes.
+Home screen widget shows streak, remaining calories, last meal. Siri shortcuts: "Hey Siri, log a meal in Fitgram". Spotlight indexes your recipes.
 
 ▸ ACCESSIBILITY
 
@@ -85,17 +85,17 @@ VoiceOver, Dynamic Type, reduce motion — fully supported.
 
 ▸ CONTACT
 
-Questions? hello@mealgram.xyz
-Privacy policy: mealgram.xyz/privacy
-Terms: mealgram.xyz/terms
+Questions? onefitgram@gmail.com
+Privacy policy: fitgram.space/privacy
+Terms: fitgram.space/terms
 
-Mealgram — because dieting isn't a prison, it's a rhythm.
+Fitgram — because dieting isn't a prison, it's a rhythm.
 ```
 
 ## What's New (4000 chars)
 
 ```
-Version 1.0 — first public release of Mealgram!
+Version 1.0 — first public release of Fitgram!
 
 ✨ What's new
 • 5 ways to log meals: photo, barcode, database, voice, recipe
@@ -108,5 +108,5 @@ Version 1.0 — first public release of Mealgram!
 • JSON / CSV / ZIP export
 • Full privacy — everything local
 
-Thanks for being among the early users! Email hello@mealgram.xyz if anything is missing.
+Thanks for being among the early users! Email onefitgram@gmail.com if anything is missing.
 ```

@@ -1,8 +1,8 @@
-# Mealgram Support
+# Fitgram Support
 
 _Updated: 22 May 2026_
 
-Hi — thanks for using Mealgram. Most questions can be answered below. If yours isn't here, email **hello@mealgram.xyz** and you'll get a reply within 24 hours (usually faster).
+Hi — thanks for using Fitgram. Most questions can be answered below. If yours isn't here, email **onefitgram@gmail.com** and you'll get a reply within 24 hours (usually faster).
 
 ## Getting started
 
@@ -36,7 +36,7 @@ We support Sign in with Apple, Google, and Email magic link. If a magic link doe
 
 ## Privacy & data
 
-- Full policy: https://mealgram.xyz/privacy
+- Full policy: https://fitgram.space/privacy
 - We never sell data, run ads, or share with brokers.
 - Your photos are not retained after the AI returns nutrition values.
 
@@ -46,13 +46,13 @@ We support Sign in with Apple, Google, and Email magic link. If a magic link doe
 Force-quit, reopen. If it persists, reinstall (your cloud data survives — just sign in again).
 
 **Notifications not arriving?**  
-Settings → Notifications → Mealgram → make sure Alerts/Sounds/Banners are on. Inside the app: Profile → Settings → Reminders → toggle each channel.
+Settings → Notifications → Fitgram → make sure Alerts/Sounds/Banners are on. Inside the app: Profile → Settings → Reminders → toggle each channel.
 
 **Watch app shows nothing?**  
-Open Mealgram on the iPhone first, log one meal, then the Watch face will sync within a few seconds.
+Open Fitgram on the iPhone first, log one meal, then the Watch face will sync within a few seconds.
 
 ## Contact
 
-Email: **hello@mealgram.xyz**  
+Email: **onefitgram@gmail.com**  
 Response time: within 24 hours.  
 Apple Developer: L55G3V9NJ3

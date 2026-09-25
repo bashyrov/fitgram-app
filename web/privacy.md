@@ -1,12 +1,12 @@
-# Mealgram Privacy Policy
+# Fitgram Privacy Policy
 
 _Last updated: 22 May 2026_
 
-This is the privacy policy for **Mealgram**, the iOS app published by the developer reachable at `hello@mealgram.xyz`. By using Mealgram you accept the practices described below.
+This is the privacy policy for **Fitgram**, the iOS app published by the developer reachable at `onefitgram@gmail.com`. By using Fitgram you accept the practices described below.
 
 ## What we collect
 
-Mealgram collects the **minimum data needed to operate the app**:
+Fitgram collects the **minimum data needed to operate the app**:
 
 | Category | Data | Why | Where it lives |
 |---|---|---|---|
@@ -39,11 +39,11 @@ You have the right to:
 
 1. **Export** everything we have on you — Profile → Settings → "Download JSON / CSV / Full ZIP". The export contains every meal, weight, photo, recipe, achievement, and coach note keyed to your account.
 2. **Delete** your account and all server-side data — Profile → Settings → "Delete account". This wipes your Supabase row, fires off the deletion across our backups within 30 days, and removes the app's local SwiftData. Irreversible.
-3. **Object** to any specific processing — email `hello@mealgram.xyz` and we'll act within 30 days.
+3. **Object** to any specific processing — email `onefitgram@gmail.com` and we'll act within 30 days.
 
 ## Children
 
-Mealgram is rated **17+** in the App Store because health/diet apps require user judgement. We don't knowingly collect data from children under 13. If you believe a child has created an account, email us and we'll delete the row immediately.
+Fitgram is rated **17+** in the App Store because health/diet apps require user judgement. We don't knowingly collect data from children under 13. If you believe a child has created an account, email us and we'll delete the row immediately.
 
 ## Security
 
@@ -58,6 +58,6 @@ Material changes appear in the app's "What's New" sheet and at this URL with a f
 
 ## Contact
 
-Mealgram Team  
-Email: `hello@mealgram.xyz`  
+Fitgram Team  
+Email: `onefitgram@gmail.com`  
 Apple Developer Team ID: L55G3V9NJ3

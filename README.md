@@ -1,8 +1,9 @@
-# Mealgram
+# Fitgram
 
 iOS calorie tracker tailored for the Polish market. Three core ways to log a
 meal — photo scan, barcode lookup, quick database — plus voice, recipe
-library, and an AI coach ("Ola") in later milestones.
+library, AI-powered portion review, activities, friends, achievements, and
+the AI coach Ola.
 
 iOS 17+ • SwiftUI + SwiftData + TCA where it earns its keep • Cloudflare
 Worker as the AI proxy • Supabase as the backend (lazy-wired). Strict
@@ -24,8 +25,8 @@ Five meal-entry paths reachable from the "+Dodaj" tab:
   or add a manual item.
 - 📦 **Barcode** — AVCaptureMetadataOutput (EAN-8/13, UPC-E, QR, etc.) →
   public Open Food Facts API → portion picker.
-- 🔎 **Quick Database** — bundled catalog of 43 handcrafted Polish dishes
-  and fast-food items. Categorised, searchable.
+- 🔎 **Quick Database** — bundled catalog of handcrafted dishes and products.
+  Categorised, searchable, with recent items and detailed portion review.
 - 🎙 **Voice** — SFSpeechRecognizer (`pl_PL`) with a live transcript bubble
   and edit-before-save confirm sheet.
 - 📖 **Recipe** — manual recipe library with cook-count tracking. Tap "Ugotuj"
@@ -61,11 +62,11 @@ Plus, threaded across the app:
 | Backend | Supabase (Postgres + Auth + pgvector) for social/profile data when configured |
 | AI proxy | Cloudflare Worker (TypeScript) at `worker/` |
 | Vision | Gemini 2.5 Flash / Pro through the Worker |
-| Subscriptions | RevenueCat (lazy-wired) |
+| Subscriptions | StoreKit 2 auto-renewable subscriptions |
 | Observability | PostHog (EU) + Sentry (lazy-wired) |
 | Health | HealthKit body-mass read (entitlement activates with Team ID) |
 | Build | xcodegen, swiftlint, swift-format, xcbeautify |
-| Tests | XCTest + XCUITest, 129 unit + 3 UI green |
+| Tests | XCTest + XCUITest |
 
 ## Quick start
 
@@ -89,10 +90,10 @@ Common targets:
 
 ### Bypass Sign in with Apple for demos
 
-The DEBUG-only `-mealgramDebugBypassAuth` launch argument seeds a fake user
+The DEBUG-only `-fitgramDebugBypassAuth` launch argument seeds a fake user
 + sample meals and lands directly in the main scene. From Xcode: Product →
-Scheme → Edit Scheme → Run → Arguments → add `-mealgramDebugBypassAuth`.
-Combine with `MEALGRAM_DEBUG_TAB=progress|profile` to start on a specific
+Scheme → Edit Scheme → Run → Arguments → add `-fitgramDebugBypassAuth`.
+Combine with `FITGRAM_DEBUG_TAB=progress|profile` to start on a specific
 tab.
 
 ## Worker (Cloudflare)
@@ -113,17 +114,18 @@ specific features when configured:
 - **Cloudflare Workers** account + Gemini API key → real AI scan.
 - **Apple Developer Team ID** → Apple Sign In on device, App Store
   submission, HealthKit entitlement, App Groups.
-- **RevenueCat** API key + product IDs → trial-to-paid paywall.
+- **App Store Connect subscriptions** → products `fitgram_premium_monthly`
+  and `fitgram_premium_yearly`, each with a 7-day free trial if enabled for release.
 
 ## Repository layout
 
 ```
 .
-├── Mealgram/                  # iOS app
+├── Fitgram/                  # iOS app
 │   ├── App/                   # @main, RootView, AppRouter, MainTabView
 │   ├── Core/
 │   │   ├── Models/            # @Model SwiftData entities
-│   │   ├── Persistence/       # MealgramSchemaV1 + PersistenceController
+│   │   ├── Persistence/       # FitgramSchemaV1 + PersistenceController
 │   │   ├── Networking/        # APIClient + Endpoint + interceptors
 │   │   ├── Services/          # Auth, Achievements, Calibration, …
 │   │   └── Utilities/         # Logger+, DebugBypass
@@ -131,8 +133,8 @@ specific features when configured:
 │   ├── Features/              # One folder per product surface
 │   ├── Resources/             # Assets, Localizable.xcstrings, Seeds
 │   └── Supporting/            # Info.plist, entitlements, PrivacyInfo
-├── MealgramTests/             # 129 XCTest unit tests
-├── MealgramUITests/           # 3 XCUITest tests
+├── FitgramTests/             # 129 XCTest unit tests
+├── FitgramUITests/           # 3 XCUITest tests
 ├── worker/                    # Cloudflare Worker (TypeScript)
 ├── docs/screenshots/          # PR/marketing imagery
 ├── ARCHITECTURE.md            # decisions + module map + API contracts
@@ -144,4 +146,4 @@ specific features when configured:
 
 ## License
 
-Proprietary. © 2026 Mealgram.
+Proprietary. © 2026 Fitgram.

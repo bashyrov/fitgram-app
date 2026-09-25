@@ -1,11 +1,11 @@
-# Mealgram → App Store submission checklist
+# Fitgram → App Store submission checklist
 
 ## ✅ Что я сделал автоматически
 
-- **Privacy Manifest** (`Mealgram/Supporting/PrivacyInfo.xcprivacy`) — оформлен с задекларированными типами данных (email, photo, health, crash) и API-reasons (UserDefaults, FileTimestamp, SystemBootTime, DiskSpace).
+- **Privacy Manifest** (`Fitgram/Supporting/PrivacyInfo.xcprivacy`) — оформлен с задекларированными типами данных (email, photo, health, crash) и API-reasons (UserDefaults, FileTimestamp, SystemBootTime, DiskSpace).
 - **fastlane Fastfile + Appfile** — три lane: `bump_build`, `beta` (TestFlight), `release` (submission).
 - **Metadata на 5 локалей** (PL/EN/UK/RU/ES) в `fastlane/metadata/`: name, subtitle, description, keywords, promotional_text, release_notes + общие copyright, primary_category (`HEALTH_AND_FITNESS`), secondary (`FOOD_AND_DRINK`).
-- **Terms of Use / EULA для авто‑подписок**: публичная страница `https://mealgram.xyz/terms`, ссылка добавлена в App Store description всех 5 локалей и в App Review notes.
+- **Terms of Use / EULA для авто‑подписок**: публичная страница `https://fitgram.space/terms`, ссылка добавлена в App Store description всех 5 локалей и в App Review notes.
 - **Public URL metadata**: `privacy_url.txt`, `support_url.txt`, `marketing_url.txt` добавлены для всех локалей fastlane.
 - **iCloud sync + App Groups + Push entitlements** ↗ enabled (commit `96f094b`).
 - **5 языков локализации** UI + 150 фактов = ~7150 переведённых строк.
@@ -15,7 +15,7 @@
 
 ### 1. App Icon
 
-В [Mealgram/Resources/Assets.xcassets/AppIcon.appiconset/](Mealgram/Resources/Assets.xcassets/AppIcon.appiconset/) уже есть `AppIcon-1024.png`.
+В [Fitgram/Resources/Assets.xcassets/AppIcon.appiconset/](Fitgram/Resources/Assets.xcassets/AppIcon.appiconset/) уже есть `AppIcon-1024.png`.
 
 Проверено: **1024×1024, без alpha** — подходит для App Store.
 
@@ -24,9 +24,9 @@
 Apple требует публичные страницы для privacy/support и рабочую Terms of Use / EULA ссылку для auto-renewable subscriptions.
 
 Уже подготовлено:
-- `https://mealgram.xyz/privacy`
-- `https://mealgram.xyz/support`
-- `https://mealgram.xyz/terms`
+- `https://fitgram.space/privacy`
+- `https://fitgram.space/support`
+- `https://fitgram.space/terms`
 
 После деплоя `landing/` на хостинг запусти `fastlane ios prepare_metadata`, чтобы App Store metadata обновилась.
 
@@ -35,17 +35,17 @@ Apple требует публичные страницы для privacy/support 
 Для текущего rejection:
 1. задеплой `landing/terms.html` + redirect `/terms`
 2. запусти `fastlane ios prepare_metadata`
-3. в App Store Connect проверь, что description каждой локали содержит `https://mealgram.xyz/terms`
+3. в App Store Connect проверь, что description каждой локали содержит `https://fitgram.space/terms`
 4. re-submit build for review
 
 ### 4. App Store Connect — создать app record
 
 1. Зайди на [appstoreconnect.apple.com](https://appstoreconnect.apple.com) → My Apps → "+" → **New App**
 2. Platform: **iOS**
-3. Name: **Mealgram**
+3. Name: **Fitgram**
 4. Primary Language: **Polish**
-5. Bundle ID: выбери `app.mealgram.ios.bashyrov` (должен появиться раз paid team подключен)
-6. SKU: `mealgram-ios-001` (любой уникальный)
+5. Bundle ID: выбери `app.fitgram.ios.bashyrov` (должен появиться раз paid team подключен)
+6. SKU: `fitgram-ios-001` (любой уникальный)
 7. User Access: **Full Access**
 
 После создания — скопируй App ID (числа в URL) — пригодится потом.
@@ -54,7 +54,7 @@ Apple требует публичные страницы для privacy/support 
 
 1. Users and Access → **Integrations** → **App Store Connect API**
 2. **Generate API Key**
-3. Name: `mealgram-fastlane`, Role: **App Manager**
+3. Name: `fitgram-fastlane`, Role: **App Manager**
 4. Скачай `.p8` файл (даётся один раз!) и положи в `~/Library/Keys/AuthKey_XXXXXXXXXX.p8`
 5. Скопируй **Key ID** и **Issuer ID**
 6. В корне репо создай `.env.fastlane`:
@@ -78,7 +78,7 @@ Apple требует:
 - **6.7"** (iPhone 15 Pro Max / 16 Pro Max): 1290 × 2796 px — **обязательно**
 - 6.5" (iPhone 11 Pro Max / 14 Plus): 1242 × 2688 — рекомендуется
 
-Минимум 3 скриншота на язык. Стандартный набор для Mealgram:
+Минимум 3 скриншота на язык. Стандартный набор для Fitgram:
 1. Today с большим калорийным кольцом и AI Coach
 2. Scan result после фотоскана
 3. Goal Tracking + 14-day chart
@@ -95,7 +95,7 @@ App Store Connect → Users and Access → **Sandbox** → **Testers** → "+" �
 
 ```bash
 # Первый upload в TestFlight (тестовая раздача)
-cd ~/Projects/mealgram-workspace
+cd ~/Projects/fitgram-workspace
 fastlane beta
 
 # Когда тестеры одобрят и хочешь submit на App Store review
@@ -106,14 +106,14 @@ Apple review обычно 24-48 ч. На сообщения от Apple отве�
 
 ## 📝 IAP (in-app purchases) — для платных подписок
 
-Mealgram имеет paywall, но StoreKit пока в mock-режиме. Чтобы реально брать платежи:
+Fitgram имеет paywall, но StoreKit пока в mock-режиме. Чтобы реально брать платежи:
 
-1. App Store Connect → Apps → Mealgram → **Features** → **In-App Purchases** → "+"
+1. App Store Connect → Apps → Fitgram → **Features** → **In-App Purchases** → "+"
 2. Type: **Auto-Renewable Subscription**
-3. Создай Subscription Group "Mealgram Premium"
+3. Создай Subscription Group "Fitgram Premium"
 4. Внутри группы создай продукты:
-   - `mealgram_premium_monthly` (1 месяц, 16.60 zł)
-   - `mealgram_premium_yearly` (1 год, 199 zł)
+   - `fitgram_premium_monthly` (1 месяц, 16.60 zł)
+   - `fitgram_premium_yearly` (1 год, 199 zł)
 5. Включи 7-day free trial / introductory offer для обоих продуктов, если хочешь пробный период на оба плана.
 6. Эти Product IDs уже подключены в StoreKit 2 в приложении — RevenueCat не обязателен для первого review.
 

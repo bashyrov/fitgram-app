@@ -1,6 +1,6 @@
 .PHONY: help generate build test lint format clean bootstrap open
 
-SCHEME    ?= Mealgram
+SCHEME    ?= Fitgram
 DESTINATION ?= platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED   ?= build/DerivedData
 
@@ -17,7 +17,7 @@ generate: ## Regenerate Xcode project from project.yml
 	xcodegen generate
 
 open: generate ## Generate and open in Xcode
-	open Mealgram.xcodeproj
+	open Fitgram.xcodeproj
 
 build: ## Build app for iOS simulator
 	set -o pipefail && xcodebuild \
@@ -42,10 +42,10 @@ lint: ## Run SwiftLint
 	swiftlint --strict
 
 format: ## Format Swift sources in-place
-	swift-format format --in-place --recursive --configuration .swift-format Mealgram MealgramTests MealgramUITests
+	swift-format format --in-place --recursive --configuration .swift-format Fitgram FitgramTests FitgramUITests
 
 format-check: ## Verify formatting (CI)
-	swift-format lint --recursive --configuration .swift-format Mealgram MealgramTests MealgramUITests
+	swift-format lint --recursive --configuration .swift-format Fitgram FitgramTests FitgramUITests
 
 clean: ## Wipe build artifacts
 	rm -rf build $(DERIVED) DerivedData

@@ -42,9 +42,11 @@ opt_in_rules:
 
 excluded:
   - .build
+  - .codex-backups
   - DerivedData
   - build
-  - Mealgram/Resources/Mock
+  - build-*
+  - Fitgram/Resources/Mock
 
 line_length:
   warning: 140

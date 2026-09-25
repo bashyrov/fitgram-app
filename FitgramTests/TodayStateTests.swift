@@ -1,0 +1,314 @@
+import SwiftData
+import XCTest
+
+@testable import Fitgram
+
+@MainActor
+final class TodayStateTests: XCTestCase {
+    private var controller: PersistenceController!
+    private var context: ModelContext!
+
+    override func setUp() async throws {
+        UserDefaults.standard.set("pl", forKey: "app.language")
+        Bundle.setLanguage("pl")
+        controller = try PersistenceController.makeInMemory()
+        context = ModelContext(controller.container)
+    }
+
+    override func tearDown() async throws {
+        controller = nil
+        context = nil
+        UserDefaults.standard.removeObject(forKey: "app.language")
+    }
+
+    private static func date(_ iso: String) -> Date {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        guard let date = formatter.date(from: iso) else { fatalError("Bad ISO date \(iso)") }
+        return date
+    }
+
+    func testEmptyStoreReturnsZeroTotals() async throws {
+        let now = Self.date("2026-05-12T12:00:00Z")
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        XCTAssertEqual(state.totals.calories, 0)
+        XCTAssertTrue(state.meals.isEmpty)
+    }
+
+    func testTodaysMealsAreSummedAndYesterdayIgnored() async throws {
+        // Use a midday "now" so we have plenty of buffer at both ends.
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let todayMorning = Self.date("2026-05-12T09:00:00Z")
+        let todayLunch = Self.date("2026-05-12T13:30:00Z")
+
+        let oldMeal = MealEntry(
+            consumedAt: yesterday,
+            mealType: .lunch,
+            source: .manual,
+            items: [
+                FoodItem(
+                    name: "Old", quantityGrams: 100, caloriesKcal: 999, proteinGrams: 0, carbsGrams: 0, fatGrams: 0)
+            ]
+        )
+        let m1 = MealEntry(
+            consumedAt: todayMorning,
+            mealType: .breakfast,
+            source: .quickDatabase,
+            items: [
+                FoodItem(
+                    name: "Owsianka", quantityGrams: 200, caloriesKcal: 320, proteinGrams: 10, carbsGrams: 60,
+                    fatGrams: 6)
+            ]
+        )
+        let m2 = MealEntry(
+            consumedAt: todayLunch,
+            mealType: .lunch,
+            source: .photoScan,
+            portionMultiplier: 1.5,
+            items: [
+                FoodItem(
+                    name: "Kurczak", quantityGrams: 150, caloriesKcal: 250, proteinGrams: 40, carbsGrams: 0, fatGrams: 8
+                )
+            ]
+        )
+        context.insert(oldMeal)
+        context.insert(m1)
+        context.insert(m2)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        XCTAssertEqual(state.meals.count, 2)
+        XCTAssertEqual(state.totals.calories, 320 + 250 * 1.5, accuracy: 0.001)
+        XCTAssertEqual(state.totals.protein, 10 + 40 * 1.5, accuracy: 0.001)
+        XCTAssertEqual(state.totals.carbs, 60, accuracy: 0.001)
+        XCTAssertEqual(state.totals.fat, 6 + 8 * 1.5, accuracy: 0.001)
+    }
+
+    func testCalorieGoalDefaultsApply() async throws {
+        let now = Self.date("2026-05-12T12:00:00Z")
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-missing")
+        XCTAssertEqual(state.calorieGoal, 2100)
+        XCTAssertEqual(state.calorieRemaining, 2100)
+    }
+
+    func testDailyOlaPlanUsesActivityAdjustedCalorieGoal() async throws {
+        let now = Self.date("2026-05-12T12:00:00Z")
+        let user = User(remoteID: "u-ola", email: "ola@test.com")
+        user.createdAt = Self.date("2026-05-06T12:00:00Z")
+        user.onboardingCompletedAt = user.createdAt
+        user.dailyCalorieGoalKcal = 1_800
+        user.proteinGoalGrams = 120
+        context.insert(user)
+        context.insert(
+            WorkoutEntry(
+                userRemoteID: "u-ola",
+                recordedAt: now,
+                activityID: "manual:run",
+                activityName: "Run",
+                durationMinutes: 30,
+                met: 7,
+                caloriesBurnedKcal: 300,
+                source: .manualCalories
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let coach = CoachService(
+            container: controller.container,
+            streakService: service,
+            weightService: WeightService(container: controller.container),
+            now: { now }
+        )
+        let state = TodayState(
+            container: controller.container,
+            streakService: service,
+            coachService: coach,
+            workoutService: WorkoutService(container: controller.container),
+            now: { now }
+        )
+
+        await state.refresh(for: "u-ola")
+
+        XCTAssertEqual(state.calorieGoal, 2_100)
+        let todayGoalDigits = try XCTUnwrap(state.dailyOlaPlan?.todayGoal).filter(\.isNumber)
+        XCTAssertTrue(todayGoalDigits.contains("2100"))
+        XCTAssertTrue(state.dailyOlaPlan?.focuses.first?.value.contains("2100") == true)
+    }
+
+    func testGreetingByHour() async throws {
+        for (hour, expected) in [
+            (8, "Good morning"),
+            (13, "Hi"),
+            (20, "Good evening"),
+            (2, "Hej"),
+        ] {
+            let fixed = Calendar.current.date(bySettingHour: hour, minute: 0, second: 0, of: Date()) ?? Date()
+            let service = StreakService(container: controller.container, now: { fixed })
+            let state = TodayState(container: controller.container, streakService: service, now: { fixed })
+            // Trigger reading greeting once — refresh isn't required for that derived property.
+            let greeting = state.greeting
+            // Hash via inspection isn't trivial; assert with descriptor instead.
+            let mirror = String(describing: greeting)
+            XCTAssertTrue(mirror.contains(expected), "Hour \(hour) expected to include \(expected), got \(mirror)")
+        }
+    }
+
+    // MARK: - Streak freeze
+
+    func testCanUseFreezeRequiresStreakAndFreezeAndNothingLoggedToday() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+
+        // Seed a streak with freezes available but lastLoggedDate = yesterday.
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: yesterday,
+            freezesAvailable: 2
+        )
+        context.insert(streak)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        XCTAssertTrue(state.canUseFreeze)
+    }
+
+    func testCanUseFreezeIsFalseAfterLoggingToday() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let today = Self.date("2026-05-12T08:00:00Z")
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: today,
+            freezesAvailable: 2
+        )
+        context.insert(streak)
+        context.insert(
+            MealEntry(
+                consumedAt: today, mealType: .breakfast, source: .quickDatabase,
+                items: [FoodItem(name: "x", quantityGrams: 100, caloriesKcal: 200)]
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        XCTAssertFalse(state.canUseFreeze)
+    }
+
+    func testCanUseFreezeIsFalseWithoutFreezesAvailable() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: yesterday,
+            freezesAvailable: 0
+        )
+        context.insert(streak)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        XCTAssertFalse(state.canUseFreeze)
+    }
+
+    // MARK: - Date scrub
+
+    func testGoToPreviousDayShowsYesterdayMeals() async throws {
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let yesterdayMeal = Self.date("2026-05-11T13:00:00Z")
+        let todayMeal = Self.date("2026-05-12T13:00:00Z")
+
+        context.insert(
+            MealEntry(
+                consumedAt: yesterdayMeal,
+                mealType: .lunch,
+                source: .manual,
+                items: [FoodItem(name: "Y", quantityGrams: 100, caloriesKcal: 400)]
+            )
+        )
+        context.insert(
+            MealEntry(
+                consumedAt: todayMeal,
+                mealType: .lunch,
+                source: .manual,
+                items: [FoodItem(name: "T", quantityGrams: 100, caloriesKcal: 700)]
+            )
+        )
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        XCTAssertEqual(state.totals.calories, 700, accuracy: 0.001)
+        XCTAssertTrue(state.isViewingToday)
+
+        await state.goToPreviousDay(userRemoteID: "u-1")
+        XCTAssertEqual(state.totals.calories, 400, accuracy: 0.001)
+        XCTAssertFalse(state.isViewingToday)
+    }
+
+    func testGoToNextDayClampsAtToday() async throws {
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        await state.goToNextDay(userRemoteID: "u-1")
+        XCTAssertTrue(state.isViewingToday, "Should not advance past today")
+    }
+
+    func testJumpToTodayReturnsAfterScrub() async throws {
+        let now = Self.date("2026-05-12T18:00:00Z")
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+
+        await state.refresh(for: "u-1")
+        await state.goToPreviousDay(userRemoteID: "u-1")
+        await state.goToPreviousDay(userRemoteID: "u-1")
+        XCTAssertFalse(state.isViewingToday)
+        await state.jumpToToday(userRemoteID: "u-1")
+        XCTAssertTrue(state.isViewingToday)
+    }
+
+    func testConsumeFreezeDecrementsAvailableCount() async throws {
+        let now = Self.date("2026-05-12T15:00:00Z")
+        let yesterday = Self.date("2026-05-11T12:00:00Z")
+        let streak = Streak(
+            userRemoteID: "u-frz",
+            currentLength: 3,
+            longestLength: 3,
+            lastLoggedDate: yesterday,
+            freezesAvailable: 2
+        )
+        context.insert(streak)
+        try context.save()
+
+        let service = StreakService(container: controller.container, now: { now })
+        let state = TodayState(container: controller.container, streakService: service, now: { now })
+        await state.refresh(for: "u-frz")
+        let consumed = await state.consumeFreeze(for: "u-frz")
+        XCTAssertTrue(consumed)
+        XCTAssertEqual(state.streak?.freezesAvailable, 1)
+    }
+}

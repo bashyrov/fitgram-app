@@ -1,4 +1,4 @@
-# Mealgram Architecture
+# Fitgram Architecture
 
 ## Tech Stack
 
@@ -39,9 +39,9 @@
 ## Module map
 
 ```
-Mealgram/
+Fitgram/
 ├── App/                     composition root + routing
-│   ├── MealgramApp.swift    @main, builds every service + state
+│   ├── FitgramApp.swift    @main, builds every service + state
 │   ├── AppRouter.swift      AuthSession.phase → launching|anonymous|onboarding|main
 │   ├── RootView.swift       routes by AppRouter.phase + hosts ChainedMealSaver
 │   └── MainTabView.swift    Today/Add/Progress/Profile + 5 entry sheets
@@ -49,7 +49,7 @@ Mealgram/
 │   ├── Models/              @Model SwiftData rows (User, MealEntry, FoodItem,
 │   │                        Food, Recipe, RecipeIngredient, Calibration,
 │   │                        Streak, Achievement, WeightEntry)
-│   ├── Persistence/         MealgramSchemaV1 + PersistenceController
+│   ├── Persistence/         FitgramSchemaV1 + PersistenceController
 │   ├── Networking/          APIClient + Endpoint + interceptors + RetryPolicy
 │   ├── Services/
 │   │   ├── Auth/            AuthService + AppleAuthProvider + stubs
@@ -72,7 +72,7 @@ Mealgram/
 │   ├── Voice · Recipes · Progress · Profile · Calibration · Weight
 │   └── Achievements
 ├── Resources/               Assets.xcassets, Localizable.xcstrings, Seeds
-└── Supporting/              Info.plist, Mealgram.entitlements, PrivacyInfo
+└── Supporting/              Info.plist, Fitgram.entitlements, PrivacyInfo
 ```
 
 ## Save-path topology
@@ -161,7 +161,7 @@ SwiftData store  (M1.2 schema v1.0)
 **Consequences:** The JSON is the single source of truth for the seed catalog; updating it requires a build (no OTA refresh) until M2.5 lands.
 
 ### 2026-05-13: SwiftData lightweight migrations are append-only
-**Context:** Phase 1 shipped MealgramSchemaV1 with no migration plan. Every new feature in this session that touched the schema (MealEntry.rating, MealEntry.tags, MealEntry.notes, User.dietaryPreferencesRaw, CoachMemoryNote, WaterEntry, etc.) needs to land without invalidating existing user installs.  
+**Context:** Phase 1 shipped FitgramSchemaV1 with no migration plan. Every new feature in this session that touched the schema (MealEntry.rating, MealEntry.tags, MealEntry.notes, User.dietaryPreferencesRaw, CoachMemoryNote, WaterEntry, etc.) needs to land without invalidating existing user installs.  
 **Decision:** Stick to lightweight migration: add optional / default-valued properties, never rename or remove. For sets / lists too complex for SwiftData (dietary preferences, future tag groupings), encode as comma-joined raw strings on the model and expose typed accessors via extensions.  
 **Rationale:** No `SchemaMigrationPlan` boilerplate, no Phase 2 schema-version bump. Future LLM features (M3.1 Claude, M3.2 memory) get their own models added the same way.  
 **Consequences:** Comma-joined strings sort alphabetically on save and lose insertion order — fine for sets, not fine for ordered lists. Any breaking schema change still triggers a versioned migration step; we'll bump SchemaV1 → SchemaV2 when that happens.
@@ -231,7 +231,7 @@ SwiftData store  (M1.2 schema v1.0)
 
 **Headers:** `Authorization: Bearer <supabase-jwt>` (HS256, verified server-side)
 
-**Response 200:** `application/json` (snake_case → decoded into camelCase by `JSONDecoder.mealgram`)
+**Response 200:** `application/json` (snake_case → decoded into camelCase by `JSONDecoder.fitgram`)
 ```json
 {
   "items": [{ "name": "...", "quantity_grams": 180, "calories_kcal": 420,

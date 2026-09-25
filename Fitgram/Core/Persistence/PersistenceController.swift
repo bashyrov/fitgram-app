@@ -1,0 +1,87 @@
+import Foundation
+import OSLog
+import SwiftData
+
+/// Wraps the app's `ModelContainer`. One source of truth — feature code asks
+/// `PersistenceController.shared.container` (or the `.preview` variant when
+/// driving SwiftUI previews). Tests build their own in-memory container via
+/// the `makeInMemory()` factory so they never collide with the on-disk
+/// store.
+@MainActor
+final class PersistenceController {
+    static let shared: PersistenceController = {
+        do {
+            return try PersistenceController(inMemory: false)
+        } catch {
+            Logger.persistence.fault("Failed to open on-disk store: \(String(describing: error))")
+            // Fall back to an in-memory container so the app still boots
+            // and surfaces an empty state rather than crashing. The error
+            // is logged and we'll add a UI surface in Milestone 5.2.
+            return PersistenceController.fallback()
+        }
+    }()
+
+    let container: ModelContainer
+
+    init(inMemory: Bool) throws {
+        let schema = Schema(versionedSchema: FitgramSchemaV1.self)
+        // CloudKit sync is off until the to-many relationships
+        // (MealEntry.items, Recipe.ingredients) are migrated from
+        // `[T]` to `[T]?`. SwiftData + CloudKit requires *optional*
+        // to-many relationships specifically — defaults are not
+        // enough. That migration touches ~68 callsites across the
+        // app, so it goes in its own commit. Until then, the app
+        // runs as local-only with all the existing UI and data.
+        let configuration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: inMemory,
+            cloudKitDatabase: .none
+        )
+        self.container = try ModelContainer(for: schema, configurations: [configuration])
+    }
+
+    /// In-memory factory for tests + previews — never persists between runs.
+    static func makeInMemory() throws -> PersistenceController {
+        try PersistenceController(inMemory: true)
+    }
+
+    /// Last-resort fallback used by `shared` when the disk store fails. Keeps
+    /// the schema identical so reads / writes from feature code don't have
+    /// to branch.
+    private static func fallback() -> PersistenceController {
+        do {
+            return try PersistenceController(inMemory: true)
+        } catch {
+            // If even an in-memory container can't be created the runtime
+            // is fundamentally broken — there's nothing meaningful we can
+            // recover from, so a crash here is the honest signal.
+            fatalError("Failed to create in-memory ModelContainer: \(error)")
+        }
+    }
+
+    /// Drops every persistent model from the live container — used by
+    /// `AccountDeletionService`. The container itself stays alive.
+    func wipeAllData() throws {
+        let context = ModelContext(container)
+        for modelType in FitgramSchemaV1.models {
+            try context.delete(model: modelType)
+        }
+        try context.save()
+    }
+
+    /// Removes account-owned data while keeping the shared food catalogue in
+    /// place. This is the account-deletion path: personal history disappears,
+    /// but a fresh sign-in can still use Quick Database without relaunching.
+    func wipeAccountData() throws {
+        let context = ModelContext(container)
+        for modelType in FitgramSchemaV1.accountOwnedModels {
+            try context.delete(model: modelType)
+        }
+        let foods = try context.fetch(FetchDescriptor<Food>())
+        for food in foods {
+            food.pickCount = 0
+            food.lastPickedAt = nil
+        }
+        try context.save()
+    }
+}

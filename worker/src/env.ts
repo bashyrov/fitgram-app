@@ -9,6 +9,9 @@ export interface Env {
     ANTHROPIC_BASE_URL?: string;
     ANTHROPIC_AUTH_MODE?: string;
     AI_PROVIDER?: string;
+    APPLE_ISSUER_ID?: string;
+    APPLE_KEY_ID?: string;
+    APPLE_PRIVATE_KEY?: string;
     UPSTASH_REDIS_URL: string;
     UPSTASH_REDIS_TOKEN: string;
 
@@ -19,12 +22,13 @@ export interface Env {
     CLAUDE_VISION_MODEL: string;
     CACHE_TTL_SECONDS: string;
     LOG_LEVEL: string;
+    APPLE_BUNDLE_ID?: string;
 
     // Optional KV — falls back to in-memory when missing.
     SCAN_CACHE?: KVNamespace;
 
     // Optional D1 — accounting falls silent if not bound. Provisioned via
-    // `wrangler d1 create mealgram-usage`. See worker/migrations/0001_ai_usage.sql.
+    // `wrangler d1 create fitgram-usage`. See worker/migrations/0001_ai_usage.sql.
     USAGE_DB?: D1Database;
 
     // Shared secret for GET /admin/usage. Set via `wrangler secret put ADMIN_TOKEN`.

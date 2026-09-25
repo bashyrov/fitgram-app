@@ -1,4 +1,4 @@
-# Contributing to Mealgram
+# Contributing to Fitgram
 
 Short notes for anyone (human or AI) touching this codebase.
 
@@ -55,7 +55,7 @@ After each milestone:
 ### Persistence
 
 - Adding a new `@Model` type: register it in
-  `MealgramSchemaV1.models`. SwiftData handles lightweight migration.
+  `FitgramSchemaV1.models`. SwiftData handles lightweight migration.
 - Cross-context entities (one ModelContext per service call) need to
   re-fetch by id before mutating — see `RecipeRepository.delete` or
   `WeightService.delete` for the pattern.
@@ -70,20 +70,20 @@ calls outside it.
 
 ### Accessibility
 
-`A11yID` (in `Mealgram/DesignSystem/AccessibilityIdentifiers.swift`)
+`A11yID` (in `Fitgram/DesignSystem/AccessibilityIdentifiers.swift`)
 is the catalogue for UI-test reach. Add new identifiers there before
 sprinkling them across views; never spell the string twice.
 
 ## Test conventions
 
 - Unit tests live next to the type they exercise
-  (`MealgramTests/<Type>Tests.swift`).
+  (`FitgramTests/<Type>Tests.swift`).
 - Each test isolates its own SwiftData container via
   `PersistenceController.makeInMemory()`.
 - Time-sensitive tests inject a `() -> Date` closure and a UTC
   `Calendar` so they don't wobble across timezones.
 - Network-touching tests use `MockURLProtocol`
-  (`MealgramTests/Support/MockURLProtocol.swift`).
+  (`FitgramTests/Support/MockURLProtocol.swift`).
 - HealthKit / SFSpeech / AVCapture are protocol-fronted; tests stub
   the protocol rather than touching the real framework.
 
@@ -94,7 +94,7 @@ Before merging:
 - [ ] `make lint` clean (swiftlint --strict)
 - [ ] `make format-check` clean (no swift-format diffs)
 - [ ] `make test` green
-- [ ] New `@Model`? Added to `MealgramSchemaV1.models`.
+- [ ] New `@Model`? Added to `FitgramSchemaV1.models`.
 - [ ] New side effect on `MealEntry` save? Routed through
       `ChainedMealSaver`.
 - [ ] New tap target? Identifier added to `A11yID`.
@@ -135,8 +135,8 @@ Use `wrangler secret put <NAME>` for production — never commit `.env`.
 These files change often; touch with care:
 
 - `RootView.swift` — composition root; threading new dependencies
-  ripples to `MealgramApp.swift` + `MainTabView.swift`.
-- `MealgramSchemaV1.swift` — every `@Model` must register here.
+  ripples to `FitgramApp.swift` + `MainTabView.swift`.
+- `FitgramSchemaV1.swift` — every `@Model` must register here.
 - `TodayState.swift` — pulls from many services; new dependencies need
   defaults so it stays test-friendly.
 - `A11yID` — shared by app + UI tests; rename via a global find/replace.
@@ -144,7 +144,7 @@ These files change often; touch with care:
 ## Stopping points
 
 Stop and ask the user for input only at the events documented in
-`mealgram-master-prompt.md` Section "Когда ОСТАНАВЛИВАЕШЬСЯ": Bundle
+`fitgram-master-prompt.md` Section "Когда ОСТАНАВЛИВАЕШЬСЯ": Bundle
 ID / Apple Team Info, external service credentials, physical-device
 testing, App Store submission assets, major architectural pivots.
 Everything else, just keep building.

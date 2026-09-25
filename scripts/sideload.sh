@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Sideload helper — temporarily patches project.yml + entitlements so
-# a free-tier Apple ID can sign + run Mealgram on a personal iPhone.
+# a free-tier Apple ID can sign + run Fitgram on a personal iPhone.
 #
 # Usage:
 #   ./scripts/sideload.sh prep ABCDE12345 [optional-bundle-suffix]
 #   ./scripts/sideload.sh revert
 #
-# After `prep`: open Mealgram.xcodeproj, attach iPhone, hit Run.
+# After `prep`: open Fitgram.xcodeproj, attach iPhone, hit Run.
 # After you're done: `./scripts/sideload.sh revert` puts everything back.
 
 set -euo pipefail
@@ -29,7 +29,7 @@ case "$cmd" in
       exit 1
     fi
 
-    if ! git diff --quiet project.yml Mealgram/Supporting/Mealgram.entitlements 2>/dev/null; then
+    if ! git diff --quiet project.yml Fitgram/Supporting/Fitgram.entitlements 2>/dev/null; then
       echo "✗ project.yml or entitlements already has uncommitted changes."
       echo "  Either commit/stash them or run: ./scripts/sideload.sh revert"
       exit 1
@@ -41,16 +41,16 @@ case "$cmd" in
 
     # Bump Bundle IDs with suffix so free-tier can issue profile
     /usr/bin/sed -i.bak2 \
-      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios$|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.$suffix|" \
-      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.widget|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.$suffix.widget|" \
-      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.tests|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.$suffix.tests|" \
-      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.uitests|PRODUCT_BUNDLE_IDENTIFIER: app.mealgram.ios.$suffix.uitests|" \
+      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov$|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.$suffix|" \
+      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.widget|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.$suffix.widget|" \
+      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.tests|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.$suffix.tests|" \
+      -e "s|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.uitests|PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.$suffix.uitests|" \
       project.yml
 
     # Free tier can't issue Sign in with Apple or HealthKit entitlements.
     # Replace the live entitlements with a free-tier-compatible variant.
     echo "→ Patching entitlements..."
-    cat > Mealgram/Supporting/Mealgram.entitlements <<'EOF'
+    cat > Fitgram/Supporting/Fitgram.entitlements <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/propertylist-1.0.dtd">
 <plist version="1.0">
@@ -75,16 +75,16 @@ EOF
 
 ✓ Sideload-ready.
 
-Bundle ID is now: app.mealgram.ios.$suffix
+Bundle ID is now: app.fitgram.ios.$suffix
 Team ID is now:   $team
 Sign in with Apple + HealthKit: disabled (free tier limitation)
-Widget bundle ID: app.mealgram.ios.$suffix.widget
+Widget bundle ID: app.fitgram.ios.$suffix.widget
 
 Next steps:
-  1. Open Mealgram.xcodeproj in Xcode
+  1. Open Fitgram.xcodeproj in Xcode
   2. Connect iPhone via USB (trust the Mac if prompted)
   3. Select iPhone as run destination (top bar dropdown)
-  4. Edit → Scheme → Run → Arguments → add: -mealgramDebugBypassAuth
+  4. Edit → Scheme → Run → Arguments → add: -fitgramDebugBypassAuth
      (this skips the Sign in screen — required since SIWA is off)
   5. ⌘R to build + install + run
   6. On iPhone: Settings → General → VPN & Device Management → trust profile
@@ -97,7 +97,7 @@ EOM
 
   revert)
     echo "→ Reverting project.yml + entitlements to committed state..."
-    git checkout -- project.yml Mealgram/Supporting/Mealgram.entitlements
+    git checkout -- project.yml Fitgram/Supporting/Fitgram.entitlements
     echo "→ Regenerating Xcode project..."
     make generate >/dev/null 2>&1
     echo "✓ Back to prod-ready state."

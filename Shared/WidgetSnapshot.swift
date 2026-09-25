@@ -106,7 +106,7 @@ struct WidgetSnapshot: Codable, Equatable, Sendable {
 /// Reads + writes the snapshot from the shared App Group container.
 ///
 /// Both the app target and the widget extension belong to the
-/// `group.app.mealgram.shared` App Group. We write the snapshot as a
+/// `group.app.fitgram.shared` App Group. We write the snapshot as a
 /// file inside the group's shared container — that path is the **only**
 /// way to reliably share between two processes (UserDefaults via
 /// `suiteName:` works too, but suffers cache invalidation lag on the
@@ -119,9 +119,9 @@ struct WidgetSnapshot: Codable, Equatable, Sendable {
 /// own placeholder — that path can't be shared cross-process but at
 /// least the app's own debug views still see live data.
 struct WidgetSnapshotStore {
-    static let shared = WidgetSnapshotStore()
-    static let appGroupID = "group.app.mealgram.shared"
-    static let key = "mealgram.widget.snapshot.v1"
+    static var shared: WidgetSnapshotStore { WidgetSnapshotStore() }
+    static let appGroupID = "group.app.fitgram.shared"
+    static let key = "fitgram.widget.snapshot.v1"
     static let fileName = "widget-snapshot.json"
 
     private let fm = FileManager.default
@@ -170,5 +170,12 @@ struct WidgetSnapshotStore {
             return snap
         }
         return nil
+    }
+
+    func clear() {
+        if let url = snapshotURL {
+            try? fm.removeItem(at: url)
+        }
+        defaults.removeObject(forKey: Self.key)
     }
 }

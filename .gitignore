@@ -65,3 +65,6 @@ fastlane/test_output
 *.gcda
 coverage/
 .env.fastlane
+
+# Wrangler local state
+.wrangler/

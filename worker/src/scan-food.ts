@@ -4,7 +4,12 @@ import { detectFood, type DetectionResponse } from "./gemini";
 import type { Logger } from "./log";
 import { problemResponse, jsonResponse } from "./responses";
 import type { AuthContext } from "./auth";
-import { checkDailyAIQuota, recordUsage, timeZoneOffsetMinutesFromRequest } from "./usage";
+import {
+    checkDailyAIQuota,
+    recordUsage,
+    releaseAIQuotaReservation,
+    timeZoneOffsetMinutesFromRequest,
+} from "./usage";
 
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024; // 6 MB safety cap
 
@@ -16,7 +21,7 @@ const MAX_IMAGE_BYTES = 6 * 1024 * 1024; // 6 MB safety cap
  *   premium (optional): "true" to use Gemini Pro instead of Flash
  *
  * Returns: DetectionResponse (with snake_case field names — matches what
- * the iOS client decodes via JSONDecoder.mealgram).
+ * the iOS client decodes via JSONDecoder.fitgram).
  */
 export async function handleScanFood(
     request: Request,
@@ -55,7 +60,9 @@ export async function handleScanFood(
         hint === "breakfast" || hint === "lunch" || hint === "dinner" || hint === "snack"
             ? (hint as DetectionResponse["suggestedMealType"])
             : null;
-    const premium = form.get("premium") === "true";
+    // Model access is derived from the verified account, never from a
+    // client-controlled multipart field.
+    const premium = auth.isPremium;
     const localeRaw = form.get("locale");
     const locale = typeof localeRaw === "string" && localeRaw.length > 0 ? localeRaw : "en";
 
@@ -67,6 +74,7 @@ export async function handleScanFood(
     const startedAt = Date.now();
     const modelHint = premium ? env.GEMINI_PREMIUM_MODEL : env.GEMINI_VISION_MODEL;
     const quota = await checkDailyAIQuota(env, log, auth.userID, {
+        kind: "ai_logged_meal",
         isPremium: auth.isPremium,
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
@@ -88,6 +96,7 @@ export async function handleScanFood(
             outputTokens: 0,
             cached: true,
             durationMs: Date.now() - startedAt,
+            reservationID: quota.reservationID,
         });
         return jsonResponse(toWireFormat(cached, true));
     }
@@ -102,6 +111,7 @@ export async function handleScanFood(
         detection = result.detection;
         usage = result.usage;
     } catch (err) {
+        await releaseAIQuotaReservation(env, log, quota.reservationID);
         log.error("Detection failed", { user: auth.userID, err: String(err) });
         const status = (err as { status?: number }).status ?? 502;
         return problemResponse(status, "Detection failed");
@@ -117,6 +127,7 @@ export async function handleScanFood(
         outputTokens: usage.outputTokens,
         cached: false,
         durationMs: Date.now() - startedAt,
+        reservationID: quota.reservationID,
     });
     log.info("Scan completed", {
         user: auth.userID,

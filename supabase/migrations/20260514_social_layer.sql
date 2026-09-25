@@ -1,4 +1,4 @@
--- Mealgram social layer — public profiles, privacy, friendships, feed,
+-- Fitgram social layer — public profiles, privacy, friendships, feed,
 -- reactions, blocks. Privacy-first: every default value hides data,
 -- visibility rules enforced at the RLS layer so no client query can
 -- bypass them.

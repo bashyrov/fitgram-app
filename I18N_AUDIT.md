@@ -1,4 +1,4 @@
-# Mealgram i18n audit — unverified surfaces
+# Fitgram i18n audit — unverified surfaces
 
 Generated 2026-05-28. Status per screen across 5 langs (en/pl/uk/ru/es).
 
@@ -37,9 +37,9 @@ Legend:
 - AccountStepView (email/Google/Apple)
 
 Files:
-- `Mealgram/Features/Onboarding/Steps/*.swift`
-- `Mealgram/Features/Onboarding/OnboardingFlow.swift`
-- `Mealgram/Features/Onboarding/OnboardingView.swift`
+- `Fitgram/Features/Onboarding/Steps/*.swift`
+- `Fitgram/Features/Onboarding/OnboardingFlow.swift`
+- `Fitgram/Features/Onboarding/OnboardingView.swift`
 
 ## 3. Subscription / paywall
 
@@ -231,7 +231,7 @@ Surfaces:
 
 ⚠️ Visible during meals/water tracking.
 
-Files: `Features/Today/Components/LiveActivity*.swift`, `MealgramWidget/MealgramLiveActivity.swift`
+Files: `Features/Today/Components/LiveActivity*.swift`, `FitgramWidget/FitgramLiveActivity.swift`
 
 ## 23. Widget extension
 
@@ -245,7 +245,7 @@ Files: `Features/Today/Components/LiveActivity*.swift`, `MealgramWidget/Mealgram
 
 ## 24. App Shortcuts (Siri / Spotlight)
 
-⚠️ MealgramIntents — uses LocalizedStringResource which honors system locale, NOT app-selected. So Siri responds in iPhone language. Acceptable per Apple guidance.
+⚠️ FitgramIntents — uses LocalizedStringResource which honors system locale, NOT app-selected. So Siri responds in iPhone language. Acceptable per Apple guidance.
 
 ## 25. Hardcoded interpolations remaining
 

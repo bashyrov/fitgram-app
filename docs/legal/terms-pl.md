@@ -1,4 +1,4 @@
-# Regulamin korzystania z aplikacji Mealgram
+# Regulamin korzystania z aplikacji Fitgram
 
 **Wersja:** 1.0
 **Data wejścia w życie:** 2026-06-01
@@ -6,7 +6,7 @@
 ## 1. Strony i przedmiot
 
 ### 1.1.
-Niniejszy regulamin ("Regulamin") określa zasady korzystania z mobilnej aplikacji Mealgram ("Aplikacja"), dostępnej w App Store na urządzeniach z systemem iOS.
+Niniejszy regulamin ("Regulamin") określa zasady korzystania z mobilnej aplikacji Fitgram ("Aplikacja"), dostępnej w App Store na urządzeniach z systemem iOS.
 
 ### 1.2.
 Aplikacja jest dostarczana przez [TWOJA_NAZWA_JDG] z siedzibą w [MIASTO], NIP [NIP], REGON [REGON] ("Dostawca").
@@ -76,7 +76,7 @@ Pierwsza subskrypcja zawiera **7-dniowy darmowy okres próbny**.
 Płatności obsługuje wyłącznie Apple. Środki są pobierane z konta Apple ID. Faktura znajduje się na koncie App Store.
 
 ### 4.4.
-**Automatyczne odnawianie:** Subskrypcja odnawia się automatycznie po zakończeniu okresu, chyba że anulujesz ją co najmniej 24 godziny przed końcem aktualnego okresu. Anulowanie: Ustawienia iPhone → Twój profil → Subskrypcje → Mealgram → Anuluj subskrypcję.
+**Automatyczne odnawianie:** Subskrypcja odnawia się automatycznie po zakończeniu okresu, chyba że anulujesz ją co najmniej 24 godziny przed końcem aktualnego okresu. Anulowanie: Ustawienia iPhone → Twój profil → Subskrypcje → Fitgram → Anuluj subskrypcję.
 
 ### 4.5.
 **Zwrot środków:** zgodnie z [zasadami Apple](https://support.apple.com/HT204084) — nie obsługujemy zwrotów bezpośrednio, kontakt z Apple Support.
@@ -129,7 +129,7 @@ Funkcje społecznościowe (gdy aktywne):
 ## 8. Własność intelektualna
 
 ### 8.1.
-Aplikacja, jej kod, design, znaki towarowe ("Mealgram", logo) i baza polskich produktów są własnością Dostawcy lub jego licencjodawców.
+Aplikacja, jej kod, design, znaki towarowe ("Fitgram", logo) i baza polskich produktów są własnością Dostawcy lub jego licencjodawców.
 
 ### 8.2.
 Open Food Facts jest udostępnianą na licencji Open Database License — dane produktów spożywczych są wolne do użytku zgodnie z [ODbL](https://opendatacommons.org/licenses/odbl/).
@@ -165,10 +165,10 @@ Spory rozstrzygane są przez sąd właściwy dla siedziby Dostawcy. Jako konsume
 Jeśli jakieś postanowienie Regulaminu okaże się nieważne, pozostałe pozostają w mocy.
 
 ### 11.2.
-Aktualna wersja Regulaminu zawsze dostępna pod adresem [mealgram.xyz/terms](https://mealgram.xyz/terms) i w Aplikacji.
+Aktualna wersja Regulaminu zawsze dostępna pod adresem [fitgram.space/terms](https://fitgram.space/terms) i w Aplikacji.
 
 ### 11.3.
-Kontakt w sprawach Regulaminu: **hello@mealgram.xyz**
+Kontakt w sprawach Regulaminu: **onefitgram@gmail.com**
 
 ---
 

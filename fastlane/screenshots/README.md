@@ -31,15 +31,15 @@ Optional: 6.5" (1242×2688) and 5.5" (1242×2208) for older devices. We skip the
 xcrun simctl boot "iPhone 17 Pro Max"  # adjust to whatever's installed
 
 # 2. Build & install
-cd /Users/bashyrov/Projects/mealgram-workspace
-xcodebuild -project Mealgram.xcodeproj -scheme Mealgram \
+cd /Users/bashyrov/Projects/fitgram-workspace
+xcodebuild -project Fitgram.xcodeproj -scheme Fitgram \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' \
   build
 
 # 3. Launch with DebugBypass on (premium seeded user, 30 days of meals,
 #    streaks, achievements). DebugBypass.bypassAuth is wired to true by
 #    default in the current scheme — just open the app.
-xcrun simctl launch booted app.mealgram.ios.bashyrov
+xcrun simctl launch booted app.fitgram.ios.bashyrov
 
 # 4. Snap each screen via the simulator's screenshot CLI:
 xcrun simctl io booted screenshot ~/Desktop/1_today.png

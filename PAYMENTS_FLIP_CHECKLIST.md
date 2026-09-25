@@ -1,12 +1,12 @@
-# Mealgram → Premium flip checklist
+# Fitgram → Premium flip checklist
 
 Current launch posture: `IS_PAYMENTS_ENABLED=false` → all features unlocked for every user. When the time comes to monetize, this is the entire sequence.
 
 ## ≈10-second flip (assuming all groundwork below is in place)
 
 1. **App Store Connect**: in your app → "Subscriptions" → ensure both products are **Approved**:
-   - `mealgram_premium_monthly` (auto-renewable, monthly)
-   - `mealgram_premium_yearly` (auto-renewable, yearly)
+   - `fitgram_premium_monthly` (auto-renewable, monthly)
+   - `fitgram_premium_yearly` (auto-renewable, yearly)
 2. **Edit one line** in [project.yml](project.yml#L148):
    ```yaml
    IS_PAYMENTS_ENABLED: "true"
@@ -26,20 +26,20 @@ That's the entire user-facing change. Everything else listed below is the archit
 
 | Component | Behavior |
 |---|---|
-| `MealgramApp.init` | Boot picks `StoreKitSubscriptionService()` instead of `MockSubscriptionService()`. See [MealgramApp.swift](Mealgram/App/MealgramApp.swift#L126) |
-| `StoreKitSubscriptionService` | Fetches `mealgram_premium_monthly` + `mealgram_premium_yearly` via `Product.products(for:)` |
+| `FitgramApp.init` | Boot picks `StoreKitSubscriptionService()` instead of `MockSubscriptionService()`. See [FitgramApp.swift](Fitgram/App/FitgramApp.swift#L126) |
+| `StoreKitSubscriptionService` | Fetches `fitgram_premium_monthly` + `fitgram_premium_yearly` via `Product.products(for:)` |
 | User without active subscription | `snapshot.isPremium = false` → `EntitlementsStore.current = .free` |
 | User with active subscription | StoreKit `Transaction.currentEntitlements` returns the row → `.premium` |
-| Paywall sheets | `PaywallCoordinator.present(...)` now actually shows the sheet (no-op'd previously). See [PaywallCoordinator.swift:17](Mealgram/Core/Services/Subscriptions/PaywallCoordinator.swift#L17) |
+| Paywall sheets | `PaywallCoordinator.present(...)` now actually shows the sheet (no-op'd previously). See [PaywallCoordinator.swift:17](Fitgram/Core/Services/Subscriptions/PaywallCoordinator.swift#L17) |
 | Free tier caps activate | `Entitlements.free` caps are read by feature UIs (Favorites, Recipes, Friends, Goals, History, Export) |
 
 ## How user data is protected on the flip
 
 **Nothing is deleted.** This was an explicit requirement and the architecture guarantees it:
 
-1. The `EntitlementsStore.onDowngradeFreeTier` callback is **empty** — see [MealgramApp.swift:204](Mealgram/App/MealgramApp.swift#L204). Previously it called `FavoritesService.trimToCap` which deleted excess rows; that destructive method has been removed entirely.
+1. The `EntitlementsStore.onDowngradeFreeTier` callback is **empty** — see [FitgramApp.swift:204](Fitgram/App/FitgramApp.swift#L204). Previously it called `FavoritesService.trimToCap` which deleted excess rows; that destructive method has been removed entirely.
 2. Soft caps apply only to **display**, not storage:
-   - [FavoritesListView.swift](Mealgram/Features/Favorites/FavoritesListView.swift) keeps the full collection in `favorites`, slices into `visibleFavorites` at render time. Hidden rows are surfaced as a "+N ukrytych — Premium odblokuje" upsell card. Re-subscribing instantly re-reveals them.
+   - [FavoritesListView.swift](Fitgram/Features/Favorites/FavoritesListView.swift) keeps the full collection in `favorites`, slices into `visibleFavorites` at render time. Hidden rows are surfaced as a "+N ukrytych — Premium odblokuje" upsell card. Re-subscribing instantly re-reveals them.
 3. Recipes / friends / custom goals follow the same pattern (TBD per surface — currently the **add** action raises paywall when count ≥ cap; reads stay unbounded).
 
 ## Premium products in App Store Connect
@@ -48,14 +48,14 @@ Both products must exist before the flip. StoreKit ID = exact constant from the 
 
 | Product ID | Type | Price (suggested) | Trial |
 |---|---|---|---|
-| `mealgram_premium_monthly` | Auto-Renewable Subscription | 29 zł / 6.99 USD / 6.99 EUR | 7 days |
-| `mealgram_premium_yearly` | Auto-Renewable Subscription | 199 zł / 39.99 USD / 39.99 EUR | 7 days |
+| `fitgram_premium_monthly` | Auto-Renewable Subscription | 29 zł / 6.99 USD / 6.99 EUR | 7 days |
+| `fitgram_premium_yearly` | Auto-Renewable Subscription | 199 zł / 39.99 USD / 39.99 EUR | 7 days |
 
-Both share a single subscription group called `Mealgram Premium`. Localized display names + descriptions live in App Store Connect — fastlane doesn't push these (they're set in the iOS app via `Product.displayName` / `displayPrice`).
+Both share a single subscription group called `Fitgram Premium`. Localized display names + descriptions live in App Store Connect — fastlane doesn't push these (they're set in the iOS app via `Product.displayName` / `displayPrice`).
 
 ## What's gated behind premium (current spec)
 
-Source of truth: [FreeTierLimits.swift](Mealgram/Core/Services/Subscriptions/FreeTierLimits.swift). All numbers are tunable in one file.
+Source of truth: [FreeTierLimits.swift](Fitgram/Core/Services/Subscriptions/FreeTierLimits.swift). All numbers are tunable in one file.
 
 **Per-week quotas** (rolls over Monday 00:00):
 - Photo scans: **5 / week**
@@ -78,13 +78,13 @@ Source of truth: [FreeTierLimits.swift](Mealgram/Core/Services/Subscriptions/Fre
 ## Required before flip (one-time setup)
 
 - [ ] Apple Developer Program enrollment active (current Team ID: `L55G3V9NJ3` ✅)
-- [ ] App.mealgram.ios.bashyrov approved & live on App Store at v1.0.0 free tier first
+- [ ] App.fitgram.ios.bashyrov approved & live on App Store at v1.0.0 free tier first
 - [ ] Bank account + tax forms completed in App Store Connect → "Agreements, Tax, and Banking"
-- [ ] Subscription Group `Mealgram Premium` created in App Store Connect
+- [ ] Subscription Group `Fitgram Premium` created in App Store Connect
 - [ ] Both IAP products created + reviewed + approved
 - [ ] Subscription review screen filled in (Apple reviews subscriptions separately)
 - [ ] Sandbox tester account created for local testing before flip
-- [ ] StoreKit configuration file (`Mealgram.storekit`) — optional but useful for local IAP testing
+- [ ] StoreKit configuration file (`Fitgram.storekit`) — optional but useful for local IAP testing
 
 ## Verification path after the flip
 
@@ -123,8 +123,8 @@ Wait ~24h until "Active" status before continuing.
 
 App Store Connect → your app → **Subscriptions** → **+ Subscription Group**
 
-- Reference name: `Mealgram Premium`
-- App Store Name (per locale): `Mealgram Premium`
+- Reference name: `Fitgram Premium`
+- App Store Name (per locale): `Fitgram Premium`
 
 ### 3. Monthly product
 
@@ -133,7 +133,7 @@ Inside the group → **+ Subscription**
 | Field | Value |
 |---|---|
 | Reference Name | `Premium Monthly` |
-| Product ID | `mealgram_premium_monthly` (must match code exactly) |
+| Product ID | `fitgram_premium_monthly` (must match code exactly) |
 | Subscription Duration | 1 Month |
 | Cleared for Sale | Yes |
 | Pricing | Tier of your choice (≈ 6.99 USD = 29 zł = 6.99 EUR) |
@@ -151,7 +151,7 @@ Same process. Differences:
 | Field | Value |
 |---|---|
 | Reference Name | `Premium Yearly` |
-| Product ID | `mealgram_premium_yearly` |
+| Product ID | `fitgram_premium_yearly` |
 | Subscription Duration | 1 Year |
 | Pricing | ≈ 39.99 USD = 199 zł |
 
@@ -171,26 +171,26 @@ Apple **reviews subscriptions separately** from the app. Submit them with the ne
 
 Settings → **Users and Access** → **Sandbox Testers** → **+**
 
-- Email: `sandbox@mealgram.xyz` (or a fresh Apple ID — doesn't need to be real)
+- Email: `sandbox@fitgram.xyz` (or a fresh Apple ID — doesn't need to be real)
 - Password, name, country (Poland)
 
 On your iPhone: Settings → App Store → Sandbox Account → sign in with this tester. Now in-app purchases run through sandbox StoreKit (no real money).
 
 ### 7. Local testing without App Store Connect
 
-`Mealgram/Supporting/Mealgram.storekit` is included in the scheme — when running from Xcode in Debug, the paywall uses **fake products from that file** instead of hitting App Store Connect. You can buy, restore, cancel without wiring anything in App Store Connect.
+`Fitgram/Supporting/Fitgram.storekit` is included in the scheme — when running from Xcode in Debug, the paywall uses **fake products from that file** instead of hitting App Store Connect. You can buy, restore, cancel without wiring anything in App Store Connect.
 
-To flip between local fake products and real ones: Xcode → Edit Scheme → Run → Options → "StoreKit Configuration" → set to `Mealgram.storekit` (fake) or `None` (real App Store / Sandbox).
+To flip between local fake products and real ones: Xcode → Edit Scheme → Run → Options → "StoreKit Configuration" → set to `Fitgram.storekit` (fake) or `None` (real App Store / Sandbox).
 
 ## Files involved
 
-- `Mealgram/Core/Services/AppConfig.swift` — reads `IS_PAYMENTS_ENABLED` from Info.plist
-- `Mealgram/Core/Services/Subscriptions/SubscriptionService.swift` — protocol + Mock implementation
-- `Mealgram/Core/Services/Subscriptions/StoreKitSubscriptionService.swift` — real StoreKit2 backed service
-- `Mealgram/Core/Services/Subscriptions/Entitlements.swift` — entitlements snapshot + free/premium factories
-- `Mealgram/Core/Services/Subscriptions/FreeTierLimits.swift` — single-file tuning of caps
-- `Mealgram/Core/Services/Subscriptions/PaywallCoordinator.swift` — central "raise upgrade sheet" dispatcher
-- `Mealgram/Core/Services/Subscriptions/UsageMeter.swift` — per-week quota tracking
-- `Mealgram/Features/Subscriptions/UpgradeSheet.swift` — the actual paywall UI
-- `Mealgram/App/MealgramApp.swift` — composition root, swaps services on the flag
-- `Mealgram/Features/Favorites/FavoritesListView.swift` — reference implementation of soft-cap display
+- `Fitgram/Core/Services/AppConfig.swift` — reads `IS_PAYMENTS_ENABLED` from Info.plist
+- `Fitgram/Core/Services/Subscriptions/SubscriptionService.swift` — protocol + Mock implementation
+- `Fitgram/Core/Services/Subscriptions/StoreKitSubscriptionService.swift` — real StoreKit2 backed service
+- `Fitgram/Core/Services/Subscriptions/Entitlements.swift` — entitlements snapshot + free/premium factories
+- `Fitgram/Core/Services/Subscriptions/FreeTierLimits.swift` — single-file tuning of caps
+- `Fitgram/Core/Services/Subscriptions/PaywallCoordinator.swift` — central "raise upgrade sheet" dispatcher
+- `Fitgram/Core/Services/Subscriptions/UsageMeter.swift` — per-week quota tracking
+- `Fitgram/Features/Subscriptions/UpgradeSheet.swift` — the actual paywall UI
+- `Fitgram/App/FitgramApp.swift` — composition root, swaps services on the flag
+- `Fitgram/Features/Favorites/FavoritesListView.swift` — reference implementation of soft-cap display

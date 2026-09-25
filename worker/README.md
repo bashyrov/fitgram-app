@@ -1,4 +1,4 @@
-# Mealgram Worker
+# Fitgram Worker
 
 Cloudflare Worker that proxies Gemini vision calls, verifies the Supabase
 JWT, and caches results by image hash. The iOS app never embeds Gemini /
@@ -10,6 +10,7 @@ Anthropic credentials — every AI call lands here first.
 |--------|---------------------|--------------------------------------|
 | GET    | `/healthz`          | Liveness probe.                      |
 | POST   | `/api/v1/scan-food` | Vision: multipart image → JSON items |
+| POST   | `/api/v1/subscription/sync` | Verify StoreKit transaction and sync Pro |
 
 ## Prerequisites
 
@@ -54,14 +55,32 @@ npx wrangler kv namespace create scan-cache
 
 # Secrets — repeat for each:
 npx wrangler secret put SUPABASE_JWT_SECRET     # from Supabase → Settings → API
+npx wrangler secret put SUPABASE_URL            # https://<project>.supabase.co
 npx wrangler secret put GEMINI_API_KEY          # from console.cloud.google.com
 npx wrangler secret put UPSTASH_REDIS_URL       # optional, REST URL
 npx wrangler secret put UPSTASH_REDIS_TOKEN     # optional, REST token
 
+# App Store Connect → Users and Access → Integrations → In-App Purchase.
+npx wrangler secret put APPLE_ISSUER_ID
+npx wrangler secret put APPLE_KEY_ID
+npx wrangler secret put APPLE_PRIVATE_KEY       # full .p8 contents
+
+# Apply both usage/subscription migrations before deploying code.
+npx wrangler d1 execute fitgram-usage --remote --file=migrations/0001_ai_usage.sql
+npx wrangler d1 execute fitgram-usage --remote --file=migrations/0002_subscription_entitlements.sql
+npx wrangler d1 execute fitgram-usage --remote --file=migrations/0003_usage_dashboard.sql
+npx wrangler d1 execute fitgram-usage --remote --file=migrations/0002_subscription_entitlements.sql
+
 npx wrangler deploy
 ```
 
-After deploy, copy the production URL (e.g. `https://mealgram-worker.<acct>.workers.dev`)
+The protected `/admin/dashboard` page uses HTTPS Basic authentication (username
+`fitgram`, password from the `ADMIN_TOKEN` Worker secret) and shows request and token totals,
+estimated cost, cache rate, average latency, top AI features, pseudonymous top
+users, models, and a 30-day daily breakdown. Raw prompts, photos, transcripts,
+email addresses, and full user IDs are never stored in analytics.
+
+After deploy, copy the production URL (e.g. `https://fitgram-app.<acct>.workers.dev`)
 into the iOS app's `Info.plist` as `WORKER_BASE_URL` — `AppConfig` reads it
 via `Bundle.main.object(forInfoDictionaryKey:)`.
 
@@ -76,10 +95,12 @@ npx wrangler tail         # follow logs after deploy
 
 * `SCAN_CACHE` plus `CACHE_TTL_SECONDS=604800` makes repeat scans of the
   same plate free.
-* Rate limiting itself happens via Cloudflare's per-zone rules; configure
-  in the dashboard rather than in code so it can be tuned without redeploy.
-* `gemini-2.5-flash` is the default model — `?premium=true` only kicks in
-  when the app's premium tier is active.
+* D1 atomically reserves each AI request before model execution, enforcing
+  the free 3/3/2 pools and the 60-request daily safety ceiling server-side.
+* Pro is derived from an App Store transaction verified by the Worker; the
+  client cannot unlock premium by sending a flag.
+* `gemini-2.5-flash` is the default model. Premium model access is selected
+  only from the verified server entitlement.
 
 ## Layout
 

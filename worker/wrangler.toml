@@ -1,4 +1,4 @@
-name = "mealgram-worker"
+name = "fitgram-app"
 main = "src/index.ts"
 compatibility_date = "2026-05-01"
 compatibility_flags = ["nodejs_compat"]
@@ -15,12 +15,14 @@ workers_dev = true
 # + secret rotation.
 [[d1_databases]]
 binding = "USAGE_DB"
-database_name = "mealgram-usage"
+database_name = "fitgram-usage"
 database_id = "a762efb2-0937-4fa0-9d84-62fd38844f6d"
 
 [vars]
 # Non-secret toggles. Use `wrangler secret put NAME` for the rest:
-#   SUPABASE_JWT_SECRET, ANTHROPIC_API_KEY, GEMINI_API_KEY, UPSTASH_REDIS_URL, UPSTASH_REDIS_TOKEN
+#   SUPABASE_URL, SUPABASE_JWT_SECRET, GEMINI_API_KEY, UPSTASH_REDIS_URL,
+#   UPSTASH_REDIS_TOKEN, APPLE_ISSUER_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY
+APPLE_BUNDLE_ID = "app.fitgram.ios.bashyrov"
 ANTHROPIC_BASE_URL = "https://leafapi.cc/"
 ANTHROPIC_AUTH_MODE = "bearer"
 AI_PROVIDER = "gemini"

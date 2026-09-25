@@ -1,4 +1,4 @@
-Mealgram to inteligentny licznik kalorii bez tarcia. Bez wagi, bez liczenia gramów — wystarczy zdjęcie talerza, kod kreskowy z półki lub krótka komenda głosowa.
+Fitgram to inteligentny licznik kalorii bez tarcia. Bez wagi, bez liczenia gramów — wystarczy zdjęcie talerza, kod kreskowy z półki lub krótka komenda głosowa.
 
 CO DOSTAJESZ
 • Skanowanie posiłków zdjęciem — AI rozpoznaje pierogi, schabowy, sushi, pastę, sałatki i 3000+ innych dań z całego świata
@@ -15,8 +15,8 @@ CO DOSTAJESZ
 PRYWATNOŚĆ I BEZPIECZEŃSTWO
 Twoje dane pozostają pod Twoją kontrolą: synchronizacja iCloud, bez reklam, bez sprzedaży danych i z transparentnym przetwarzaniem AI.
 
-Mealgram jest tworzony przez mały niezależny zespół — feedback trafia bezpośrednio do osób piszących kod.
+Fitgram jest tworzony przez mały niezależny zespół — feedback trafia bezpośrednio do osób piszących kod.
 
 LINKI PRAWNE
-Regulamin / Terms of Use: https://mealgram.xyz/terms
-Polityka prywatności: https://mealgram.xyz/privacy
+Regulamin / Terms of Use: https://fitgram.space/terms
+Polityka prywatności: https://fitgram.space/privacy

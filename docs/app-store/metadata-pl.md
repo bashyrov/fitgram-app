@@ -1,12 +1,12 @@
-# Mealgram — App Store Metadata (Polski)
+# Fitgram — App Store Metadata (Polski)
 
 ## Podstawowe
 
 | Pole | Wartość | Limit |
 |---|---|---|
-| **Nazwa aplikacji** | Mealgram | 30 znaków |
+| **Nazwa aplikacji** | Fitgram | 30 znaków |
 | **Podtytuł** | Polski licznik kalorii bez stresu | 30 znaków |
-| **Bundle ID** | app.mealgram.ios | — |
+| **Bundle ID** | app.fitgram.ios | — |
 | **Język podstawowy** | Polski | — |
 | **Kategoria główna** | Zdrowie i fitness | — |
 | **Kategoria drugorzędna** | Styl życia | — |
@@ -29,7 +29,7 @@ Spokojne tempo, polskie smaki. Skanuj zdjęcie, kod kreskowy lub powiedz głosem
 ## Opis (4000 znaków)
 
 ```
-Mealgram to polski licznik kalorii zaprojektowany dla osób, które mają dość aplikacji-policjantów. Zamiast surowego liczenia każdej kalorii, dostajesz spokojnego towarzysza, który zna polskie smaki i dba o Twoje tempo.
+Fitgram to polski licznik kalorii zaprojektowany dla osób, które mają dość aplikacji-policjantów. Zamiast surowego liczenia każdej kalorii, dostajesz spokojnego towarzysza, który zna polskie smaki i dba o Twoje tempo.
 
 ▸ TRZY SPOSOBY DODAWANIA POSIŁKÓW
 
@@ -75,7 +75,7 @@ Dodaj znajomych przez QR lub link. Zobacz ich serie i osiągnięcia. Tygodniowy 
 
 ▸ WIDŻET I SIRI
 
-Widget na ekranie głównym pokazuje serię, pozostałe kalorie i ostatni posiłek. Siri shortcuts: "Hej Siri, dodaj posiłek w Mealgram". Spotlight indeksuje Twoje przepisy.
+Widget na ekranie głównym pokazuje serię, pozostałe kalorie i ostatni posiłek. Siri shortcuts: "Hej Siri, dodaj posiłek w Fitgram". Spotlight indeksuje Twoje przepisy.
 
 ▸ DOSTĘPNOŚĆ
 
@@ -87,17 +87,17 @@ VoiceOver, Dynamic Type, redukcja ruchu — wszystko działa.
 
 ▸ KONTAKT
 
-Pytania? hello@mealgram.xyz
-Polityka prywatności: mealgram.xyz/privacy
-Regulamin: mealgram.xyz/terms
+Pytania? onefitgram@gmail.com
+Polityka prywatności: fitgram.space/privacy
+Regulamin: fitgram.space/terms
 
-Mealgram — bo dieta to nie więzienie, tylko rytm.
+Fitgram — bo dieta to nie więzienie, tylko rytm.
 ```
 
 ## What's New (4000 znaków)
 
 ```
-Wersja 1.0 — pierwsza publiczna wersja Mealgram!
+Wersja 1.0 — pierwsza publiczna wersja Fitgram!
 
 ✨ Co nowego
 • 5 sposobów dodawania posiłków: zdjęcie, kod, baza, głos, przepis
@@ -110,14 +110,14 @@ Wersja 1.0 — pierwsza publiczna wersja Mealgram!
 • Eksport JSON / CSV / ZIP
 • Pełna prywatność — wszystko lokalnie
 
-Dzięki za bycie wśród pierwszych użytkowników! Pisz na hello@mealgram.xyz jeśli czegoś brakuje.
+Dzięki za bycie wśród pierwszych użytkowników! Pisz na onefitgram@gmail.com jeśli czegoś brakuje.
 ```
 
 ## Adres URL
 
-- **Marketing URL:** https://mealgram.xyz
-- **Support URL:** https://mealgram.xyz/support (lub mailto:hello@mealgram.xyz)
-- **Privacy Policy URL:** https://mealgram.xyz/privacy
+- **Marketing URL:** https://fitgram.space
+- **Support URL:** https://fitgram.space/support (lub mailto:onefitgram@gmail.com)
+- **Privacy Policy URL:** https://fitgram.space/privacy
 
 ## App Privacy (App Store Connect questionnaire)
 

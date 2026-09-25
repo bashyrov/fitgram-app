@@ -1,10 +1,10 @@
-# Mealgram public pages
+# Fitgram public pages
 
-Markdown source for the public pages Apple requires for App Store submission:
+Markdown source for the public Fitgram pages Apple requires for App Store submission:
 
-- `privacy.md` → host at `https://mealgram.xyz/privacy`
-- `support.md` → host at `https://mealgram.xyz/support`
-- `terms.md` → host at `https://mealgram.xyz/terms`
+- `privacy.md` → host at `https://fitgram.space/privacy`
+- `support.md` → host at `https://fitgram.space/support`
+- `terms.md` → host at `https://fitgram.space/terms`
 
 ## Hosting options (pick one)
 
@@ -12,7 +12,7 @@ Markdown source for the public pages Apple requires for App Store submission:
 
 1. Push this `web/` folder to a public GitHub repo.
 2. Enable Pages → source: `main` branch → folder: `/web`.
-3. Add a CNAME file pointing `mealgram.xyz` at `<user>.github.io` (or use `mealgram-xyz.github.io/web/privacy`).
+3. Add a CNAME file pointing `fitgram.space` at `<user>.github.io` (or use `fitgram-space.github.io/web/privacy`).
 
 ### B. Notion (zero-dev, also free)
 
@@ -23,16 +23,16 @@ Markdown source for the public pages Apple requires for App Store submission:
 ### C. Cloudflare Pages
 
 1. Push the repo, connect via Cloudflare Pages.
-2. Set `mealgram.xyz` as custom domain. SSL is automatic.
+2. Set `fitgram.space` as custom domain. SSL is automatic.
 
 ## Apple-side: enter these URLs
 
 In App Store Connect → your app → App Information:
 
-- **Privacy Policy URL**: `https://mealgram.xyz/privacy`
-- **Support URL**: `https://mealgram.xyz/support`
-- **Terms of Use / EULA URL**: `https://mealgram.xyz/terms`
-- **Marketing URL** (optional): `https://mealgram.xyz`
+- **Privacy Policy URL**: `https://fitgram.space/privacy`
+- **Support URL**: `https://fitgram.space/support`
+- **Terms of Use / EULA URL**: `https://fitgram.space/terms`
+- **Marketing URL** (optional): `https://fitgram.space`
 
 Then re-submit for review.
 

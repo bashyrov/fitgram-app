@@ -7,6 +7,7 @@ import { jsonResponse, problemResponse } from "./responses";
 import {
     checkDailyAIQuota,
     recordUsage,
+    releaseAIQuotaReservation,
     timeZoneOffsetMinutesFromRequest,
     type AIQuotaKind,
 } from "./usage";
@@ -79,9 +80,10 @@ export async function handleAnalyzeMealText(
         });
     }
     const cache = pickCache(env);
+    const locale = normaliseLocale(payload.locale);
     const cacheKey =
         quotaKind === "ai_product_nutrition"
-            ? `product-nutrition:${normaliseCacheKey(text)}:${String(payload.locale ?? "pl").slice(0, 2)}`
+            ? `product-nutrition:${normaliseCacheKey(text)}:${locale}`
             : null;
     if (cacheKey) {
         const cached = await cache.get<TextMealResponse>(cacheKey);
@@ -94,14 +96,15 @@ export async function handleAnalyzeMealText(
                 outputTokens: 0,
                 cached: true,
                 durationMs: Date.now() - startedAt,
+                reservationID: quota.reservationID,
             });
-            return jsonResponse(toWireFormat(cached));
+            return jsonResponse(toWireFormat(cached, true));
         }
     }
     const prompt = buildPrompt({
         text,
         mealTypeHint: normaliseMealType(payload.mealTypeHint ?? payload.meal_type_hint),
-        locale: payload.locale ?? "pl",
+        locale,
     });
 
     try {
@@ -109,7 +112,11 @@ export async function handleAnalyzeMealText(
             premium: false,
             maxOutputTokens: 1400,
         });
-        const response = sanitiseResponse(parsed, normaliseMealType(payload.mealTypeHint ?? payload.meal_type_hint));
+        const response = sanitiseResponse(
+            parsed,
+            normaliseMealType(payload.mealTypeHint ?? payload.meal_type_hint),
+            locale
+        );
         await recordUsage(env, log, {
             userID: auth.userID,
             model: usage.model,
@@ -118,19 +125,23 @@ export async function handleAnalyzeMealText(
             outputTokens: usage.outputTokens,
             cached: false,
             durationMs: Date.now() - startedAt,
+            reservationID: quota.reservationID,
         });
         if (cacheKey) {
             await cache.set(cacheKey, response, 30 * 24 * 3600);
         }
-        return jsonResponse(toWireFormat(response));
+        return jsonResponse(toWireFormat(response, true));
     } catch (err) {
+        await releaseAIQuotaReservation(env, log, quota.reservationID);
         log.error("Meal text analysis failed", { user: auth.userID, err: String(err) });
         return jsonResponse(
             toWireFormat(
                 localFallback(
                     text,
-                    normaliseMealType(payload.mealTypeHint ?? payload.meal_type_hint)
-                )
+                    normaliseMealType(payload.mealTypeHint ?? payload.meal_type_hint),
+                    locale
+                ),
+                false
             )
         );
     }
@@ -161,7 +172,7 @@ function normaliseCacheKey(text: string): string {
 
 function buildPrompt(req: { text: string; mealTypeHint: MealType; locale: string }): string {
     return [
-        "You analyse a meal text transcript for the Mealgram calorie tracker.",
+        "You analyse a meal text transcript for the Fitgram calorie tracker.",
         "Return strict JSON only. Do not include markdown fences.",
         `Answer food and dish names in ${languageName(req.locale)}.`,
         "",
@@ -218,13 +229,13 @@ function buildPrompt(req: { text: string; mealTypeHint: MealType; locale: string
     ].join("\n");
 }
 
-function sanitiseResponse(parsed: TextMealResponse, fallbackMealType: MealType): TextMealResponse {
+function sanitiseResponse(parsed: TextMealResponse, fallbackMealType: MealType, locale: string): TextMealResponse {
     const parsedRaw = parsed as unknown as Record<string, unknown>;
     const rawItems = Array.isArray(parsedRaw.items) ? (parsedRaw.items as Record<string, unknown>[]) : [];
-    const items = rawItems.map(sanitiseItem).filter((item) => item.quantityGrams > 0);
-    const totals = sumItems(items);
+    const items = rawItems.map((item) => sanitiseItem(item, locale)).filter((item) => item.quantityGrams > 0);
+    const totals = sumItems(items, locale);
     const overallRaw = isRecord(parsedRaw.overall) ? parsedRaw.overall : totals;
-    const overall = sanitiseItem(overallRaw);
+    const overall = sanitiseItem(overallRaw, locale);
     if (overall.quantityGrams <= 0 && totals.quantityGrams > 0) {
         overall.quantityGrams = totals.quantityGrams;
     }
@@ -248,10 +259,10 @@ function sanitiseResponse(parsed: TextMealResponse, fallbackMealType: MealType):
     };
 }
 
-function sanitiseItem(raw: Partial<DetectedItem> | Record<string, unknown>): DetectedItem {
+function sanitiseItem(raw: Partial<DetectedItem> | Record<string, unknown>, locale: string): DetectedItem {
     const row = raw as Record<string, unknown>;
     return {
-        name: String(row.name ?? "Posiłek").trim() || "Posiłek",
+        name: String(row.name ?? fallbackMealName(locale)).trim() || fallbackMealName(locale),
         quantityGrams: nonNegative(row.quantityGrams ?? row.quantity_grams),
         caloriesKcal: nonNegative(row.caloriesKcal ?? row.calories_kcal),
         proteinGrams: nonNegative(row.proteinGrams ?? row.protein_grams),
@@ -261,9 +272,9 @@ function sanitiseItem(raw: Partial<DetectedItem> | Record<string, unknown>): Det
     };
 }
 
-function sumItems(items: DetectedItem[]): DetectedItem {
+function sumItems(items: DetectedItem[], locale = "en"): DetectedItem {
     return {
-        name: items.map((item) => item.name).join(" + ") || "Posiłek",
+        name: items.map((item) => item.name).join(" + ") || fallbackMealName(locale),
         quantityGrams: items.reduce((sum, item) => sum + item.quantityGrams, 0),
         caloriesKcal: items.reduce((sum, item) => sum + item.caloriesKcal, 0),
         proteinGrams: items.reduce((sum, item) => sum + item.proteinGrams, 0),
@@ -273,13 +284,14 @@ function sumItems(items: DetectedItem[]): DetectedItem {
     };
 }
 
-function toWireFormat(response: TextMealResponse): Record<string, unknown> {
+function toWireFormat(response: TextMealResponse, aiSucceeded: boolean): Record<string, unknown> {
     return {
         overall: toWireItem(response.overall),
         items: response.items.map(toWireItem),
         suggested_meal_type: response.suggestedMealType,
         confidence: response.confidence,
         raw_ai_notes: response.rawAINotes,
+        ai_succeeded: aiSucceeded,
     };
 }
 
@@ -376,10 +388,10 @@ const FOOD_REFERENCES: FoodReference[] = [
     },
 ];
 
-function localFallback(text: string, fallbackMealType: MealType): TextMealResponse {
-    const items = parseLocalItems(text);
-    const safeItems = items.length > 0 ? items : [makeItem(cleanDishName(text) || "Posiłek", 100, null)];
-    const totals = sumItems(safeItems);
+function localFallback(text: string, fallbackMealType: MealType, locale: string): TextMealResponse {
+    const items = parseLocalItems(text, locale);
+    const safeItems = items.length > 0 ? items : [makeItem(cleanDishName(text) || fallbackMealName(locale), 100, null)];
+    const totals = sumItems(safeItems, locale);
     return {
         overall: {
             ...totals,
@@ -389,11 +401,11 @@ function localFallback(text: string, fallbackMealType: MealType): TextMealRespon
         items: safeItems,
         suggestedMealType: fallbackMealType,
         confidence: safeItems.length > 0 ? 0.62 : 0.45,
-        rawAINotes: "Fallback parser used because the AI provider is temporarily unavailable.",
+        rawAINotes: fallbackAINote(locale),
     };
 }
 
-function parseLocalItems(text: string): DetectedItem[] {
+function parseLocalItems(text: string, locale: string): DetectedItem[] {
     const normalised = cleanSpeechPrefix(text)
         .replace(/(\d),(\d)/g, "$1.$2")
         .replace(/\s+/g, " ")
@@ -408,7 +420,7 @@ function parseLocalItems(text: string): DetectedItem[] {
         const grams = unit.startsWith("kg") || unit.startsWith("kilo") ? amount * 1_000 : amount;
         const rawName = cleanDishName(match[3] ?? "");
         const reference = findReference(rawName);
-        items.push(makeItem(reference?.name ?? titleCase(rawName || "Produkt"), grams, reference));
+        items.push(makeItem(referenceName(reference, locale) ?? titleCase(rawName || fallbackProductName(locale)), grams, reference));
     }
     return items;
 }
@@ -479,4 +491,62 @@ function languageName(locale: string): string {
         default:
             return "English";
     }
+}
+
+function normaliseLocale(locale: unknown): string {
+    const raw = String(locale ?? "en").toLowerCase().slice(0, 2);
+    return ["pl", "uk", "ru", "es", "en"].includes(raw) ? raw : "en";
+}
+
+function fallbackMealName(locale: string): string {
+    switch (normaliseLocale(locale)) {
+        case "pl": return "Posiłek";
+        case "uk": return "Страва";
+        case "ru": return "Блюдо";
+        case "es": return "Comida";
+        case "en":
+        default: return "Meal";
+    }
+}
+
+function fallbackProductName(locale: string): string {
+    switch (normaliseLocale(locale)) {
+        case "pl": return "Produkt";
+        case "uk": return "Продукт";
+        case "ru": return "Продукт";
+        case "es": return "Producto";
+        case "en":
+        default: return "Product";
+    }
+}
+
+function fallbackAINote(locale: string): string {
+    switch (normaliseLocale(locale)) {
+        case "pl": return "Użyto analizy lokalnej, bo AI jest chwilowo niedostępne.";
+        case "uk": return "Використано локальний аналіз, бо AI тимчасово недоступний.";
+        case "ru": return "Использован локальный анализ, потому что AI временно недоступен.";
+        case "es": return "Se usó el análisis local porque la IA no está disponible temporalmente.";
+        case "en":
+        default: return "Local analysis was used because AI is temporarily unavailable.";
+    }
+}
+
+function referenceName(reference: FoodReference | null | undefined, locale: string): string | null {
+    if (!reference) return null;
+    const key = normaliseText(reference.name);
+    const names: Record<string, Record<string, string>> = {
+        ryz: { pl: "Ryż", uk: "Рис", ru: "Рис", es: "Arroz", en: "Rice" },
+        ser: { pl: "Ser", uk: "Сир", ru: "Сыр", es: "Queso", en: "Cheese" },
+        "piers z kurczaka": {
+            pl: "Pierś z kurczaka",
+            uk: "Куряча грудка",
+            ru: "Куриная грудка",
+            es: "Pechuga de pollo",
+            en: "Chicken breast",
+        },
+        makaron: { pl: "Makaron", uk: "Паста", ru: "Макароны", es: "Pasta", en: "Pasta" },
+        jajko: { pl: "Jajko", uk: "Яйце", ru: "Яйцо", es: "Huevo", en: "Egg" },
+        banan: { pl: "Banan", uk: "Банан", ru: "Банан", es: "Plátano", en: "Banana" },
+    };
+    return names[key]?.[normaliseLocale(locale)] ?? reference.name;
 }
