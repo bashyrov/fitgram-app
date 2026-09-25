@@ -271,7 +271,10 @@ struct FitgramApp: App {
         #endif
     }
     // swiftlint:enable function_body_length
+}
 
+// MARK: - Launch helpers
+extension FitgramApp {
     #if DEBUG
     private static func performDebugReset(persistence: PersistenceController) {
         do {
@@ -332,6 +335,10 @@ struct FitgramApp: App {
             .background(AppLaunchThemeBackground().ignoresSafeArea())
         }
     }
+}
+
+// MARK: - Root view
+extension FitgramApp {
 
     @ViewBuilder
     private var rootStack: some View {

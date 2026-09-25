@@ -125,6 +125,10 @@ struct FavoritePortionSheet: View {
             }
         }
     }
+}
+
+// MARK: - Sections
+extension FavoritePortionSheet {
 
     private var summaryCard: some View {
         Card(elevation: Tokens.Shadow.float) {
@@ -332,6 +336,10 @@ struct FavoritePortionSheet: View {
     private var detailTotalGrams: Double {
         detailDrafts.reduce(0) { $0 + $1.quantityGrams }
     }
+}
+
+// MARK: - Actions
+extension FavoritePortionSheet {
 
     private func syncDetailFromOverall() {
         guard detailDrafts.count == 1 else { return }

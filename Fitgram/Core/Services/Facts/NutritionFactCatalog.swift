@@ -54,8 +54,10 @@ enum NutritionFactCatalog {
             }
         }
     }
+}
 
-    // MARK: - 25× Kalorie / podstawy
+// MARK: - 25× Kalorie / podstawy
+extension NutritionFactCatalog {
 
     private static var caloriesBasics: [NutritionFact] {
         [
@@ -286,8 +288,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 25× Odchudzanie
+// MARK: - 25× Odchudzanie
+extension NutritionFactCatalog {
 
     private static var weightLoss: [NutritionFact] {
         [
@@ -518,8 +522,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 25× Masa / mięśnie
+// MARK: - 25× Masa / mięśnie
+extension NutritionFactCatalog {
 
     private static var weightGain: [NutritionFact] {
         [
@@ -750,8 +756,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 25× Składniki
+// MARK: - 25× Składniki
+extension NutritionFactCatalog {
 
     private static var nutrients: [NutritionFact] {
         [
@@ -982,8 +990,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 15× Kuchnia PL
+// MARK: - 15× Kuchnia PL
+extension NutritionFactCatalog {
 
     private static var polishCuisine: [NutritionFact] {
         [
@@ -1124,8 +1134,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 15× Trening
+// MARK: - 15× Trening
+extension NutritionFactCatalog {
 
     private static var trainingScience: [NutritionFact] {
         [
@@ -1266,8 +1278,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 10× Psychologia / nawyki
+// MARK: - 10× Psychologia / nawyki
+extension NutritionFactCatalog {
 
     private static var psychologyHabits: [NutritionFact] {
         [
@@ -1363,8 +1377,10 @@ enum NutritionFactCatalog {
             ),
         ]
     }
+}
 
-    // MARK: - 10× Nawodnienie / metabolizm
+// MARK: - 10× Nawodnienie / metabolizm
+extension NutritionFactCatalog {
 
     private static var hydrationMetabolism: [NutritionFact] {
         [

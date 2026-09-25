@@ -160,6 +160,10 @@ final class HealthKitService: HealthKitWeightImporter {
             walkingRunningDistanceMeters: distance
         )
     }
+}
+
+// MARK: - Queries
+extension HealthKitService {
 
     private func quantitySum(
         type: HKQuantityType,
@@ -352,6 +356,10 @@ final class HealthKitService: HealthKitWeightImporter {
             throw ImportError.query(error.localizedDescription)
         }
     }
+}
+
+// MARK: - Workout mapping
+extension HealthKitService {
 
     private static func activeCaloriesKcal(for workout: HKWorkout) -> Double {
         let activeEnergyType = HKQuantityType(.activeEnergyBurned)

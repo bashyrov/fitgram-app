@@ -88,8 +88,10 @@ struct QuickDatabaseRootView: View {
             }
         }
     }
+}
 
-    // MARK: - Sections
+// MARK: - Sections
+extension QuickDatabaseRootView {
 
     private var searchField: some View {
         HStack(spacing: Tokens.Space.sm) {
@@ -361,8 +363,10 @@ struct QuickDatabaseRootView: View {
     private func icon(for category: FoodCategory) -> String {
         Self.categoryIcons[category] ?? "circle.fill"
     }
+}
 
-    // MARK: - Save
+// MARK: - Save
+extension QuickDatabaseRootView {
 
     private func commit(food: Food, items: [FoodItem], suggestedMealType: MealType) {
         let entry = MealEntry(

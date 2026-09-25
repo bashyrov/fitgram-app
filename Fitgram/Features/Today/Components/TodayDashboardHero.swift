@@ -87,6 +87,10 @@ struct TodayDashboardHero: View {
             .presentationDetents([.medium])
         }
     }
+}
+
+// MARK: - Sections
+extension TodayDashboardHero {
 
     private var topBar: some View {
         HStack(alignment: .center, spacing: Tokens.Space.md) {
@@ -418,6 +422,10 @@ struct TodayDashboardHero: View {
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.78), value: waterTotalMilliliters)
     }
+}
+
+// MARK: - Helpers
+extension TodayDashboardHero {
 
     private func progress(_ value: Double, goal: Int) -> Double {
         guard goal > 0 else { return 0 }

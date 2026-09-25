@@ -430,6 +430,10 @@ private struct OlaCalorieRecalculationSheet: View {
             }
         }
     }
+}
+
+// MARK: - Cards
+extension OlaCalorieRecalculationSheet {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
@@ -690,6 +694,10 @@ private struct OlaCalorieRecalculationSheet: View {
             }
         }
     }
+}
+
+// MARK: - Controls
+extension OlaCalorieRecalculationSheet {
 
     private func valueSlider(
         title: String,
@@ -777,6 +785,10 @@ private struct OlaCalorieRecalculationSheet: View {
         }
         .buttonStyle(.plain)
     }
+}
+
+// MARK: - Plan
+extension OlaCalorieRecalculationSheet {
 
     private var saveTitle: String {
         TL(
@@ -833,6 +845,10 @@ private struct OlaCalorieRecalculationSheet: View {
             goalTargetWeightKg = min(220, goalStartWeightKg + 5)
         }
     }
+}
+
+// MARK: - Copy
+extension OlaCalorieRecalculationSheet {
 
     private func activityTitle(_ level: ActivityLevel) -> String {
         switch level {
@@ -1244,8 +1260,10 @@ struct EditMainGoalSheet: View {
             }
         }
     }
+}
 
-    // MARK: - Hero header
+// MARK: - Hero header
+extension EditMainGoalSheet {
 
     /// Big gradient header showing the chosen goal's icon + label so the
     /// sheet doesn't open with a wall of generic-looking selection rows.
@@ -1295,8 +1313,10 @@ struct EditMainGoalSheet: View {
         case .justTracking: return Tokens.Palette.inkMuted
         }
     }
+}
 
-    // MARK: - Journey card (current → target)
+// MARK: - Journey card (current → target)
+extension EditMainGoalSheet {
 
     /// Visualises the trip the user is signing up for: current weight on
     /// the left, target on the right, with a chevron between them, a
@@ -1407,8 +1427,10 @@ struct EditMainGoalSheet: View {
         default: return ""
         }
     }
+}
 
-    // MARK: - Pace card
+// MARK: - Pace card
+extension EditMainGoalSheet {
 
     private var paceCard: some View {
         Card {
@@ -1491,6 +1513,10 @@ struct EditMainGoalSheet: View {
                 .fill(Tokens.Palette.error.opacity(0.10))
         )
     }
+}
+
+// MARK: - Copy
+extension EditMainGoalSheet {
 
     private func symbol(for goal: GoalKind) -> String {
         switch goal {
