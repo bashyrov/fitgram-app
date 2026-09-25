@@ -164,7 +164,6 @@ final class HealthKitService: HealthKitWeightImporter {
 
 // MARK: - Queries
 extension HealthKitService {
-
     private func quantitySum(
         type: HKQuantityType,
         unit: HKUnit,
@@ -360,7 +359,6 @@ extension HealthKitService {
 
 // MARK: - Workout mapping
 extension HealthKitService {
-
     private static func activeCaloriesKcal(for workout: HKWorkout) -> Double {
         let activeEnergyType = HKQuantityType(.activeEnergyBurned)
         if let sum = workout.statistics(for: activeEnergyType)?.sumQuantity() {

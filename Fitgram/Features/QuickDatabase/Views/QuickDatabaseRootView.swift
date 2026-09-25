@@ -92,7 +92,6 @@ struct QuickDatabaseRootView: View {
 
 // MARK: - Sections
 extension QuickDatabaseRootView {
-
     private var searchField: some View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "magnifyingglass")
@@ -367,7 +366,6 @@ extension QuickDatabaseRootView {
 
 // MARK: - Save
 extension QuickDatabaseRootView {
-
     private func commit(food: Food, items: [FoodItem], suggestedMealType: MealType) {
         let entry = MealEntry(
             mealType: suggestedMealType,

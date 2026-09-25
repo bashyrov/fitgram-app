@@ -129,7 +129,6 @@ struct FavoritePortionSheet: View {
 
 // MARK: - Sections
 extension FavoritePortionSheet {
-
     private var summaryCard: some View {
         Card(elevation: Tokens.Shadow.float) {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
@@ -340,7 +339,6 @@ extension FavoritePortionSheet {
 
 // MARK: - Actions
 extension FavoritePortionSheet {
-
     private func syncDetailFromOverall() {
         guard detailDrafts.count == 1 else { return }
         detailDrafts[0].quantityGrams = grams

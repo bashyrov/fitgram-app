@@ -281,7 +281,6 @@ final class TodayState {
 
 // MARK: - Workouts
 extension TodayState {
-
     func applyWorkoutSaved(_ workout: WorkoutEntry) {
         guard calendar.isDate(workout.recordedAt, inSameDayAs: viewingDate) else { return }
         withAnimation(Tokens.Motion.gentle) {
@@ -370,7 +369,6 @@ extension TodayState {
 
 // MARK: - Water
 extension TodayState {
-
     @discardableResult
     func logWaterGlass(for userRemoteID: String) async -> Bool {
         guard let waterService else { return false }
@@ -405,7 +403,6 @@ extension TodayState {
 
 // MARK: - Coach + outside surfaces
 extension TodayState {
-
     private func refreshCoachAfterUserAction(for userRemoteID: String) async {
         guard isViewingToday, let coachService else { return }
         let insights = await coachService.insights(for: userRemoteID)
@@ -445,7 +442,6 @@ extension TodayState {
 
 // MARK: - Greeting + streak freeze
 extension TodayState {
-
     var greeting: LocalizedStringKey {
         let hour = calendar.component(.hour, from: now())
         switch hour {

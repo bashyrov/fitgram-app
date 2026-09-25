@@ -992,7 +992,7 @@ private struct ConfirmationView: View {
     }
 
     private func aiCompletionUseCount(for items: [FoodItem]) -> Int {
-        let missingCount = items.filter(Self.needsNutrition).count
+        let missingCount = items.filter(\.isMissingNutrition).count
         guard missingCount > 0 else { return 0 }
         return portionMode == .overall ? 1 : missingCount
     }
@@ -1023,9 +1023,6 @@ private struct ConfirmationView: View {
         }
     }
 
-    private static func needsNutrition(_ item: FoodItem) -> Bool {
-        item.caloriesKcal <= 0 || item.proteinGrams <= 0 || item.carbsGrams <= 0 || item.fatGrams <= 0
-    }
 }
 
 private struct VoicePortionRow: Identifiable {

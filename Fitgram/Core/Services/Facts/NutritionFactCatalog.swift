@@ -58,7 +58,6 @@ enum NutritionFactCatalog {
 
 // MARK: - 25× Kalorie / podstawy
 extension NutritionFactCatalog {
-
     private static var caloriesBasics: [NutritionFact] {
         [
             .init(
@@ -292,7 +291,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 25× Odchudzanie
 extension NutritionFactCatalog {
-
     private static var weightLoss: [NutritionFact] {
         [
             .init(
@@ -526,7 +524,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 25× Masa / mięśnie
 extension NutritionFactCatalog {
-
     private static var weightGain: [NutritionFact] {
         [
             .init(
@@ -760,7 +757,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 25× Składniki
 extension NutritionFactCatalog {
-
     private static var nutrients: [NutritionFact] {
         [
             .init(
@@ -994,7 +990,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 15× Kuchnia PL
 extension NutritionFactCatalog {
-
     private static var polishCuisine: [NutritionFact] {
         [
             .init(
@@ -1138,7 +1133,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 15× Trening
 extension NutritionFactCatalog {
-
     private static var trainingScience: [NutritionFact] {
         [
             .init(
@@ -1282,7 +1276,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 10× Psychologia / nawyki
 extension NutritionFactCatalog {
-
     private static var psychologyHabits: [NutritionFact] {
         [
             .init(
@@ -1381,7 +1374,6 @@ extension NutritionFactCatalog {
 
 // MARK: - 10× Nawodnienie / metabolizm
 extension NutritionFactCatalog {
-
     private static var hydrationMetabolism: [NutritionFact] {
         [
             .init(

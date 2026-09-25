@@ -434,7 +434,6 @@ private struct OlaCalorieRecalculationSheet: View {
 
 // MARK: - Cards
 extension OlaCalorieRecalculationSheet {
-
     private var header: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             Text(
@@ -698,7 +697,6 @@ extension OlaCalorieRecalculationSheet {
 
 // MARK: - Controls
 extension OlaCalorieRecalculationSheet {
-
     private func valueSlider(
         title: String,
         value: Binding<Double>,
@@ -789,7 +787,6 @@ extension OlaCalorieRecalculationSheet {
 
 // MARK: - Plan
 extension OlaCalorieRecalculationSheet {
-
     private var saveTitle: String {
         TL(
             pl: "Przelicz plan", en: "Recalculate plan", uk: "Перерахувати план", ru: "Пересчитать план",
@@ -849,7 +846,6 @@ extension OlaCalorieRecalculationSheet {
 
 // MARK: - Copy
 extension OlaCalorieRecalculationSheet {
-
     private func activityTitle(_ level: ActivityLevel) -> String {
         switch level {
         case .sedentary: return TL(pl: "Siedzący", en: "Sedentary", uk: "Сидячий", ru: "Сидячий", es: "Sedentario")
@@ -1264,7 +1260,6 @@ struct EditMainGoalSheet: View {
 
 // MARK: - Hero header
 extension EditMainGoalSheet {
-
     /// Big gradient header showing the chosen goal's icon + label so the
     /// sheet doesn't open with a wall of generic-looking selection rows.
     private var goalHero: some View {
@@ -1317,7 +1312,6 @@ extension EditMainGoalSheet {
 
 // MARK: - Journey card (current → target)
 extension EditMainGoalSheet {
-
     /// Visualises the trip the user is signing up for: current weight on
     /// the left, target on the right, with a chevron between them, a
     /// target-weight slider underneath, and a delta chip showing how
@@ -1431,7 +1425,6 @@ extension EditMainGoalSheet {
 
 // MARK: - Pace card
 extension EditMainGoalSheet {
-
     private var paceCard: some View {
         Card {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
@@ -1517,7 +1510,6 @@ extension EditMainGoalSheet {
 
 // MARK: - Copy
 extension EditMainGoalSheet {
-
     private func symbol(for goal: GoalKind) -> String {
         switch goal {
         case .lose: return "arrow.down.right"

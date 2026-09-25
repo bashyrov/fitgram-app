@@ -339,7 +339,6 @@ extension FitgramApp {
 
 // MARK: - Root view
 extension FitgramApp {
-
     @ViewBuilder
     private var rootStack: some View {
         RootView(

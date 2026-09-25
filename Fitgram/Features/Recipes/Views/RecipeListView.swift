@@ -37,7 +37,7 @@ struct RecipeListView: View {
             ZStack {
                 Tokens.Palette.background.ignoresSafeArea()
                 VStack(spacing: Tokens.Space.md) {
-                    searchField
+                    RecipeSearchField(query: $state.query)
                     list
                 }
                 .padding(.top, Tokens.Space.md)
@@ -146,35 +146,10 @@ struct RecipeListView: View {
             }
         }
     }
+}
 
-    private var searchField: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            TextField("Szukaj przepisu", text: $state.query)
-                .textInputAutocapitalization(.never)
-            if !state.query.isEmpty {
-                Button {
-                    state.query = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                }
-            }
-        }
-        .padding(.horizontal, Tokens.Space.md)
-        .padding(.vertical, Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-        )
-        .padding(.horizontal, Tokens.Space.screenPadding)
-    }
-
+// MARK: - Sections
+extension RecipeListView {
     @ViewBuilder
     private var list: some View {
         if state.filtered.isEmpty {
@@ -228,57 +203,11 @@ struct RecipeListView: View {
         }
     }
 
-    // swiftlint:disable function_body_length
     private func row(_ recipe: Recipe) -> some View {
         Button {
             detailRecipe = recipe
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "fork.knife")
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(recipe.title)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(subtitle(for: recipe))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(1)
-                }
-                Spacer(minLength: 0)
-                if let rating = recipe.rating, rating > 0 {
-                    HStack(spacing: 2) {
-                        Image(systemName: "star.fill")
-                            .font(.caption2)
-                        Text(String(format: "%.0f", rating))
-                            .font(Tokens.Font.caption)
-                    }
-                    .foregroundStyle(Tokens.Palette.warning)
-                }
-                if recipe.cookCount > 0 {
-                    Text(String.localizedStringWithFormat(L("× %lld"), recipe.cookCount))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                if recipe.isFavorite {
-                    Image(systemName: "heart.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                }
-            }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-            )
+            RecipeListRowLabel(recipe: recipe)
         }
         .buttonStyle(.plain)
         .contextMenu {
@@ -314,42 +243,7 @@ struct RecipeListView: View {
             Haptics.light()
             paywallCoordinator?.present(.recipesCap)
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft.opacity(0.62))
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "lock.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(recipe.title)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                    Text("Przepis Pro")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(1)
-                }
-                Spacer(minLength: 0)
-                Text("PRO")
-                    .font(.system(size: 10, weight: .heavy, design: .rounded))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .background(Capsule().fill(Tokens.Palette.primary))
-            }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(Tokens.Palette.surface.opacity(0.64))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-            )
-            .opacity(0.62)
+            LockedRecipeRowLabel(title: recipe.title)
         }
         .buttonStyle(.plain)
     }
@@ -369,8 +263,6 @@ struct RecipeListView: View {
             saveError = L("Couldn't save. Try again.")
         }
     }
-
-    // swiftlint:enable function_body_length
 
     private func rate(_ recipe: Recipe, value: Double?) {
         guard canPersistRecipeAction(recipe) else {
@@ -407,100 +299,87 @@ struct RecipeListView: View {
             saveError = L("Couldn't save. Try again.")
         }
     }
+}
 
-    private func subtitle(for recipe: Recipe) -> String {
-        var parts: [String] = []
-        parts.append(
-            String.localizedStringWithFormat(
-                L("%lld porcje"),
-                recipe.servings
-            )
-        )
-        if let kcal = recipe.caloriesPerServing, kcal > 0 {
-            parts.append(
-                String.localizedStringWithFormat(
-                    L("%lld kcal / porcję"),
-                    Int(kcal)
-                )
-            )
-        }
-        if !recipe.ingredients.isEmpty {
-            parts.append(
-                String.localizedStringWithFormat(
-                    L("%lld składników"),
-                    recipe.ingredients.count
-                )
-            )
-        }
-        return parts.joined(separator: " · ")
-    }
-
-    // MARK: - Actions
-
+// MARK: - Actions
+extension RecipeListView {
     private func handle(draft: RecipeDraft, mode: FormPresentation) {
+        let saved: Bool
         switch mode {
         case .adding:
-            guard canPersistNewRecipe() else {
-                Haptics.light()
-                paywallCoordinator?.present(.recipesCap)
-                return
-            }
-            let recipe = Recipe(
-                title: draft.title,
-                summary: draft.summary,
-                servings: draft.servings,
-                instructions: draft.instructions,
-                ingredients: draft.ingredients.map { RecipeIngredient(name: $0) }
-            )
-            recipe.caloriesPerServing = draft.caloriesPerServing
-            recipe.proteinPerServing = draft.proteinPerServing
-            recipe.carbsPerServing = draft.carbsPerServing
-            recipe.fatPerServing = draft.fatPerServing
-            recipe.prepMinutes = draft.prepMinutes
-            recipe.cookMinutes = draft.cookMinutes
-            do {
-                try repository.create(recipe)
-            } catch {
-                Haptics.warning()
-                saveError = L("Couldn't save. Try again.")
-                return
-            }
+            saved = createRecipe(from: draft)
         case .editing(let recipe):
-            guard canPersistRecipeAction(recipe) else {
-                Haptics.light()
-                paywallCoordinator?.present(.recipesCap)
-                return
-            }
-            let previous = RecipeRollbackSnapshot(recipe)
-            recipe.title = draft.title
-            recipe.summary = draft.summary
-            recipe.servings = draft.servings
-            recipe.instructions = draft.instructions
-            recipe.ingredients.forEach { ingredient in
-                if !draft.ingredients.contains(ingredient.name) {
-                    // remove gone-from-form ingredient
-                    let context = recipe.modelContext
-                    context?.delete(ingredient)
-                }
-            }
-            let existing = Set(recipe.ingredients.map(\.name))
-            for newName in draft.ingredients where !existing.contains(newName) {
-                recipe.ingredients.append(RecipeIngredient(name: newName))
-            }
-            recipe.caloriesPerServing = draft.caloriesPerServing
-            recipe.proteinPerServing = draft.proteinPerServing
-            recipe.carbsPerServing = draft.carbsPerServing
-            recipe.fatPerServing = draft.fatPerServing
-            do {
-                try repository.save(recipe)
-            } catch {
-                previous.restore(recipe)
-                Haptics.warning()
-                saveError = L("Couldn't save. Try again.")
-                return
+            saved = updateRecipe(recipe, from: draft)
+        }
+        if saved {
+            Task { await state.refresh() }
+        }
+    }
+
+    private func createRecipe(from draft: RecipeDraft) -> Bool {
+        guard canPersistNewRecipe() else {
+            Haptics.light()
+            paywallCoordinator?.present(.recipesCap)
+            return false
+        }
+        let recipe = Recipe(
+            title: draft.title,
+            summary: draft.summary,
+            servings: draft.servings,
+            instructions: draft.instructions,
+            ingredients: draft.ingredients.map { RecipeIngredient(name: $0) }
+        )
+        recipe.caloriesPerServing = draft.caloriesPerServing
+        recipe.proteinPerServing = draft.proteinPerServing
+        recipe.carbsPerServing = draft.carbsPerServing
+        recipe.fatPerServing = draft.fatPerServing
+        recipe.prepMinutes = draft.prepMinutes
+        recipe.cookMinutes = draft.cookMinutes
+        do {
+            try repository.create(recipe)
+        } catch {
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+            return false
+        }
+        return true
+    }
+
+    private func updateRecipe(_ recipe: Recipe, from draft: RecipeDraft) -> Bool {
+        guard canPersistRecipeAction(recipe) else {
+            Haptics.light()
+            paywallCoordinator?.present(.recipesCap)
+            return false
+        }
+        let previous = RecipeRollbackSnapshot(recipe)
+        recipe.title = draft.title
+        recipe.summary = draft.summary
+        recipe.servings = draft.servings
+        recipe.instructions = draft.instructions
+        recipe.ingredients.forEach { ingredient in
+            if !draft.ingredients.contains(ingredient.name) {
+                // remove gone-from-form ingredient
+                let context = recipe.modelContext
+                context?.delete(ingredient)
             }
         }
-        Task { await state.refresh() }
+        let existing = Set(recipe.ingredients.map(\.name))
+        for newName in draft.ingredients where !existing.contains(newName) {
+            recipe.ingredients.append(RecipeIngredient(name: newName))
+        }
+        recipe.caloriesPerServing = draft.caloriesPerServing
+        recipe.proteinPerServing = draft.proteinPerServing
+        recipe.carbsPerServing = draft.carbsPerServing
+        recipe.fatPerServing = draft.fatPerServing
+        do {
+            try repository.save(recipe)
+        } catch {
+            previous.restore(recipe)
+            Haptics.warning()
+            saveError = L("Couldn't save. Try again.")
+            return false
+        }
+        return true
     }
 
     private var canAddRecipe: Bool {
@@ -510,7 +389,7 @@ struct RecipeListView: View {
 
     private var unlockedRecipeIDs: Set<UUID>? {
         guard let cap = entitlementsStore?.current.savedRecipesCap else { return nil }
-        return unlockedRecipeIDs(in: state.recipes, cap: cap)
+        return RecipeCapPolicy.unlockedIDs(in: state.recipes, cap: cap)
     }
 
     private func isRecipeLocked(_ recipe: Recipe) -> Bool {
@@ -522,17 +401,6 @@ struct RecipeListView: View {
         return unlockedRecipeIDs.contains(recipe.id)
     }
 
-    private func isNewerRecipe(_ lhs: Recipe, _ rhs: Recipe) -> Bool {
-        if lhs.createdAt != rhs.createdAt {
-            return lhs.createdAt > rhs.createdAt
-        }
-        return lhs.id.uuidString > rhs.id.uuidString
-    }
-
-    private func unlockedRecipeIDs(in recipes: [Recipe], cap: Int) -> Set<UUID> {
-        Set(recipes.sorted(by: isNewerRecipe).prefix(cap).map(\.id))
-    }
-
     private func canPersistNewRecipe() -> Bool {
         guard let cap = entitlementsStore?.current.savedRecipesCap else { return true }
         let currentRecipes = (try? repository.all()) ?? state.recipes
@@ -542,7 +410,7 @@ struct RecipeListView: View {
     private func canPersistRecipeAction(_ recipe: Recipe) -> Bool {
         guard let cap = entitlementsStore?.current.savedRecipesCap else { return true }
         let currentRecipes = (try? repository.all()) ?? state.recipes
-        return unlockedRecipeIDs(in: currentRecipes, cap: cap).contains(recipe.id)
+        return RecipeCapPolicy.unlockedIDs(in: currentRecipes, cap: cap).contains(recipe.id)
     }
 
     private func visibleSimilarRecipes(for recipe: Recipe) -> [Recipe] {
@@ -612,38 +480,5 @@ struct RecipeListView: View {
         case .adding: return .adding
         case .editing(let recipe): return .editing(recipe)
         }
-    }
-}
-
-private struct RecipeRollbackSnapshot {
-    let title: String
-    let summary: String?
-    let servings: Int
-    let instructions: [String]
-    let caloriesPerServing: Double?
-    let proteinPerServing: Double?
-    let carbsPerServing: Double?
-    let fatPerServing: Double?
-
-    init(_ recipe: Recipe) {
-        title = recipe.title
-        summary = recipe.summary
-        servings = recipe.servings
-        instructions = recipe.instructions
-        caloriesPerServing = recipe.caloriesPerServing
-        proteinPerServing = recipe.proteinPerServing
-        carbsPerServing = recipe.carbsPerServing
-        fatPerServing = recipe.fatPerServing
-    }
-
-    func restore(_ recipe: Recipe) {
-        recipe.title = title
-        recipe.summary = summary
-        recipe.servings = servings
-        recipe.instructions = instructions
-        recipe.caloriesPerServing = caloriesPerServing
-        recipe.proteinPerServing = proteinPerServing
-        recipe.carbsPerServing = carbsPerServing
-        recipe.fatPerServing = fatPerServing
     }
 }

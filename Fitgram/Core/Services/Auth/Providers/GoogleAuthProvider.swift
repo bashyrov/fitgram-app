@@ -55,8 +55,7 @@ final class GoogleAuthProvider: NSObject, AuthProvider {
             throw AuthError.invalidCredential
         }
 
-        let callbackURL = try await withCheckedThrowingContinuation {
-            (continuation: CheckedContinuation<URL, any Error>) in
+        let callbackURL: URL = try await withCheckedThrowingContinuation { continuation in
             let session = ASWebAuthenticationSession(
                 url: authURL,
                 callbackURLScheme: reverseScheme

@@ -43,17 +43,7 @@ struct FoodDetailSheet: View {
         self.heroSubtitle = nil
         let initialGrams = food.defaultPortionGrams ?? 100
         self._grams = State(initialValue: initialGrams)
-        self._detailDrafts = State(initialValue: [
-            QuickFoodIngredientDraft(
-                name: food.localizedName,
-                quantityGrams: initialGrams,
-                caloriesKcalPer100g: food.caloriesKcalPer100g,
-                proteinGramsPer100g: food.proteinGramsPer100g,
-                carbsGramsPer100g: food.carbsGramsPer100g,
-                fatGramsPer100g: food.fatGramsPer100g,
-                fiberGramsPer100g: food.fiberGramsPer100g
-            )
-        ])
+        self._detailDrafts = State(initialValue: [QuickFoodIngredientDraft(food: food, grams: initialGrams)])
     }
 
     init(
@@ -68,23 +58,8 @@ struct FoodDetailSheet: View {
         usageMeter: UsageMeter? = nil
     ) {
         let items = snapshot.items
-        let totalGrams = max(items.reduce(0) { $0 + $1.quantityGrams } * snapshot.portionMultiplier, 1)
-        let title =
-            snapshot.notes?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
-            ? snapshot.notes ?? L("Ostatni posiłek")
-            : items.prefix(2).map(\.name).joined(separator: " + ")
-        let syntheticFood = Food(
-            name: title.isEmpty ? L("Ostatni posiłek") : title,
-            category: .homemade,
-            caloriesKcalPer100g: items.reduce(0) { $0 + $1.caloriesKcal } * snapshot.portionMultiplier / totalGrams
-                * 100,
-            proteinGramsPer100g: items.reduce(0) { $0 + $1.proteinGrams } * snapshot.portionMultiplier / totalGrams
-                * 100,
-            carbsGramsPer100g: items.reduce(0) { $0 + $1.carbsGrams } * snapshot.portionMultiplier / totalGrams * 100,
-            fatGramsPer100g: items.reduce(0) { $0 + $1.fatGrams } * snapshot.portionMultiplier / totalGrams * 100,
-            defaultPortionGrams: totalGrams,
-            verified: false
-        )
+        let totalGrams = snapshot.eatenGrams
+        let syntheticFood = Food.repeating(snapshot)
         self.food = syntheticFood
         self.onSave = onSave
         self.onDismiss = onDismiss
@@ -98,17 +73,8 @@ struct FoodDetailSheet: View {
         self._grams = State(initialValue: totalGrams)
         self._portionMode = State(initialValue: items.count > 1 ? .detailed : .overall)
         self._detailDrafts = State(
-            initialValue: items.map { item in
-                QuickFoodIngredientDraft(
-                    name: item.name,
-                    quantityGrams: item.quantityGrams * snapshot.portionMultiplier,
-                    caloriesKcalPer100g: item.quantityGrams > 0 ? item.caloriesKcal / item.quantityGrams * 100 : 0,
-                    proteinGramsPer100g: item.quantityGrams > 0 ? item.proteinGrams / item.quantityGrams * 100 : 0,
-                    carbsGramsPer100g: item.quantityGrams > 0 ? item.carbsGrams / item.quantityGrams * 100 : 0,
-                    fatGramsPer100g: item.quantityGrams > 0 ? item.fatGrams / item.quantityGrams * 100 : 0,
-                    fiberGramsPer100g: item.quantityGrams > 0
-                        ? item.fiberGrams.map { $0 / item.quantityGrams * 100 } : nil
-                )
+            initialValue: items.map {
+                QuickFoodIngredientDraft(item: $0, portionMultiplier: snapshot.portionMultiplier)
             }
         )
     }
@@ -123,11 +89,11 @@ struct FoodDetailSheet: View {
                         favoriteButton
                         modePicker
                         if portionMode == .overall {
-                            portionCard
+                            FoodDetailPortionCard(grams: $grams)
                         } else {
                             detailedIngredientsCard
                         }
-                        macroCard
+                        FoodDetailMacroCard(protein: currentProtein, carbs: currentCarbs, fat: currentFat)
                         PrimaryButton(title: "Dodaj do dziennika", systemImage: "checkmark") {
                             commit()
                         }
@@ -162,7 +128,10 @@ struct FoodDetailSheet: View {
             }
         }
     }
+}
 
+// MARK: - Chrome
+extension FoodDetailSheet {
     private var portionBackground: some View {
         ScreenBackground(mood: .calm)
     }
@@ -202,9 +171,10 @@ struct FoodDetailSheet: View {
             userRemoteID: userRemoteID
         )
     }
+}
 
-    // MARK: - Sections
-
+// MARK: - Sections
+extension FoodDetailSheet {
     private var summaryHero: some View {
         HStack(spacing: Tokens.Space.lg) {
             ZStack {
@@ -270,99 +240,6 @@ struct FoodDetailSheet: View {
         }
     }
 
-    private var portionCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(L("Porcja"))
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Dopasuj wagę przed dodaniem"))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld g"), Int(grams.rounded())))
-                    .font(.system(size: 25, weight: .heavy, design: .rounded))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .contentTransition(.numericText())
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-            }
-
-            Slider(value: $grams, in: 10...600, step: 5)
-                .tint(Tokens.Palette.primary)
-                .padding(.vertical, Tokens.Space.xs)
-
-            HStack(spacing: Tokens.Space.sm) {
-                ForEach([100, 150, 250, 400], id: \.self) { preset in
-                    portionPresetButton(preset)
-                }
-            }
-
-            HStack {
-                Text(String.localizedStringWithFormat(L("%lld g"), 10))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld g"), 600))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-        }
-        .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
-    }
-
-    private func portionPresetButton(_ preset: Int) -> some View {
-        Button {
-            withAnimation(Tokens.Motion.quick) {
-                grams = Double(preset)
-            }
-            Haptics.selection()
-        } label: {
-            Text(String.localizedStringWithFormat(L("%lld g"), preset))
-                .font(Tokens.Font.caption.weight(.bold))
-                .foregroundStyle(Int(grams.rounded()) == preset ? .white : Tokens.Palette.ink)
-                .frame(maxWidth: .infinity)
-                .frame(height: 34)
-                .background(
-                    Capsule()
-                        .fill(Int(grams.rounded()) == preset ? Tokens.Palette.primary : Tokens.Palette.surfaceMuted)
-                )
-        }
-        .buttonStyle(.pressable)
-    }
-
-    private var macroCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                Text(L("Makro"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text(L("na wybraną porcję"))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            HStack(spacing: Tokens.Space.sm) {
-                macroPill(label: L("Protein"), grams: currentProtein, color: Tokens.Palette.primary)
-                macroPill(label: L("Węgle"), grams: currentCarbs, color: Tokens.Palette.warning)
-                macroPill(label: L("Tłuszcz"), grams: currentFat, color: Tokens.Palette.accent)
-            }
-        }
-        .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
-    }
-
     private var detailedIngredientsCard: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.md) {
             HStack {
@@ -417,17 +294,17 @@ struct FoodDetailSheet: View {
                     Slider(value: $draft.quantityGrams, in: 10...1200, step: 5)
                         .tint(Tokens.Palette.primary)
                     HStack(spacing: Tokens.Space.sm) {
-                        macroPill(
+                        FoodDetailMacroPill(
                             label: L("Protein"),
                             grams: draft.proteinGrams,
                             color: Tokens.Palette.primary
                         )
-                        macroPill(
+                        FoodDetailMacroPill(
                             label: L("Węgle"),
                             grams: draft.carbsGrams,
                             color: Tokens.Palette.warning
                         )
-                        macroPill(
+                        FoodDetailMacroPill(
                             label: L("Tłuszcz"),
                             grams: draft.fatGrams,
                             color: Tokens.Palette.accent
@@ -472,29 +349,10 @@ struct FoodDetailSheet: View {
     private var productNutritionRemaining: Int? {
         usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
     }
+}
 
-    private func macroPill(label: String, grams: Double, color: Color) -> some View {
-        VStack(spacing: 5) {
-            Text(String(format: "%.1f g", grams))
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(color)
-                .contentTransition(.numericText())
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(color.opacity(0.11))
-        )
-    }
-
-    // MARK: - Math
-
+// MARK: - Math
+extension FoodDetailSheet {
     private var scale: Double { grams / 100.0 }
     private var currentCalories: Double {
         portionMode == .overall ? food.caloriesKcalPer100g * scale : detailDrafts.reduce(0) { $0 + $1.caloriesKcal }
@@ -611,47 +469,4 @@ struct FoodDetailSheet: View {
             }
         }
     }
-}
-
-private struct FoodDetailFavoriteContext {
-    let favoritesService: any FavoritesServing
-    let entitlementsStore: EntitlementsStore
-    let paywallCoordinator: PaywallCoordinator
-    let userRemoteID: String
-}
-
-private struct QuickFoodIngredientDraft: Identifiable, Equatable {
-    let id = UUID()
-    var name: String
-    var quantityGrams: Double
-    var caloriesKcalPer100g: Double
-    var proteinGramsPer100g: Double
-    var carbsGramsPer100g: Double
-    var fatGramsPer100g: Double
-    var fiberGramsPer100g: Double?
-
-    init(
-        name: String,
-        quantityGrams: Double,
-        caloriesKcalPer100g: Double = 0,
-        proteinGramsPer100g: Double = 0,
-        carbsGramsPer100g: Double = 0,
-        fatGramsPer100g: Double = 0,
-        fiberGramsPer100g: Double? = nil
-    ) {
-        self.name = name
-        self.quantityGrams = quantityGrams
-        self.caloriesKcalPer100g = caloriesKcalPer100g
-        self.proteinGramsPer100g = proteinGramsPer100g
-        self.carbsGramsPer100g = carbsGramsPer100g
-        self.fatGramsPer100g = fatGramsPer100g
-        self.fiberGramsPer100g = fiberGramsPer100g
-    }
-
-    var factor: Double { quantityGrams / 100 }
-    var caloriesKcal: Double { caloriesKcalPer100g * factor }
-    var proteinGrams: Double { proteinGramsPer100g * factor }
-    var carbsGrams: Double { carbsGramsPer100g * factor }
-    var fatGrams: Double { fatGramsPer100g * factor }
-    var fiberGrams: Double? { fiberGramsPer100g.map { $0 * factor } }
 }

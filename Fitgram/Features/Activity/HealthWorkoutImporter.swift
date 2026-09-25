@@ -45,8 +45,11 @@ final class HealthWorkoutImporter {
         return await importWorkouts(for: userRemoteID, from: start, to: end)
     }
 
-    private func importWorkouts(for userRemoteID: String, from startDate: Date, to endDate: Date) async -> ImportResult
-    {
+    private func importWorkouts(
+        for userRemoteID: String,
+        from startDate: Date,
+        to endDate: Date
+    ) async -> ImportResult {
         guard health.isHealthDataAvailable else { return .unavailable }
         do {
             let granted = try await health.requestAuthorization()

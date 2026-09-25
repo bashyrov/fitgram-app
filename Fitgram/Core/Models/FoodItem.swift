@@ -64,3 +64,10 @@ extension FoodItem {
         )
     }
 }
+
+extension FoodItem {
+    /// True while any macro is still zero — AI completion should fill it in.
+    var isMissingNutrition: Bool {
+        caloriesKcal <= 0 || proteinGrams <= 0 || carbsGrams <= 0 || fatGrams <= 0
+    }
+}

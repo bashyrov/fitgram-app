@@ -46,18 +46,25 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
                 ScrollView {
                     VStack(spacing: Tokens.Space.lg) {
                         nameCard
-                        mealTypeCard
+                        ManualMealTypeCard(mealType: $mealType)
                         modePicker
                         if portionMode == .overall {
-                            portionAndCaloriesCard
-                            macrosCard
+                            ManualPortionCard(quantityGrams: $quantityGrams, caloriesKcal: $caloriesKcal)
+                            ManualMacrosCard(
+                                proteinGrams: $proteinGrams,
+                                carbsGrams: $carbsGrams,
+                                fatGrams: $fatGrams,
+                                fiberGrams: $fiberGrams
+                            )
                         } else {
                             detailedIngredientsCard
                         }
                         if entitlementsStore?.current.canUseFavorites ?? false {
-                            favoriteToggleCard
+                            ManualFavoriteToggleCard(isOn: $saveAsFavorite)
                         } else if entitlementsStore != nil {
-                            favoritePromoCard
+                            ManualFavoritePromoCard {
+                                paywallCoordinator?.present(.favoritesUnavailable)
+                            }
                         }
                         if let error {
                             Text(error)
@@ -129,23 +136,6 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         }
     }
 
-    private var mealTypeCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Posiłek")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Picker("Typ posiłku", selection: $mealType) {
-                    Text("Breakfast").tag(MealType.breakfast)
-                    Text("Lunch").tag(MealType.lunch)
-                    Text("Dinner").tag(MealType.dinner)
-                    Text("Snack").tag(MealType.snack)
-                }
-                .pickerStyle(.segmented)
-            }
-        }
-    }
-
     private var modePicker: some View {
         PortionModeSelector(
             selection: $portionMode,
@@ -153,60 +143,6 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
             detailLabel: L("Lista produktów, każdy z własną gramaturą."),
             detailCount: max(1, detailDrafts.count)
         )
-    }
-
-    private var portionAndCaloriesCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                numericRow(
-                    NumericRow(
-                        symbol: "scalemass",
-                        label: "Porcja",
-                        range: 1...2000,
-                        step: 5,
-                        unit: "g"
-                    ),
-                    value: $quantityGrams
-                )
-                numericRow(
-                    NumericRow(
-                        symbol: "flame.fill",
-                        label: "Kalorie",
-                        range: 0...3000,
-                        step: 5,
-                        unit: "kcal",
-                        tint: Tokens.Palette.warning
-                    ),
-                    value: $caloriesKcal
-                )
-            }
-        }
-    }
-
-    private var macrosCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text("Makro (opcjonalnie)")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                numericRow(
-                    NumericRow(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
-                    value: $proteinGrams
-                )
-                numericRow(
-                    NumericRow(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
-                    value: $carbsGrams
-                )
-                numericRow(
-                    NumericRow(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
-                    value: $fatGrams
-                )
-                numericRow(
-                    NumericRow(symbol: "leaf", label: "Fiber", range: 0...100, step: 1, unit: "g"),
-                    value: $fiberGrams
-                )
-            }
-        }
     }
 
     private var detailedIngredientsCard: some View {
@@ -246,91 +182,7 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         }
     }
 
-    private var favoriteToggleCard: some View {
-        Card {
-            Toggle(isOn: $saveAsFavorite) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: saveAsFavorite ? "star.fill" : "star")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Add to my recipes")
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text("Szybki ponowny dodatek z karuzeli na Dziś")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                }
-            }
-            .tint(Tokens.Palette.primary)
-        }
-    }
-
-    private var favoritePromoCard: some View {
-        Button {
-            paywallCoordinator?.present(.favoritesUnavailable)
-        } label: {
-            Card(background: Tokens.Palette.primarySoft) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: "star.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Moje przepisy — Premium")
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text("Zapisuj stałe posiłki i dodawaj jednym tapnięciem.")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
     // MARK: - Helpers
-
-    private struct NumericRow {
-        let symbol: String
-        let label: LocalizedStringKey
-        let range: ClosedRange<Double>
-        let step: Double
-        let unit: String
-        var tint: Color = Tokens.Palette.primary
-    }
-
-    private func numericRow(
-        _ config: NumericRow,
-        value: Binding<Double>
-    ) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle().fill(config.tint.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                Image(systemName: config.symbol)
-                    .foregroundStyle(config.tint)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(config.label)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(Int(value.wrappedValue))")
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(config.unit)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-            }
-            Spacer()
-            Stepper("", value: value, in: config.range, step: config.step)
-                .labelsHidden()
-        }
-    }
 
     private func ingredientDraftRow(_ draft: Binding<ManualIngredientDraft>) -> some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
@@ -352,24 +204,24 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
                     .buttonStyle(.pressable)
                 }
             }
-            numericRow(
-                NumericRow(symbol: "scalemass", label: "Porcja", range: 1...2000, step: 5, unit: "g"),
+            ManualNumericRow(
+                config: .init(symbol: "scalemass", label: "Porcja", range: 1...2000, step: 5, unit: "g"),
                 value: draft.quantityGrams
             )
-            numericRow(
-                NumericRow(symbol: "flame.fill", label: "Kalorie", range: 0...3000, step: 5, unit: "kcal"),
+            ManualNumericRow(
+                config: .init(symbol: "flame.fill", label: "Kalorie", range: 0...3000, step: 5, unit: "kcal"),
                 value: draft.caloriesKcal
             )
-            numericRow(
-                NumericRow(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
+            ManualNumericRow(
+                config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
                 value: draft.proteinGrams
             )
-            numericRow(
-                NumericRow(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
+            ManualNumericRow(
+                config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
                 value: draft.carbsGrams
             )
-            numericRow(
-                NumericRow(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
+            ManualNumericRow(
+                config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
                 value: draft.fatGrams
             )
         }
@@ -451,16 +303,7 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         proteinGrams = analysis.overall.proteinGrams
         carbsGrams = analysis.overall.carbsGrams
         fatGrams = analysis.overall.fatGrams
-        detailDrafts = analysis.items.map {
-            ManualIngredientDraft(
-                name: $0.name,
-                quantityGrams: $0.quantityGrams,
-                caloriesKcal: $0.caloriesKcal,
-                proteinGrams: $0.proteinGrams,
-                carbsGrams: $0.carbsGrams,
-                fatGrams: $0.fatGrams
-            )
-        }
+        detailDrafts = analysis.items.map(ManualIngredientDraft.init(detected:))
         Haptics.success()
     }
 
@@ -486,17 +329,8 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         if analysis.items.count > 1,
             let index = detailDrafts.firstIndex(where: { $0.id == draftID })
         {
-            let replacement = analysis.items.map {
-                ManualIngredientDraft(
-                    name: $0.name,
-                    quantityGrams: $0.quantityGrams,
-                    caloriesKcal: $0.caloriesKcal,
-                    proteinGrams: $0.proteinGrams,
-                    carbsGrams: $0.carbsGrams,
-                    fatGrams: $0.fatGrams
-                )
-            }
-            detailDrafts.replaceSubrange(index...index, with: replacement)
+            detailDrafts.replaceSubrange(
+                index...index, with: analysis.items.map(ManualIngredientDraft.init(detected:)))
             if analysis.aiSucceeded {
                 usageMeter?.record(.productNutritionLookup, cap: cap)
             }
@@ -608,18 +442,22 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
     }
 
     private func aiCompletionUseCount(for items: [FoodItem]) -> Int {
-        let missingCount = items.filter(Self.needsNutrition).count
+        let missingCount = items.filter(\.isMissingNutrition).count
         guard missingCount > 0, mealAnalyzer != nil else { return 0 }
         return portionMode == .overall ? 1 : missingCount
     }
 
+    /// Save-time AI completion spends the meal allowance in overall mode
+    /// and the per-product allowance in detailed mode.
+    private var aiCompletionQuota: (kind: UsageMeter.Kind, cap: Int?) {
+        portionMode == .overall
+            ? (.mealAIRefresh, entitlementsStore?.current.mealAIRefreshesPerDay)
+            : (.productNutritionLookup, entitlementsStore?.current.productNutritionLookupsPerDay)
+    }
+
     private func canConsumeAICompletion(count: Int) -> Bool {
         guard count > 0 else { return true }
-        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let (kind, cap) = aiCompletionQuota
         guard let cap, let usageMeter else { return true }
         if usageMeter.used(kind) + count <= cap { return true }
         Haptics.light()
@@ -629,18 +467,10 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
 
     private func recordAICompletion(count: Int) {
         guard count > 0 else { return }
-        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let (kind, cap) = aiCompletionQuota
         for _ in 0..<count {
             usageMeter?.record(kind, cap: cap)
         }
-    }
-
-    private static func needsNutrition(_ item: FoodItem) -> Bool {
-        item.caloriesKcal <= 0 || item.proteinGrams <= 0 || item.carbsGrams <= 0 || item.fatGrams <= 0
     }
 
     /// Best guess of which meal-type slot the entry belongs to, based
@@ -654,14 +484,4 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         default: return .snack
         }
     }
-}
-
-private struct ManualIngredientDraft: Identifiable, Equatable {
-    var id = UUID()
-    var name: String = ""
-    var quantityGrams: Double = 100
-    var caloriesKcal: Double = 200
-    var proteinGrams: Double = 10
-    var carbsGrams: Double = 20
-    var fatGrams: Double = 8
 }

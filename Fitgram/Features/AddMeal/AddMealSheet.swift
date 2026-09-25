@@ -60,7 +60,10 @@ struct AddMealSheet: View {
         .presentationCornerRadius(Tokens.Radius.xxl)
         .toastSurface()
     }
+}
 
+// MARK: - Sections
+extension AddMealSheet {
     private var quickActionGrid: some View {
         LazyVGrid(
             columns: [
@@ -307,7 +310,10 @@ struct AddMealSheet: View {
         }
         .buttonStyle(.pressable)
     }
+}
 
+// MARK: - Styling
+extension AddMealSheet {
     private var primaryActionTextColor: Color {
         usesDarkActionGradient ? Tokens.Palette.warmWhite : .white
     }
@@ -410,7 +416,10 @@ struct AddMealSheet: View {
             Tokens.Palette.accent.opacity(0.16),
         ]
     }
+}
 
+// MARK: - Quota
+extension AddMealSheet {
     private var photoQuota: AddMealQuota {
         quotaLabel(
             used: usageMeter.used(.photoScan),
@@ -421,175 +430,5 @@ struct AddMealSheet: View {
     private func quotaLabel(used: Int, cap: Int?) -> AddMealQuota {
         guard let cap else { return .unlimited }
         return .daily(used: used, cap: cap)
-    }
-}
-
-private enum AddMealQuota: Equatable {
-    case unlimited
-    case daily(used: Int, cap: Int)
-
-    var label: String? {
-        switch self {
-        case .unlimited:
-            return nil
-        case .daily(let used, let cap):
-            return "\(max(0, cap - used))/\(cap)"
-        }
-    }
-
-    var isExhausted: Bool {
-        if case .daily(let used, let cap) = self { return used >= cap }
-        return false
-    }
-}
-
-private struct AddMealMiniActionCard: View {
-    let icon: String
-    let tint: Color
-    let title: LocalizedStringKey
-    let subtitle: LocalizedStringKey
-    let quota: AddMealQuota
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack(alignment: .top) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(tint.opacity(0.15))
-                        Image(systemName: icon)
-                            .font(.system(size: 22, weight: .heavy, design: .rounded))
-                            .foregroundStyle(tint)
-                    }
-                    .frame(width: 52, height: 52)
-
-                    Spacer(minLength: 0)
-                    AddMealQuotaBadge(quota: quota, isProminent: false)
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.78)
-                    Text(subtitle)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer(minLength: 0)
-
-                HStack {
-                    Text(quota.isExhausted ? "Pro" : "Otwórz")
-                        .font(.system(size: 12, weight: .heavy, design: .rounded))
-                    Spacer(minLength: 0)
-                    Image(systemName: quota.isExhausted ? "lock.fill" : "arrow.up.right")
-                        .font(.system(size: 12, weight: .black))
-                }
-                .foregroundStyle(quota.isExhausted ? Tokens.Palette.warning : tint)
-            }
-            .padding(Tokens.Space.md)
-            .frame(maxWidth: .infinity, minHeight: 166, alignment: .topLeading)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
-            .background(
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .fill(Tokens.Palette.surface.opacity(0.82))
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .strokeBorder(
-                        quota.isExhausted ? Tokens.Palette.warning.opacity(0.42) : .white.opacity(0.34),
-                        lineWidth: 1
-                    )
-            }
-            .opacity(quota.isExhausted ? 0.78 : 1)
-            .shadow(color: Tokens.Palette.graphite.opacity(quota.isExhausted ? 0.05 : 0.11), radius: 18, y: 10)
-            .contentShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        }
-        .buttonStyle(.pressable)
-    }
-}
-
-private struct AddMealCompactPill: View {
-    let icon: String
-    let tint: Color
-    let title: LocalizedStringKey
-    let quota: AddMealQuota
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: Tokens.Space.sm) {
-                Image(systemName: quota.isExhausted ? "lock.fill" : icon)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(tint)
-                    .frame(width: 32, height: 32)
-                    .background(Circle().fill(tint.opacity(0.14)))
-                Text(title)
-                    .font(Tokens.Font.footnote.weight(.semibold))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .lineLimit(1)
-                Spacer(minLength: 0)
-                AddMealQuotaBadge(quota: quota, isProminent: false)
-            }
-            .padding(.horizontal, Tokens.Space.md)
-            .frame(maxWidth: .infinity)
-            .frame(height: 58)
-            .background(.ultraThinMaterial, in: Capsule())
-            .background(Capsule().fill(Tokens.Palette.surface.opacity(0.78)))
-            .overlay(Capsule().stroke(.white.opacity(0.10), lineWidth: 0.35))
-        }
-        .buttonStyle(.pressable)
-    }
-}
-
-private struct AddHubStageModifier: ViewModifier {
-    let isVisible: Bool
-    let index: Int
-
-    func body(content: Content) -> some View {
-        content
-            .opacity(isVisible ? 1 : 0)
-            .offset(y: isVisible ? 0 : 20)
-            .scaleEffect(isVisible ? 1 : 0.985)
-            .animation(Tokens.Motion.gentle.delay(Double(index) * 0.055), value: isVisible)
-    }
-}
-
-extension View {
-    fileprivate func addHubStage(isVisible: Bool, index: Int) -> some View {
-        modifier(AddHubStageModifier(isVisible: isVisible, index: index))
-    }
-}
-
-private struct AddMealQuotaBadge: View {
-    let quota: AddMealQuota
-    let isProminent: Bool
-    var foreground: Color?
-    var background: Color?
-
-    var body: some View {
-        if let label = quota.label {
-            HStack(spacing: 4) {
-                if quota.isExhausted {
-                    Image(systemName: "lock.fill")
-                        .font(.system(size: 9, weight: .bold))
-                }
-                Text(label)
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-            }
-            .foregroundStyle(foreground ?? (isProminent ? .white : Tokens.Palette.inkMuted))
-            .padding(.horizontal, 9)
-            .padding(.vertical, 5)
-            .background(
-                Capsule()
-                    .fill(
-                        background ?? (isProminent ? .white.opacity(0.18) : Tokens.Palette.surfaceMuted.opacity(0.88)))
-            )
-        }
     }
 }

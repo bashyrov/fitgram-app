@@ -85,7 +85,7 @@ struct MealTextAnalysisService: @unchecked Sendable {
     func complete(items: [FoodItem], mealType: MealType) async -> [FoodItem] {
         let catalog = currentCatalog()
         var resolved = items.map { resolve(item: $0, catalog: catalog).item }
-        let missingIndexes = resolved.indices.filter { needsNutrition(resolved[$0]) }
+        let missingIndexes = resolved.indices.filter { resolved[$0].isMissingNutrition }
         guard !missingIndexes.isEmpty else { return resolved }
 
         let text =
@@ -115,7 +115,7 @@ struct MealTextAnalysisService: @unchecked Sendable {
     func complete(item: FoodItem, mealType: MealType) async -> (item: FoodItem, usedAI: Bool) {
         let catalog = currentCatalog()
         let resolved = resolve(item: item, catalog: catalog)
-        guard needsNutrition(resolved.item) else {
+        guard resolved.item.isMissingNutrition else {
             return (resolved.item, false)
         }
 
@@ -279,10 +279,6 @@ struct MealTextAnalysisService: @unchecked Sendable {
         }
         original.confidence = max(original.confidence ?? 0, ai.confidence)
         return original
-    }
-
-    private func needsNutrition(_ item: FoodItem) -> Bool {
-        item.caloriesKcal <= 0 || item.proteinGrams <= 0 || item.carbsGrams <= 0 || item.fatGrams <= 0
     }
 
     private func bestAIItem(

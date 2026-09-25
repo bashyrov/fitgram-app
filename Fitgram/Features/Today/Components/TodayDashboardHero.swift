@@ -91,7 +91,6 @@ struct TodayDashboardHero: View {
 
 // MARK: - Sections
 extension TodayDashboardHero {
-
     private var topBar: some View {
         HStack(alignment: .center, spacing: Tokens.Space.md) {
             VStack(alignment: .leading, spacing: 2) {
@@ -426,7 +425,6 @@ extension TodayDashboardHero {
 
 // MARK: - Helpers
 extension TodayDashboardHero {
-
     private func progress(_ value: Double, goal: Int) -> Double {
         guard goal > 0 else { return 0 }
         return min(1, max(0, value / Double(goal)))

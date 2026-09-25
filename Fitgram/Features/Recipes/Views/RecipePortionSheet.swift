@@ -37,7 +37,7 @@ struct RecipePortionSheet: View {
         self.entitlementsStore = entitlementsStore
         self.paywallCoordinator = paywallCoordinator
         self.usageMeter = usageMeter
-        let initialItems = Self.initialDrafts(for: recipe)
+        let initialItems = RecipeIngredientDraft.initialDrafts(for: recipe)
         let totalGrams = max(100, initialItems.reduce(0) { $0 + $1.quantityGrams })
         self._overallName = State(initialValue: recipe.title)
         self._overallGrams = State(initialValue: totalGrams)
@@ -88,7 +88,10 @@ struct RecipePortionSheet: View {
         }
         .toastSurface()
     }
+}
 
+// MARK: - Sections
+extension RecipePortionSheet {
     private var background: some View {
         LinearGradient(
             colors: [
@@ -321,7 +324,10 @@ struct RecipePortionSheet: View {
         }
         .frame(maxWidth: .infinity)
     }
+}
 
+// MARK: - Portion math
+extension RecipePortionSheet {
     private var detailTotalGrams: Double {
         detailDrafts.reduce(0) { $0 + $1.quantityGrams }
     }
@@ -371,7 +377,10 @@ struct RecipePortionSheet: View {
     private var selectedCarbs: Double { selectedItems.reduce(0) { $0 + $1.carbsGrams } }
     private var selectedFat: Double { selectedItems.reduce(0) { $0 + $1.fatGrams } }
     private var selectedGrams: Double { selectedItems.reduce(0) { $0 + $1.quantityGrams } }
+}
 
+// MARK: - Actions
+extension RecipePortionSheet {
     private func syncDetailFromOverall() {
         guard detailDrafts.count == 1 else { return }
         detailDrafts[0].quantityGrams = overallGrams
@@ -456,18 +465,22 @@ struct RecipePortionSheet: View {
     }
 
     private func aiCompletionUseCount(for items: [FoodItem]) -> Int {
-        let missingCount = items.filter(Self.needsNutrition).count
+        let missingCount = items.filter(\.isMissingNutrition).count
         guard missingCount > 0 else { return 0 }
         return portionMode == .overall ? 1 : missingCount
     }
 
+    /// Save-time AI completion spends the meal allowance in overall mode
+    /// and the per-product allowance in detailed mode.
+    private var aiCompletionQuota: (kind: UsageMeter.Kind, cap: Int?) {
+        portionMode == .overall
+            ? (.mealAIRefresh, entitlementsStore?.current.mealAIRefreshesPerDay)
+            : (.productNutritionLookup, entitlementsStore?.current.productNutritionLookupsPerDay)
+    }
+
     private func canConsumeAICompletion(count: Int) -> Bool {
         guard count > 0 else { return true }
-        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let (kind, cap) = aiCompletionQuota
         guard let cap, let usageMeter else { return true }
         if usageMeter.used(kind) + count <= cap { return true }
         Haptics.light()
@@ -477,73 +490,10 @@ struct RecipePortionSheet: View {
 
     private func recordAICompletion(count: Int) {
         guard count > 0 else { return }
-        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let (kind, cap) = aiCompletionQuota
         for _ in 0..<count {
             usageMeter?.record(kind, cap: cap)
         }
     }
 
-    private static func needsNutrition(_ item: FoodItem) -> Bool {
-        item.caloriesKcal <= 0 || item.proteinGrams <= 0 || item.carbsGrams <= 0 || item.fatGrams <= 0
-    }
-
-    private static func initialDrafts(for recipe: Recipe) -> [RecipeIngredientDraft] {
-        let servingCount = max(Double(recipe.servings), 1)
-        if !recipe.ingredients.isEmpty {
-            return recipe.ingredients.map { ingredient in
-                let grams = ingredient.quantityGrams ?? 100
-                return RecipeIngredientDraft(name: ingredient.name, quantityGrams: grams)
-            }
-        }
-        return [
-            RecipeIngredientDraft(
-                name: recipe.title,
-                quantityGrams: 100,
-                caloriesKcalPer100g: recipe.caloriesPerServing ?? 0,
-                proteinGramsPer100g: recipe.proteinPerServing ?? 0,
-                carbsGramsPer100g: recipe.carbsPerServing ?? 0,
-                fatGramsPer100g: recipe.fatPerServing ?? 0
-            )
-        ].map { draft in
-            var adjusted = draft
-            adjusted.quantityGrams = max(100, 100 / servingCount)
-            return adjusted
-        }
-    }
-}
-
-private struct RecipeIngredientDraft: Identifiable, Equatable {
-    let id = UUID()
-    var name: String
-    var quantityGrams: Double
-    var caloriesKcalPer100g: Double
-    var proteinGramsPer100g: Double
-    var carbsGramsPer100g: Double
-    var fatGramsPer100g: Double
-
-    init(
-        name: String,
-        quantityGrams: Double,
-        caloriesKcalPer100g: Double = 0,
-        proteinGramsPer100g: Double = 0,
-        carbsGramsPer100g: Double = 0,
-        fatGramsPer100g: Double = 0
-    ) {
-        self.name = name
-        self.quantityGrams = quantityGrams
-        self.caloriesKcalPer100g = caloriesKcalPer100g
-        self.proteinGramsPer100g = proteinGramsPer100g
-        self.carbsGramsPer100g = carbsGramsPer100g
-        self.fatGramsPer100g = fatGramsPer100g
-    }
-
-    private var factor: Double { quantityGrams / 100 }
-    var caloriesKcal: Double { caloriesKcalPer100g * factor }
-    var proteinGrams: Double { proteinGramsPer100g * factor }
-    var carbsGrams: Double { carbsGramsPer100g * factor }
-    var fatGrams: Double { fatGramsPer100g * factor }
 }
