@@ -194,7 +194,8 @@ struct StreakSharePreviewSheet: View {
         guard let item else { return }
         Task { @MainActor in
             if let data = try? await item.loadTransferable(type: Data.self),
-                let uiImage = UIImage(data: data) {
+                let uiImage = UIImage(data: data)
+            {
                 pickedPhoto = uiImage
             }
         }

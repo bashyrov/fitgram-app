@@ -48,7 +48,7 @@ struct AuthView: View {
                 .interpolation(.high)
                 .scaledToFit()
                 .frame(width: 172, height: 112)
-            .fitgramShadow(Tokens.Shadow.float)
+                .fitgramShadow(Tokens.Shadow.float)
 
             Text("Fitgram")
                 .font(Tokens.Font.display)
@@ -113,9 +113,9 @@ struct AuthView: View {
                     es: "Al registrarte, aceptas nuestras políticas."
                 )
             )
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-                .multilineTextAlignment(.center)
+            .font(Tokens.Font.caption)
+            .foregroundStyle(Tokens.Palette.inkSubtle)
+            .multilineTextAlignment(.center)
 
             HStack(spacing: Tokens.Space.md) {
                 if let termsURL {

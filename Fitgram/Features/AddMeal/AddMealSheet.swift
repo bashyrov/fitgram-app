@@ -587,7 +587,8 @@ private struct AddMealQuotaBadge: View {
             .padding(.vertical, 5)
             .background(
                 Capsule()
-                    .fill(background ?? (isProminent ? .white.opacity(0.18) : Tokens.Palette.surfaceMuted.opacity(0.88)))
+                    .fill(
+                        background ?? (isProminent ? .white.opacity(0.18) : Tokens.Palette.surfaceMuted.opacity(0.88)))
             )
         }
     }

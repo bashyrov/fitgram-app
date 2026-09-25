@@ -330,7 +330,9 @@ struct WorkoutDetailSheet: View {
         ) {
             detailTile(symbol: "timer", title: L("Duration"), value: durationText, tint: palette.primary)
             if workout.met > 0 {
-                detailTile(symbol: "speedometer", title: "MET", value: String(format: "%.1f", workout.met), tint: palette.accent)
+                detailTile(
+                    symbol: "speedometer", title: "MET", value: String(format: "%.1f", workout.met),
+                    tint: palette.accent)
             }
             detailTile(symbol: "clock", title: L("Time"), value: timeText, tint: Tokens.Palette.warning)
             detailTile(symbol: "calendar", title: L("Date"), value: dateText, tint: Tokens.Palette.success)
@@ -346,16 +348,24 @@ struct WorkoutDetailSheet: View {
                 detailTile(symbol: "figure.run", title: paceTitle, value: paceText, tint: Tokens.Palette.primary)
             }
             if workout.steps > 0 {
-                detailTile(symbol: "shoeprints.fill", title: stepsTitle, value: "\(workout.steps)", tint: Tokens.Palette.success)
+                detailTile(
+                    symbol: "shoeprints.fill", title: stepsTitle, value: "\(workout.steps)",
+                    tint: Tokens.Palette.success)
             }
             if workout.flightsClimbed > 0 {
-                detailTile(symbol: "stairs", title: flightsTitle, value: "\(workout.flightsClimbed)", tint: Tokens.Palette.warning)
+                detailTile(
+                    symbol: "stairs", title: flightsTitle, value: "\(workout.flightsClimbed)",
+                    tint: Tokens.Palette.warning)
             }
             if let averageHeartRateText {
-                detailTile(symbol: "heart.fill", title: averageHeartRateTitle, value: averageHeartRateText, tint: Tokens.Palette.error)
+                detailTile(
+                    symbol: "heart.fill", title: averageHeartRateTitle, value: averageHeartRateText,
+                    tint: Tokens.Palette.error)
             }
             if let heartRateRangeText {
-                detailTile(symbol: "waveform.path.ecg", title: heartRateRangeTitle, value: heartRateRangeText, tint: Tokens.Palette.error)
+                detailTile(
+                    symbol: "waveform.path.ecg", title: heartRateRangeTitle, value: heartRateRangeText,
+                    tint: Tokens.Palette.error)
             }
         }
     }
@@ -481,11 +491,14 @@ struct WorkoutDetailSheet: View {
         }
         if workout.source == .appleHealth {
             return TL(
-                pl: "Usunięcie tej pozycji usuwa ją tylko z Fitgram. Oryginalny trening w Apple Health zostaje bez zmian.",
-                en: "Deleting this entry removes it only from Fitgram. The original Apple Health workout stays unchanged.",
+                pl:
+                    "Usunięcie tej pozycji usuwa ją tylko z Fitgram. Oryginalny trening w Apple Health zostaje bez zmian.",
+                en:
+                    "Deleting this entry removes it only from Fitgram. The original Apple Health workout stays unchanged.",
                 uk: "Видалення прибере запис лише з Fitgram. Оригінальне тренування в Apple Health не зміниться.",
                 ru: "Удаление уберет запись только из Fitgram. Оригинальная тренировка в Apple Health не изменится.",
-                es: "Eliminar esta entrada solo la quita de Fitgram. El entrenamiento original de Apple Health no cambia."
+                es:
+                    "Eliminar esta entrada solo la quita de Fitgram. El entrenamiento original de Apple Health no cambia."
             )
         }
         return TL(

@@ -449,13 +449,16 @@ struct GoalsAndTargetsCard: View {
                 .foregroundStyle(Tokens.Palette.primary)
             Text(
                 TL(
-                    pl: "Kalorie są liczone z celu, wagi, aktywności i diety. Żeby zmienić stałą normę, przelicz cały plan.",
+                    pl:
+                        "Kalorie są liczone z celu, wagi, aktywności i diety. Żeby zmienić stałą normę, przelicz cały plan.",
                     en: """
                         Calories are calculated from your goal, weight, activity and diet. Recalculate the full plan to change the \
                         future target.
                         """,
-                    uk: "Калорії рахуються з цілі, ваги, активності й дієти. Щоб змінити майбутню норму, перерахуй увесь план.",
-                    ru: "Калории считаются из цели, веса, активности и диеты. Чтобы изменить норму на будущее, пересчитай весь план.",
+                    uk:
+                        "Калорії рахуються з цілі, ваги, активності й дієти. Щоб змінити майбутню норму, перерахуй увесь план.",
+                    ru:
+                        "Калории считаются из цели, веса, активности и диеты. Чтобы изменить норму на будущее, пересчитай весь план.",
                     es: """
                         Las calorías se calculan desde tu objetivo, peso, actividad y dieta. Recalcula todo el plan para cambiar el \
                         objetivo futuro.

@@ -72,7 +72,8 @@ extension PaywallTrigger {
         case .productNutritionQuota:
             return Copy(
                 headline: L("Limit produktów AI wykorzystany"),
-                body: L("W bezpłatnej wersji AI uzupełni 2 pojedyncze produkty dziennie. Premium ma bardzo duże limity."),
+                body: L(
+                    "W bezpłatnej wersji AI uzupełni 2 pojedyncze produkty dziennie. Premium ma bardzo duże limity."),
                 badge: L("Produkty")
             )
         case .olaChefQuota:
@@ -114,7 +115,9 @@ extension PaywallTrigger {
         case .recipesCap:
             return Copy(
                 headline: L("Limit 5 przepisów"),
-                body: L("W bezpłatnej wersji zapiszesz 5 przepisów. Pro daje bardzo duże limity, całą bibliotekę i import z URL."),
+                body: L(
+                    "W bezpłatnej wersji zapiszesz 5 przepisów. Pro daje bardzo duże limity, całą bibliotekę i import z URL."
+                ),
                 badge: L("Recipes")
             )
         case .exportCsv, .exportZip:

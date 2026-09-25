@@ -97,11 +97,15 @@ struct AIRequestHint: View {
     static var mealRefresh: AIRequestHint {
         AIRequestHint(
             text: TL(
-                pl: "Popraw nazwę dania i odśwież AI. Jeśli wpiszesz tylko kalorie lub wagę, AI uzupełni brakujące makro.",
-                en: "Edit the meal name and refresh AI. If you enter only calories or weight, AI will fill the missing macros.",
+                pl:
+                    "Popraw nazwę dania i odśwież AI. Jeśli wpiszesz tylko kalorie lub wagę, AI uzupełni brakujące makro.",
+                en:
+                    "Edit the meal name and refresh AI. If you enter only calories or weight, AI will fill the missing macros.",
                 uk: "Виправ назву страви й онови AI. Якщо ввести лише калорії або вагу, AI заповнить відсутні макро.",
-                ru: "Поправь название блюда и обнови AI. Можно вписать только калории или вес — AI досчитает недостающие Б/Ж/У.",
-                es: "Edita el nombre del plato y actualiza con AI. Si pones solo calorías o peso, AI completará los macros."
+                ru:
+                    "Поправь название блюда и обнови AI. Можно вписать только калории или вес — AI досчитает недостающие Б/Ж/У.",
+                es:
+                    "Edita el nombre del plato y actualiza con AI. Si pones solo calorías o peso, AI completará los macros."
             )
         )
     }
@@ -109,11 +113,16 @@ struct AIRequestHint: View {
     static var productNutrition: AIRequestHint {
         AIRequestHint(
             text: TL(
-                pl: "W produkcie wystarczy nazwa i gramatura. Możesz wpisać same kalorie — AI doliczy białko, węgle i tłuszcz.",
-                en: "For a product, name and grams are enough. You can enter only calories — AI will calculate protein, carbs and fat.",
-                uk: "Для продукту достатньо назви й грамів. Можна ввести лише калорії — AI порахує білки, вуглеводи й жири.",
-                ru: "Для продукта достаточно названия и граммовки. Можно вписать только калории — AI досчитает белки, углеводы и жиры.",
-                es: "Para un producto basta el nombre y los gramos. Puedes poner solo calorías: AI calculará proteína, carbos y grasa."
+                pl:
+                    "W produkcie wystarczy nazwa i gramatura. Możesz wpisać same kalorie — AI doliczy białko, węgle i tłuszcz.",
+                en:
+                    "For a product, name and grams are enough. You can enter only calories — AI will calculate protein, carbs and fat.",
+                uk:
+                    "Для продукту достатньо назви й грамів. Можна ввести лише калорії — AI порахує білки, вуглеводи й жири.",
+                ru:
+                    "Для продукта достаточно названия и граммовки. Можно вписать только калории — AI досчитает белки, углеводы и жиры.",
+                es:
+                    "Para un producto basta el nombre y los gramos. Puedes poner solo calorías: AI calculará proteína, carbos y grasa."
             )
         )
     }
