@@ -66,7 +66,7 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
         id: "monthly",
         productID: "fitgram_premium_monthly",
         title: L("Monthly"),
-        priceLabel: "29 zł",
+        priceLabel: "22 zł",
         periodLabel: L("/ month"),
         isFeatured: false,
         trialDays: 7
@@ -76,8 +76,8 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
         id: "annual",
         productID: "fitgram_premium_yearly",
         title: L("Yearly"),
-        priceLabel: "199 zł",
-        periodLabel: L("/ year — save 43%"),
+        priceLabel: "200 zł",
+        periodLabel: L("/ year — save 24%"),
         isFeatured: true,
         trialDays: 7
     )

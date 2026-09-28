@@ -112,8 +112,8 @@ Fitgram имеет paywall, но StoreKit пока в mock-режиме. Что�
 2. Type: **Auto-Renewable Subscription**
 3. Создай Subscription Group "Fitgram Premium"
 4. Внутри группы создай продукты:
-   - `fitgram_premium_monthly` (1 месяц, 16.60 zł)
-   - `fitgram_premium_yearly` (1 год, 199 zł)
+   - `fitgram_premium_monthly` (1 месяц, 22 zł ≈ 4,99 $ / 5,99 €)
+   - `fitgram_premium_yearly` (1 год, 200 zł ≈ 44,99 $ / 49,99 €)
 5. Включи 7-day free trial / introductory offer для обоих продуктов, если хочешь пробный период на оба плана.
 6. Эти Product IDs уже подключены в StoreKit 2 в приложении — RevenueCat не обязателен для первого review.
 

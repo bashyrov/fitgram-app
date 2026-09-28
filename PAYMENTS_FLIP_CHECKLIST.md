@@ -48,8 +48,8 @@ Both products must exist before the flip. StoreKit ID = exact constant from the 
 
 | Product ID | Type | Price (suggested) | Trial |
 |---|---|---|---|
-| `fitgram_premium_monthly` | Auto-Renewable Subscription | 29 zł / 6.99 USD / 6.99 EUR | 7 days |
-| `fitgram_premium_yearly` | Auto-Renewable Subscription | 199 zł / 39.99 USD / 39.99 EUR | 7 days |
+| `fitgram_premium_monthly` | Auto-Renewable Subscription | 22 zł / 4.99 USD / 5.99 EUR | 7 days |
+| `fitgram_premium_yearly` | Auto-Renewable Subscription | 200 zł / 44.99 USD / 49.99 EUR | 7 days |
 
 Both share a single subscription group called `Fitgram Premium`. Localized display names + descriptions live in App Store Connect — fastlane doesn't push these (they're set in the iOS app via `Product.displayName` / `displayPrice`).
 
@@ -136,7 +136,7 @@ Inside the group → **+ Subscription**
 | Product ID | `fitgram_premium_monthly` (must match code exactly) |
 | Subscription Duration | 1 Month |
 | Cleared for Sale | Yes |
-| Pricing | Tier of your choice (≈ 6.99 USD = 29 zł = 6.99 EUR) |
+| Pricing | Tier of your choice (22 zł = 4.99 USD = 5.99 EUR) |
 
 **Subscription Localizations** — add at least English:
 - Display Name: `Premium Monthly`
@@ -153,7 +153,7 @@ Same process. Differences:
 | Reference Name | `Premium Yearly` |
 | Product ID | `fitgram_premium_yearly` |
 | Subscription Duration | 1 Year |
-| Pricing | ≈ 39.99 USD = 199 zł |
+| Pricing | 200 zł = 44.99 USD = 49.99 EUR |
 
 7-day free trial same as monthly.
 

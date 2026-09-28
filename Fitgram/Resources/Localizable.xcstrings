@@ -91239,6 +91239,41 @@
           }
         }
       }
+    },
+    "/ year — save 24%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ year — save 24%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ año — ahorra 24%"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ rok — oszczędź 24%"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ год — скидка 24%"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ рік — заощаджуйте 24%"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
