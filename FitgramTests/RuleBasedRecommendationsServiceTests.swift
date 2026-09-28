@@ -109,7 +109,10 @@ final class RuleBasedRecommendationsServiceTests: XCTestCase {
     func testSedentaryAddsWalkingTip() async throws {
         let svc = RuleBasedRecommendationsService()
         let result = try await svc.generate(for: request(activity: .sedentary, prefs: []))
-        XCTAssertTrue(result.tips.contains { $0.title.lowercased().contains("walk") })
+        // The movement tip rotates daily between a walk, the stairs and
+        // standing up every hour; titles are localized, icons are not.
+        let movementIcons: Set<String> = ["🚶", "🪜", "⏰"]
+        XCTAssertTrue(result.tips.contains { movementIcons.contains($0.icon) })
     }
 
     func testDietaryPreferenceMentioned() async throws {

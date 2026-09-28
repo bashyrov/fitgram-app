@@ -7,21 +7,23 @@ final class MacroSplitTests: XCTestCase {
     func testBalancedSplitAt2000Kcal() throws {
         let split = try XCTUnwrap(MacroSplit.presets.first { $0.id == "balanced" })
         let grams = split.grams(forCalories: 2000)
+        // DietMacroPreset.balanced is 25 / 45 / 30.
         // 25% of 2000 = 500 kcal protein → 125g
         XCTAssertEqual(grams.protein, 125)
-        // 50% of 2000 = 1000 kcal carbs → 250g
-        XCTAssertEqual(grams.carbs, 250)
-        // 25% of 2000 = 500 kcal fat → 56g (500/9 = 55.55 → 56)
-        XCTAssertEqual(grams.fat, 56)
+        // 45% of 2000 = 900 kcal carbs → 225g
+        XCTAssertEqual(grams.carbs, 225)
+        // 30% of 2000 = 600 kcal fat → 67g (600/9 = 66.67 → 67)
+        XCTAssertEqual(grams.fat, 67)
     }
 
     func testKetoSplitFavorsFat() throws {
         let split = try XCTUnwrap(MacroSplit.presets.first { $0.id == "keto" })
         let grams = split.grams(forCalories: 2000)
-        XCTAssertEqual(grams.protein, 125)
+        // DietMacroPreset.keto is 20 / 5 / 75.
+        XCTAssertEqual(grams.protein, 100)
         XCTAssertEqual(grams.carbs, 25)
-        // 70% of 2000 = 1400 kcal fat → 156g
-        XCTAssertEqual(grams.fat, 156)
+        // 75% of 2000 = 1500 kcal fat → 167g (1500/9 = 166.67 → 167)
+        XCTAssertEqual(grams.fat, 167)
     }
 
     func testZeroCaloriesProducesZeroGrams() throws {

@@ -28,10 +28,15 @@ platform :ios do
       app_identifier: "app.fitgram.ios.bashyrov"
     )
     new_build = latest + 1
-    increment_build_number(
-      build_number: new_build,
-      xcodeproj: "Fitgram.xcodeproj"
-    )
+    # project.yml is the source of truth (xcodegen). increment_build_number
+    # would run agvtool, which hard-codes the number into every Info.plist
+    # in place of $(CURRENT_PROJECT_VERSION).
+    project_yml = File.expand_path("../project.yml", __dir__)
+    contents = File.read(project_yml)
+    updated = contents.sub(/CURRENT_PROJECT_VERSION: "\d+"/, %(CURRENT_PROJECT_VERSION: "#{new_build}"))
+    UI.user_error!("CURRENT_PROJECT_VERSION not found in project.yml") if updated == contents && !contents.include?(%(CURRENT_PROJECT_VERSION: "#{new_build}"))
+    File.write(project_yml, updated)
+    sh("cd .. && make generate")
     UI.success "Bumped build number → #{new_build}"
   end
 
