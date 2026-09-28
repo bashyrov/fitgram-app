@@ -5,6 +5,9 @@ struct SupabaseAuthExchange: Sendable {
         case notConfigured
         case invalidResponse
         case http(status: Int, body: String)
+        /// Sign-up succeeded but Supabase still requires email confirmation,
+        /// so it returned a user without a session.
+        case emailConfirmationRequired
     }
 
     private let session: URLSession
@@ -17,6 +20,27 @@ struct SupabaseAuthExchange: Sendable {
 
     func exchangeGoogleIDToken(_ idToken: String) async throws -> AuthCredentials {
         try await exchangeIDToken(idToken, provider: .google, nonce: nil)
+    }
+
+    /// Email + password sign-in (`grant_type=password`).
+    func signIn(email: String, password: String) async throws -> AuthCredentials {
+        let data = try await post(
+            path: "auth/v1/token",
+            query: [URLQueryItem(name: "grant_type", value: "password")],
+            body: PasswordPayload(email: email, password: password)
+        )
+        return try credentials(from: data, provider: .email)
+    }
+
+    /// Creates an email + password account. With "Confirm email" disabled in
+    /// Supabase the response already carries a session.
+    func signUp(email: String, password: String) async throws -> AuthCredentials {
+        let data = try await post(
+            path: "auth/v1/signup", query: [], body: PasswordPayload(email: email, password: password))
+        guard (try? decoder.decode(SupabaseTokenResponse.self, from: data)) != nil else {
+            throw ExchangeError.emailConfirmationRequired
+        }
+        return try credentials(from: data, provider: .email)
     }
 
     /// Sign in with Apple: `rawNonce` is the value whose SHA-256 was set on
@@ -32,17 +56,22 @@ struct SupabaseAuthExchange: Sendable {
         provider: AuthProviderKind,
         nonce: String?
     ) async throws -> AuthCredentials {
+        let data = try await post(
+            path: "auth/v1/token",
+            query: [URLQueryItem(name: "grant_type", value: "id_token")],
+            body: IDTokenPayload(provider: provider.rawValue, idToken: idToken, nonce: nonce)
+        )
+        return try credentials(from: data, provider: provider)
+    }
+
+    private func post(path: String, query: [URLQueryItem], body: some Encodable) async throws -> Data {
         guard let supabaseURL = AppConfig.supabaseURL,
             let anonKey = AppConfig.supabaseAnonKey
         else {
             throw ExchangeError.notConfigured
         }
-
-        var components = URLComponents(
-            url: supabaseURL.appending(path: "auth/v1/token"),
-            resolvingAgainstBaseURL: false
-        )
-        components?.queryItems = [URLQueryItem(name: "grant_type", value: "id_token")]
+        var components = URLComponents(url: supabaseURL.appending(path: path), resolvingAgainstBaseURL: false)
+        if !query.isEmpty { components?.queryItems = query }
         guard let url = components?.url else { throw ExchangeError.notConfigured }
 
         var request = URLRequest(url: url)
@@ -50,20 +79,19 @@ struct SupabaseAuthExchange: Sendable {
         request.setValue(anonKey, forHTTPHeaderField: "apikey")
         request.setValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(
-            IDTokenPayload(provider: provider.rawValue, idToken: idToken, nonce: nonce)
-        )
+        request.httpBody = try JSONEncoder().encode(body)
 
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else {
             throw ExchangeError.invalidResponse
         }
         guard (200..<300).contains(http.statusCode) else {
-            throw ExchangeError.http(
-                status: http.statusCode,
-                body: String(data: data, encoding: .utf8) ?? ""
-            )
+            throw ExchangeError.http(status: http.statusCode, body: String(data: data, encoding: .utf8) ?? "")
         }
+        return data
+    }
+
+    private func credentials(from data: Data, provider: AuthProviderKind) throws -> AuthCredentials {
         let payload = try decoder.decode(SupabaseTokenResponse.self, from: data)
         return AuthCredentials(
             userID: payload.user.id,
@@ -73,6 +101,11 @@ struct SupabaseAuthExchange: Sendable {
             provider: provider
         )
     }
+}
+
+private struct PasswordPayload: Encodable {
+    let email: String
+    let password: String
 }
 
 private struct IDTokenPayload: Encodable {

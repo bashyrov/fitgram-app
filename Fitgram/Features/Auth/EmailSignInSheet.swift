@@ -1,31 +1,45 @@
 import SwiftUI
 
-/// Two-state sheet: email entry → "check your inbox" once Supabase
-/// confirms the magic link was sent. Closing the sheet doesn't cancel the
-/// flow — `AuthService.completeEmailSignIn` still fires when the user taps
-/// the link in their email.
+/// Email + password sign-in with an inline "create account" mode. There is
+/// no inbox step: the project doesn't require email confirmation, so both
+/// modes land the user signed in.
 struct EmailSignInSheet: View {
     let authService: AuthService
     let onDismiss: () -> Void
 
-    @State private var email: String = ""
-    @State private var phase: Phase = .input
+    @State private var mode: Mode = .signIn
+    @State private var email = ""
+    @State private var password = ""
+    @State private var isPasswordVisible = false
+    @State private var isSubmitting = false
     @State private var errorMessage: String?
-    @FocusState private var isEmailFocused: Bool
+    @FocusState private var focusedField: Field?
 
-    enum Phase {
-        case input
-        case sending
-        case sent
+    enum Mode: Hashable {
+        case signIn
+        case createAccount
+    }
+
+    private enum Field {
+        case email
+        case password
+    }
+
+    private var canSubmit: Bool {
+        !isSubmitting && !email.trimmingCharacters(in: .whitespaces).isEmpty
+            && password.count >= EmailAuthProvider.minimumPasswordLength
     }
 
     var body: some View {
         NavigationStack {
             ZStack {
                 Tokens.Palette.background.ignoresSafeArea()
-                content
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.top, Tokens.Space.xl)
+                ScrollView {
+                    form
+                        .padding(.horizontal, Tokens.Space.screenPadding)
+                        .padding(.top, Tokens.Space.xl)
+                }
+                .scrollDismissesKeyboard(.interactively)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -36,79 +50,93 @@ struct EmailSignInSheet: View {
                             .foregroundStyle(Tokens.Palette.inkSubtle)
                             .font(.title3)
                     }
-                    .accessibilityLabel(Text("Close"))
+                    .accessibilityLabel(Text(L("Close")))
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                if phase == .input {
-                    isEmailFocused = true
-                }
-            }
+            .onAppear { focusedField = .email }
         }
     }
 
-    @ViewBuilder
-    private var content: some View {
-        switch phase {
-        case .input, .sending:
-            inputState
-        case .sent:
-            sentState
-        }
-    }
-
-    private var inputState: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.xl) {
+    private var form: some View {
+        VStack(alignment: .leading, spacing: Tokens.Space.lg) {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Zaloguj się przez e-mail")
+                Text(mode == .signIn ? L("Zaloguj się e-mailem") : L("Załóż konto"))
                     .font(Tokens.Font.title)
                     .foregroundStyle(Tokens.Palette.ink)
-                Text("Wyślemy Ci link do logowania. Bez haseł, bez tarapatów.")
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                Text(
+                    mode == .signIn
+                        ? L("Wpisz e-mail i hasło do swojego konta Fitgram.")
+                        : L("Wystarczy e-mail i hasło. Bez potwierdzania skrzynki.")
+                )
+                .font(Tokens.Font.body)
+                .foregroundStyle(Tokens.Palette.inkMuted)
             }
 
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Adres e-mail")
+            Picker("", selection: $mode) {
+                Text(L("Logowanie")).tag(Mode.signIn)
+                Text(L("Nowe konto")).tag(Mode.createAccount)
+            }
+            .pickerStyle(.segmented)
+            .onChange(of: mode) { _, _ in errorMessage = nil }
+
+            fieldLabel(L("Adres e-mail"))
+            TextField("ty@example.com", text: $email)
+                .textContentType(.emailAddress)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .focused($focusedField, equals: .email)
+                .submitLabel(.next)
+                .onSubmit { focusedField = .password }
+                .modifier(AuthFieldStyle())
+                .accessibilityIdentifier(A11yID.Auth.emailField)
+
+            fieldLabel(L("Hasło"))
+            HStack {
+                Group {
+                    if isPasswordVisible {
+                        TextField(L("Hasło"), text: $password)
+                    } else {
+                        SecureField(L("Hasło"), text: $password)
+                    }
+                }
+                .textContentType(mode == .signIn ? .password : .newPassword)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .focused($focusedField, equals: .password)
+                .submitLabel(.go)
+                .onSubmit(submit)
+                .accessibilityIdentifier(A11yID.Auth.passwordField)
+                Button {
+                    isPasswordVisible.toggle()
+                } label: {
+                    Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                }
+                .accessibilityLabel(Text(isPasswordVisible ? L("Ukryj hasło") : L("Pokaż hasło")))
+            }
+            .modifier(AuthFieldStyle())
+            if mode == .createAccount {
+                Text(L("Hasło musi mieć co najmniej 6 znaków."))
                     .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                TextField("ty@example.com", text: $email)
-                    .textFieldStyle(.plain)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .padding(.vertical, Tokens.Space.md)
-                    .padding(.horizontal, Tokens.Space.lg)
-                    .background(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                            .fill(.white)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                            .stroke(Tokens.Palette.inkSubtle.opacity(0.2), lineWidth: 1)
-                    )
-                    .focused($isEmailFocused)
-                    .submitLabel(.go)
-                    .onSubmit { submit() }
+                    .foregroundStyle(Tokens.Palette.inkSubtle)
             }
 
             if let errorMessage {
                 Text(errorMessage)
                     .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.accent)
+                    .foregroundStyle(Tokens.Palette.error)
+                    .accessibilityIdentifier(A11yID.Auth.emailError)
             }
 
-            Button {
-                submit()
-            } label: {
+            Button(action: submit) {
                 HStack {
-                    if phase == .sending {
+                    if isSubmitting {
                         ProgressView()
-                            .progressViewStyle(.circular)
                             .tint(.white)
                     }
-                    Text(phase == .sending ? "Wysyłanie…" : "Wyślij link")
+                    Text(mode == .signIn ? L("Zaloguj się") : L("Załóż konto"))
                         .font(Tokens.Font.bodyEmphasized)
                         .foregroundStyle(.white)
                 }
@@ -119,61 +147,51 @@ struct EmailSignInSheet: View {
                         .fill(Tokens.Palette.primary)
                 )
             }
-            .disabled(phase == .sending || email.isEmpty)
-            .opacity(phase == .sending || email.isEmpty ? 0.7 : 1)
-
-            Spacer()
+            .disabled(!canSubmit)
+            .opacity(canSubmit ? 1 : 0.6)
+            .accessibilityIdentifier(A11yID.Auth.emailSubmit)
         }
     }
 
-    private var sentState: some View {
-        VStack(alignment: .center, spacing: Tokens.Space.xl) {
-            Spacer()
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
-                    .frame(width: 140, height: 140)
-                Image(systemName: "envelope.badge.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            VStack(spacing: Tokens.Space.md) {
-                Text("Sprawdź skrzynkę")
-                    .font(Tokens.Font.title)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(
-                    "Wysłaliśmy link do logowania na \(email). Tapnij go z telefonu, na którym masz Fitgrama, żeby się zalogować."
-                )
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
-            }
-            Spacer()
-            Button {
-                phase = .input
-                isEmailFocused = true
-            } label: {
-                Text("Zmień adres e-mail")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            .padding(.bottom, Tokens.Space.xl)
-        }
+    private func fieldLabel(_ text: String) -> some View {
+        Text(text)
+            .font(Tokens.Font.caption)
+            .foregroundStyle(Tokens.Palette.inkMuted)
     }
 
     private func submit() {
+        guard canSubmit else { return }
         errorMessage = nil
-        let trimmed = email.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-        phase = .sending
+        isSubmitting = true
+        focusedField = nil
         Task {
+            defer { isSubmitting = false }
             do {
-                try await authService.requestEmailMagicLink(email: trimmed)
-                phase = .sent
+                try await authService.signInWithEmail(
+                    email: email, password: password, createAccount: mode == .createAccount)
+                onDismiss()
             } catch {
-                phase = .input
                 errorMessage = error.localizedDescription
+                if (error as? EmailAuthError) == .accountExists {
+                    mode = .signIn
+                }
             }
         }
+    }
+}
+
+private struct AuthFieldStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(.vertical, Tokens.Space.md)
+            .padding(.horizontal, Tokens.Space.lg)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .stroke(Tokens.Palette.inkSubtle.opacity(0.2), lineWidth: 1)
+            )
     }
 }

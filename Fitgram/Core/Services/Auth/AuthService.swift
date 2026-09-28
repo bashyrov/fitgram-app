@@ -78,42 +78,21 @@ final class AuthService {
         }
     }
 
-    /// Phase 1 of the email flow — asks Supabase to send a magic link.
-    /// Phase 2 lands in `completeEmailSignIn(callbackURL:)` when the user
-    /// taps the email and iOS routes the deep link back to us.
-    func requestEmailMagicLink(email: String) async throws {
+    /// Email + password sign-in or account creation. Errors are thrown back
+    /// to the email sheet so it can show them inline.
+    func signInWithEmail(email: String, password: String, createAccount: Bool) async throws {
         guard let provider = providers[.email] as? EmailAuthProvider else {
-            throw AuthError.providerNotConfigured(.email)
-        }
-        try await provider.requestMagicLink(email: email)
-    }
-
-    func completeEmailSignIn(callbackURL: URL) async {
-        guard let provider = providers[.email] as? EmailAuthProvider else {
-            session.surface(error: .providerNotConfigured(.email))
-            return
+            throw EmailAuthError.notConfigured
         }
         session.setWorking(true)
         defer { session.setWorking(false) }
-        do {
-            let credentials = try provider.complete(callbackURL: callbackURL)
-            try tokenStore.save(session: credentials)
-            let user = AuthUser(
-                id: credentials.userID,
-                email: nil,
-                displayName: nil,
-                provider: .email
-            )
-            await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
-            session.update(phase: .authenticated(user))
-            Logger.auth.info("Email magic-link sign-in completed")
-        } catch let error as AuthError {
-            Logger.auth.error("Email completion failed: \(error.userMessage)")
-            session.surface(error: error)
-        } catch {
-            Logger.auth.error("Email completion failed: \(String(describing: error))")
-            session.surface(error: .unknown(underlying: String(describing: error)))
-        }
+
+        let credentials = try await provider.signIn(email: email, password: password, createAccount: createAccount)
+        try tokenStore.save(session: credentials)
+        let user = AuthUser(id: credentials.userID, email: nil, displayName: nil, provider: .email)
+        await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
+        session.update(phase: .authenticated(user))
+        Logger.auth.info("Signed in via email (\(createAccount ? "sign-up" : "sign-in", privacy: .public))")
     }
 
     /// Fresh Sign in with Apple authorization code for revoking the app's

@@ -414,7 +414,6 @@ extension FitgramApp {
     /// channel so MainTabView (which holds the live `authUser.id`) can
     /// fan out to the right service. Currently handles:
     ///   - fitgram://add-water           (Live Activity button)
-    ///   - fitgram://auth/callback#…     (Supabase email magic link)
     ///   - fitgram://auth/google?…       (Google OAuth callback)
     private func handleDeepLink(_ url: URL) {
         guard url.scheme == FitgramActivityDeepLink.scheme else { return }
@@ -431,10 +430,6 @@ extension FitgramApp {
             NotificationCenter.default.post(
                 name: AppShortcutAction.addWaterFromActivity, object: nil
             )
-            return
-        }
-        if url.host == "auth", url.path == "/callback" {
-            Task { await authService.completeEmailSignIn(callbackURL: url) }
             return
         }
         if url.host == "auth", url.path == "/google" {

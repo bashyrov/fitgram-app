@@ -10,6 +10,10 @@ enum A11yID {
         static let googleButton = "auth.button.google"
         static let emailButton = "auth.button.email"
         static let errorBanner = "auth.error.banner"
+        static let emailField = "auth.email.field"
+        static let passwordField = "auth.email.password"
+        static let emailSubmit = "auth.email.submit"
+        static let emailError = "auth.email.error"
     }
 
     enum Onboarding {
