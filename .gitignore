@@ -68,3 +68,6 @@ coverage/
 
 # Wrangler local state
 .wrangler/
+
+# Supabase CLI local state
+supabase/.temp/
