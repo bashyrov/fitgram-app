@@ -9,6 +9,7 @@ import { handleAnalyzeMealText } from "./analyze-meal-text";
 import { handleOlaChefSuggestions } from "./ola-chef";
 import { handleAdmin } from "./admin";
 import { handleSubscriptionSync } from "./subscriptions";
+import { handleDeleteAccount } from "./account";
 import {
     handleInitialRecommendations,
     handleDailyInsight,
@@ -29,6 +30,7 @@ import {
  *   POST /api/v1/coach/daily-insight              → Gemini text (auth)
  *   POST /api/v1/coach/daily-plan                 → Gemini text (auth)
  *   POST /api/v1/coach/weekly-debrief             → Gemini text (auth)
+ *   DELETE /api/v1/account                        → delete Worker data + revoke Apple tokens (auth)
  *   GET  /admin/usage                              → JSON cost + req stats
  *   GET  /admin/dashboard                          → same data, HTML
  */
@@ -54,6 +56,10 @@ export default {
             if (url.pathname === "/api/v1/ola-chef/suggestions") {
                 const auth = await authenticate(request, env);
                 return await handleOlaChefSuggestions(request, env, log, auth);
+            }
+            if (url.pathname === "/api/v1/account") {
+                const auth = await authenticate(request, env);
+                return await handleDeleteAccount(request, env, log, auth);
             }
             if (url.pathname === "/api/v1/subscription/sync") {
                 const auth = await authenticate(request, env);

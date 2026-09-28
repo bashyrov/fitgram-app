@@ -116,6 +116,17 @@ final class AuthService {
         }
     }
 
+    /// Fresh Sign in with Apple authorization code for revoking the app's
+    /// Apple tokens during account deletion; nil for non-Apple accounts.
+    func appleAuthorizationCodeForAccountDeletion() async throws -> String? {
+        guard (try? tokenStore.providerKind) == AuthProviderKind.apple.rawValue,
+            let apple = providers[.apple] as? AppleAuthProvider
+        else {
+            return nil
+        }
+        return try await apple.authorizationCodeForAccountDeletion()
+    }
+
     func signOut() async {
         session.setWorking(true)
         defer { session.setWorking(false) }

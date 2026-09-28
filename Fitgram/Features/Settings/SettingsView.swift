@@ -631,6 +631,8 @@ struct SettingsView: View {
         defer { isDeletingAccount = false }
         do {
             try await onDeleteAccount()
+        } catch AuthError.canceled {
+            // The user closed the Apple confirmation sheet — nothing was deleted.
         } catch {
             accountActionError = deleteAccountFailedMessage
         }

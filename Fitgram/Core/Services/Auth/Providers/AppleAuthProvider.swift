@@ -1,24 +1,75 @@
 import AuthenticationServices
+import CryptoKit
 import Foundation
 import OSLog
 
-/// Native Sign in with Apple flow. In production, the `identityToken` is
-/// posted to our Supabase Edge Function which validates with Apple, mints a
-/// Supabase JWT, and returns it — for now (no Supabase wired yet) we treat
-/// the identity token itself as the access token and the Apple user ID as
-/// the local user ID. Swap in the real exchange in Milestone 1.6.
+/// Native Sign in with Apple flow. The Apple identity token (bound to a
+/// one-time nonce) is exchanged for a Supabase session, so the Worker and
+/// Supabase accept the same access token as for Google sign-in. Without a
+/// configured Supabase project (local development) the Apple token itself is
+/// kept as the session token.
 @MainActor
 final class AppleAuthProvider: NSObject, AuthProvider {
     let kind: AuthProviderKind = .apple
 
-    private var currentContinuation: CheckedContinuation<AuthCredentials, any Error>?
+    private let supabaseExchange: SupabaseAuthExchange
+    private var currentContinuation: CheckedContinuation<ASAuthorizationAppleIDCredential, any Error>?
+
+    init(supabaseExchange: SupabaseAuthExchange = SupabaseAuthExchange()) {
+        self.supabaseExchange = supabaseExchange
+    }
 
     func signIn() async throws -> AuthCredentials {
+        let rawNonce = Self.randomNonce()
+        let credential = try await authorize(scopes: [.fullName, .email], hashedNonce: Self.sha256(rawNonce))
+        guard let tokenData = credential.identityToken,
+            let token = String(data: tokenData, encoding: .utf8)
+        else {
+            throw AuthError.invalidCredential
+        }
+        guard AppConfig.supabaseURL != nil, AppConfig.supabaseAnonKey != nil else {
+            return AuthCredentials(
+                userID: credential.user,
+                accessToken: token,
+                refreshToken: nil,
+                expiresAt: nil,
+                provider: .apple
+            )
+        }
+        do {
+            return try await supabaseExchange.exchangeAppleIDToken(token, rawNonce: rawNonce)
+        } catch {
+            Logger.auth.error("Apple → Supabase exchange failed: \(String(describing: error), privacy: .public)")
+            throw AuthError.unknown(underlying: L("Nie udało się zalogować. Spróbuj ponownie za chwilę."))
+        }
+    }
+
+    /// Asks the user to confirm with Apple once more and returns a fresh
+    /// authorization code. Account deletion sends it to the Worker, which
+    /// revokes the app's Apple tokens (App Store Review Guideline 5.1.1(v)).
+    func authorizationCodeForAccountDeletion() async throws -> String {
+        let credential = try await authorize(scopes: [], hashedNonce: nil)
+        guard let data = credential.authorizationCode, let code = String(data: data, encoding: .utf8) else {
+            throw AuthError.invalidCredential
+        }
+        return code
+    }
+
+    func signOut() async {
+        // Apple doesn't expose a programmatic sign-out — the user manages
+        // their app's link from Settings → Apple ID. Nothing to do locally.
+    }
+
+    private func authorize(
+        scopes: [ASAuthorization.Scope],
+        hashedNonce: String?
+    ) async throws -> ASAuthorizationAppleIDCredential {
         try await withCheckedThrowingContinuation { continuation in
             self.currentContinuation = continuation
 
             let request = ASAuthorizationAppleIDProvider().createRequest()
-            request.requestedScopes = [.fullName, .email]
+            request.requestedScopes = scopes
+            request.nonce = hashedNonce
 
             let controller = ASAuthorizationController(authorizationRequests: [request])
             controller.delegate = self
@@ -27,9 +78,14 @@ final class AppleAuthProvider: NSObject, AuthProvider {
         }
     }
 
-    func signOut() async {
-        // Apple doesn't expose a programmatic sign-out — the user manages
-        // their app's link from Settings → Apple ID. Nothing to do locally.
+    private static func randomNonce(length: Int = 32) -> String {
+        let charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var generator = SystemRandomNumberGenerator()
+        return String((0..<length).map { _ in charset[Int.random(in: 0..<charset.count, using: &generator)] })
+    }
+
+    private static func sha256(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 }
 
@@ -43,21 +99,7 @@ extension AppleAuthProvider: ASAuthorizationControllerDelegate {
                 self.finish(with: .failure(AuthError.invalidCredential))
                 return
             }
-            guard let tokenData = credential.identityToken,
-                let token = String(data: tokenData, encoding: .utf8)
-            else {
-                self.finish(with: .failure(AuthError.invalidCredential))
-                return
-            }
-
-            let credentials = AuthCredentials(
-                userID: credential.user,
-                accessToken: token,
-                refreshToken: nil,
-                expiresAt: nil,
-                provider: .apple
-            )
-            self.finish(with: .success(credentials))
+            self.finish(with: .success(credential))
         }
     }
 
@@ -76,7 +118,7 @@ extension AppleAuthProvider: ASAuthorizationControllerDelegate {
         }
     }
 
-    private func finish(with result: Result<AuthCredentials, any Error>) {
+    private func finish(with result: Result<ASAuthorizationAppleIDCredential, any Error>) {
         currentContinuation?.resume(with: result)
         currentContinuation = nil
     }

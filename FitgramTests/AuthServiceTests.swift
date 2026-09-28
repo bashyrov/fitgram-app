@@ -75,6 +75,29 @@ final class AuthServiceTests: XCTestCase {
         XCTAssertNil(try tokenStore.accessToken)
     }
 
+    func testNoAppleCodeRequestedForNonAppleAccounts() async throws {
+        let credentials = AuthCredentials.fixture(userID: "u-google", provider: .google)
+        let provider = MockAuthProvider(kind: .google, result: .success(credentials))
+        let service = AuthService(providers: [provider], tokenStore: tokenStore, session: session)
+        await service.signIn(with: .google)
+
+        let code = try await service.appleAuthorizationCodeForAccountDeletion()
+
+        XCTAssertNil(code)
+    }
+
+    func testNoAppleCodeRequestedWhenAppleProviderIsNotTheRealOne() async throws {
+        let credentials = AuthCredentials.fixture(userID: "u-apple", provider: .apple)
+        let provider = MockAuthProvider(kind: .apple, result: .success(credentials))
+        let service = AuthService(providers: [provider], tokenStore: tokenStore, session: session)
+        await service.signIn(with: .apple)
+
+        // Only the native AppleAuthProvider can show the Apple sheet.
+        let code = try await service.appleAuthorizationCodeForAccountDeletion()
+
+        XCTAssertNil(code)
+    }
+
     func testRestoreSessionFromPersistedTokens() async throws {
         let credentials = AuthCredentials.fixture(userID: "u-back", provider: .google)
         try tokenStore.save(session: credentials)

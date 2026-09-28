@@ -12,6 +12,10 @@ export interface Env {
     APPLE_ISSUER_ID?: string;
     APPLE_KEY_ID?: string;
     APPLE_PRIVATE_KEY?: string;
+    // Sign in with Apple key (Keys → "Sign in with Apple"), used to revoke
+    // Apple tokens when an account is deleted. Not the In-App Purchase key.
+    APPLE_SIWA_KEY_ID?: string;
+    APPLE_SIWA_PRIVATE_KEY?: string;
     UPSTASH_REDIS_URL: string;
     UPSTASH_REDIS_TOKEN: string;
 
@@ -23,6 +27,7 @@ export interface Env {
     CACHE_TTL_SECONDS: string;
     LOG_LEVEL: string;
     APPLE_BUNDLE_ID?: string;
+    APPLE_TEAM_ID?: string;
 
     // Optional KV — falls back to in-memory when missing.
     SCAN_CACHE?: KVNamespace;

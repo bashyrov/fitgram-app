@@ -91274,6 +91274,41 @@
           }
         }
       }
+    },
+    "Nie udało się zalogować. Spróbuj ponownie za chwilę." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't sign in. Please try again in a moment."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar sesión. Inténtalo de nuevo en un momento."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się zalogować. Spróbuj ponownie za chwilę."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось войти. Попробуй ещё раз через минуту."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося увійти. Спробуй ще раз за хвилину."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

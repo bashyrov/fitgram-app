@@ -16,6 +16,22 @@ struct SupabaseAuthExchange: Sendable {
     }
 
     func exchangeGoogleIDToken(_ idToken: String) async throws -> AuthCredentials {
+        try await exchangeIDToken(idToken, provider: .google, nonce: nil)
+    }
+
+    /// Sign in with Apple: `rawNonce` is the value whose SHA-256 was set on
+    /// the Apple request; Supabase re-hashes it to check the token's nonce.
+    func exchangeAppleIDToken(_ idToken: String, rawNonce: String) async throws -> AuthCredentials {
+        try await exchangeIDToken(idToken, provider: .apple, nonce: rawNonce)
+    }
+
+    /// Trades a provider ID token for a Supabase session (grant_type=id_token),
+    /// so the Worker and Supabase both accept the resulting access token.
+    private func exchangeIDToken(
+        _ idToken: String,
+        provider: AuthProviderKind,
+        nonce: String?
+    ) async throws -> AuthCredentials {
         guard let supabaseURL = AppConfig.supabaseURL,
             let anonKey = AppConfig.supabaseAnonKey
         else {
@@ -35,7 +51,7 @@ struct SupabaseAuthExchange: Sendable {
         request.setValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONEncoder().encode(
-            IDTokenPayload(provider: "google", idToken: idToken)
+            IDTokenPayload(provider: provider.rawValue, idToken: idToken, nonce: nonce)
         )
 
         let (data, response) = try await session.data(for: request)
@@ -54,7 +70,7 @@ struct SupabaseAuthExchange: Sendable {
             accessToken: payload.accessToken,
             refreshToken: payload.refreshToken,
             expiresAt: payload.expiresIn.map { Date().addingTimeInterval(Double($0)) },
-            provider: .google
+            provider: provider
         )
     }
 }
@@ -62,6 +78,13 @@ struct SupabaseAuthExchange: Sendable {
 private struct IDTokenPayload: Encodable {
     let provider: String
     let idToken: String
+    let nonce: String?
+
+    enum CodingKeys: String, CodingKey {
+        case provider
+        case idToken = "id_token"
+        case nonce
+    }
 }
 
 private struct SupabaseTokenResponse: Decodable {
