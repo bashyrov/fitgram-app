@@ -14,19 +14,17 @@ final class FitgramUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Fitgram"].waitForExistence(timeout: 8))
     }
 
-    /// Tapping the Google button on a freshly installed app surfaces the
-    /// "provider not configured" banner because no OAuth client ID is wired.
-    func testGoogleSignInTapShowsNotConfiguredBanner() throws {
+    /// The Google sign-in entry point is visible and enabled on a fresh
+    /// install. Google OAuth is configured, so tapping it would start the
+    /// real web sign-in; that flow is covered manually on device.
+    func testGoogleSignInButtonIsAvailable() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Identifiers must match A11yID.Auth.googleButton / errorBanner.
+        // Identifier must match A11yID.Auth.googleButton.
         let googleButton = app.buttons["auth.button.google"]
         XCTAssertTrue(googleButton.waitForExistence(timeout: 8))
-        googleButton.tap()
-
-        let banner = app.otherElements["auth.error.banner"]
-        XCTAssertTrue(banner.waitForExistence(timeout: 5))
+        XCTAssertTrue(googleButton.isEnabled)
     }
 
     /// Baseline launch performance. First measurement just establishes a

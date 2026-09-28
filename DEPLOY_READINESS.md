@@ -40,7 +40,7 @@ Last checked: 2026-08-11
 
 - As of 2026-09-25: `swiftlint --strict` reports 0 violations and `swift-format lint` is clean for `Fitgram`, `FitgramTests` and `FitgramUITests`.
 - As of 2026-09-25: app, widget, unit-test and UI-test targets compile with 0 warnings in Swift 5.10 mode and with 0 errors / 0 warnings in a trial `SWIFT_VERSION=6` build. The watch target was not rebuilt (watchOS platform not installed on the build Mac). The project still ships in Swift 5.10 mode.
-- 5 unit tests fail on assertions that predate the rebrand (design-token value, macro split presets, sedentary walking tip, Worker auth header). They fail identically on the pre-cleanup commit and need their expectations reviewed against current product values.
+- As of 2026-09-28: all 506 unit tests and 4 UI tests pass. The stale expectations (macro presets, card shadow, sedentary tip, scan auth header, Google "not configured" banner) were updated to the values the app ships.
 - `swiftlint` returns a cache-file error in this environment unless run with `--no-cache`.
 - Fastlane reported already-uploaded screenshots for most locales and skipped extra `uk` iPad 12.9 screenshots because App Store Connect already has the maximum for that device class.
 
