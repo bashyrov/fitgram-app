@@ -147,7 +147,7 @@ function buildInitialRecsPrompt(req: RecommendationsRequest): string {
 
 /** -------- /api/v1/coach/daily-insight -------- **/
 
-interface CoachContext {
+export interface CoachContext {
     goals: {
         calorieGoalKcal: number;
         proteinGoalGrams: number;
@@ -288,6 +288,18 @@ export async function handleDailyInsight(
     }
 }
 
+/**
+ * The coach context as the model sees it: no user id (only needed for
+ * accounting) and no locale (covered by `languageInstruction`), with
+ * fractional numbers rounded to one decimal. Same meaning, fewer tokens.
+ */
+export function promptContext(ctx: CoachContext): string {
+    const { userID: _userID, locale: _locale, ...visible } = ctx;
+    return JSON.stringify(visible, (_key, value: unknown) =>
+        typeof value === "number" && !Number.isInteger(value) ? Math.round(value * 10) / 10 : value
+    );
+}
+
 function buildDailyInsightPrompt(ctx: CoachContext): string {
     return [
         "You are Ola, a warm AI nutrition coach inside Fitgram.",
@@ -297,7 +309,7 @@ function buildDailyInsightPrompt(ctx: CoachContext): string {
         "logging momentum) rather than generic advice.",
         languageInstruction(ctx.locale),
         "",
-        `Context: ${JSON.stringify(ctx)}`,
+        `Context: ${promptContext(ctx)}`,
         "",
         "Return ONLY this JSON shape (no markdown fences):",
         '{',
@@ -387,7 +399,7 @@ function buildDailyPlanPrompt(ctx: CoachContext): string {
         "workouts, streak, weight trend, and frequent foods. Do not invent medical claims.",
         languageInstruction(ctx.locale),
         "",
-        `Context: ${JSON.stringify(ctx)}`,
+        `Context: ${promptContext(ctx)}`,
         "",
         "Return ONLY a JSON object matching this exact shape, no markdown:",
         "{",
@@ -496,7 +508,7 @@ function buildWeeklyDebriefPrompt(ctx: CoachContext): string {
         "from the context. Use memory only if it makes advice more personal.",
         languageInstruction(ctx.locale),
         "",
-        `Context: ${JSON.stringify(ctx)}`,
+        `Context: ${promptContext(ctx)}`,
         "",
         "Return ONLY this JSON shape:",
         '{',

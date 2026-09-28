@@ -103,10 +103,17 @@ interface GeminiCandidate {
     finishReason?: string;
     safetyRatings?: unknown[];
 }
-interface GeminiUsageMetadata {
+export interface GeminiUsageMetadata {
     promptTokenCount?: number;
     candidatesTokenCount?: number;
+    /** Thinking tokens — billed as output, reported separately. */
+    thoughtsTokenCount?: number;
     totalTokenCount?: number;
+}
+
+/** Billed output tokens: visible answer plus any thinking tokens. */
+export function billedOutputTokens(usage: GeminiUsageMetadata | undefined): number {
+    return (usage?.candidatesTokenCount ?? 0) + (usage?.thoughtsTokenCount ?? 0);
 }
 interface GeminiResponse {
     candidates?: GeminiCandidate[];
@@ -200,7 +207,7 @@ export async function detectFood(
     const usage = {
         model,
         promptTokens: json.usageMetadata?.promptTokenCount ?? 0,
-        outputTokens: json.usageMetadata?.candidatesTokenCount ?? 0,
+        outputTokens: billedOutputTokens(json.usageMetadata),
     };
     return { detection, usage };
 }
@@ -379,7 +386,7 @@ export async function generateJSON<T>(
         usage: {
             model,
             promptTokens: json.usageMetadata?.promptTokenCount ?? 0,
-            outputTokens: json.usageMetadata?.candidatesTokenCount ?? 0,
+            outputTokens: billedOutputTokens(json.usageMetadata),
         },
     };
 }
@@ -548,9 +555,17 @@ function selectedAIProvider(env: Env): "gemini" | "claude" {
     return env.AI_PROVIDER?.toLowerCase() === "claude" ? "claude" : "gemini";
 }
 
-function geminiThinkingConfig(model: string): Record<string, unknown> {
+/**
+ * Thinking adds billed tokens without improving these short structured
+ * answers. 2.5 Flash / Flash-Lite can turn it off; 2.5 Pro cannot, so it
+ * gets the smallest budget the API accepts.
+ */
+export function geminiThinkingConfig(model: string): Record<string, unknown> {
     if (model.includes("2.5-flash")) {
         return { thinkingConfig: { thinkingBudget: 0 } };
+    }
+    if (model.includes("2.5-pro")) {
+        return { thinkingConfig: { thinkingBudget: 128 } };
     }
     return {};
 }

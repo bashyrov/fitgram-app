@@ -9,11 +9,25 @@ import Foundation
 /// immediately; the Worker one suspends on the network call.
 protocol CoachInsightGenerator: Sendable {
     func generate(for context: CoachContext) async -> [CoachInsight]
+    /// Same insights plus whether they came from the AI model. Only AI
+    /// output is worth reusing for an unchanged context — a fallback after
+    /// a network error should be retried on the next refresh.
+    func generateBatch(for context: CoachContext) async -> CoachInsightBatch
     func generateDailyPlan(for context: CoachContext, now: Date) async -> DailyOlaPlan
     func generateWeekly(for context: CoachContext) async -> WeeklyDebriefAIResult
 }
 
+/// Insights plus where they came from; see `generateBatch(for:)`.
+struct CoachInsightBatch: Sendable, Equatable {
+    let insights: [CoachInsight]
+    let isFromAI: Bool
+}
+
 extension CoachInsightGenerator {
+    func generateBatch(for context: CoachContext) async -> CoachInsightBatch {
+        CoachInsightBatch(insights: await generate(for: context), isFromAI: false)
+    }
+
     func generateDailyPlan(for context: CoachContext, now: Date) async -> DailyOlaPlan {
         DailyOlaPlanBuilder.build(context: context, now: now)
     }

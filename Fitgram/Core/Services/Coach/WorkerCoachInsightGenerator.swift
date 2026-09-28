@@ -27,6 +27,10 @@ struct WorkerCoachInsightGenerator: CoachInsightGenerator {
     }
 
     func generate(for context: CoachContext) async -> [CoachInsight] {
+        await generateBatch(for: context).insights
+    }
+
+    func generateBatch(for context: CoachContext) async -> CoachInsightBatch {
         do {
             let request = WireCoachContext.from(context)
             let endpoint = try Endpoint.json(
@@ -40,13 +44,13 @@ struct WorkerCoachInsightGenerator: CoachInsightGenerator {
             let insights = response.insights.map(CoachInsight.init(wire:))
             if insights.isEmpty {
                 Logger.coach.notice("worker daily-insight returned empty list, using fallback")
-                return await fallback.generate(for: context)
+                return CoachInsightBatch(insights: await fallback.generate(for: context), isFromAI: false)
             }
-            return insights
+            return CoachInsightBatch(insights: insights, isFromAI: true)
         } catch {
             Logger.coach.error(
                 "worker daily-insight failed: \(String(describing: error), privacy: .public)")
-            return await fallback.generate(for: context)
+            return CoachInsightBatch(insights: await fallback.generate(for: context), isFromAI: false)
         }
     }
 

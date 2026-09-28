@@ -16,6 +16,10 @@ final class CoachService {
     private let logStore: CoachInsightLogStore?
     private let dismissalStore: CoachDismissalStore?
     private let dailyPlanStore: DailyOlaPlanStore
+    private let insightStore: CoachInsightStore
+    /// The Today insight request currently on the wire, keyed by context
+    /// signature, so overlapping refreshes share one AI call.
+    private var inFlightInsights: (signature: String, task: Task<CoachInsightBatch, Never>)?
     private let calorieOverrideStore: DailyCalorieOverrideStore
     private let macroOverrideStore: DailyMacroOverrideStore
     private let activityCaloriePolicyStore: ActivityCaloriePolicyStore
@@ -29,6 +33,7 @@ final class CoachService {
         logStore: CoachInsightLogStore? = nil,
         dismissalStore: CoachDismissalStore? = nil,
         dailyPlanStore: DailyOlaPlanStore = DailyOlaPlanStore(),
+        insightStore: CoachInsightStore = CoachInsightStore(),
         calorieOverrideStore: DailyCalorieOverrideStore = DailyCalorieOverrideStore(),
         macroOverrideStore: DailyMacroOverrideStore = DailyMacroOverrideStore(),
         activityCaloriePolicyStore: ActivityCaloriePolicyStore = ActivityCaloriePolicyStore(),
@@ -43,6 +48,7 @@ final class CoachService {
         self.logStore = logStore
         self.dismissalStore = dismissalStore
         self.dailyPlanStore = dailyPlanStore
+        self.insightStore = insightStore
         self.calorieOverrideStore = calorieOverrideStore
         self.macroOverrideStore = macroOverrideStore
         self.activityCaloriePolicyStore = activityCaloriePolicyStore
@@ -50,11 +56,44 @@ final class CoachService {
         self.now = now
     }
 
+    /// Today's coach insights. The AI is asked again only when something
+    /// it sees changed (see `CoachContext.aiSignature`), the day part or
+    /// the language changed, or the previous answer was a local fallback.
     func insights(for userRemoteID: String) async -> [CoachInsight] {
         let context = buildContext(for: userRemoteID)
-        let allInsights = await generator.generate(for: context)
+        let dateKey = DailyOlaPlanBuilder.planDateKey(now(), calendar: calendar)
+        let locale = LocalizationStore.currentLanguageCode()
+        let signature = context.aiSignature
+        let allInsights: [CoachInsight]
+        if let stored = insightStore.load(
+            userRemoteID: userRemoteID, dateKey: dateKey, locale: locale, signature: signature)
+        {
+            allInsights = stored
+        } else {
+            let batch = await generateInsights(for: context, signature: signature)
+            if batch.isFromAI {
+                insightStore.save(
+                    batch.insights, userRemoteID: userRemoteID, dateKey: dateKey, locale: locale,
+                    signature: signature)
+            }
+            allInsights = batch.insights
+        }
         guard let dismissalStore else { return allInsights }
         return allInsights.filter { !dismissalStore.isDismissed(headline: $0.headline) }
+    }
+
+    private func generateInsights(for context: CoachContext, signature: String) async -> CoachInsightBatch {
+        if let inFlight = inFlightInsights, inFlight.signature == signature {
+            return await inFlight.task.value
+        }
+        let generator = generator
+        let task = Task { await generator.generateBatch(for: context) }
+        inFlightInsights = (signature, task)
+        let batch = await task.value
+        if inFlightInsights?.signature == signature {
+            inFlightInsights = nil
+        }
+        return batch
     }
 
     func dismiss(insight: CoachInsight) {
@@ -347,7 +386,18 @@ final class CoachService {
     }
 }
 
+/// Last generated Ola plan per user. One entry per user, replaced on each
+/// generation; reused only when day, language and signature all match.
 struct DailyOlaPlanStore {
+    private struct Entry: Codable {
+        let dateKey: String
+        let locale: String
+        let signature: String
+        let plan: DailyOlaPlan
+    }
+
+    private static let legacyKeyPrefix = "coach.dailyPlan."
+
     private let defaults: UserDefaults
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
@@ -362,28 +412,35 @@ struct DailyOlaPlanStore {
 
     func load(userRemoteID: String, dateKey: String, locale: String, signature: String) -> DailyOlaPlan? {
         guard
-            let data = defaults.data(
-                forKey: key(userRemoteID: userRemoteID, dateKey: dateKey, locale: locale, signature: signature)
-            )
+            let data = defaults.data(forKey: key(userRemoteID)),
+            let entry = try? decoder.decode(Entry.self, from: data),
+            entry.dateKey == dateKey, entry.locale == locale, entry.signature == signature
         else {
             return nil
         }
-        return try? decoder.decode(DailyOlaPlan.self, from: data)
+        return entry.plan
     }
 
     func save(_ plan: DailyOlaPlan, userRemoteID: String, locale: String, signature: String) {
-        guard let data = try? encoder.encode(plan) else { return }
-        defaults.set(
-            data,
-            forKey: key(userRemoteID: userRemoteID, dateKey: plan.dateKey, locale: locale, signature: signature)
-        )
+        let entry = Entry(dateKey: plan.dateKey, locale: locale, signature: signature, plan: plan)
+        guard let data = try? encoder.encode(entry) else { return }
+        removeLegacyEntries()
+        defaults.set(data, forKey: key(userRemoteID))
     }
 
-    private func key(userRemoteID: String, dateKey: String, locale: String, signature: String) -> String {
+    private func key(_ userRemoteID: String) -> String {
         let safeUserID =
             userRemoteID
             .replacingOccurrences(of: ".", with: "_")
             .replacingOccurrences(of: "/", with: "_")
-        return "coach.dailyPlan.\(safeUserID).\(locale).\(dateKey).\(signature)"
+        return "coach.dailyPlanLatest.\(safeUserID)"
+    }
+
+    /// Earlier builds wrote one key per (day, locale, signature) and never
+    /// removed them.
+    private func removeLegacyEntries() {
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix(Self.legacyKeyPrefix) {
+            defaults.removeObject(forKey: key)
+        }
     }
 }
