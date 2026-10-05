@@ -119,6 +119,7 @@ struct PaywallView: View {
                     Text("Pełny AI-coach, bez limitów")
                         .font(.system(size: 24, weight: .heavy, design: .rounded))
                         .foregroundStyle(Tokens.Palette.onPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text("Skanuj jedzenie, poprawiaj AI, korzystaj z Oli, przepisów i celów bez dziennych blokad.")
                         .font(Tokens.Font.body)
                         .foregroundStyle(Tokens.Palette.onPrimary.opacity(0.78))
@@ -136,7 +137,7 @@ struct PaywallView: View {
     private var premiumStrip: some View {
         HStack(spacing: Tokens.Space.sm) {
             premiumMetric(value: "∞", label: "AI")
-            premiumMetric(value: "Ola", label: "coach")
+            premiumMetric(value: L("Ola"), label: "coach")
             premiumMetric(value: "7", label: "dni free")
         }
     }
