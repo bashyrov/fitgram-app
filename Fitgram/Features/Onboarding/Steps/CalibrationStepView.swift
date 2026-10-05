@@ -211,13 +211,13 @@ private struct SecondaryMetricsRow: View {
             SecondaryChip(
                 symbol: "drop.fill",
                 color: Tokens.Palette.lime,
-                value: "\(targets.waterGoalMl) ml",
+                value: "\(targets.waterGoalMl) \(L("ml"))",
                 label: "Woda"
             )
             SecondaryChip(
                 symbol: "leaf.fill",
                 color: Tokens.Palette.success,
-                value: "\(targets.fiberGoalGrams) g",
+                value: "\(targets.fiberGoalGrams) \(L("g"))",
                 label: "Fiber"
             )
         }

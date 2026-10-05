@@ -9,27 +9,34 @@ struct WelcomeStepView: View {
     var body: some View {
         ZStack {
             backdrop
-            ScrollView {
-                VStack(spacing: Tokens.Space.xxl) {
-                    Spacer(minLength: Tokens.Space.xl)
-                    hero
-                    FeatureHighlights()
-                        .padding(.top, Tokens.Space.lg)
-                    Spacer(minLength: Tokens.Space.lg)
+            // CTA sits below the scroll view (not overlaid) so it never
+            // covers a highlight card; content scrolls under a short fade.
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(spacing: Tokens.Space.xxl) {
+                        Spacer(minLength: Tokens.Space.xl)
+                        hero
+                        FeatureHighlights()
+                            .padding(.top, Tokens.Space.lg)
+                    }
+                    .padding(.vertical, Tokens.Space.lg)
                 }
-                .padding(.vertical, Tokens.Space.lg)
-                // Reserve room for the floating bottom CTA so the last
-                // highlight isn't hidden under it.
-                .padding(.bottom, 120)
-            }
-            VStack {
-                Spacer()
-                VStack(spacing: Tokens.Space.sm) {
-                    PrimaryButton(title: "Zacznijmy", systemImage: "arrow.right", action: onContinue)
-                        .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
-                }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.bottom, Tokens.Space.xl)
+                PrimaryButton(title: "Zacznijmy", systemImage: "arrow.right", action: onContinue)
+                    .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.top, Tokens.Space.md)
+                    .padding(.bottom, Tokens.Space.xl)
+                    .background(
+                        LinearGradient(
+                            colors: [Tokens.Palette.background.opacity(0), Tokens.Palette.background],
+                            startPoint: .top,
+                            endPoint: .center
+                        )
+                        .frame(height: 32)
+                        .frame(maxHeight: .infinity, alignment: .top)
+                        .offset(y: -32)
+                        .allowsHitTesting(false)
+                    )
             }
         }
         .onAppear {

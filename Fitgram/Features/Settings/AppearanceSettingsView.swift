@@ -247,7 +247,7 @@ struct AppearanceSettingsView: View {
 
     private var heroTitle: String {
         TL(
-            pl: "Dopasuj Fitgram", en: "Tune Fitgram", uk: "Налаштуйте Fitgram", ru: "Настрой Fitgram",
+            pl: "Dopasuj Fitgram", en: "Tune Fitgram", uk: "Налаштуй Fitgram", ru: "Настрой Fitgram",
             es: "Personaliza Fitgram")
     }
 
@@ -255,7 +255,7 @@ struct AppearanceSettingsView: View {
         TL(
             pl: "Wybierz jasny lub ciemny motyw oraz ikonę na ekranie iPhone'a.",
             en: "Choose a light or dark theme and iPhone Home Screen icon.",
-            uk: "Оберіть світлу або темну тему й іконку на екрані iPhone.",
+            uk: "Обери світлу або темну тему й іконку на екрані iPhone.",
             ru: "Выбери светлую или тёмную тему и иконку на экране iPhone.",
             es: "Elige un tema claro u oscuro y el icono del iPhone.")
     }
@@ -295,7 +295,7 @@ struct AppearanceSettingsView: View {
 
     private var failedIconMessage: String {
         TL(
-            pl: "Spróbuj ponownie za chwilę.", en: "Try again in a moment.", uk: "Спробуйте ще раз трохи пізніше.",
+            pl: "Spróbuj ponownie za chwilę.", en: "Try again in a moment.", uk: "Спробуй ще раз трохи пізніше.",
             ru: "Попробуй еще раз чуть позже.", es: "Inténtalo de nuevo en un momento.")
     }
 

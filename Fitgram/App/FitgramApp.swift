@@ -267,6 +267,8 @@ struct FitgramApp: App {
             } catch {
                 Logger.persistence.error("DebugBypass seeding failed: \(String(describing: error))")
             }
+        } else if DebugBypass.forceOnboarding {
+            session.update(phase: .authenticated(DebugBypass.fakeAuthUser))
         }
         #endif
     }

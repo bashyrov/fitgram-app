@@ -14,6 +14,12 @@ enum DebugBypass {
         flag("fitgramDebugBypassAuth", env: "FITGRAM_DEBUG_BYPASS_AUTH")
     }
 
+    /// Pass `-fitgramDebugOnboarding 1` (with `-fitgramDebugResetData 1`)
+    /// to sign in as a fresh, unseeded user so the onboarding flow shows.
+    static var forceOnboarding: Bool {
+        flag("fitgramDebugOnboarding", env: "FITGRAM_DEBUG_ONBOARDING")
+    }
+
     /// Pass `-fitgramDebugResetData 1` once from Xcode/devicectl to wipe
     /// local stores and keychain before the app boots normally.
     static var resetData: Bool {

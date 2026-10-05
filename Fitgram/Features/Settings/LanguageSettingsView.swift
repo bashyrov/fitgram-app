@@ -144,8 +144,8 @@ struct LanguageSettingsView: View {
         TL(
             pl: "Wybierz język aplikacji",
             en: "Choose app language",
-            uk: "Виберіть мову застосунку",
-            ru: "Выберите язык приложения",
+            uk: "Обери мову застосунку",
+            ru: "Выбери язык приложения",
             es: "Elige el idioma de la app"
         )
     }
