@@ -155,24 +155,15 @@ extension AddMealSheet {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Tokens.Palette.background,
-                Tokens.Palette.lime.opacity(0.18),
-                Tokens.Palette.graphite.opacity(0.08),
-                Tokens.Palette.background,
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
+        Tokens.Palette.background
+            .ignoresSafeArea()
     }
 
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(L("Dodaj posiłek"))
-                    .font(.system(size: 31, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 31, weight: 800, width: 115))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(L("Każda metoda kończy się jasnym wyborem: ogólnie albo szczegółowo"))
                     .font(Tokens.Font.subheadline)
@@ -184,7 +175,6 @@ extension AddMealSheet {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .frame(width: 34, height: 34)
-                    .background(.ultraThinMaterial, in: Circle())
                     .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
             }
             .buttonStyle(.pressable)
@@ -236,7 +226,7 @@ extension AddMealSheet {
                         Image(systemName: "sparkles")
                             .font(.system(size: 11, weight: .bold))
                         Text("AI")
-                            .font(.system(size: 11, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(11, weight: 800))
                     }
                     .foregroundStyle(primaryActionTextColor.opacity(0.95))
                     .padding(.horizontal, 10)
@@ -244,10 +234,10 @@ extension AddMealSheet {
                     .background(Capsule().fill(primaryActionTextColor.opacity(usesDarkActionGradient ? 0.14 : 0.20)))
 
                     Text(L("Skanuj zdjęciem"))
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                         .foregroundStyle(primaryActionTextColor)
                     Text(L("AI rozpozna danie i pokaże tryb ogólny albo detale"))
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .font(Tokens.Font.manrope(13, weight: 600))
                         .foregroundStyle(primaryActionTextColor.opacity(0.78))
                         .lineLimit(2)
                 }
@@ -272,15 +262,7 @@ extension AddMealSheet {
             .background {
                 RoundedRectangle(cornerRadius: 30, style: .continuous)
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                primaryActionGradientStart,
-                                primaryActionGradientMiddle,
-                                primaryActionGradientEnd,
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        primaryActionGradientStart
                     )
             }
             .overlay(alignment: .top) {
@@ -315,11 +297,11 @@ extension AddMealSheet {
 // MARK: - Styling
 extension AddMealSheet {
     private var primaryActionTextColor: Color {
-        usesDarkActionGradient ? Tokens.Palette.warmWhite : .white
+        Tokens.Mono.onHero
     }
 
     private var primaryActionGradientStart: Color {
-        usesDarkActionGradient ? Tokens.Palette.graphiteSoft : Tokens.Palette.primary
+        Tokens.Mono.hero
     }
 
     private var primaryActionGradientMiddle: Color {
@@ -334,19 +316,12 @@ extension AddMealSheet {
         usesDarkActionGradient ? Tokens.Palette.primary.opacity(0.18) : Tokens.Palette.primary.opacity(0.22)
     }
 
-    private var photoIconBackground: LinearGradient {
-        LinearGradient(
-            colors: [
-                primaryActionTextColor.opacity(usesDarkActionGradient ? 0.12 : 0.22),
-                primaryActionTextColor.opacity(usesDarkActionGradient ? 0.05 : 0.10),
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+    private var photoIconBackground: Color {
+        Tokens.Mono.heroLine
     }
 
     private var photoGlowColor: Color {
-        usesDarkActionGradient ? Tokens.Palette.primary.opacity(0.14) : .black.opacity(0.10)
+        Color.clear
     }
 
     private var olaChefBlock: some View {
@@ -365,14 +340,14 @@ extension AddMealSheet {
                         )
                     Image(systemName: "fork.knife.circle.fill")
                         .font(.system(size: 30, weight: .bold))
-                        .foregroundStyle(usesDarkActionGradient ? Tokens.Palette.lime : Tokens.Palette.primary)
+                        .foregroundStyle(Tokens.Mono.hi)
                 }
                 .frame(width: 64, height: 64)
 
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 6) {
                         Text(L("Kuchnia Oli"))
-                            .font(.system(size: 21, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(21, weight: 800))
                             .foregroundStyle(Tokens.Palette.ink)
                         AddMealQuotaBadge(quota: .unlimited, isProminent: false)
                     }
@@ -385,8 +360,8 @@ extension AddMealSheet {
                         Image(systemName: "books.vertical.fill")
                         Text(L("300+ klasycznych dań"))
                     }
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .foregroundStyle(Tokens.Palette.lime)
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .foregroundStyle(Tokens.Mono.muted)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
@@ -394,27 +369,18 @@ extension AddMealSheet {
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 26, style: .continuous).fill(Tokens.Palette.surface.opacity(0.84))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(.white.opacity(0.10), lineWidth: 0.35)
+                RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(Tokens.Mono.line, lineWidth: 1)
             )
-            .shadow(color: Tokens.Palette.graphite.opacity(0.12), radius: 20, y: 12)
         }
         .buttonStyle(.pressable)
     }
 
     private var chefIconGradientColors: [Color] {
-        if usesDarkActionGradient {
-            return [Tokens.Palette.graphiteSoft, Tokens.Palette.lime.opacity(0.72)]
-        }
-        return [
-            Tokens.Palette.surface,
-            Tokens.Palette.primarySoft.opacity(0.92),
-            Tokens.Palette.accent.opacity(0.16),
-        ]
+        [Tokens.Mono.hero, Tokens.Mono.hero]
     }
 }
 

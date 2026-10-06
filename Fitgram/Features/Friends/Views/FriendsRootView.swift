@@ -118,11 +118,11 @@ struct FriendsRootView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(L("Znajomi"))
-                        .font(.system(size: 34, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.monoDisplay(32))
+                        .foregroundStyle(Tokens.Mono.onHero)
                     Text(L("Streaki, reakcje i małe zwycięstwa ludzi, którzy trzymają rytm razem z Tobą."))
                         .font(Tokens.Font.subheadline)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: Tokens.Space.md)
@@ -131,10 +131,9 @@ struct FriendsRootView: View {
                 } label: {
                     Image(systemName: "person.crop.circle.badge.plus")
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
+                        .foregroundStyle(Tokens.Mono.onHi)
                         .frame(width: 46, height: 46)
-                        .background(Circle().fill(Tokens.Palette.primary))
-                        .shadow(color: Tokens.Palette.primary.opacity(0.24), radius: 16, y: 8)
+                        .background(Circle().fill(Tokens.Mono.hi))
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel(Text(L("Dodaj znajomego")))
@@ -145,33 +144,27 @@ struct FriendsRootView: View {
                     value: "\(state.friends.count)",
                     label: L("Friends"),
                     symbol: "person.2.fill",
-                    tint: Tokens.Palette.primary
+                    tint: Tokens.Mono.hi
                 )
                 heroMetric(
                     value: "\(yourStreak)",
                     label: L("Streak"),
                     symbol: "flame.fill",
-                    tint: Tokens.Palette.warning
+                    tint: Tokens.Mono.fat
                 )
                 heroMetric(
                     value: "\(state.feed.count)",
                     label: L("Today"),
                     symbol: "bolt.fill",
-                    tint: Tokens.Palette.accent
+                    tint: Tokens.Mono.heroMuted
                 )
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.82))
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
         )
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-        )
-        .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 26, y: 16)
     }
 
     private var incomingCard: some View {
@@ -183,7 +176,6 @@ struct FriendsRootView: View {
                 }
             }
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.78)))
         }
@@ -310,7 +302,7 @@ struct FriendsRootView: View {
                 .frame(width: 28, height: 28)
                 .background(Circle().fill(Tokens.Palette.primarySoft))
             Text(title)
-                .font(.system(size: 18, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(18, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
             Spacer()
         }

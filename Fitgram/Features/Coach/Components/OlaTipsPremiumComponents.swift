@@ -8,7 +8,7 @@ struct OlaSummaryHero: View {
         VStack(alignment: .leading, spacing: Tokens.Space.lg) {
             header
             Text(L(recommendations.summary))
-                .font(.system(size: 21, weight: .bold, design: .rounded))
+                .font(Tokens.Font.manrope(21, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
@@ -19,7 +19,6 @@ struct OlaSummaryHero: View {
         .padding(Tokens.Space.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background { background }
-        .shadow(color: Tokens.Palette.accent.opacity(0.12), radius: 22, x: 0, y: 12)
     }
 
     private var header: some View {
@@ -27,25 +26,16 @@ struct OlaSummaryHero: View {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.accent,
-                                Tokens.Palette.accent.opacity(0.7),
-                                Tokens.Palette.primary.opacity(0.8),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.accent
                     )
                     .frame(width: 52, height: 52)
-                    .shadow(color: Tokens.Palette.accent.opacity(0.45), radius: 12, y: 6)
                 Image(systemName: "sparkles")
                     .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(.white)
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(L("Twój asystent AI"))
-                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(22, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(subtitle)
                     .font(Tokens.Font.caption)
@@ -149,14 +139,7 @@ private struct OlaTipRow: View {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primary.opacity(0.20),
-                                Tokens.Palette.accent.opacity(0.20),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primary.opacity(0.20)
                     )
                     .frame(width: 56, height: 56)
                 Text(tip.icon)
@@ -191,7 +174,7 @@ struct OlaFactsHeader: View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(L("Facts library"))
-                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(22, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(String.localizedStringWithFormat(L("%lld short tips"), count))
                     .font(Tokens.Font.caption)

@@ -67,7 +67,7 @@ struct AchievementsSection: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Kolekcja odznak")
-                        .font(.system(size: 24, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("Kategorie, rzadkość i następne cele w jednym miejscu.")
                         .font(Tokens.Font.footnote)
@@ -110,10 +110,8 @@ struct AchievementsSection: View {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(.white.opacity(0.10), lineWidth: 0.35))
-        .shadow(color: Tokens.Palette.primary.opacity(0.10), radius: 22, y: 12)
     }
 
     private var categoryRail: some View {
@@ -185,7 +183,6 @@ struct AchievementsSection: View {
                 .foregroundStyle(Tokens.Palette.inkMuted)
             }
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         }
@@ -203,7 +200,7 @@ struct AchievementsSection: View {
                         .font(Tokens.Font.caption.weight(.bold))
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("\(earned)")
-                        .font(.system(size: 20, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(20, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -256,7 +253,7 @@ struct AchievementsSection: View {
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(tint)
             Text(value)
-                .font(.system(size: 22, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(22, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(label)
                 .font(Tokens.Font.caption)

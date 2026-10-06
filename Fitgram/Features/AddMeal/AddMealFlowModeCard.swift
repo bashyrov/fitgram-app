@@ -14,7 +14,7 @@ struct AddMealFlowModeCard: View {
                 .frame(width: 34, height: 34)
                 .background(Circle().fill(tint.opacity(0.14)))
             Text(title)
-                .font(.system(size: 15, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(15, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(subtitle)
                 .font(Tokens.Font.caption2)

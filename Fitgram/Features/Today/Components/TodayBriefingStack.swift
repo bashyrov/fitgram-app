@@ -28,15 +28,15 @@ struct TodayBriefingStack: View {
                 contentRows
             }
             .padding(Tokens.Space.md)
-            .frostedGlass(cornerRadius: 26, fillOpacity: 0.80, borderOpacity: 0.06, glowOpacity: 0.05)
-            .shadow(color: Tokens.Palette.primary.opacity(0.07), radius: 22, x: 0, y: 12)
+            .monoCard(padding: nil)
         }
     }
 
     private var header: some View {
         HStack {
             Text(title)
-                .font(.system(size: 19, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.monoDisplay(20))
+                .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.ink)
             Spacer()
             Image(systemName: symbol)
@@ -89,7 +89,7 @@ struct TodayBriefingStack: View {
             .opacity(0.52)
             .overlay(alignment: .topTrailing) {
                 Text("PRO")
-                    .font(.system(size: 9, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(9, weight: 800))
                     .foregroundStyle(Tokens.Palette.onPrimary)
                     .padding(.horizontal, 7)
                     .padding(.vertical, 4)

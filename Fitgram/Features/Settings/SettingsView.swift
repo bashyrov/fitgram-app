@@ -1187,7 +1187,7 @@ struct ActivitySettingsView: View {
                 .frame(width: 58, height: 58)
                 .background(Circle().fill(palette.accentSoft.opacity(0.78)))
             Text(title)
-                .font(.system(size: 30, weight: .black, design: .rounded))
+                .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(subtitle)
                 .font(Tokens.Font.body)

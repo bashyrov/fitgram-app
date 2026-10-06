@@ -17,34 +17,20 @@ struct PrimaryButton: View {
                 if isLoading {
                     ProgressView()
                         .progressViewStyle(.circular)
-                        .tint(Tokens.Palette.onPrimary)
+                        .tint(Tokens.Mono.onHero)
                 } else if let systemImage {
                     Image(systemName: systemImage)
                         .font(.system(size: 17, weight: .semibold))
                 }
                 Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(16, weight: 800))
             }
-            .foregroundStyle(Tokens.Palette.onPrimary)
+            .foregroundStyle(Tokens.Mono.onHero)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primary,
-                                Tokens.Palette.accent,
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .shadow(color: Tokens.Palette.primary.opacity(0.24), radius: 16, x: 0, y: 8)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                    .stroke(Tokens.Palette.warmWhite.opacity(0.12), lineWidth: 0.55)
+                Capsule(style: .continuous)
+                    .fill(Tokens.Mono.hero)
             )
             .contentShape(RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
             .opacity(effectiveEnabled ? 1 : 0.5)

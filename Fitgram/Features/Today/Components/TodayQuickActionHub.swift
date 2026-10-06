@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Design D quick actions: one wide accent "Dodaj posiłek" tile plus two
+/// dark tiles (scanner, Ola). Same callbacks as before.
 struct TodayQuickActionHub: View {
     let canUseOlaAdvice: Bool
     let onOpenAddOptions: () -> Void
@@ -7,74 +9,85 @@ struct TodayQuickActionHub: View {
     let onOpenOla: () -> Void
 
     var body: some View {
-        HStack(spacing: Tokens.Space.xs) {
-            quickActionTile(
-                title: L("Dodaj"),
-                subtitle: L("posiłek"),
-                symbol: "plus",
-                tint: Tokens.Palette.primary,
-                action: onOpenAddOptions
-            )
-            quickActionTile(
-                title: L("Skan"),
-                subtitle: L("kamera"),
-                symbol: "camera.fill",
-                tint: Tokens.Palette.accent,
-                action: onOpenScanner
-            )
-            quickActionTile(
+        HStack(spacing: Tokens.Space.sm) {
+            Button {
+                Haptics.light()
+                onOpenAddOptions()
+            } label: {
+                VStack(alignment: .leading) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 20, weight: .bold))
+                    Spacer(minLength: 0)
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Text(L("Dodaj"))
+                            .font(Tokens.Font.monoDisplay(22))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        Text(L("posiłek"))
+                            .font(Tokens.Font.manrope(12, weight: 800))
+                            .foregroundStyle(Tokens.Mono.onAccentSub)
+                            .lineLimit(1)
+                    }
+                }
+                .foregroundStyle(Tokens.Mono.onAccent)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+                .frame(maxWidth: .infinity, minHeight: 88, maxHeight: 88, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                        .fill(Tokens.Mono.accent)
+                )
+            }
+            .buttonStyle(PressableButtonStyle())
+
+            darkTile(title: L("Skan"), subtitle: L("kamera"), symbol: "camera", action: onOpenScanner)
+            darkTile(
                 title: L("Ola"),
                 subtitle: canUseOlaAdvice ? L("porady") : L("PRO"),
                 symbol: canUseOlaAdvice ? "sparkles" : "lock.fill",
-                tint: Tokens.Palette.warning,
+                highlightSubtitle: !canUseOlaAdvice,
                 action: onOpenOla
             )
         }
-        .padding(6)
-        .frostedGlass(cornerRadius: 24, fillOpacity: 0.80, borderOpacity: 0.06, glowOpacity: 0.05)
-        .shadow(color: Tokens.Palette.primary.opacity(0.06), radius: 20, y: 10)
     }
 
-    private func quickActionTile(
+    private func darkTile(
         title: String,
         subtitle: String,
         symbol: String,
-        tint: Color,
+        highlightSubtitle: Bool = false,
         action: @escaping () -> Void
     ) -> some View {
         Button {
             Haptics.light()
             action()
         } label: {
-            HStack(spacing: 8) {
+            VStack(alignment: .leading) {
                 Image(systemName: symbol)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(tint)
-                    .frame(width: 30, height: 30)
-                    .background(Circle().fill(tint.opacity(0.14)))
+                    .font(.system(size: 18, weight: .semibold))
+                Spacer(minLength: 0)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(title)
-                        .font(.system(size: 14, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.archivo(size: 15, weight: 800, width: 115))
                         .lineLimit(1)
-                        .minimumScaleFactor(0.68)
+                        .minimumScaleFactor(0.7)
                     Text(subtitle)
-                        .font(.system(size: 9, weight: .heavy, design: .rounded))
-                        .tracking(0.35)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .font(Tokens.Font.manrope(11, weight: 800))
+                        .foregroundStyle(highlightSubtitle ? Tokens.Mono.hi : Tokens.Mono.heroMuted)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.62)
+                        .minimumScaleFactor(0.7)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 8)
-            .frame(height: 74)
+            .foregroundStyle(Tokens.Mono.onHero)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 14)
+            .frame(width: 84, height: 88, alignment: .leading)
             .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(Tokens.Palette.surfaceMuted.opacity(0.86))
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                    .fill(Tokens.Mono.hero)
             )
         }
         .buttonStyle(PressableButtonStyle())
+        .accessibilityLabel(Text("\(title), \(subtitle)"))
     }
 }

@@ -30,7 +30,6 @@ struct GoalTrendChart: View {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .fill(backgroundGradient)
         }
-        .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 22, x: 0, y: 12)
     }
 
     private var backgroundGradient: LinearGradient {
@@ -49,7 +48,7 @@ struct GoalTrendChart: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 3) {
                 Text("Trend")
-                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(22, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(rangeLabel)
                     .font(Tokens.Font.caption)

@@ -101,7 +101,6 @@ struct WelcomeStepView: View {
                     RoundedRectangle(cornerRadius: 38, style: .continuous)
                         .strokeBorder(.white.opacity(0.10), lineWidth: 0.35)
                 }
-                .shadow(color: Tokens.Palette.primary.opacity(0.24), radius: 32, y: 18)
 
             VStack(spacing: Tokens.Space.md) {
                 Capsule()
@@ -120,7 +119,6 @@ struct WelcomeStepView: View {
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(Tokens.Palette.primary)
                         .frame(width: 68, height: 68)
-                        .background(.regularMaterial, in: Circle())
                 }
                 .frame(width: 122, height: 122)
 
@@ -157,7 +155,6 @@ struct WelcomeStepView: View {
             .font(.system(size: 14, weight: .bold))
             .foregroundStyle(color)
             .frame(width: 38, height: 38)
-            .background(.regularMaterial, in: Circle())
             .overlay(Circle().stroke(.white.opacity(0.10), lineWidth: 0.35))
     }
 }

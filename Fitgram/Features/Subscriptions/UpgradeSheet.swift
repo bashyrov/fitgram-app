@@ -73,12 +73,11 @@ struct UpgradeSheet: View {
                         .font(.system(size: 32, weight: .semibold))
                         .foregroundStyle(.white)
                 }
-                .shadow(color: Tokens.Palette.primary.opacity(0.22), radius: 18, x: 0, y: 10)
 
             VStack(spacing: Tokens.Space.xs) {
                 if let badge = copy.badge {
                     Text(badge.uppercased())
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .font(Tokens.Font.manrope(11, weight: 800))
                         .foregroundStyle(Tokens.Palette.primary)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
@@ -348,7 +347,7 @@ private struct UpgradeOfferingRow: View {
                             .foregroundStyle(Tokens.Palette.ink)
                         if offering.isFeatured {
                             Text("NAJLEPSZA")
-                                .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .font(Tokens.Font.manrope(10, weight: 800))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)

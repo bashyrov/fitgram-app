@@ -43,7 +43,7 @@ struct GoalTrackingCard: View {
     private var header: some View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "target")
-                .foregroundStyle(Tokens.Palette.primary)
+                .foregroundStyle(Tokens.Palette.ink)
             Text("Twój cel · AI")
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(Tokens.Palette.ink)
@@ -60,7 +60,7 @@ struct GoalTrackingCard: View {
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(String(format: "%.1f kg", snapshot.currentWeightKg))
-                    .font(Tokens.Font.title3)
+                    .font(Tokens.Font.monoNumber(26))
                     .foregroundStyle(Tokens.Palette.ink)
             }
             Image(systemName: "arrow.right")
@@ -71,8 +71,8 @@ struct GoalTrackingCard: View {
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(String(format: "%.1f kg", snapshot.targetWeightKg))
-                    .font(Tokens.Font.title3)
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .font(Tokens.Font.monoNumber(26))
+                    .foregroundStyle(Tokens.Palette.ink)
             }
             Spacer(minLength: Tokens.Space.sm)
             sparkline
@@ -200,7 +200,7 @@ struct GoalTrackingPeekCard: View {
     private var header: some View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "target")
-                .foregroundStyle(Tokens.Palette.primary)
+                .foregroundStyle(Tokens.Palette.ink)
             Text("Twój cel · AI")
                 .font(Tokens.Font.bodyEmphasized)
                 .foregroundStyle(Tokens.Palette.ink)
@@ -217,29 +217,15 @@ struct GoalTrackingPeekCard: View {
     private var premiumHint: some View {
         HStack(spacing: 4) {
             Text("PRO")
-                .font(.system(size: 10, weight: .black, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 800))
                 .tracking(0.6)
         }
-        .foregroundStyle(Tokens.Palette.onPrimary)
+        .foregroundStyle(Tokens.Mono.hi)
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
         .background(
-            Capsule().fill(
-                LinearGradient(
-                    colors: [
-                        Tokens.Palette.primary,
-                        Tokens.Palette.accent,
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+            Capsule().fill(Tokens.Mono.hero)
         )
-        .overlay(
-            Capsule()
-                .stroke(Tokens.Palette.warmWhite.opacity(0.16), lineWidth: 0.55)
-        )
-        .shadow(color: Tokens.Palette.primary.opacity(0.14), radius: 6, y: 2)
     }
 
     private var placeholderWeightRow: some View {
@@ -249,7 +235,7 @@ struct GoalTrackingPeekCard: View {
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(currentWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
-                    .font(Tokens.Font.title3)
+                    .font(Tokens.Font.monoNumber(26))
                     .foregroundStyle(Tokens.Palette.ink)
             }
             Image(systemName: "arrow.right")
@@ -260,8 +246,8 @@ struct GoalTrackingPeekCard: View {
                     .font(Tokens.Font.caption)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(targetWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
-                    .font(Tokens.Font.title3)
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .font(Tokens.Font.monoNumber(26))
+                    .foregroundStyle(Tokens.Palette.ink)
             }
             Spacer(minLength: Tokens.Space.sm)
             RoundedRectangle(cornerRadius: Tokens.Radius.sm, style: .continuous)
@@ -301,28 +287,12 @@ struct GoalTrackingPeekCard: View {
             Image(systemName: isLocked ? "sparkles" : "target")
                 .font(.system(size: 12, weight: .bold))
             Text(isLocked ? "PRO" : "Otwórz cel")
-                .font(.system(size: 12, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 800))
                 .tracking(isLocked ? 0.7 : 0)
         }
-        .foregroundStyle(Tokens.Palette.onPrimary)
+        .foregroundStyle(Tokens.Mono.hi)
         .padding(.horizontal, 15)
         .padding(.vertical, 8)
-        .background(
-            Capsule().fill(
-                LinearGradient(
-                    colors: [
-                        Tokens.Palette.primary,
-                        isLocked ? Tokens.Palette.accent : Tokens.Palette.primary.opacity(0.72),
-                    ],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-            )
-        )
-        .overlay(
-            Capsule()
-                .stroke(Tokens.Palette.warmWhite.opacity(0.14), lineWidth: 0.55)
-        )
-        .shadow(color: Tokens.Palette.primary.opacity(0.18), radius: 7, y: 3)
+        .background(Capsule().fill(Tokens.Mono.hero))
     }
 }

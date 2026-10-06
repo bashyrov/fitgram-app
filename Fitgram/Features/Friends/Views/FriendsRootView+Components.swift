@@ -7,13 +7,13 @@ extension FriendsRootView {
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(tint)
             Text(value)
-                .font(.system(size: 22, weight: .heavy, design: .rounded))
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.monoNumber(24))
+                .foregroundStyle(Tokens.Mono.onHero)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(label)
                 .font(Tokens.Font.caption.weight(.semibold))
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .foregroundStyle(Tokens.Mono.heroMuted)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
         }
@@ -21,7 +21,7 @@ extension FriendsRootView {
         .padding(Tokens.Space.md)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(tint.opacity(0.11))
+                .fill(Tokens.Mono.heroLine)
         )
     }
 }

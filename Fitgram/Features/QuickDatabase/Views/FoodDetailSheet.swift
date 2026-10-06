@@ -112,7 +112,6 @@ struct FoodDetailSheet: View {
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(Tokens.Palette.inkMuted)
                             .frame(width: 32, height: 32)
-                            .background(.ultraThinMaterial, in: Circle())
                             .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
                     }
                     .buttonStyle(.pressable)
@@ -187,15 +186,15 @@ extension FoodDetailSheet {
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text(heroSubtitle ?? food.brand ?? food.restaurantName ?? "Fitgram")
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.manrope(12, weight: 800))
                     .foregroundStyle(.white.opacity(0.78))
                     .lineLimit(1)
                 Text(String.localizedStringWithFormat(L("%lld kcal"), Int(currentCalories.rounded())))
-                    .font(.system(size: 36, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 36, weight: 800, width: 115))
                     .foregroundStyle(.white)
                     .contentTransition(.numericText())
                 Text(String.localizedStringWithFormat(L("%lld g · %@"), Int(grams.rounded()), food.localizedName))
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .font(Tokens.Font.manrope(13, weight: 700))
                     .foregroundStyle(.white.opacity(0.82))
                     .lineLimit(1)
             }
@@ -206,22 +205,13 @@ extension FoodDetailSheet {
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.graphite,
-                            Tokens.Palette.graphiteSoft,
-                            Tokens.Palette.lime.opacity(0.42),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Mono.hero
                 )
         )
         .overlay {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .stroke(.white.opacity(0.10), lineWidth: 0.35)
         }
-        .shadow(color: Tokens.Palette.graphite.opacity(0.24), radius: 24, y: 14)
     }
 
     private var modePicker: some View {
@@ -324,7 +314,6 @@ extension FoodDetailSheet {
             .buttonStyle(.pressable)
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.78))

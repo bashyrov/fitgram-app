@@ -194,14 +194,9 @@ struct GoalsAndTargetsCard: View {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.primary.opacity(0.85), Tokens.Palette.primary],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primary.opacity(0.85)
                     )
                     .frame(width: 56, height: 56)
-                    .shadow(color: Tokens.Palette.primary.opacity(0.3), radius: 10, y: 4)
                 Image(systemName: goalGlyph)
                     .font(.system(size: 22, weight: .semibold))
                     .foregroundStyle(.white)
@@ -396,14 +391,9 @@ struct GoalsAndTargetsCard: View {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.warning, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.warning
                         )
                         .frame(width: 64, height: 64)
-                        .shadow(color: Tokens.Palette.warning.opacity(0.4), radius: 12, y: 4)
                     Image(systemName: "flame.fill")
                         .font(.system(size: 26, weight: .semibold))
                         .foregroundStyle(.white)
@@ -650,11 +640,7 @@ struct GoalsAndTargetsCard: View {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [tint, tint.opacity(0.6)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            tint
                         )
                         .frame(width: 30, height: 30)
                     Image(systemName: symbol)
@@ -669,7 +655,7 @@ struct GoalsAndTargetsCard: View {
                 }
             }
             Text(value)
-                .font(.system(size: 17, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(17, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)

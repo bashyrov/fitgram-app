@@ -59,7 +59,7 @@ struct AllAchievementsView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             Text("\(earnedKindsToDate.count) / \(AchievementCatalog.all.count)")
-                .font(.system(size: 42, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 42, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.primary)
             Text("Twoja kolekcja rośnie z każdym realnym nawykiem.")
                 .font(Tokens.Font.body)
@@ -67,7 +67,6 @@ struct AllAchievementsView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
     }
 
@@ -111,7 +110,7 @@ struct AllAchievementsView: View {
                     AchievementMedallion(definition: definition, isEarned: isEarned, size: 58)
                     Spacer(minLength: 0)
                     Text(definition.rarity.title)
-                        .font(.system(size: 10, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(10, weight: 800))
                         .foregroundStyle(definition.rarity.tint)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 5)
@@ -128,7 +127,6 @@ struct AllAchievementsView: View {
             }
             .frame(maxWidth: .infinity, minHeight: 180, alignment: .topLeading)
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .fill(isEarned ? Tokens.Palette.surface.opacity(0.88) : Tokens.Palette.surfaceMuted.opacity(0.72))

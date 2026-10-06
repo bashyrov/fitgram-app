@@ -111,7 +111,7 @@ extension FriendsRootView {
                     .frame(width: 34, height: 34)
                     .background(Circle().fill(tint.opacity(0.14)))
                 Text(title)
-                    .font(.system(size: 14, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(14, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)

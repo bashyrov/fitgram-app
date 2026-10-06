@@ -181,13 +181,13 @@ struct FriendProfileView: View {
                 avatarHero(snapshot)
                 VStack(spacing: 2) {
                     Text(snapshot.displayName)
-                        .font(.system(size: 26, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 26, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                     if let username = snapshot.username {
                         Text(usernameDisplay(username))
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
+                            .font(Tokens.Font.manrope(14, weight: 600))
                             .foregroundStyle(Tokens.Palette.inkMuted)
                     }
                 }
@@ -215,18 +215,8 @@ struct FriendProfileView: View {
     private var heroBackdrop: some View {
         RoundedRectangle(cornerRadius: 30, style: .continuous)
             .fill(
-                LinearGradient(
-                    colors: [
-                        Tokens.Palette.surface.opacity(0.86),
-                        Tokens.Palette.primarySoft.opacity(0.42),
-                        Tokens.Palette.accentSoft.opacity(0.22),
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Tokens.Palette.surface.opacity(0.86)
             )
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
-            .shadow(color: Tokens.Palette.primary.opacity(0.10), radius: 30, y: 18)
             .allowsHitTesting(false)
     }
 
@@ -234,26 +224,17 @@ struct FriendProfileView: View {
         ZStack {
             Circle()
                 .fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.primary
                 )
                 .frame(width: 112, height: 112)
-                .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 22, y: 10)
             Circle()
                 .fill(Tokens.Palette.surface)
                 .frame(width: 102, height: 102)
                 .shadow(color: .black.opacity(0.05), radius: 16, y: 8)
             Text(initial(for: snapshot.displayName))
-                .font(.system(size: 46, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 46, weight: 800, width: 115))
                 .foregroundStyle(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.primary
                 )
         }
     }
@@ -266,12 +247,12 @@ struct FriendProfileView: View {
                 ForEach(items, id: \.id) { item in
                     VStack(spacing: 3) {
                         Text(item.value)
-                            .font(.system(size: 19, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(19, weight: 800))
                             .foregroundStyle(Tokens.Palette.ink)
                             .lineLimit(1)
                             .minimumScaleFactor(0.72)
                         Text(item.label)
-                            .font(.system(size: 10, weight: .semibold, design: .rounded))
+                            .font(Tokens.Font.manrope(10, weight: 700))
                             .foregroundStyle(Tokens.Palette.inkMuted)
                             .textCase(.uppercase)
                             .lineLimit(1)
@@ -396,7 +377,7 @@ struct FriendProfileView: View {
             Image(systemName: chip.symbol)
                 .font(.system(size: 10, weight: .bold))
             Text(chip.text)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 700))
         }
         .foregroundStyle(chip.isProminent ? Tokens.Palette.onPrimary : chip.tint)
         .padding(.horizontal, 10)
@@ -406,11 +387,7 @@ struct FriendProfileView: View {
                 .fill(
                     chip.isProminent
                         ? AnyShapeStyle(
-                            LinearGradient(
-                                colors: [chip.tint, chip.tint.opacity(0.85)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            chip.tint
                         )
                         : AnyShapeStyle(chip.tint.opacity(0.16))
                 )
@@ -447,8 +424,6 @@ struct FriendProfileView: View {
             RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.62))
         )
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
-        .shadow(color: Tokens.Palette.primary.opacity(0.055), radius: 14, y: 8)
     }
 
     private func tabPill(_ tab: Tab) -> some View {
@@ -461,7 +436,7 @@ struct FriendProfileView: View {
                 Image(systemName: tab.symbol)
                     .font(.system(size: 12, weight: .bold))
                 Text(tab.label)
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .font(Tokens.Font.manrope(13, weight: 700))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
@@ -473,14 +448,9 @@ struct FriendProfileView: View {
                     if isActive {
                         Capsule()
                             .fill(
-                                LinearGradient(
-                                    colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                                Tokens.Palette.primary
                             )
                             .matchedGeometryEffect(id: "indicator", in: tabIndicator)
-                            .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 10, y: 4)
                     }
                 }
             )
@@ -509,13 +479,8 @@ struct FriendProfileView: View {
                 .background(
                     Capsule()
                         .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
+                            Tokens.Palette.primary
                         )
-                        .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 14, y: 6)
                 )
             }
             .buttonStyle(.pressable)
@@ -568,11 +533,7 @@ struct FriendProfileView: View {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.primary.opacity(0.18), Tokens.Palette.accent.opacity(0.18)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primary.opacity(0.18)
                     )
                     .frame(width: 84, height: 84)
                 Image(systemName: symbol)
@@ -592,7 +553,6 @@ struct FriendProfileView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, Tokens.Space.xxl)
         .padding(.horizontal, Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.80)))
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(
@@ -635,7 +595,6 @@ struct FriendProfileView: View {
                                 )
                         }
                         .padding(Tokens.Space.lg)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
                         .background(
                             RoundedRectangle(cornerRadius: 24, style: .continuous).fill(
                                 Tokens.Palette.surface.opacity(0.84))

@@ -51,14 +51,9 @@ struct WhatsNewSheet: View {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.primary
                         )
                         .frame(width: 56, height: 56)
-                        .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 12, y: 6)
                     Image(systemName: "sparkles")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(.white)
@@ -70,7 +65,7 @@ struct WhatsNewSheet: View {
                         .tracking(1.2)
                         .foregroundStyle(Tokens.Palette.inkMuted)
                     Text(String.localizedStringWithFormat(L("Fitgram %@"), entry.version))
-                        .font(.system(size: 30, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                 }
                 Spacer(minLength: 0)
@@ -127,14 +122,9 @@ struct WhatsNewSheet: View {
             .padding(.vertical, Tokens.Space.md)
             .background(
                 Capsule().fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+                    Tokens.Palette.primary
                 )
             )
-            .shadow(color: Tokens.Palette.primary.opacity(0.4), radius: 14, y: 6)
         }
         .buttonStyle(.plain)
         .padding(.horizontal, Tokens.Space.screenPadding)

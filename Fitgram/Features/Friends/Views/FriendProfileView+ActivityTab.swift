@@ -26,7 +26,7 @@ extension FriendProfileView {
         let tint = eventTint(event.kind)
         return HStack(alignment: .top, spacing: Tokens.Space.md) {
             Text(event.createdAt.formatted(.relative(presentation: .named)))
-                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 700))
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .textCase(.uppercase)
                 .tracking(0.4)
@@ -42,14 +42,9 @@ extension FriendProfileView {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [tint, tint.opacity(0.65)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            tint
                         )
                         .frame(width: 32, height: 32)
-                        .shadow(color: tint.opacity(0.35), radius: 6, y: 2)
                     Image(systemName: eventSymbol(event.kind))
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(Tokens.Palette.onPrimary)
@@ -63,7 +58,7 @@ extension FriendProfileView {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(eventTitle(event.kind))
-                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                    .font(Tokens.Font.manrope(10, weight: 700))
                     .foregroundStyle(tint)
                     .textCase(.uppercase)
                     .tracking(0.4)
@@ -73,11 +68,9 @@ extension FriendProfileView {
             }
             .padding(Tokens.Space.md)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.72))
             )
-            .shadow(color: tint.opacity(0.08), radius: 14, y: 8)
             .padding(.bottom, Tokens.Space.md)
             .padding(.top, Tokens.Space.xs)
         }

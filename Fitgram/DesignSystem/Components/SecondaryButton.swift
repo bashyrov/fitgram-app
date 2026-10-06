@@ -16,16 +16,14 @@ struct SecondaryButton: View {
                         .font(.system(size: 17, weight: .medium))
                 }
                 Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(16, weight: 800))
             }
             .foregroundStyle(Tokens.Palette.ink)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
-            .frostedGlass(
-                cornerRadius: Tokens.Radius.pill,
-                fillOpacity: 0.76,
-                borderOpacity: 0.06,
-                glowOpacity: 0.04
+            .overlay(
+                Capsule(style: .continuous)
+                    .stroke(Tokens.Mono.line2, lineWidth: 1)
             )
             .contentShape(RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
             .opacity(environmentEnabled ? 1 : 0.55)

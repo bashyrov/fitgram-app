@@ -46,7 +46,7 @@ struct StreakShareCard: View {
                         .font(.system(size: 64, weight: .regular))
                         .foregroundStyle(.white)
                     Text("Fitgram")
-                        .font(.system(size: 42, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(42, weight: 700))
                         .foregroundStyle(.white)
                 }
 
@@ -56,11 +56,11 @@ struct StreakShareCard: View {
                         .foregroundStyle(.white)
                         .shadow(color: .black.opacity(0.28), radius: 16, x: 0, y: 6)
                     Text("\(streakLength)")
-                        .font(.system(size: 220, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 220, weight: 800, width: 115))
                         .foregroundStyle(.white)
                         .shadow(color: .black.opacity(0.25), radius: 22, x: 0, y: 6)
                     Text(streakLength == 1 ? L("day in a row") : L("days in a row"))
-                        .font(.system(size: 36, weight: .medium, design: .rounded))
+                        .font(Tokens.Font.manrope(36, weight: 600))
                         .foregroundStyle(.white.opacity(0.95))
                         .shadow(color: .black.opacity(0.30), radius: 8, x: 0, y: 3)
                 }
@@ -68,16 +68,16 @@ struct StreakShareCard: View {
                 VStack(spacing: 6) {
                     if longestLength > streakLength {
                         Text(String.localizedStringWithFormat(L("personal record: %lld days"), longestLength))
-                            .font(.system(size: 26, weight: .medium, design: .rounded))
+                            .font(Tokens.Font.manrope(26, weight: 600))
                             .foregroundStyle(.white.opacity(0.9))
                     } else if longestLength > 0 {
                         Text(L("new personal record!"))
-                            .font(.system(size: 28, weight: .semibold, design: .rounded))
+                            .font(Tokens.Font.manrope(28, weight: 700))
                             .foregroundStyle(.white)
                     }
                     if let displayName, !displayName.isEmpty {
                         Text(displayName)
-                            .font(.system(size: 30, weight: .medium, design: .rounded))
+                            .font(Tokens.Font.manrope(30, weight: 600))
                             .foregroundStyle(.white.opacity(0.95))
                             .padding(.top, 12)
                     }

@@ -17,7 +17,7 @@ struct FoodDetailPortionCard: View {
                 }
                 Spacer()
                 Text(String.localizedStringWithFormat(L("%lld g"), Int(grams.rounded())))
-                    .font(.system(size: 25, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 25, weight: 800, width: 115))
                     .foregroundStyle(Tokens.Palette.primary)
                     .contentTransition(.numericText())
                     .lineLimit(1)
@@ -45,7 +45,6 @@ struct FoodDetailPortionCard: View {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.78))
@@ -97,7 +96,6 @@ struct FoodDetailMacroCard: View {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.78))

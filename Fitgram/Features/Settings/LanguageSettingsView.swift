@@ -31,14 +31,9 @@ struct LanguageSettingsView: View {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.primary
                         )
                         .frame(width: 52, height: 52)
-                        .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 10, y: 4)
                     Image(systemName: "globe")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(.white)

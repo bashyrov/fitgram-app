@@ -137,6 +137,9 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         UIAppFonts:
           - Agbalumo-Regular.ttf
+          - Archivo-Variable.ttf
+          - Archivo-Italic-Variable.ttf
+          - Manrope-Variable.ttf
         LSApplicationCategoryType: public.app-category.healthcare-fitness
         CFBundleURLTypes:
           - CFBundleTypeRole: Editor

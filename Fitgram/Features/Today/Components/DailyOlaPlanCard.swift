@@ -14,7 +14,7 @@ struct DailyOlaPlanCard: View {
                 header
                 VStack(alignment: .leading, spacing: Tokens.Space.xs) {
                     Text(plan.headline)
-                        .font(.system(size: 22, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 21, weight: 800, width: 112))
                         .foregroundStyle(Tokens.Palette.ink)
                         .multilineTextAlignment(.leading)
                     Text(plan.body)
@@ -30,8 +30,7 @@ struct DailyOlaPlanCard: View {
             }
             .padding(Tokens.Space.lg)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .frostedGlass(cornerRadius: 30, fillOpacity: 0.86, borderOpacity: 0.05, glowOpacity: 0.08)
-            .shadow(color: Tokens.Palette.primary.opacity(0.09), radius: 26, x: 0, y: 14)
+            .monoCard(radius: Tokens.Mono.Radius.hero, padding: nil)
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityLabel(Text(L("Open Ola daily plan")))
@@ -41,17 +40,11 @@ struct DailyOlaPlanCard: View {
         HStack(alignment: .center, spacing: Tokens.Space.sm) {
             ZStack {
                 Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .fill(Tokens.Mono.hero)
                     .frame(width: 44, height: 44)
                 Image(systemName: "sparkles")
                     .font(.system(size: 19, weight: .black))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
+                    .foregroundStyle(Tokens.Mono.hi)
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(L("Ola today"))
@@ -92,16 +85,16 @@ struct DailyOlaPlanCard: View {
             ForEach(plan.focuses.prefix(3)) { focus in
                 VStack(alignment: .leading, spacing: 3) {
                     Text(focus.title)
-                        .font(.system(size: 10, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(10, weight: 800))
                         .foregroundStyle(Tokens.Palette.inkMuted)
                         .lineLimit(1)
                     Text(focus.value)
-                        .font(.system(size: 13, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(13, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                     Text(focus.detail)
-                        .font(.system(size: 10, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(10, weight: 700))
                         .foregroundStyle(Tokens.Palette.primary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)

@@ -49,7 +49,6 @@ struct OlaChefMealDetailView: View {
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(Tokens.Palette.inkMuted)
                             .frame(width: 32, height: 32)
-                            .background(.ultraThinMaterial, in: Circle())
                             .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
                     }
                     .buttonStyle(.pressable)
@@ -74,7 +73,7 @@ extension OlaChefMealDetailView {
         Card(elevation: Tokens.Shadow.float) {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
                 Text(suggestion.name())
-                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                     .foregroundStyle(Tokens.Palette.ink)
                 HStack(spacing: Tokens.Space.sm) {
                     macroPill(
@@ -280,7 +279,7 @@ extension OlaChefMealDetailView {
 
     private func macroPill(_ text: String, _ tint: Color) -> some View {
         Text(text)
-            .font(.system(size: 12, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.manrope(12, weight: 800))
             .foregroundStyle(tint)
             .padding(.horizontal, 10)
             .padding(.vertical, 7)

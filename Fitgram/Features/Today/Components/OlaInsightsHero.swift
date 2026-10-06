@@ -55,7 +55,6 @@ struct OlaInsightsHero: View {
             .blendMode(.overlay)
         }
         .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
-        .shadow(color: Tokens.Palette.accent.opacity(0.18), radius: 24, y: 12)
     }
 
     // MARK: - Header
@@ -105,18 +104,9 @@ struct OlaInsightsHero: View {
         ZStack {
             Circle()
                 .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.accent,
-                            Tokens.Palette.accent.opacity(0.7),
-                            Tokens.Palette.primary.opacity(0.8),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.accent
                 )
                 .frame(width: 56, height: 56)
-                .shadow(color: Tokens.Palette.accent.opacity(0.45), radius: 12, y: 6)
             Image(systemName: "sparkles")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundStyle(Tokens.Palette.onPrimary)
@@ -127,7 +117,7 @@ struct OlaInsightsHero: View {
 
     private var summaryBlock: some View {
         Text(L(recommendations.summary))
-            .font(.system(size: 19, weight: .semibold, design: .rounded))
+            .font(Tokens.Font.manrope(19, weight: 700))
             .foregroundStyle(Tokens.Palette.ink)
             .lineSpacing(2)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -183,14 +173,7 @@ struct OlaInsightsHero: View {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primary.opacity(0.18),
-                                Tokens.Palette.accent.opacity(0.18),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primary.opacity(0.18)
                     )
                     .frame(width: 52, height: 52)
                 Text(tip.icon)
@@ -237,7 +220,6 @@ struct OlaInsightsHero: View {
                 Circle()
                     .fill(Tokens.Palette.primary)
                     .frame(width: 36, height: 36)
-                    .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 8, y: 3)
                 Image(systemName: "arrow.right")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(Tokens.Palette.onPrimary)

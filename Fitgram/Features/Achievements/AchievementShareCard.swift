@@ -26,19 +26,19 @@ struct AchievementShareCard: View {
                         .font(.system(size: 64, weight: .regular))
                         .foregroundStyle(.white)
                     Text("Fitgram")
-                        .font(.system(size: 42, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(42, weight: 700))
                         .foregroundStyle(.white)
                 }
 
                 VStack(spacing: 24) {
                     AchievementMedallion(definition: definition, isEarned: true, size: 330, showsLock: false)
                     Text(definition.title)
-                        .font(.system(size: 56, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 56, weight: 800, width: 115))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
                     Text(definition.summary)
-                        .font(.system(size: 30, weight: .medium, design: .rounded))
+                        .font(Tokens.Font.manrope(30, weight: 600))
                         .foregroundStyle(.white.opacity(0.92))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
@@ -49,12 +49,12 @@ struct AchievementShareCard: View {
                         Text(
                             String.localizedStringWithFormat(L("zdobyte %@"), Self.dateFormatter.string(from: earnedAt))
                         )
-                        .font(.system(size: 26, weight: .medium, design: .rounded))
+                        .font(Tokens.Font.manrope(26, weight: 600))
                         .foregroundStyle(.white.opacity(0.85))
                     }
                     if let displayName, !displayName.isEmpty {
                         Text(displayName)
-                            .font(.system(size: 30, weight: .medium, design: .rounded))
+                            .font(Tokens.Font.manrope(30, weight: 600))
                             .foregroundStyle(.white.opacity(0.9))
                             .padding(.top, 12)
                     }

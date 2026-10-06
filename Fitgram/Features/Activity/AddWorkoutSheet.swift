@@ -92,16 +92,12 @@ struct AddWorkoutSheet: View {
                     .frame(width: 58, height: 58)
                     .background(
                         Circle().fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.primary
                         )
                     )
                 VStack(alignment: .leading, spacing: 3) {
                     Text(selected.localizedName)
-                        .font(.system(size: 26, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 26, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(String.localizedStringWithFormat(heroSubtitleFormat, selected.met, currentWeightKg))
                         .font(Tokens.Font.footnote)
@@ -251,11 +247,7 @@ struct AddWorkoutSheet: View {
                 .background(
                     RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
                         .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.primary
                         )
                 )
             }

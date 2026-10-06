@@ -12,37 +12,16 @@ struct FrostedGlassModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
+        // Design D ("Graphite Mono"): flat surface + hairline, no glass or glow.
+        // The signature is kept so every existing call site picks up the new look.
         content
             .background {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(palette.surface.opacity(fillOpacity * 0.82))
+                    .fill(palette.surface)
             }
-            .background {
+            .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                palette.surface.opacity(fillOpacity * 0.95),
-                                palette.surfaceMuted.opacity(fillOpacity * 0.72),
-                                palette.primary.opacity(fillOpacity * 0.08),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-            }
-            .overlay(alignment: .topLeading) {
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.warmWhite.opacity(glowOpacity),
-                                .clear,
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .center
-                        )
-                    )
+                    .stroke(palette.mono.line, lineWidth: 1)
                     .allowsHitTesting(false)
             }
     }

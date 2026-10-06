@@ -33,10 +33,10 @@ struct AddMealMiniActionCard: View {
                 HStack(alignment: .top) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(tint.opacity(0.15))
+                            .fill(Tokens.Mono.track)
                         Image(systemName: icon)
-                            .font(.system(size: 22, weight: .heavy, design: .rounded))
-                            .foregroundStyle(tint)
+                            .font(Tokens.Font.manrope(22, weight: 800))
+                            .foregroundStyle(Tokens.Palette.ink)
                     }
                     .frame(width: 52, height: 52)
 
@@ -46,7 +46,7 @@ struct AddMealMiniActionCard: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(18, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
                         .minimumScaleFactor(0.78)
@@ -61,16 +61,15 @@ struct AddMealMiniActionCard: View {
 
                 HStack {
                     Text(quota.isExhausted ? "Pro" : "Otwórz")
-                        .font(.system(size: 12, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(12, weight: 800))
                     Spacer(minLength: 0)
                     Image(systemName: quota.isExhausted ? "lock.fill" : "arrow.up.right")
                         .font(.system(size: 12, weight: .black))
                 }
-                .foregroundStyle(quota.isExhausted ? Tokens.Palette.warning : tint)
+                .foregroundStyle(quota.isExhausted ? Tokens.Palette.warning : Tokens.Palette.ink)
             }
             .padding(Tokens.Space.md)
             .frame(maxWidth: .infinity, minHeight: 166, alignment: .topLeading)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 26, style: .continuous)
                     .fill(Tokens.Palette.surface.opacity(0.82))
@@ -78,12 +77,11 @@ struct AddMealMiniActionCard: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 26, style: .continuous)
                     .strokeBorder(
-                        quota.isExhausted ? Tokens.Palette.warning.opacity(0.42) : .white.opacity(0.34),
+                        quota.isExhausted ? Tokens.Palette.warning.opacity(0.42) : Tokens.Mono.line,
                         lineWidth: 1
                     )
             }
             .opacity(quota.isExhausted ? 0.78 : 1)
-            .shadow(color: Tokens.Palette.graphite.opacity(quota.isExhausted ? 0.05 : 0.11), radius: 18, y: 10)
             .contentShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
         }
         .buttonStyle(.pressable)
@@ -115,7 +113,6 @@ struct AddMealCompactPill: View {
             .padding(.horizontal, Tokens.Space.md)
             .frame(maxWidth: .infinity)
             .frame(height: 58)
-            .background(.ultraThinMaterial, in: Capsule())
             .background(Capsule().fill(Tokens.Palette.surface.opacity(0.78)))
             .overlay(Capsule().stroke(.white.opacity(0.10), lineWidth: 0.35))
         }
@@ -156,7 +153,7 @@ struct AddMealQuotaBadge: View {
                         .font(.system(size: 9, weight: .bold))
                 }
                 Text(label)
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.manrope(11, weight: 800))
             }
             .foregroundStyle(foreground ?? (isProminent ? .white : Tokens.Palette.inkMuted))
             .padding(.horizontal, 9)

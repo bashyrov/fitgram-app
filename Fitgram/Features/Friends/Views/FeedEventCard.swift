@@ -41,7 +41,6 @@ struct FeedEventCard: View {
         }
         .padding(Tokens.Space.md)
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.78)))
-        .shadow(color: Tokens.Palette.primary.opacity(0.032), radius: 8, y: 4)
     }
 
     private var reactionsRow: some View {
@@ -88,19 +87,14 @@ struct FeedEventCard: View {
 
     private var avatar: some View {
         Text(initial)
-            .font(.system(size: 16, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.manrope(16, weight: 800))
             .foregroundStyle(Tokens.Palette.onPrimary)
             .frame(width: 42, height: 42)
             .background(
                 Circle().fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.primary
                 )
             )
-            .shadow(color: Tokens.Palette.primary.opacity(0.08), radius: 6, y: 3)
     }
 
     private var iconTint: Color {

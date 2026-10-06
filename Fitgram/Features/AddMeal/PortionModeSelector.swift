@@ -59,10 +59,8 @@ struct PortionModeSelector: View {
             .padding(.horizontal, Tokens.Space.sm)
         }
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(.white.opacity(0.10), lineWidth: 0.35))
-        .shadow(color: Tokens.Palette.primary.opacity(0.07), radius: 18, y: 10)
     }
 
     private var statusText: String {
@@ -104,7 +102,7 @@ struct PortionModeSelector: View {
                         .foregroundStyle(selected ? tint : Tokens.Palette.inkSubtle)
                 }
                 Text(title)
-                    .font(.system(size: 16, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(16, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(subtitle)
                     .font(Tokens.Font.caption2)

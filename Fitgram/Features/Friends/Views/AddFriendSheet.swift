@@ -64,17 +64,12 @@ struct AddFriendSheet: View {
                     .frame(width: 56, height: 56)
                     .background(
                         Circle().fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.primary
                         )
                     )
-                    .shadow(color: Tokens.Palette.primary.opacity(0.22), radius: 16, y: 8)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(L("Dodaj znajomego"))
-                        .font(.system(size: 28, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(L("Znajdź osobę po username, wklej kod QR albo otwórz profil i wyślij zaproszenie."))
                         .font(Tokens.Font.footnote)
@@ -85,13 +80,11 @@ struct AddFriendSheet: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(
             RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(
                 Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
         )
-        .shadow(color: Tokens.Palette.primary.opacity(0.10), radius: 24, y: 14)
     }
 
     private var addModes: some View {
@@ -139,7 +132,6 @@ struct AddFriendSheet: View {
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82))
             )
@@ -147,7 +139,6 @@ struct AddFriendSheet: View {
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .stroke(Tokens.Palette.separator, lineWidth: 0.35)
             )
-            .shadow(color: Tokens.Palette.primary.opacity(0.07), radius: 14, y: 8)
         }
         .buttonStyle(.plain)
     }
@@ -179,13 +170,11 @@ struct AddFriendSheet: View {
             }
         }
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.86)))
         .overlay(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .stroke(Tokens.Palette.separator, lineWidth: 0.35)
         )
-        .shadow(color: Tokens.Palette.primary.opacity(0.06), radius: 14, y: 8)
     }
 
     private var emptyHint: some View {
@@ -208,7 +197,6 @@ struct AddFriendSheet: View {
             }
         }
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.80)))
         .overlay(
             RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(
@@ -282,7 +270,7 @@ private struct AddFriendModeCard: View {
                 .frame(width: 38, height: 38)
                 .background(Circle().fill(tint.opacity(0.14)))
             Text(title)
-                .font(.system(size: 16, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(16, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(subtitle)
                 .font(Tokens.Font.caption)
@@ -292,12 +280,10 @@ private struct AddFriendModeCard: View {
         }
         .frame(maxWidth: .infinity, minHeight: 136, alignment: .topLeading)
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(
             RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(
                 Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
         )
-        .shadow(color: tint.opacity(0.08), radius: 14, y: 8)
     }
 }

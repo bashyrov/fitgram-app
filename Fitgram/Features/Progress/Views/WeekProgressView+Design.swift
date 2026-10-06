@@ -11,35 +11,31 @@ extension WeekProgressView {
             HStack(alignment: .top, spacing: Tokens.Space.md) {
                 VStack(alignment: .leading, spacing: 7) {
                     Text(L("Ostatnie 7 dni"))
-                        .font(.system(size: 12, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(12, weight: 800))
                         .tracking(1.3)
                         .textCase(.uppercase)
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .foregroundStyle(Tokens.Mono.hi)
                     Text(weeklyHeadline)
-                        .font(.system(size: 30, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
+                        .foregroundStyle(Tokens.Mono.onHero)
                         .lineLimit(2)
                         .minimumScaleFactor(0.72)
                     Text(weeklySubheadline)
                         .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                         .lineLimit(2)
                 }
                 Spacer(minLength: 0)
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [heroTint, heroTint.opacity(0.62)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Mono.hi
                         )
                         .frame(width: 58, height: 58)
                         .shadow(color: heroTint.opacity(0.28), radius: 16, y: 8)
                     Image(systemName: heroSymbol)
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Tokens.Mono.onHi)
                 }
             }
 
@@ -47,49 +43,38 @@ extension WeekProgressView {
                 heroMiniMetric(
                     value: "\(activeDayCount)/7",
                     label: L("dni z wpisami"),
-                    tint: Tokens.Palette.primary
+                    tint: Tokens.Mono.heroMuted
                 )
                 heroMiniMetric(
                     value: "\(safeWhole(weeklyGoalHitRatio * 100))%",
                     label: L("celu tygodnia"),
-                    tint: heroTint
+                    tint: Tokens.Mono.hi
                 )
                 heroMiniMetric(
                     value: "\(safeWhole(state.averageCalories))",
                     label: L("średnio kcal"),
-                    tint: Tokens.Palette.accent
+                    tint: Tokens.Mono.heroMuted
                 )
             }
         }
         .padding(Tokens.Space.lg)
         .background {
             ZStack {
-                RoundedRectangle(cornerRadius: 34, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            stops: [
-                                .init(color: Tokens.Palette.surface.opacity(0.94), location: 0.00),
-                                .init(color: Tokens.Palette.primarySoft.opacity(0.26), location: 0.54),
-                                .init(color: Tokens.Palette.surface.opacity(0.86), location: 1.00),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                    .fill(Tokens.Mono.hero)
             }
         }
-        .shadow(color: Tokens.Palette.primary.opacity(0.035), radius: 8, y: 4)
     }
 
     private func heroMiniMetric(value: String, label: String, tint: Color) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(value)
-                .font(.system(size: 19, weight: .heavy, design: .rounded))
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.monoNumber(20))
+                .foregroundStyle(Tokens.Mono.onHero)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(label)
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 800))
                 .tracking(0.45)
                 .textCase(.uppercase)
                 .foregroundStyle(tint)
@@ -100,7 +85,7 @@ extension WeekProgressView {
         .padding(.horizontal, Tokens.Space.sm)
         .frame(height: 70)
         .background(
-            Tokens.Palette.surfaceMuted.opacity(0.70), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            Tokens.Mono.heroLine, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
     var chartCard: some View {
@@ -219,12 +204,12 @@ extension WeekProgressView {
                 Spacer()
             }
             Text(value)
-                .font(.system(size: 20, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(20, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.62)
             Text(title)
-                .font(.system(size: 11, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(11, weight: 800))
                 .tracking(0.5)
                 .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.inkMuted)
@@ -335,7 +320,7 @@ extension WeekProgressView {
 
         return VStack(spacing: 0) {
             Text(compactWeekdayTitle(for: day.date))
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 800))
                 .tracking(0.4)
                 .foregroundStyle(hasEntry ? Tokens.Palette.onPrimary : Tokens.Palette.inkMuted)
                 .lineLimit(1)
@@ -345,7 +330,7 @@ extension WeekProgressView {
                 .background(hasEntry ? tint : Tokens.Palette.surfaceMuted.opacity(0.72))
 
             Text("\(Calendar.current.component(.day, from: day.date))")
-                .font(.system(size: 18, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(18, weight: 800))
                 .foregroundStyle(hasEntry ? tint : Tokens.Palette.inkSubtle)
                 .monospacedDigit()
                 .frame(maxWidth: .infinity)

@@ -139,11 +139,7 @@ extension FriendProfileView {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [tile.tint, tile.tint.opacity(0.65)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        tile.tint
                     )
                     .frame(width: 34, height: 34)
                     .shadow(color: tile.tint.opacity(0.35), radius: 6, y: 2)
@@ -153,19 +149,19 @@ extension FriendProfileView {
             }
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(tile.value)
-                    .font(.system(size: 26, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 26, weight: 800, width: 115))
                     .foregroundStyle(Tokens.Palette.ink)
                     .contentTransition(.numericText())
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                 if !tile.unit.isEmpty {
                     Text(tile.unit)
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(12, weight: 700))
                         .foregroundStyle(Tokens.Palette.inkMuted)
                 }
             }
             Text(tile.label)
-                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 700))
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .textCase(.uppercase)
                 .tracking(0.6)
@@ -174,7 +170,6 @@ extension FriendProfileView {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.72))
@@ -198,7 +193,7 @@ extension FriendProfileView {
             ForEach(Array(foods.enumerated()), id: \.offset) { idx, food in
                 HStack(spacing: Tokens.Space.sm) {
                     Text("\(idx + 1)")
-                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .font(Tokens.Font.manrope(13, weight: 800))
                         .foregroundStyle(Tokens.Palette.onPrimary)
                         .frame(width: 24, height: 24)
                         .background(Circle().fill(Tokens.Palette.primary))
@@ -216,8 +211,6 @@ extension FriendProfileView {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.72)))
-        .shadow(color: Tokens.Palette.primary.opacity(0.07), radius: 16, y: 9)
     }
 }

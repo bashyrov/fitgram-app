@@ -36643,13 +36643,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Продолжить email"
+            "value" : "Продолжить с email"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Продовжити email"
+            "value" : "Продовжити з email"
           }
         }
       }

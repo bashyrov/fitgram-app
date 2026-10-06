@@ -107,7 +107,7 @@ struct LockedRecipeRowLabel: View {
             }
             Spacer(minLength: 0)
             Text("PRO")
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 800))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 5)

@@ -50,7 +50,7 @@ struct LeaderboardView: View {
                 .frame(width: 58, height: 58)
                 .background(Circle().fill(Tokens.Palette.warning.opacity(0.16)))
             Text(L("Tablica wyników"))
-                .font(.system(size: 28, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(L("Ranking serii pokazuje, kto dziś trzyma rytm najdłużej."))
                 .font(Tokens.Font.footnote)
@@ -59,13 +59,11 @@ struct LeaderboardView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(
             RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(
                 Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
         )
-        .shadow(color: Tokens.Palette.warning.opacity(0.12), radius: 24, y: 14)
     }
 
     private func row(_ entry: LeaderboardEntry) -> some View {
@@ -103,7 +101,6 @@ struct LeaderboardView: View {
             }
         }
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(entry.isYou ? Tokens.Palette.primarySoft.opacity(0.92) : Tokens.Palette.surface.opacity(0.82))
@@ -115,7 +112,6 @@ struct LeaderboardView: View {
                     lineWidth: entry.isYou ? 1.5 : 1
                 )
         )
-        .shadow(color: Tokens.Palette.primary.opacity(entry.isYou ? 0.12 : 0.05), radius: 14, y: 8)
     }
 
     private var empty: some View {

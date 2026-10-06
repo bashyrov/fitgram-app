@@ -59,11 +59,7 @@ struct WeeklyDebriefView: View {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            Tokens.Palette.primary
                         )
                         .frame(width: 54, height: 54)
                     Image(systemName: "sparkles")
@@ -90,7 +86,6 @@ struct WeeklyDebriefView: View {
         }
         .padding(Tokens.Space.lg)
         .frostedGlass(cornerRadius: 30, fillOpacity: 0.86, borderOpacity: 0.05, glowOpacity: 0.08)
-        .shadow(color: Tokens.Palette.primary.opacity(0.08), radius: 24, y: 12)
     }
 
     private var rangeCaption: String {
@@ -180,7 +175,7 @@ struct WeeklyDebriefView: View {
                 ForEach(Array(debrief.nextWeekRules.enumerated()), id: \.offset) { index, rule in
                     HStack(alignment: .top, spacing: Tokens.Space.sm) {
                         Text("\(index + 1)")
-                            .font(.system(size: 13, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(13, weight: 800))
                             .foregroundStyle(Tokens.Palette.onPrimary)
                             .frame(width: 26, height: 26)
                             .background(Circle().fill(Tokens.Palette.primary))

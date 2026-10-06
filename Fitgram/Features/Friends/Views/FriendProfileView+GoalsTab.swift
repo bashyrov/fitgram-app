@@ -26,7 +26,7 @@ extension FriendProfileView {
         VStack(alignment: .leading, spacing: Tokens.Space.md) {
             HStack {
                 Text(L("Główny cel"))
-                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                    .font(Tokens.Font.manrope(10, weight: 700))
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .textCase(.uppercase)
                     .tracking(0.6)
@@ -36,7 +36,7 @@ extension FriendProfileView {
                     .foregroundStyle(Tokens.Palette.primary)
             }
             Text(goalLabel)
-                .font(.system(size: 22, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(22, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(3)
             goalMetricsRow(snapshot)
@@ -44,7 +44,6 @@ extension FriendProfileView {
         .padding(Tokens.Space.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(goalsHeroBackground)
-        .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 24, y: 14)
     }
 
     @ViewBuilder
@@ -83,17 +82,8 @@ extension FriendProfileView {
     var goalsHeroBackground: some View {
         RoundedRectangle(cornerRadius: 28, style: .continuous)
             .fill(
-                LinearGradient(
-                    colors: [
-                        Tokens.Palette.surface.opacity(0.92),
-                        Tokens.Palette.primarySoft.opacity(0.66),
-                        Tokens.Palette.accentSoft.opacity(0.44),
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Tokens.Palette.surface.opacity(0.92)
             )
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
     }
 
     func miniMetric(
@@ -109,14 +99,14 @@ extension FriendProfileView {
                 .foregroundStyle(tint)
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 18, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(18, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(unit)
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .font(Tokens.Font.manrope(11, weight: 700))
                     .foregroundStyle(Tokens.Palette.inkMuted)
             }
             Text(label)
-                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 700))
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .textCase(.uppercase)
                 .tracking(0.4)
@@ -158,9 +148,7 @@ extension FriendProfileView {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.72)))
-        .shadow(color: Tokens.Palette.success.opacity(0.08), radius: 16, y: 9)
     }
 
     func recipeRow(_ recipe: PublicRecipeReference) -> some View {

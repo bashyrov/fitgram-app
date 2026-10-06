@@ -329,17 +329,8 @@ private struct ConfirmationView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Tokens.Palette.background,
-                    Tokens.Palette.primarySoft.opacity(0.42),
-                    Tokens.Palette.accentSoft.opacity(0.30),
-                    Tokens.Palette.background,
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            Tokens.Palette.background
+                .ignoresSafeArea()
 
             VStack(spacing: 0) {
                 confirmationHeader
@@ -486,7 +477,6 @@ private struct ConfirmationView: View {
             .buttonStyle(.pressable)
         }
         .padding(Tokens.Space.xl)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.82))
@@ -504,7 +494,6 @@ private struct ConfirmationView: View {
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(Tokens.Palette.inkMuted)
                     .frame(width: 36, height: 36)
-                    .background(.ultraThinMaterial, in: Circle())
                     .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
             }
             .buttonStyle(.pressable)
@@ -534,10 +523,10 @@ private struct ConfirmationView: View {
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text("Meal by voice")
-                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.manrope(13, weight: 800))
                     .foregroundStyle(.white.opacity(0.78))
                 Text(String.localizedStringWithFormat(L("%lld kcal"), Int(adjustedCalories.rounded())))
-                    .font(.system(size: 34, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 34, weight: 800, width: 115))
                     .foregroundStyle(.white)
                     .contentTransition(.numericText())
                 Text(
@@ -547,7 +536,7 @@ private struct ConfirmationView: View {
                         Int(adjustedGrams.rounded())
                     )
                 )
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(13, weight: 700))
                 .foregroundStyle(.white.opacity(0.82))
             }
             Spacer(minLength: 0)
@@ -557,22 +546,13 @@ private struct ConfirmationView: View {
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.graphite,
-                            Tokens.Palette.graphiteSoft,
-                            Tokens.Palette.lime.opacity(0.42),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Mono.hero
                 )
         )
         .overlay {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .stroke(.white.opacity(0.10), lineWidth: 0.35)
         }
-        .shadow(color: Tokens.Palette.graphite.opacity(0.24), radius: 24, y: 14)
     }
 
     private var transcriptCard: some View {
@@ -596,7 +576,6 @@ private struct ConfirmationView: View {
             AIRequestHint.mealRefresh
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.76))
@@ -634,7 +613,6 @@ private struct ConfirmationView: View {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.78))
@@ -791,7 +769,7 @@ private struct ConfirmationView: View {
                     .foregroundStyle(Tokens.Palette.ink)
                 Spacer()
                 Text(String.localizedStringWithFormat(L("%lld g"), Int(overallGrams.rounded())))
-                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                     .foregroundStyle(Tokens.Palette.primary)
                     .contentTransition(.numericText())
             }
@@ -799,7 +777,6 @@ private struct ConfirmationView: View {
                 .tint(Tokens.Palette.primary)
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.78))
@@ -855,7 +832,7 @@ private struct ConfirmationView: View {
             }
             HStack {
                 Text("\(Int(binding.wrappedValue.rounded())) g")
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .frame(width: 64, alignment: .leading)
                 Slider(value: binding, in: 10...600, step: 5)

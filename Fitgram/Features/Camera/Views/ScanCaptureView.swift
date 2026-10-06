@@ -103,11 +103,11 @@ struct ScanCaptureView: View {
 
                 VStack(spacing: Tokens.Space.xs) {
                     Text(progressTitle)
-                        .font(.system(size: 23, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.manrope(23, weight: 800))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                     Text(progressSubtitle)
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(14, weight: 700))
                         .foregroundStyle(.white.opacity(0.78))
                         .multilineTextAlignment(.center)
                 }
@@ -140,7 +140,7 @@ struct ScanCaptureView: View {
                 .fill(index <= progressPhase ? .white : .white.opacity(0.24))
                 .frame(width: 7, height: 7)
             Text(title)
-                .font(.system(size: 11, weight: .bold, design: .rounded))
+                .font(Tokens.Font.manrope(11, weight: 800))
                 .foregroundStyle(index <= progressPhase ? .white : .white.opacity(0.48))
         }
         .padding(.horizontal, 9)

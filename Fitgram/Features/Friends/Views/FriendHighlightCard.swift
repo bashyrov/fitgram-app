@@ -32,7 +32,7 @@ struct FriendHighlightCard: View {
                 .lineLimit(1)
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(highlight.value)
-                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(highlight.caption)
                     .font(Tokens.Font.caption)
@@ -43,7 +43,6 @@ struct FriendHighlightCard: View {
         .frame(minHeight: 138, alignment: .topLeading)
         .padding(Tokens.Space.md)
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-        .shadow(color: Tokens.Palette.primary.opacity(0.03), radius: 8, y: 4)
     }
 }
 

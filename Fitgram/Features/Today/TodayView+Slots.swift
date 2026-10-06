@@ -217,7 +217,7 @@ extension TodayView {
             HStack {
                 HStack(spacing: Tokens.Space.sm) {
                     Image(systemName: "figure.run.circle.fill")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.accent)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(
@@ -225,7 +225,8 @@ extension TodayView {
                                 pl: "Ruch dzisiaj", en: "Today's movement", uk: "Рух сьогодні",
                                 ru: "Движение сегодня", es: "Movimiento de hoy")
                         )
-                        .font(Tokens.Font.headline)
+                        .font(Tokens.Font.monoDisplay(20))
+                        .textCase(.uppercase)
                         .foregroundStyle(Tokens.Palette.ink)
                         Text(activitySummaryText)
                             .font(Tokens.Font.footnote)
@@ -239,10 +240,9 @@ extension TodayView {
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                        .frame(width: 36, height: 36)
-                        .background(Circle().fill(Tokens.Palette.primary))
-                        .shadow(color: Tokens.Palette.primary.opacity(0.14), radius: 10, y: 5)
+                        .foregroundStyle(Tokens.Mono.hi)
+                        .frame(width: 44, height: 44)
+                        .background(Circle().fill(Tokens.Mono.hero))
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel(
@@ -311,21 +311,7 @@ extension TodayView {
                 }
             }
         }
-        .padding(Tokens.Space.md)
-        .background {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.surface.opacity(0.70),
-                            Tokens.Palette.accentSoft.opacity(0.38),
-                            Tokens.Palette.background.opacity(0.10),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        }
+        .padding(.top, Tokens.Space.sm)
     }
 
     private var activitySummaryText: String {
@@ -361,11 +347,12 @@ extension TodayView {
             HStack {
                 HStack(spacing: Tokens.Space.sm) {
                     Image(systemName: "fork.knife.circle.fill")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.primary)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(state.isViewingToday ? L("Today") : L("Dziennik dnia"))
-                            .font(Tokens.Font.headline)
+                            .font(Tokens.Font.monoDisplay(20))
+                            .textCase(.uppercase)
                             .foregroundStyle(Tokens.Palette.ink)
                         Text(String.localizedStringWithFormat(L("%lld posiłków"), state.meals.count))
                             .font(Tokens.Font.footnote)
@@ -379,10 +366,9 @@ extension TodayView {
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                        .frame(width: 36, height: 36)
-                        .background(Circle().fill(Tokens.Palette.primary))
-                        .shadow(color: Tokens.Palette.primary.opacity(0.14), radius: 10, y: 5)
+                        .foregroundStyle(Tokens.Mono.hi)
+                        .frame(width: 44, height: 44)
+                        .background(Circle().fill(Tokens.Mono.hero))
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel(Text(L("Dodaj posiłek")))
@@ -403,20 +389,6 @@ extension TodayView {
                 }
             }
         }
-        .padding(Tokens.Space.md)
-        .background {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.surface.opacity(0.76),
-                            Tokens.Palette.primarySoft.opacity(0.42),
-                            Tokens.Palette.background.opacity(0.08),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        }
+        .padding(.top, Tokens.Space.sm)
     }
 }

@@ -441,7 +441,7 @@ extension OlaCalorieRecalculationSheet {
                     pl: "Ola przeliczy plan", en: "Ola will rebuild your plan", uk: "Оля перерахує план",
                     ru: "Оля пересчитает план", es: "Ola recalculará tu plan")
             )
-            .font(.system(size: 32, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.archivo(size: 32, weight: 800, width: 115))
             .foregroundStyle(Tokens.Palette.ink)
             Text(
                 TL(
@@ -720,7 +720,7 @@ extension OlaCalorieRecalculationSheet {
                 .font(Tokens.Font.caption)
                 .foregroundStyle(Tokens.Palette.inkMuted)
             Text(String(format: "%.1f", value).replacingOccurrences(of: ".", with: ","))
-                .font(.system(size: 28, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                 .foregroundStyle(tint)
             Text("kg")
                 .font(Tokens.Font.caption)
@@ -1049,7 +1049,7 @@ struct EditMacrosSheet: View {
     private var macroEditorHeader: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.xs) {
             Text(macroHeaderTitle)
-                .font(.system(size: 24, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(macroHeaderSubtitle)
                 .font(Tokens.Font.footnote)
@@ -1269,14 +1269,9 @@ extension EditMainGoalSheet {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [tint, tint.opacity(0.55)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            tint
                         )
                         .frame(width: 64, height: 64)
-                        .shadow(color: tint.opacity(0.4), radius: 12, y: 6)
                     Image(systemName: symbol(for: kind))
                         .font(.system(size: 26, weight: .bold))
                         .foregroundStyle(.white)
@@ -1400,7 +1395,7 @@ extension EditMainGoalSheet {
                 .font(Tokens.Font.caption)
                 .foregroundStyle(Tokens.Palette.inkMuted)
             Text(String(format: "%.1f", value))
-                .font(.system(size: 28, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                 .foregroundStyle(tint)
             Text("kg")
                 .font(Tokens.Font.caption)

@@ -177,11 +177,7 @@ struct AppearanceSettingsView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(
-                    LinearGradient(
-                        colors: [palette.background, palette.surface, palette.primary.opacity(0.50)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    palette.background
                 )
                 .frame(width: 50, height: 50)
                 .overlay {
