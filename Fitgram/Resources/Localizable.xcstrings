@@ -164,13 +164,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мы поможем ИИ лучше оценивать ваши порции."
+            "value" : "Мы поможем ИИ лучше оценивать твои порции."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми допоможемо ШІ краще оцінювати ваші порції."
+            "value" : "Ми допоможемо ШІ краще оцінювати твої порції."
           }
         }
       }
@@ -655,7 +655,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "/ рік — заощаджуйте 43%"
+            "value" : "/ рік — економія 43%"
           }
         }
       }
@@ -1922,9 +1922,33 @@
     },
     "%@ · %@" : {
       "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
+            "value" : "%1$@ · %2$@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "%1$@ · %2$@"
           }
         }
@@ -2209,13 +2233,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ отреагировал(а) на ваш прогресс %@. Откройте Друзей и ответьте добрым жестом."
+            "value" : "%@ отреагировал(а) на твой прогресс %@. Открой Друзей и ответь добрым жестом."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ відреагував(ла) на ваш прогрес %@. Відкрийте Друзів і відповідайте добрим жестом."
+            "value" : "%@ відреагував(ла) на твій прогрес %@. Відкрий Друзів і відповідай добрим жестом."
           }
         }
       }
@@ -2244,13 +2268,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ приглашает вас в Fitgram"
+            "value" : "%@ приглашает тебя в Fitgram"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ запрошує вас до Fitgram"
+            "value" : "%@ запрошує тебе до Fitgram"
           }
         }
       }
@@ -2349,13 +2373,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@. Посмотрите значок и держите этот ритм."
+            "value" : "%@. Посмотри значок и держи этот ритм."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@. Перегляньте відзнаку й тримайте цей ритм."
+            "value" : "%@. Переглянь відзнаку й тримай цей ритм."
           }
         }
       }
@@ -2590,13 +2614,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сегодня осталось %lld AI-запросов"
+            "value" : "Сегодня осталось %lld ИИ-запросов"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сьогодні залишилось %lld AI-запитів"
+            "value" : "Сьогодні залишилось %lld ШІ-запитів"
           }
         }
       }
@@ -3224,7 +3248,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Залишилося %lld г білка до вашої цілі. Кисломолочний сир, яйця, бобові — вони підходять майже до будь-якої страви."
+            "value" : "До твоєї цілі залишилося %lld г білка. Кисломолочний сир, яйця, бобові — підходять майже до будь-якої страви."
           }
         }
       }
@@ -4516,7 +4540,38 @@
       }
     },
     "+%lld" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld"
+          }
+        }
+      }
     },
     "+%lld hidden recipes" : {
       "extractionState" : "stale",
@@ -5070,7 +5125,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🎙 Скажіть уголос"
+            "value" : "🎙 Скажи вголос"
           }
         }
       }
@@ -6550,7 +6605,38 @@
       }
     },
     "2 / dzień" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 / dzień"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 / day"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 / день"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 / день"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 / día"
+          }
+        }
+      }
     },
     "2–3×/week of 20 mins of light cardio improves recovery and heart health without \"burning muscle.\" Only extreme long-distance running competes with muscle building." : {
       "extractionState" : "manual",
@@ -6591,7 +6677,38 @@
 
     },
     "3 / dzień" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 / dzień"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 / day"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 / день"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 / день"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 / día"
+          }
+        }
+      }
     },
     "3 rules for next week" : {
       "extractionState" : "manual",
@@ -7080,13 +7197,44 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 днів · повний ШІ · без лімітів. Тапніть, щоб переглянути плани."
+            "value" : "7 днів · повний ШІ · без лімітів. Натисни, щоб переглянути плани."
           }
         }
       }
     },
     "7 dni testu" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 dni testu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7-day trial"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 днів тесту"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 дней теста"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 días de prueba"
+          }
+        }
+      }
     },
     "7 dni za darmo" : {
       "localizations" : {
@@ -7146,13 +7294,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 дней бесплатно · без лимитов · Ola AI"
+            "value" : "7 дней бесплатно · без лимитов · ИИ-коуч Оля"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 днів безкоштовно · без лімітів · Ola AI"
+            "value" : "7 днів безкоштовно · без лімітів · ШІ-коуч Оля"
           }
         }
       }
@@ -7251,13 +7399,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 дней бесплатно. Полный доступ к AI, безлимитные сканы, AI Coach, экспорт."
+            "value" : "7 дней бесплатно. Полный доступ к ИИ, безлимитные сканы, ИИ-коуч, экспорт."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 днів безкоштовно. Повний доступ до AI, необмежена кількість сканувань, AI Coach, експорт."
+            "value" : "7 днів безкоштовно. Повний доступ до ШІ, необмежена кількість сканувань, ШІ-коуч, експорт."
           }
         }
       }
@@ -7321,13 +7469,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 дней бесплатно · без ограничений · AI Coach"
+            "value" : "7 дней бесплатно · без ограничений · ИИ-коуч"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 днів безкоштовно · без обмежень · AI Coach"
+            "value" : "7 днів безкоштовно · без обмежень · ШІ-коуч"
           }
         }
       }
@@ -10595,13 +10743,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Небольшое изменение веса (+%@) — обычное колебание. Давайте смотреть на среднее за месяц."
+            "value" : "Небольшое изменение веса (+%@) — обычное колебание. Давай смотреть на среднее за месяц."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Невелика зміна ваги (+%@) — це нормальне коливання. Давайте подивимося на середній показник за весь місяць."
+            "value" : "Невелика зміна ваги (+%@) — це нормальне коливання. Давай подивимося на середній показник за весь місяць."
           }
         }
       }
@@ -10700,13 +10848,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Неделя с 50–60% от вашего обычного объема дает суставам и ЦНС отдохнуть. Сила после этого часто растет. Это не потеря времени — это инвестиция в долгосрочные тренировки."
+            "value" : "Неделя с 50–60% от твоего обычного объёма даёт суставам и ЦНС отдохнуть. Сила после этого часто растёт. Это не потеря времени — это инвестиция в долгосрочные тренировки."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тиждень із 50–60% від вашого звичайного об'єму дозволяє суглобам і ЦНС відпочити. Сила після цього часто зростає. Це не марнування часу — це інвестиція в довгострокові тренування."
+            "value" : "Тиждень із 50–60% від твого звичайного об'єму дозволяє суглобам і ЦНС відпочити. Сила після цього часто зростає. Це не марнування часу — це інвестиція в довгострокові тренування."
           }
         }
       }
@@ -11501,13 +11649,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавьте больше друзей с Premium"
+            "value" : "Добавляй больше друзей с Premium"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Додайте більше друзів з Premium"
+            "value" : "Додавай більше друзів з Premium"
           }
         }
       }
@@ -11777,13 +11925,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавьте свой первый прием пищи по фото, голосом или из нашей базы данных."
+            "value" : "Добавь свой первый приём пищи по фото, голосом или из нашей базы."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Додайте свою першу страву за допомогою фото, голосу або з нашої бази даних."
+            "value" : "Додай свою першу страву за допомогою фото, голосу або з нашої бази."
           }
         }
       }
@@ -11881,7 +12029,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "После 6–8 недель редукции один день на поддержке или лёгком профиците поднимает лептин и щитовидку. Вопреки ощущениям, не тормозит, а помогает редукции."
+            "value" : "После 6–8 недель редукции один день на поддержке или лёгком профиците поднимает лептин и гормоны щитовидки. Вопреки ощущениям, это не тормозит, а помогает похудению."
           }
         },
         "uk" : {
@@ -12089,13 +12237,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI"
+            "value" : "ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI"
+            "value" : "ШІ"
           }
         }
       }
@@ -12127,13 +12275,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI сейчас не отвечает. Можно добавить еду вручную."
+            "value" : "ИИ сейчас не отвечает. Можно добавить еду вручную."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI зараз не відповідає. Ви можете додати їжу вручну."
+            "value" : "ШІ зараз не відповідає. Можеш додати страву вручну."
           }
         }
       }
@@ -12161,13 +12309,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI Коуч"
+            "value" : "ИИ-коуч"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI Коуч"
+            "value" : "ШІ-коуч"
           }
         }
       }
@@ -12195,13 +12343,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Советы AI Coach"
+            "value" : "Советы ИИ-коуча"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поради AI Coach"
+            "value" : "Поради ШІ-коуча"
           }
         }
       }
@@ -12230,19 +12378,50 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI распознает ингредиенты за 5 секунд"
+            "value" : "ИИ распознает ингредиенты за 5 секунд"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI розпізнає інгредієнти за 5 секунд"
+            "value" : "ШІ розпізнає інгредієнти за 5 секунд"
           }
         }
       }
     },
     "AI dziennie" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI dziennie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI per day"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ШІ на день"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ в день"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IA al día"
+          }
+        }
+      }
     },
     "AI is not responding right now, so Fitgram shows a smart local plan. You can still add meals manually." : {
       "extractionState" : "manual",
@@ -12303,13 +12482,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI отдохнет до завтра. Дневной защитный лимит использован."
+            "value" : "ИИ отдохнет до завтра. Дневной защитный лимит использован."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI відпочине до завтра. Денний ліміт безпеки використано."
+            "value" : "ШІ відпочине до завтра. Денний ліміт безпеки використано."
           }
         }
       }
@@ -12338,13 +12517,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "НА БАЗЕ AI"
+            "value" : "НА БАЗЕ ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "НА БАЗІ AI"
+            "value" : "НА БАЗІ ШІ"
           }
         }
       }
@@ -12373,13 +12552,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Обновить AI"
+            "value" : "Обновить ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оновити AI"
+            "value" : "Оновити ШІ"
           }
         }
       }
@@ -12407,13 +12586,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI распознает блюдо и покажет общий или детальный режим"
+            "value" : "ИИ распознает блюдо и покажет общий или детальный режим"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI розпізнає страву й покаже загальний або детальний режим"
+            "value" : "ШІ розпізнає страву й покаже загальний або детальний режим"
           }
         }
       }
@@ -12441,19 +12620,50 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI распознаёт вареники, шницель, кашу, супы — 160+ польских блюд в базе."
+            "value" : "ИИ распознаёт вареники, шницель, кашу, супы — 160+ польских блюд в базе."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI розпізнає вареники, шницель, кашу, супи — 160+ польських страв у базі."
+            "value" : "ШІ розпізнає вареники, шницель, кашу, супи — 160+ польських страв у базі."
           }
         }
       }
     },
     "AI szuka składników na talerzu." : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI szuka składników na talerzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI is looking for ingredients on the plate."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ШІ шукає інгредієнти на тарілці."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ ищет ингредиенты на тарелке."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA busca ingredientes en el plato."
+          }
+        }
+      }
     },
     "Aim for 1.5-2 g of protein per kg of body weight — cottage cheese, eggs, chicken, lentils keep muscle while fat goes." : {
       "extractionState" : "stale",
@@ -13339,25 +13549,56 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naturalnie zawsze pod ręką"
+            "value" : "Zawsze pod ręką"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Естественно всегда под рукой"
+            "value" : "Всегда под рукой"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Природно завжди під рукою"
+            "value" : "Завжди під рукою"
           }
         }
       }
     },
     "Analizujemy zdjęcie" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizujemy zdjęcie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analysing the photo"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аналізуємо фото"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анализируем фото"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizando la foto"
+          }
+        }
+      }
     },
     "Analizujemy…" : {
       "extractionState" : "stale",
@@ -13418,13 +13659,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Анализируем ваше фото — это займет секунду."
+            "value" : "Анализируем твоё фото — это займёт секунду."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Аналізуємо ваше фото — це займе хвилинку."
+            "value" : "Аналізуємо твоє фото — це займе хвилинку."
           }
         }
       }
@@ -13522,13 +13763,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anna"
+            "value" : "Анна"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anna"
+            "value" : "Анна"
           }
         }
       }
@@ -13693,7 +13934,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Хотите добавить что-то еще?"
+            "value" : "Хочешь добавить что-то ещё?"
           }
         },
         "uk" : {
@@ -14050,7 +14291,38 @@
       }
     },
     "Apple Pay" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Pay"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Pay"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Pay"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Pay"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Pay"
+          }
+        }
+      }
     },
     "Apr." : {
       "extractionState" : "manual",
@@ -14564,13 +14836,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Бабушкин пирог, Pierogi, бульон — запишите то, что реально съели, а не половину."
+            "value" : "Бабушкин пирог, вареники, бульон — запиши то, что реально съел(а), а не половину."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Бабусин пиріг, Pierogi, бульйон — записуйте те, що дійсно з'їли, а не половину."
+            "value" : "Бабусин пиріг, вареники, бульйон — запиши те, що справді з'їв(ла), а не половину."
           }
         }
       }
@@ -14945,13 +15217,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Прежде чем начать сушку, питайтесь на уровне вашего расчетного TDEE в течение 2-3 недель и взвешивайтесь по утрам. Стабильный вес = вы попали в цель. Вычтите 15–20% из этого числа — это ваша база для сушки."
+            "value" : "Прежде чем начать сушку, питайся на уровне своего расчётного TDEE 2–3 недели и взвешивайся по утрам. Стабильный вес = ты попал(а) в цель. Вычти 15–20% из этого числа — это твоя база для сушки."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перед початком сушки харчуйтеся на рівні вашого TDEE протягом 2-3 тижнів і зважуйтеся вранці. Стабільна вага = ви влучили в ціль. Відніміть 15–20% від цього числа — це ваша базова лінія для сушки."
+            "value" : "Перед початком сушки харчуйся на рівні свого TDEE 2–3 тижні й зважуйся вранці. Стабільна вага = ти влучив(ла) в ціль. Відніми 15–20% від цього числа — це твоя базова лінія для сушки."
           }
         }
       }
@@ -18050,7 +18322,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Челленджи, рейтинг, реакции — худейте вместе"
+            "value" : "Челленджи, рейтинг, реакции — худей вместе с друзьями"
           }
         },
         "uk" : {
@@ -19001,38 +19273,69 @@
       }
     },
     "coach" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "coach"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "coach"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "коуч"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "коуч"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "coach"
+          }
+        }
+      }
     },
     "Coach Ola" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coach Ola"
+            "value" : "Ola, your AI coach"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coach Ola"
+            "value" : "Ola, tu coach con IA"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coach Ola"
+            "value" : "Ola, Twoja trenerka AI"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coach Ola"
+            "value" : "Оля — твой ИИ-коуч"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coach Ola"
+            "value" : "Оля — твій ШІ-коуч"
           }
         }
       }
@@ -19933,7 +20236,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не удалось загрузить предложения. Проверьте подключение."
+            "value" : "Не удалось загрузить предложения. Проверь подключение."
           }
         },
         "uk" : {
@@ -20038,13 +20341,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не удалось сохранить. Попробуйте еще раз."
+            "value" : "Не удалось сохранить. Попробуй ещё раз."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалося зберегти. Спробуйте ще раз."
+            "value" : "Не вдалося зберегти. Спробуй ще раз."
           }
         }
       }
@@ -20073,13 +20376,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не удалось оформить подписку. Попробуйте еще раз."
+            "value" : "Не удалось оформить подписку. Попробуй ещё раз."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалося активувати підписку. Будь ласка, спробуйте знову."
+            "value" : "Не вдалося активувати підписку. Спробуй ще раз."
           }
         }
       }
@@ -20805,13 +21108,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ежедневные инсайты под вашу цель — на вашем языке"
+            "value" : "Ежедневные советы под твою цель — на твоём языке"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Щоденні поради, адаптовані до вашої мети — вашою мовою"
+            "value" : "Щоденні поради під твою мету — твоєю мовою"
           }
         }
       }
@@ -20910,13 +21213,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вес колеблется на 1–2 кг в день только из-за воды. Верьте среднему за 14 дней."
+            "value" : "Вес колеблется на 1–2 кг в день только из-за воды. Доверяй среднему за 14 дней."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Щоденні коливання ваги на 1-2 кг — це лише вода. Довіряйте середньому за 14 днів."
+            "value" : "Щоденні коливання ваги на 1–2 кг — це лише вода. Довіряй середньому за 14 днів."
           }
         }
       }
@@ -22140,7 +22443,38 @@
       }
     },
     "dni free" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dni gratis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "days free"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "днів безкоштовно"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дней бесплатно"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "días gratis"
+          }
+        }
+      }
     },
     "dni serii" : {
       "extractionState" : "manual",
@@ -22896,13 +23230,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавьте первого человека, чтобы видеть его серию, значки и реакции."
+            "value" : "Добавь первого человека, чтобы видеть его серию, значки и реакции."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Додайте першу людину, щоб бачити її серію, відзнаки й реакції."
+            "value" : "Додай першу людину, щоб бачити її серію, відзнаки й реакції."
           }
         }
       }
@@ -22931,13 +23265,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавьте первое блюдо, и неделя оживет."
+            "value" : "Добавь первое блюдо, и неделя оживёт."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Додайте першу страву, і тиждень оживе."
+            "value" : "Додай першу страву, і тиждень оживе."
           }
         }
       }
@@ -23011,7 +23345,38 @@
       }
     },
     "Dodaj produkt" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj produkt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add item"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати продукт"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить продукт"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir producto"
+          }
+        }
+      }
     },
     "Dodaj składnik" : {
       "extractionState" : "manual",
@@ -23280,13 +23645,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавляйте друзей и группы без искусственных ограничений."
+            "value" : "Добавляй друзей и группы без искусственных ограничений."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Додавайте друзів і групи без штучних обмежень."
+            "value" : "Додавай друзів і групи без штучних обмежень."
           }
         }
       }
@@ -23594,13 +23959,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пока ничего не меняйте. Данные сами подскажут, что стоит скорректировать."
+            "value" : "Пока ничего не меняй. Данные сами подскажут, что стоит скорректировать."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поки нічого не змінюйте. Дані самі покажуть, що варто скоригувати."
+            "value" : "Поки нічого не змінюй. Дані самі покажуть, що варто скоригувати."
           }
         }
       }
@@ -23629,13 +23994,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не хочется тренироваться? Позанимайтесь всего 5 минут. В 80% случаев вы останетесь на всю тренировку — начать сложнее всего."
+            "value" : "Не хочется тренироваться? Позанимайся всего 5 минут. В 80% случаев ты останешься на всю тренировку — начать сложнее всего."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не хочеться тренуватися? Просто приділіть цьому 5 хвилин. У 80% випадків ви залишитеся на все тренування — почати найважче."
+            "value" : "Не хочеться тренуватися? Приділи цьому лише 5 хвилин. У 80% випадків ти залишишся на все тренування — почати найважче."
           }
         }
       }
@@ -23664,7 +24029,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не забудьте записать приемы пищи сегодня."
+            "value" : "Не забудь записать приёмы пищи сегодня."
           }
         },
         "uk" : {
@@ -23872,13 +24237,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пейте воду перед едой"
+            "value" : "Пей воду перед едой"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пийте воду перед їдою"
+            "value" : "Пий воду перед їдою"
           }
         }
       }
@@ -23907,13 +24272,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пейте калории"
+            "value" : "Пей свои калории"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пийте свої калорії"
+            "value" : "Пий свої калорії"
           }
         }
       }
@@ -24533,13 +24898,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дневной лимит AI использован"
+            "value" : "Дневной лимит ИИ использован"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Денний ліміт AI використано"
+            "value" : "Денний ліміт ШІ використано"
           }
         }
       }
@@ -24879,13 +25244,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Салат перед основным блюдом снижает общую калорийность приема пищи на 11% (Rolls). Клетчатка буферизует глюкозу и сигнализирует о насыщении до того, как вы потянетесь за крахмалом."
+            "value" : "Салат перед основным блюдом снижает общую калорийность приёма пищи на 11% (Rolls). Клетчатка буферизует глюкозу и сигнализирует о насыщении до того, как ты потянешься за крахмалом."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Салат перед основною стравою знижує загальну калорійність прийому їжі на 11% (Rolls). Клітковина буферизує глюкозу та сигналізує про насичення ще до того, як ви потягнетеся за крохмалем."
+            "value" : "Салат перед основною стравою знижує загальну калорійність прийому їжі на 11% (Rolls). Клітковина буферизує глюкозу та сигналізує про насичення ще до того, як ти потягнешся за крохмалем."
           }
         }
       }
@@ -25474,7 +25839,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Увімкніть доступ до камери в Налаштуваннях, щоб ми могли сканувати страви з фото."
+            "value" : "Увімкни доступ до камери в Параметрах, щоб ми могли сканувати страви з фото."
           }
         }
       }
@@ -25675,13 +26040,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введите значение"
+            "value" : "Введи значение"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введіть значення"
+            "value" : "Введи значення"
           }
         }
       }
@@ -25786,7 +26151,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Навіть одна хвилина стояння на годину при сидячій роботі помітно збільшує витрату енергії."
+            "value" : "Навіть одна хвилина стоячи щогодини при сидячій роботі помітно збільшує витрату енергії."
           }
         }
       }
@@ -26194,19 +26559,19 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Post"
+            "value" : "Szybkie"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Быстро"
+            "value" : "Быстрый"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Швидко"
+            "value" : "Швидкий"
           }
         }
       }
@@ -27426,7 +27791,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перший крок: зафіксуйте сьогоднішній сніданок. Спробуйте фотоскан — це найшвидше."
+            "value" : "Перший крок: запиши сьогоднішній сніданок. Спробуй фотоскан — це найшвидше."
           }
         }
       }
@@ -27461,7 +27826,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перший крок: запишіть наступні 3 страви. За тиждень побачите перші закономірності."
+            "value" : "Перший крок: запиши наступні 3 страви. За тиждень побачиш перші закономірності."
           }
         }
       }
@@ -27804,13 +28169,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram помогает отслеживать то, что вы уже должны делать. Экспортируйте недельный CSV из Профиля и возьмите его на визит."
+            "value" : "Fitgram помогает отслеживать то, что ты уже должен(на) делать. Экспортируй недельный CSV из Профиля и возьми его на визит."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram допомагає відстежувати те, що ви вже маєте робити. Експортуйте тижневий CSV з Профілю та візьміть його на візит."
+            "value" : "Fitgram допомагає відстежувати те, що ти вже маєш робити. Експортуй тижневий CSV з Профілю та візьми його на візит."
           }
         }
       }
@@ -27956,10 +28321,72 @@
       }
     },
     "Fitgram Pro" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram Pro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitgram Pro"
+          }
+        }
+      }
     },
     "FITGRAM PRO" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FITGRAM PRO"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FITGRAM PRO"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FITGRAM PRO"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FITGRAM PRO"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FITGRAM PRO"
+          }
+        }
+      }
     },
     "Fitgram-er since %@" : {
       "extractionState" : "stale",
@@ -28054,19 +28481,50 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Следуйте плану вашего диетолога"
+            "value" : "Следуй плану своего диетолога"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дотримуйтесь плану вашого дієтолога"
+            "value" : "Дотримуйся плану свого дієтолога"
           }
         }
       }
     },
     "Food" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedzenie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Food"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Їжа"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Еда"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comida"
+          }
+        }
+      }
     },
     "Food database: Open Food Facts (ODbL)." : {
       "localizations" : {
@@ -28173,10 +28631,72 @@
       }
     },
     "Foto, głos i poprawki" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto, głos i poprawki"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo, voice and edits"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото, голос і правки"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото, голос и правки"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto, voz y correcciones"
+          }
+        }
+      }
     },
     "FREE" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FREE"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FREE"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FREE"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FREE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FREE"
+          }
+        }
+      }
     },
     "Free accounts support 3 friends. Premium opens unlimited groups." : {
       "extractionState" : "manual",
@@ -28214,7 +28734,38 @@
       }
     },
     "Free vs Pro" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free vs Pro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free vs Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free vs Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free vs Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free vs Pro"
+          }
+        }
+      }
     },
     "Freeze" : {
       "extractionState" : "stale",
@@ -29216,13 +29767,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemini Pro AI — самое точное распознавание польских блюд"
+            "value" : "Gemini Pro — самое точное распознавание польских блюд"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemini Pro AI — найточніше розпізнавання польських страв"
+            "value" : "Gemini Pro — найточніше розпізнавання польських страв"
           }
         }
       }
@@ -30219,13 +30770,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мясо на гриле + пиво + закуски — легко набегает 1500+ ккал за вечер. Записывайте на ходу."
+            "value" : "Мясо на гриле + пиво + закуски — легко набегает 1500+ ккал за вечер. Записывай на ходу."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "М'ясо на грилі + пиво + закуски — легко понад 1500 ккал за вечір. Записуйте на ходу."
+            "value" : "М'ясо на грилі + пиво + закуски — легко понад 1500 ккал за вечір. Записуй на ходу."
           }
         }
       }
@@ -30358,13 +30909,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Эффект Хоторна: осознание того, что вас измеряют, улучшает результаты. Сканирование блюд снижает потребление на 5-10% без сознательной диеты. Данные обладают силой."
+            "value" : "Эффект Хоторна: когда ты знаешь, что тебя измеряют, результаты улучшаются. Сканирование блюд снижает потребление на 5–10% без сознательной диеты. Данные обладают силой."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ефект Хоторна: усвідомлення того, що вас вимірюють, покращує результати. Сканування страв знижує споживання на 5-10% без свідомої дієти. Дані мають силу."
+            "value" : "Ефект Хоторна: коли ти знаєш, що тебе вимірюють, результати покращуються. Сканування страв знижує споживання на 5–10% без свідомої дієти. Дані мають силу."
           }
         }
       }
@@ -30634,7 +31185,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Привет! Начните день с завтрака."
+            "value" : "Привет! Начни день с завтрака."
           }
         },
         "uk" : {
@@ -30960,7 +31511,38 @@
       }
     },
     "Historia i eksport" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historia i eksport"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History and export"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Історія та експорт"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "История и экспорт"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial y exportación"
+          }
+        }
+      }
     },
     "Historia Oli" : {
       "extractionState" : "stale",
@@ -31126,13 +31708,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Домашние вечеринки с закусками и напитками — не забывайте пить воду между бокалами."
+            "value" : "Домашние вечеринки с закусками и напитками — не забывай пить воду между бокалами."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Домашні вечірки із закусками та напоями — пам'ятайте про воду між келихами."
+            "value" : "Домашні вечірки із закусками та напоями — пам'ятай про воду між келихами."
           }
         }
       }
@@ -31202,7 +31784,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Як хочете набирати?"
+            "value" : "Як хочеш набирати?"
           }
         }
       }
@@ -31693,36 +32275,36 @@
         }
       }
     },
-    "Idealne na symulatorze" : {
+    "Dowolne zdjęcie z telefonu" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perfect on simulator"
+            "value" : "Any photo from your phone"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perfecto en el simulador"
+            "value" : "Cualquier foto de tu teléfono"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idealne na symulatorze"
+            "value" : "Dowolne zdjęcie z telefonu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Идеально на симуляторе"
+            "value" : "Любое фото с телефона"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ідеально на симуляторі"
+            "value" : "Будь-яке фото з телефона"
           }
         }
       }
@@ -32549,13 +33131,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Персональные AI-советы доступны в Pro."
+            "value" : "Персональные ИИ-советы доступны в Pro."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Персональні AI-поради доступні в Pro."
+            "value" : "Персональні ШІ-поради доступні в Pro."
           }
         }
       }
@@ -32757,7 +33339,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Интервальное голодание в дефиците даёт те же результаты, что и классическая диета. Плюс: проще структура дня. Минус: тяжелее попасть в белок."
+            "value" : "Интервальное голодание в дефиците даёт те же результаты, что и классическая диета. Плюс: проще структура дня. Минус: сложнее добрать белок."
           }
         },
         "uk" : {
@@ -33078,7 +33660,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Як ви хочете додати?"
+            "value" : "Як хочеш додати?"
           }
         }
       }
@@ -33701,13 +34283,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Если вы заметили, что порции обычно слишком большие или маленькие, передвиньте ползунок."
+            "value" : "Если замечаешь, что порции обычно слишком большие или маленькие, передвинь ползунок."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Якщо ви помітили, що записи зазвичай завеликі або замалі, пересуньте повзунок."
+            "value" : "Якщо помічаєш, що записи зазвичай завеликі або замалі, пересунь повзунок."
           }
         }
       }
@@ -33777,7 +34359,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сьогодні ще нічого не збережено — додайте обід, щоб я могла спланувати день."
+            "value" : "Сьогодні ще нічого не записано — додай обід, щоб я могла спланувати день."
           }
         }
       }
@@ -33984,7 +34566,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JSON, CSV, ZIP — без обмежень, для вас і вашого дієтолога"
+            "value" : "JSON, CSV, ZIP — без обмежень, для тебе і твого дієтолога"
           }
         }
       }
@@ -34188,13 +34770,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Просто ведите дневник две недели без целей. Замеченные вами закономерности скажут больше, чем любая статья о диетах."
+            "value" : "Просто веди дневник две недели без целей. Закономерности, которые ты заметишь, скажут больше любой статьи о диетах."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Просто записуйте їжу два тижні — без жодних цілей. Виявлені закономірності скажуть більше, ніж будь-яка стаття про дієти."
+            "value" : "Просто записуй їжу два тижні — без жодних цілей. Закономірності, які ти помітиш, скажуть більше, ніж будь-яка стаття про дієти."
           }
         }
       }
@@ -34223,7 +34805,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Просто скажите, что вы съели"
+            "value" : "Просто скажи, что ты съел(а)"
           }
         },
         "uk" : {
@@ -34432,13 +35014,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Калибровка AI"
+            "value" : "Калибровка ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Калібрування AI"
+            "value" : "Калібрування ШІ"
           }
         }
       }
@@ -34790,7 +35372,38 @@
       }
     },
     "Kategorie, rzadkość i następne cele w jednym miejscu." : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorie, rzadkość i następne cele w jednym miejscu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categories, rarity and next goals in one place."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категорії, рідкість і наступні цілі в одному місці."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категории, редкость и следующие цели в одном месте."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categorías, rareza y próximos objetivos en un solo lugar."
+          }
+        }
+      }
     },
     "Kawa czarna ≈ 2 kcal" : {
       "extractionState" : "manual",
@@ -35482,7 +36095,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Код %@ ще не у базі Open Food Facts. Спробуйте інший або додайте вручну."
+            "value" : "Коду %@ ще немає в базі Open Food Facts. Спробуй інший або додай вручну."
           }
         }
       }
@@ -35627,7 +36240,38 @@
       }
     },
     "Kolekcja odznak" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolekcja odznak"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badge collection"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колекція відзнак"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коллекция значков"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colección de insignias"
+          }
+        }
+      }
     },
     "Kolor moczu — najlepszy test" : {
       "extractionState" : "manual",
@@ -35999,13 +36643,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Продолжить email"
+            "value" : "Продолжить с email"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Продовжити email"
+            "value" : "Продовжити з email"
           }
         }
       }
@@ -36349,7 +36993,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Хто може бачити ваш профіль"
+            "value" : "Хто може бачити твій профіль"
           }
         }
       }
@@ -37364,7 +38008,38 @@
       }
     },
     "Liczymy kalorie i makro" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liczymy kalorie i makro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counting calories and macros"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рахуємо калорії та макро"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Считаем калории и макро"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculando calorías y macros"
+          }
+        }
+      }
     },
     "Lifetime" : {
       "extractionState" : "stale",
@@ -37635,13 +38310,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Лимит обновлений AI использован"
+            "value" : "Лимит обновлений ИИ использован"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ліміт оновлень AI використано"
+            "value" : "Ліміт оновлень ШІ використано"
           }
         }
       }
@@ -37670,13 +38345,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Лимит продуктов AI использован"
+            "value" : "Лимит продуктов ИИ использован"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ліміт продуктів AI використано"
+            "value" : "Ліміт продуктів ШІ використано"
           }
         }
       }
@@ -38234,7 +38909,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Подивіться, як минув день."
+            "value" : "Подивись, як минув день."
           }
         }
       }
@@ -38553,7 +39228,38 @@
       }
     },
     "Macros" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Makro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macros"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Макро"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Макро"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macros"
+          }
+        }
+      }
     },
     "Magnez 320-420 mg" : {
       "extractionState" : "manual",
@@ -38683,7 +39389,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поддержание веса — это игра средних значений за неделю. Один день выше цели ничего не испортит — следите за картиной за 7 дней."
+            "value" : "Поддержание веса — это игра средних значений за неделю. Один день выше цели ничего не испортит — следи за картиной за 7 дней."
           }
         },
         "uk" : {
@@ -38996,13 +39702,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мама часто просит лишь о приятном обеде и кусочке торта — запишите его без чувства вины."
+            "value" : "Мама часто просит лишь о приятном обеде и кусочке торта — запиши его без чувства вины."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мама часто просить лише про приємний обід і шматочок торта — запишіть його без докорів сумління."
+            "value" : "Мама часто просить лише про приємний обід і шматочок торта — запиши його без докорів сумління."
           }
         }
       }
@@ -39136,13 +39842,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У вас еще есть место для спокойного вечера"
+            "value" : "У тебя ещё есть место для спокойного вечера"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У вас ще є місце для спокійного вечора"
+            "value" : "У тебе ще є місце для спокійного вечора"
           }
         }
       }
@@ -39240,13 +39946,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Может позже"
+            "value" : "Может, позже"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Можливо пізніше"
+            "value" : "Можливо, пізніше"
           }
         }
       }
@@ -39728,7 +40434,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Следите за трендом, а не за конкретным днем"
+            "value" : "Следи за трендом, а не за отдельным днём"
           }
         },
         "uk" : {
@@ -40035,13 +40741,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Umiarkowany"
+            "value" : "Umiarkowane"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Умеренно"
+            "value" : "Умеренный"
           }
         },
         "uk" : {
@@ -40973,13 +41679,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Большинство домашних блюд вписываются в дневную норму, если порции разумны. Fitgram считает вес, а не вашу культуру."
+            "value" : "Большинство домашних блюд вписываются в дневную норму, если порции разумны. Fitgram считает вес, а не твою культуру."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Більшість домашніх страв вписуються у вашу денну ціль, якщо порції розумні. Fitgram відстежує вагу, а не вашу культуру."
+            "value" : "Більшість домашніх страв вписуються у твою денну ціль, якщо порції розумні. Fitgram відстежує вагу, а не твою культуру."
           }
         }
       }
@@ -41113,13 +41819,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "вы можете добавить свои продукты в Профиле."
+            "value" : "можешь добавить свои продукты в Профиле."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ви можете додати власні продукти у Профілі."
+            "value" : "можеш додати власні продукти у Профілі."
           }
         }
       }
@@ -41147,13 +41853,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Можно ввести только граммовку. Недостающие калории и макро заполнит база или AI при сохранении."
+            "value" : "Можно ввести только граммовку. Недостающие калории и макро заполнит база или ИИ при сохранении."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Можеш ввести лише грамовку. Брак калорій і макро заповнить база або AI під час збереження."
+            "value" : "Можеш ввести лише грамовку. Брак калорій і макро заповнить база або ШІ під час збереження."
           }
         }
       }
@@ -42156,13 +42862,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сначала посмотрите профиль человека, затем отправьте приглашение. Это защищает от ошибки."
+            "value" : "Сначала посмотри профиль человека, потом отправь приглашение. Это защищает от ошибки."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спочатку перегляньте профіль людини, потім надішліть запрошення. Це захищає від помилок."
+            "value" : "Спочатку переглянь профіль людини, потім надішли запрошення. Це захищає від помилок."
           }
         }
       }
@@ -42440,7 +43146,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пишіть на onefitgram@gmail.com — відповідаємо за 24 год."
+            "value" : "Пиши на onefitgram@gmail.com — відповідаємо за 24 год."
           }
         }
       }
@@ -42481,7 +43187,38 @@
       }
     },
     "Następna nagroda" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Następna nagroda"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next reward"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Наступна нагорода"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующая награда"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima recompensa"
+          }
+        }
+      }
     },
     "Następny dzień" : {
       "extractionState" : "stale",
@@ -43318,7 +44055,38 @@
       }
     },
     "Nie" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ні"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        }
+      }
     },
     "Nie ma jeszcze danych" : {
       "extractionState" : "manual",
@@ -43559,7 +44327,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалося підтвердити ваші дані. Спробуйте ще раз."
+            "value" : "Не вдалося підтвердити твої дані. Спробуй ще раз."
           }
         }
       }
@@ -43629,7 +44397,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалось видалити. Спробуйте ще раз."
+            "value" : "Не вдалося видалити. Спробуй ще раз."
           }
         }
       }
@@ -43693,13 +44461,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не удалось отправить ссылку. Попробуйте позже."
+            "value" : "Не удалось отправить ссылку. Попробуй чуть позже."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалося надіслати посилання. Спробуйте ще раз за мить."
+            "value" : "Не вдалося надіслати посилання. Спробуй ще раз за мить."
           }
         }
       }
@@ -43775,10 +44543,72 @@
       }
     },
     "Nie udało się zapisać posiłku" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się zapisać posiłku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save the meal"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зберегти страву"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось сохранить блюдо"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo guardar la comida"
+          }
+        }
+      }
     },
     "Nie udało się zapisać zmian" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się zapisać zmian"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save changes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зберегти зміни"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось сохранить изменения"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudieron guardar los cambios"
+          }
+        }
+      }
     },
     "Nie udało się zapisać. Spróbuj ponownie." : {
       "extractionState" : "stale",
@@ -43845,7 +44675,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не вдалося дублювати. Спробуйте ще раз."
+            "value" : "Не вдалося дублювати. Спробуй ще раз."
           }
         }
       }
@@ -44290,13 +45120,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Безлимитные сканы, AI Coach, экспорт."
+            "value" : "Безлимитные сканы, ИИ-коуч, экспорт."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Безлімітні скани, AI Coach, експорти."
+            "value" : "Безлімітні скани, ШІ-коуч, експорти."
           }
         }
       }
@@ -45022,13 +45852,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет доступа — включите в Настройках iOS"
+            "value" : "Нет доступа — включи в Настройках iOS"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Немає дозволу — увімкніть у Параметрах iOS"
+            "value" : "Немає дозволу — увімкни в Параметрах iOS"
           }
         }
       }
@@ -45057,13 +45887,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет доступа — вы можете включить его в настройках iOS"
+            "value" : "Нет доступа — можешь включить его в Настройках iOS"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Немає дозволу — ви можете увімкнути його в Параметрах iOS"
+            "value" : "Немає дозволу — можеш увімкнути його в Параметрах iOS"
           }
         }
       }
@@ -45722,7 +46552,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ще нічого не додано. Почніть із першої страви 🌱"
+            "value" : "Ще нічого не додано. Почни з першої страви 🌱"
           }
         }
       }
@@ -45786,13 +46616,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сначала заметьте, потом меняйте"
+            "value" : "Сначала замечай, потом меняй"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спочатку помічайте, потім змінюйте"
+            "value" : "Спочатку помічай, потім змінюй"
           }
         }
       }
@@ -47117,34 +47947,34 @@
     },
     "Odśwież AI" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Refresh AI"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualizar IA"
-          }
-        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odśwież AI"
           }
         },
-        "ru" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Обновить AI"
+            "value" : "Refresh AI"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оновити AI"
+            "value" : "Оновити ШІ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить ИИ"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar IA"
           }
         }
       }
@@ -47312,13 +48142,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Значки, которые вы заработали"
+            "value" : "Значки, которые ты заработал(а)"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Значки, які ви здобули"
+            "value" : "Значки, які ти здобув(ла)"
           }
         }
       }
@@ -47779,22 +48609,22 @@
     },
     "Ola" : {
       "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ola"
           }
         },
-        "es" : {
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ola"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ola"
+            "value" : "Оля"
           }
         },
         "ru" : {
@@ -47803,10 +48633,10 @@
             "value" : "Оля"
           }
         },
-        "uk" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля"
+            "value" : "Ola"
           }
         }
       }
@@ -47834,13 +48664,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля — твой AI-коуч"
+            "value" : "Оля — твой ИИ-коуч"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля — твій AI-коуч"
+            "value" : "Оля — твій ШІ-коуч"
           }
         }
       }
@@ -47875,7 +48705,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля — ваш ШІ-тренер"
+            "value" : "Оля — твій ШІ-коуч"
           }
         }
       }
@@ -48289,7 +49119,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля подвела итоги вашей недели"
+            "value" : "Оля подвела итоги твоей недели"
           }
         },
         "uk" : {
@@ -48336,7 +49166,38 @@
       }
     },
     "Ola Pro" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola Pro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оля Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оля Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola Pro"
+          }
+        }
+      }
     },
     "Ola przygotowała pierwsze wskazówki" : {
       "localizations" : {
@@ -48402,7 +49263,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля готує ваші підказки…"
+            "value" : "Оля готує твої підказки…"
           }
         }
       }
@@ -48507,7 +49368,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля підлаштувала ваш план"
+            "value" : "Оля підлаштувала твій план"
           }
         }
       }
@@ -48781,7 +49642,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "На дефиците держи белок выше, чем на поддержании — это бережёт мышцы. Для 70 кг это 110–155 г/сут. Это 4–5 порций по 25–35 г."
+            "value" : "На дефиците держи белок выше, чем на поддержании — это бережёт мышцы. Для 70 кг это 110–155 г в сутки, то есть 4–5 порций по 25–35 г."
           }
         },
         "uk" : {
@@ -49135,7 +49996,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Це видаляє всі ваші локальні та серверні дані. Скасувати не можна."
+            "value" : "Це видаляє всі твої локальні та серверні дані. Скасувати не можна."
           }
         }
       }
@@ -49818,13 +50679,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "За 30 дней вы сбросили %@. Постоянство окупается — так держать."
+            "value" : "За 30 дней ты сбросил(а) %@. Постоянство окупается — так держать."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "За 30 днів ви втратили %@. Систематичність приносить плоди — так тримати."
+            "value" : "За 30 днів ти схуд(ла) на %@. Систематичність приносить плоди — так тримати."
           }
         }
       }
@@ -50527,13 +51388,106 @@
       }
     },
     "Pełny AI-coach, bez limitów" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełny AI-coach, bez limitów"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full AI coach, no limits"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний ШІ-коуч без лімітів"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный ИИ-коуч без лимитов"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach con IA completo, sin límites"
+          }
+        }
+      }
     },
     "Pełny dostęp" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełny dostęp"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full access"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний доступ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный доступ"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso completo"
+          }
+        }
+      }
     },
     "Pełny progres" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełny progres"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full progress"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний прогрес"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный прогресс"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso completo"
+          }
+        }
+      }
     },
     "personal record: %lld days" : {
       "extractionState" : "stale",
@@ -50801,13 +51755,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выберите день"
+            "value" : "Выбери день"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оберіть день"
+            "value" : "Обери день"
           }
         }
       }
@@ -50836,13 +51790,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выберите самый быстрый способ записать это блюдо"
+            "value" : "Выбери самый быстрый способ записать это блюдо"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оберіть найшвидший спосіб додати цю страву"
+            "value" : "Обери найшвидший спосіб додати цю страву"
           }
         }
       }
@@ -50871,13 +51825,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выберите, что увидят друзья"
+            "value" : "Выбери, что увидят друзья"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виберіть, що бачитимуть друзі"
+            "value" : "Обери, що бачитимуть друзі"
           }
         }
       }
@@ -51259,7 +52213,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви вперше записали вагу."
+            "value" : "Ти вперше записав(ла) вагу."
           }
         }
       }
@@ -51584,13 +52538,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plan without pressure"
+            "value" : "A no-pressure plan"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plan sin presión"
+            "value" : "Un plan sin presión"
           }
         },
         "pl" : {
@@ -51823,7 +52777,38 @@
       }
     },
     "Płatność chwilowo nie odpowiada" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Płatność chwilowo nie odpowiada"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payments aren't responding right now"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оплата тимчасово не відповідає"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оплата временно не отвечает"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El pago no responde en este momento"
+          }
+        }
+      }
     },
     "Płatność czeka na potwierdzenie." : {
       "extractionState" : "stale",
@@ -52132,7 +53117,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перенесіть записи ваги з Apple Health. Імпортуємо лише нові."
+            "value" : "Перенеси записи ваги з Apple Health. Імпортуємо лише нові."
           }
         }
       }
@@ -52301,13 +53286,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Направьте камеру на тарелку или выберите фото из галереи. Ничего не сохраняется."
+            "value" : "Наведи камеру на тарелку или выбери фото из галереи. Ничего не сохраняется."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Наведіть камеру на тарілку або виберіть фото з галереї. Нічого не зберігається."
+            "value" : "Наведи камеру на тарілку або обери фото з галереї. Нічого не зберігається."
           }
         }
       }
@@ -52579,13 +53564,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Покажите свой код или вставьте код друга в поиск."
+            "value" : "Покажи свой код или вставь код друга в поиск."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Покажіть свій код або вставте код друга в пошук."
+            "value" : "Покажи свій код або встав код друга в пошук."
           }
         }
       }
@@ -52858,13 +53843,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Платежи Apple временно не ответили. Ваши данные в безопасности."
+            "value" : "Платежи Apple временно не ответили. Твои данные в безопасности."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Платежі Apple тимчасово не відповіли. Ваші дані в безпеці."
+            "value" : "Платежі Apple тимчасово не відповіли. Твої дані в безпеці."
           }
         }
       }
@@ -53241,13 +54226,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поправьте каждый продукт перед добавлением"
+            "value" : "Поправь каждый продукт перед добавлением"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Відредагуйте кожен продукт перед додаванням"
+            "value" : "Відредагуй кожен продукт перед додаванням"
           }
         }
       }
@@ -53362,31 +54347,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tips matched to your goal, language, and daily rhythm"
+            "value" : "Tips tailored to your goal and daily rhythm"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Consejos adaptados a tu objetivo, idioma y ritmo diario"
+            "value" : "Consejos adaptados a tu objetivo y a tu ritmo diario"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Porady dopasowane do celu, języka i rytmu dnia"
+            "value" : "Porady dopasowane do Twojego celu i rytmu dnia"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Советы под твою цель, язык и ритм дня"
+            "value" : "Советы под твою цель и ритм дня"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поради під твою ціль, мову й ритм дня"
+            "value" : "Поради під твою ціль і ритм дня"
           }
         }
       }
@@ -53460,10 +54445,72 @@
       }
     },
     "Porady Oli" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porady Oli"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola's tips"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поради Олі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Советы Оли"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consejos de Ola"
+          }
+        }
+      }
     },
     "Porady, pamięć, cele" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porady, pamięć, cele"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tips, memory, goals"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поради, пам'ять, цілі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Советы, память, цели"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consejos, memoria, objetivos"
+          }
+        }
+      }
     },
     "Poranny budzik 8:00" : {
       "extractionState" : "stale",
@@ -54119,7 +55166,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скажіть, наприклад: «з’їла томатний суп і канапку із сиром»."
+            "value" : "Скажи, наприклад: «з’їла томатний суп і канапку із сиром»."
           }
         }
       }
@@ -54604,7 +55651,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дозвольте мікрофон і розпізнавання мовлення, щоб диктувати страви."
+            "value" : "Дозволь мікрофон і розпізнавання мовлення, щоб диктувати страви."
           }
         }
       }
@@ -55088,7 +56135,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Преміум дає вам безлімітне сканування фото + точніший ШІ Gemini Pro. 7 днів безкоштовно."
+            "value" : "Premium дає тобі безлімітне сканування фото + точніший ШІ Gemini Pro. 7 днів безкоштовно."
           }
         }
       }
@@ -55360,13 +56407,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premium показывает всю вашу коллекцию без ограничений."
+            "value" : "Premium показывает всю твою коллекцию без ограничений."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premium показує всю вашу колекцію без обмежень."
+            "value" : "Premium показує всю твою колекцію без обмежень."
           }
         }
       }
@@ -55855,7 +56902,38 @@
       }
     },
     "Produkty z AI" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produkty z AI"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI products"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продукти з ШІ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продукты с ИИ"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Productos con IA"
+          }
+        }
+      }
     },
     "Profil" : {
       "extractionState" : "manual",
@@ -57111,7 +58189,38 @@
       }
     },
     "Przepisy" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przepisy"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рецепти"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рецепты"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recetas"
+          }
+        }
+      }
     },
     "Przepisy nie są udostępniane" : {
       "extractionState" : "stale",
@@ -57694,13 +58803,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ошибка покупки. Пожалуйста, попробуйте еще раз."
+            "value" : "Покупка не удалась. Попробуй ещё раз."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Помилка покупки. Будь ласка, спробуйте ще раз."
+            "value" : "Помилка покупки. Спробуй ще раз."
           }
         }
       }
@@ -57769,7 +58878,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Порожньо. Додайте перший запис ↑"
+            "value" : "Порожньо. Додай перший запис ↑"
           }
         }
       }
@@ -58250,13 +59359,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Готовы к завтраку? Тапните, чтобы добавить приём пищи."
+            "value" : "Готов(а) к завтраку? Нажми, чтобы добавить приём пищи."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Готові до сніданку? Тапніть, щоб додати страву."
+            "value" : "Готовий(а) до сніданку? Натисни, щоб додати страву."
           }
         }
       }
@@ -58284,13 +59393,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Готовы к завтраку? Тапните, чтобы добавить."
+            "value" : "Готов(а) к завтраку? Нажми, чтобы добавить."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Готові до сніданку? Тапніть, щоб додати."
+            "value" : "Готовий(а) до сніданку? Натисни, щоб додати."
           }
         }
       }
@@ -58811,7 +59920,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Реєструючись, ви приймаєте Умови та Політику конфіденційності."
+            "value" : "Реєструючись, ти приймаєш Умови та Політику конфіденційності."
           }
         }
       }
@@ -58951,7 +60060,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Помірний"
+            "value" : "Спокійний"
           }
         }
       }
@@ -59270,7 +60379,38 @@
       }
     },
     "Resetuj" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resetuj"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer"
+          }
+        }
+      }
     },
     "Resetuj kalibrację" : {
       "localizations" : {
@@ -59923,13 +61063,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Разбейте продукт или блюдо на ингредиенты."
+            "value" : "Разбей продукт или блюдо на ингредиенты."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Розбийте продукт або страву на інгредієнти."
+            "value" : "Розбий продукт або страву на інгредієнти."
           }
         }
       }
@@ -60005,7 +61145,38 @@
       }
     },
     "Rozpoznajemy produkty" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozpoznajemy produkty"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognising foods"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розпізнаємо продукти"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Распознаём продукты"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconociendo alimentos"
+          }
+        }
+      }
     },
     "Rozważ wolniejszy plan." : {
       "extractionState" : "stale",
@@ -60031,13 +61202,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Подумайте о более медленном плане."
+            "value" : "Подумай о более медленном плане."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Розгляньте повільніший план."
+            "value" : "Розглянь повільніший план."
           }
         }
       }
@@ -60346,13 +61517,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Салат, капуста, соленые огурцы — низкокалорийный объем насыщает. Пробуйте в каждый обед и ужин."
+            "value" : "Салат, капуста, солёные огурцы — низкокалорийный объём насыщает. Добавляй их к каждому обеду и ужину."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Салат, капуста, солоні огірки — низькокалорійний об'єм насичує. Спробуйте додавати до кожного обіду та вечері."
+            "value" : "Салат, капуста, солоні огірки — низькокалорійний об'єм насичує. Спробуй додавати до кожного обіду та вечері."
           }
         }
       }
@@ -60660,13 +61831,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сохраняйте любимые продукты и добавляйте их в одно касание. Экономьте время каждый день."
+            "value" : "Сохраняй любимые продукты и добавляй их в одно касание. Экономь время каждый день."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Зберігайте свої звичні страви та додавайте їх одним дотиком. Заощаджуйте час щодня."
+            "value" : "Зберігай свої звичні страви та додавай їх одним дотиком. Заощаджуй час щодня."
           }
         }
       }
@@ -60730,7 +61901,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сканируйте тарелку, ИИ распознает ингредиенты за 5 секунд"
+            "value" : "Сканируй тарелку — ИИ распознает ингредиенты за 5 секунд"
           }
         },
         "uk" : {
@@ -61148,13 +62319,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выберите цель «Сбросить вес» или «Набрать вес» в Профиль → Цели, чтобы включить трекинг."
+            "value" : "Выбери цель «Сбросить вес» или «Набрать вес» в Профиль → Цели, чтобы включить отслеживание."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виберіть ціль \"Схуднути\" або \"Набрати вагу\" у Профіль → Цілі, щоб увімкнути відстеження."
+            "value" : "Обери ціль «Схуднути» або «Набрати вагу» у Профіль → Цілі, щоб увімкнути відстеження."
           }
         }
       }
@@ -61183,13 +62354,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выберите цель «Сбросить вес» или «Набрать вес» в Профиль → Цели, чтобы активировать отслеживание."
+            "value" : "Выбери цель «Сбросить вес» или «Набрать вес» в Профиль → Цели, чтобы включить отслеживание."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виберіть ціль «Схуднути» або «Набрати вагу» у Профіль → Цілі, щоб активувати відстеження."
+            "value" : "Обери ціль «Схуднути» або «Набрати вагу» у Профіль → Цілі, щоб увімкнути відстеження."
           }
         }
       }
@@ -61469,7 +62640,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "На вас чекає серія %lld днів"
+            "value" : "Серія %lld днів чекає"
           }
         }
       }
@@ -61714,7 +62885,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сесія минула. Увійдіть знову."
+            "value" : "Сесія минула. Увійди знову."
           }
         }
       }
@@ -62195,7 +63366,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Короткий сон повышает уровень грелина, снижает лептин и усиливает тягу к сладкому. Люди, спящие по 5 часов, теряют на 55% меньше жира при том же дефиците калорий (Nedeltcheva 2010)."
+            "value" : "Короткий сон повышает грелин, снижает лептин и усиливает тягу к сладкому. Люди, спящие по 5 часов, теряют на 55% меньше жира при том же дефиците (Nedeltcheva 2010)."
           }
         },
         "uk" : {
@@ -62368,13 +63539,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Покажите серию приемов пищи и прогресс калорий."
+            "value" : "Покажи серию записей и прогресс по калориям."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Показуйте свою серію страв та прогрес калорій."
+            "value" : "Покажи свою серію записів і прогрес калорій."
           }
         }
       }
@@ -62733,31 +63904,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scan a plate, then choose overall or ingredients"
+            "value" : "Snap your plate — AI recognises the dish and its ingredients"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escanea el plato y elige general o ingredientes"
+            "value" : "Haz una foto del plato: la IA reconoce la comida y sus ingredientes"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skan talerza, a potem wybór ogólnie albo składniki"
+            "value" : "Zrób zdjęcie talerza — AI rozpozna danie i składniki"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скан тарелки, затем выбор: общий или ингредиенты"
+            "value" : "Сфотографируй тарелку — ИИ распознает блюдо и ингредиенты"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скан тарілки, потім вибір: загально або інгредієнти"
+            "value" : "Сфотографуй тарілку — ШІ розпізнає страву та інгредієнти"
           }
         }
       }
@@ -62792,7 +63963,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI-сканування"
+            "value" : "ШІ-сканування"
           }
         }
       }
@@ -62901,7 +64072,38 @@
       }
     },
     "Skanuj jedzenie, poprawiaj AI, korzystaj z Oli, przepisów i celów bez dziennych blokad." : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skanuj jedzenie, poprawiaj AI, korzystaj z Oli, przepisów i celów bez dziennych blokad."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan food, correct the AI and use Ola, recipes and goals without daily caps."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скануй їжу, виправляй ШІ, користуйся Олею, рецептами й цілями без денних обмежень."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканируй еду, поправляй ИИ, пользуйся Олей, рецептами и целями без дневных ограничений."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanea comida, corrige la IA y usa a Ola, recetas y objetivos sin límites diarios."
+          }
+        }
+      }
     },
     "Skanuj jeszcze raz" : {
       "localizations" : {
@@ -63070,7 +64272,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Наведіть штрих-код у центр рамки"
+            "value" : "Наведи штрих-код у центр рамки"
           }
         }
       }
@@ -63653,7 +64855,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ешьте медленнее"
+            "value" : "Ешь медленнее"
           }
         },
         "uk" : {
@@ -63758,13 +64960,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мелкие перекусы значат больше, чем кажется — запишите их все вместе в конце вечера."
+            "value" : "Мелкие перекусы значат больше, чем кажется — запиши их все вместе в конце вечера."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Маленькі перекуси важать більше, ніж здається — запишіть їх усі разом наприкінці вечора."
+            "value" : "Маленькі перекуси важать більше, ніж здається — запиши їх усі разом наприкінці вечора."
           }
         }
       }
@@ -64281,13 +65483,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что-то пошло не так. Попробуйте еще раз."
+            "value" : "Что-то пошло не так. Попробуй ещё раз."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Щось пішло не так. Спробуйте ще раз."
+            "value" : "Щось пішло не так. Спробуй ще раз."
           }
         }
       }
@@ -64385,13 +65587,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Говорите, мы запишем. Всё можно редактировать."
+            "value" : "Говори, а мы запишем. Всё можно отредактировать."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Говоріть, а ми запишемо. Усе можна редагувати."
+            "value" : "Говори, а ми запишемо. Усе можна відредагувати."
           }
         }
       }
@@ -64849,7 +66051,38 @@
       }
     },
     "Sprawdzamy kadr i porcję." : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprawdzamy kadr i porcję."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking the frame and portion."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевіряємо кадр і порцію."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверяем кадр и порцию."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisando el encuadre y la porción."
+          }
+        }
+      }
     },
     "Spróbuj 15 różnych produktów w tym tygodniu." : {
       "extractionState" : "stale",
@@ -64881,7 +66114,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте 15 різних продуктів цього тижня."
+            "value" : "Спробуй 15 різних продуктів цього тижня."
           }
         }
       }
@@ -64915,7 +66148,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте інший день із більшою інтенсивністю кольору."
+            "value" : "Спробуй інший день із насиченішим кольором."
           }
         }
       }
@@ -64949,7 +66182,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте інший запит."
+            "value" : "Спробуй інший запит."
           }
         }
       }
@@ -65054,7 +66287,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте наш сканер у демо-режимі. Без камери, без калорій — лише атмосфера."
+            "value" : "Спробуй наш сканер у демо-режимі. Без камери, без калорій — лише атмосфера."
           }
         }
       }
@@ -65118,13 +66351,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Попробуйте еще раз чуть позже или выберите другой план."
+            "value" : "Попробуй ещё раз чуть позже или выбери другой план."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте ще раз за мить або виберіть інший план."
+            "value" : "Спробуй ще раз за мить або обери інший план."
           }
         }
       }
@@ -65153,13 +66386,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приседания, становая тяга, жим лежа, подтягивания — они задействуют 60%+ мышечной массы. Они дают больший гормональный стимул, чем изоляция. Базовые упражнения должны составлять 60% вашего объема."
+            "value" : "Приседания, становая тяга, жим лёжа, подтягивания — они задействуют 60%+ мышечной массы и дают больший гормональный стимул, чем изоляция. Базовые упражнения должны составлять 60% твоего объёма."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Присідання, станова тяга, жим лежачи, підтягування — вони задіюють 60%+ м'язової маси. Вони дають більший гормональний стимул, ніж ізоляційні вправи. Базові рухи мають складати 60% вашого об'єму."
+            "value" : "Присідання, станова тяга, жим лежачи, підтягування — вони задіюють 60%+ м'язової маси й дають більший гормональний стимул, ніж ізоляційні вправи. Базові рухи мають складати 60% твого об'єму."
           }
         }
       }
@@ -65577,7 +66810,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Розпочніть 7-денний пробний період"
+            "value" : "Почати 7-денний пробний період"
           }
         }
       }
@@ -66110,31 +67343,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Streaks, freezes, and reminders help you return to rhythm"
+            "value" : "Streaks, freezes and gentle reminders help you keep the rhythm"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Racha, freeze y recordatorios ayudan a recuperar el ritmo"
+            "value" : "Rachas, congelaciones y recordatorios suaves te ayudan a mantener el ritmo"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Streak, freeze i przypomnienia pomagają wrócić do rytmu"
+            "value" : "Seria, zamrożenia i delikatne przypomnienia pomagają utrzymać rytm"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Серия, freeze и напоминания помогают вернуться в ритм"
+            "value" : "Серия, заморозки и мягкие напоминания помогают держать ритм"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Серія, freeze і нагадування допомагають повернутися в ритм"
+            "value" : "Серія, заморозки й м’які нагадування допомагають тримати ритм"
           }
         }
       }
@@ -66378,7 +67611,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тапніть, щоб побачити, як працює серія"
+            "value" : "Натисни, щоб побачити, як працює серія"
           }
         }
       }
@@ -66447,7 +67680,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тапніть, щоб почати говорити"
+            "value" : "Натисни, щоб почати говорити"
           }
         }
       }
@@ -66481,7 +67714,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тапніть, щоб завершити"
+            "value" : "Натисни, щоб завершити"
           }
         }
       }
@@ -66516,7 +67749,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тапніть, щоб відсканувати перший."
+            "value" : "Натисни, щоб відсканувати перший."
           }
         }
       }
@@ -66551,7 +67784,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тапніть, щоб побачити демо"
+            "value" : "Натисни, щоб побачити демо"
           }
         }
       }
@@ -67567,7 +68800,38 @@
       }
     },
     "Szukaj dania" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szukaj dania"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search dishes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шукай страву"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найти блюдо"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar plato"
+          }
+        }
+      }
     },
     "Szukaj po imieniu albo username" : {
       "extractionState" : "stale",
@@ -67599,7 +68863,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Шукайте за іменем або юзернеймом"
+            "value" : "Шукай за іменем або username"
           }
         }
       }
@@ -67667,7 +68931,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Шукайте серед усіх записаних страв."
+            "value" : "Шукай серед усіх записаних страв."
           }
         }
       }
@@ -68182,13 +69446,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Да. Все локально в SwiftData. Экспорт JSON + CSV в любое время (Профиль → Ваши данные). Соответствует GDPR — даже без аккаунта на сервере никто, кроме вас, их не увидит."
+            "value" : "Да. Всё хранится локально в SwiftData. Экспорт JSON + CSV в любое время (Профиль → Твои данные). Соответствует GDPR — даже без аккаунта на сервере никто, кроме тебя, их не видит."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Так. Все локально у SwiftData. Експорт JSON + CSV у будь-який момент (Профіль → Твої дані). Відповідно до GDPR — навіть без акаунта на сервері, ніхто, крім тебе, їх не бачить."
+            "value" : "Так. Усе локально у SwiftData. Експорт JSON + CSV у будь-який момент (Профіль → Твої дані). Відповідно до GDPR — навіть без акаунта на сервері ніхто, крім тебе, їх не бачить."
           }
         }
       }
@@ -68204,7 +69468,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hacer foto"
+            "value" : "Haz una foto"
           }
         },
         "pl" : {
@@ -68320,7 +69584,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нажмите на микрофон"
+            "value" : "Нажми на микрофон"
           }
         },
         "uk" : {
@@ -68529,13 +69793,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TDEE — это ваш общий суточный расход энергии. Он состоит из BMR (60–70%), термического эффекта пищи (≈10%) и физической активности с NEAT. Сидячая работа может снизить TDEE на 300–500 ккал по сравнению с физическим трудом, даже без тренировок."
+            "value" : "TDEE — это твой общий суточный расход энергии. Он складывается из BMR (60–70%), термического эффекта пищи (≈10%) и физической активности с NEAT. Сидячая работа может снизить TDEE на 300–500 ккал по сравнению с физическим трудом, даже без тренировок."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TDEE — це ваші загальні добові витрати енергії. Вони складаються з BMR (60–70%), термічного ефекту їжі (≈10%) та фізичної активності з NEAT. Сидяча робота може знизити TDEE на 300–500 ккал порівняно з фізичною працею, навіть без тренувань."
+            "value" : "TDEE — це твої загальні добові витрати енергії. Вони складаються з BMR (60–70%), термічного ефекту їжі (≈10%) та фізичної активності з NEAT. Сидяча робота може знизити TDEE на 300–500 ккал порівняно з фізичною працею, навіть без тренувань."
           }
         }
       }
@@ -68564,13 +69828,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Расскажите, что вы съели"
+            "value" : "Расскажи, что ты съел(а)"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Розкажіть, що ви з'їли"
+            "value" : "Розкажи, що ти з'їв(ла)"
           }
         }
       }
@@ -69222,13 +70486,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Так Ola будет обращаться к вам. Email указывать необязательно — он нужен только для напоминаний."
+            "value" : "Так Оля будет к тебе обращаться. Email необязателен — он нужен только для напоминаний."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Так Ola звертатиметься до вас. Електронна пошта необов'язкова — вона потрібна лише для нагадувань."
+            "value" : "Так Оля звертатиметься до тебе. Email необов'язковий — він потрібен лише для нагадувань."
           }
         }
       }
@@ -69712,13 +70976,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фото неразборчиво. Попробуйте еще раз при лучшем освещении."
+            "value" : "Фото неразборчиво. Попробуй ещё раз при лучшем освещении."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фото нерозбірливе. Спробуйте ще раз при кращому освітленні."
+            "value" : "Фото нерозбірливе. Спробуй ще раз при кращому освітленні."
           }
         }
       }
@@ -69817,13 +71081,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сканер не отвечает. Попробуйте еще раз."
+            "value" : "Сканер не отвечает. Попробуй ещё раз."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сканер не відповідає. Спробуйте ще раз."
+            "value" : "Сканер не відповідає. Спробуй ще раз."
           }
         }
       }
@@ -70067,7 +71331,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ці дані вимкнено за замовчуванням. Вмикайте їх лише якщо свідомо хочете показати."
+            "value" : "Ці дані вимкнено за замовчуванням. Вмикай їх, лише якщо свідомо хочеш показати."
           }
         }
       }
@@ -70102,7 +71366,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Це допоможе виставити вам денні норми. Можна змінити пізніше."
+            "value" : "Це допоможе налаштувати твої денні норми. Можна змінити пізніше."
           }
         }
       }
@@ -70271,13 +71535,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Привяжите воду к привычкам: стакан после сна, в обед и после работы. Набрать %lld мл станет делом привычки."
+            "value" : "Привяжи воду к привычкам: стакан после сна, в обед и после работы. Набрать %lld мл станет делом привычки."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Прив'яжіть воду до звичок: склянка після сну, в обід, після роботи. Досягти %lld мл стане автоматичним."
+            "value" : "Прив'яжи воду до звичок: склянка після сну, в обід і після роботи. Досягти %lld мл стане автоматичним."
           }
         }
       }
@@ -71256,7 +72520,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Влучайте у білкову ціль щонайменше 5 днів."
+            "value" : "Влучай у ціль з білка щонайменше 5 днів."
           }
         }
       }
@@ -71491,13 +72755,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI-тренер Оля"
+            "value" : "ИИ-коуч Оля"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI-тренер Оля"
+            "value" : "ШІ-коуч Оля"
           }
         }
       }
@@ -71987,7 +73251,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте інший запит або вимкніть фільтр категорії."
+            "value" : "Спробуй інший запит або вимкни фільтр категорії."
           }
         }
       }
@@ -72091,7 +73355,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте ще раз"
+            "value" : "Спробуй ще раз"
           }
         }
       }
@@ -72120,13 +73384,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Попробуйте еще раз или пропустите этот шаг."
+            "value" : "Попробуй ещё раз или пропусти этот шаг."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте ще раз або пропустіть цей крок."
+            "value" : "Спробуй ще раз або пропусти цей крок."
           }
         }
       }
@@ -72399,13 +73663,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Здесь вы увидите калории, макро и ритм приемов пищи за последние семь дней."
+            "value" : "Здесь ты увидишь калории, макро и ритм приёмов пищи за последние семь дней."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тут ви побачите калорії, макро та ритм прийомів їжі за останні сім днів."
+            "value" : "Тут ти побачиш калорії, макро та ритм прийомів їжі за останні сім днів."
           }
         }
       }
@@ -72678,13 +73942,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твой AI-ассистент"
+            "value" : "Твой ИИ-ассистент"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твій AI асистент"
+            "value" : "Твій ШІ-асистент"
           }
         }
       }
@@ -72821,7 +74085,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша ціль — переглянь прогрес"
+            "value" : "Твоя ціль — переглянь прогрес"
           }
         }
       }
@@ -72849,13 +74113,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твоя цель · AI"
+            "value" : "Твоя цель · ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твоя ціль · AI"
+            "value" : "Твоя ціль · ШІ"
           }
         }
       }
@@ -72890,7 +74154,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша ціль · переглянь прогрес"
+            "value" : "Твоя ціль · переглянь прогрес"
           }
         }
       }
@@ -72925,7 +74189,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш ідентифікатор"
+            "value" : "Твій ідентифікатор"
           }
         }
       }
@@ -72988,7 +74252,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал в день, %lld г белка. Небольшой профицит — масса в основном из мышц."
+            "value" : "Твой план: %lld ккал в день, %lld г белка. Небольшой профицит — масса в основном за счёт мышц."
           }
         },
         "uk" : {
@@ -73023,7 +74287,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал в день, %lld г белка. Это безопасный темп для устойчивого похудения."
+            "value" : "Твой план: %lld ккал в день, %lld г белка. Это безопасный темп для устойчивого похудения."
           }
         },
         "uk" : {
@@ -73064,7 +74328,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал на день. Ціль — утримати вагу та сформувати здорові звички."
+            "value" : "Твій план: %lld ккал на день. Ціль — утримати вагу та сформувати здорові звички."
           }
         }
       }
@@ -73099,7 +74363,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал і повний контроль макро. Тримаємо вас у межах рекомендацій."
+            "value" : "Твій план: %lld ккал і повний контроль макро. Тримаємо тебе в межах рекомендацій."
           }
         }
       }
@@ -73134,7 +74398,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал як точка відліку. Логуйте — дізнайтеся, що ви насправді їсте."
+            "value" : "Твій план: %lld ккал як точка відліку. Записуй — дізнайся, що ти насправді їси."
           }
         }
       }
@@ -73169,7 +74433,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш рецепт Fitgram"
+            "value" : "Твій рецепт Fitgram"
           }
         }
       }
@@ -73198,13 +74462,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш спокойный коуч для решений по питанию"
+            "value" : "Твой спокойный коуч для решений о питании"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш спокійний коуч для харчових рішень"
+            "value" : "Твій спокійний коуч для харчових рішень"
           }
         }
       }
@@ -73214,31 +74478,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your calm food, photo, and macro plan — no mental math."
+            "value" : "Effortless calorie tracking: snap your plate, see your macros, follow a calm daily plan."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu plan tranquilo de comida, fotos y macros — sin calcular mentalmente."
+            "value" : "Cuenta calorías sin esfuerzo: foto del plato, macros y un plan tranquilo para cada día."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twój spokojny plan jedzenia, zdjęć i makro — bez liczenia w głowie."
+            "value" : "Licz kalorie bez wysiłku: zdjęcie talerza, makro i spokojny plan na każdy dzień."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твой спокойный план еды, фото и макро — без подсчетов в голове."
+            "value" : "Считай калории без усилий: фото тарелки, макро и спокойный план на каждый день."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твій спокійний план їжі, фото й макро — без підрахунків у голові."
+            "value" : "Рахуй калорії без зусиль: фото тарілки, макро й спокійний план на кожен день."
           }
         }
       }
@@ -73376,13 +74640,44 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша денна норма"
+            "value" : "Твоя денна норма"
           }
         }
       }
     },
     "Twoja kolekcja rośnie z każdym realnym nawykiem." : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoja kolekcja rośnie z każdym realnym nawykiem."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your collection grows with every real habit."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твоя колекція росте з кожною справжньою звичкою."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твоя коллекция растёт с каждой настоящей привычкой."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu colección crece con cada hábito real."
+          }
+        }
+      }
     },
     "Twoja ocena" : {
       "localizations" : {
@@ -73442,13 +74737,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш путь"
+            "value" : "Твой путь"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш шлях"
+            "value" : "Твій шлях"
           }
         }
       }
@@ -73483,7 +74778,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша серія %lld днів — сьогодні ще нічого не записано. Короткий запис вистачить."
+            "value" : "Твоя серія %lld днів — сьогодні ще нічого не записано. Вистачить короткого запису."
           }
         }
       }
@@ -73547,13 +74842,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша Быстрая база и подсказки Оли подстраиваются под ваш стиль. Всегда "
+            "value" : "Твоя Быстрая база и подсказки Оли подстраиваются под твой стиль. Всегда "
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша Швидка База та підказки Олі адаптуються під ваш стиль. Завжди "
+            "value" : "Твоя Швидка база та підказки Олі підлаштовуються під твій стиль. Завжди "
           }
         }
       }
@@ -73587,7 +74882,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша вага оновиться у профілі, і ми перерахуємо денні норми (якщо їх не зафіксовано)."
+            "value" : "Твоя вага оновиться у профілі, а ми перерахуємо денні норми (якщо їх не зафіксовано)."
           }
         }
       }
@@ -73622,7 +74917,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші дані залишаться — ми просто проведемо вас налаштуваннями ще раз."
+            "value" : "Твої дані залишаться — ми просто ще раз проведемо тебе через налаштування."
           }
         }
       }
@@ -73762,7 +75057,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші постійні страви — один тап, готово"
+            "value" : "Твої постійні страви — один дотик, готово"
           }
         }
       }
@@ -73860,13 +75155,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ty@example.com"
+            "value" : "you@example.com"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ty@example.com"
+            "value" : "you@example.com"
           }
         }
       }
@@ -74076,7 +75371,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тижневі підсумки від Claude, налаштовані під вас"
+            "value" : "Тижневі підсумки від Claude, налаштовані під тебе"
           }
         }
       }
@@ -74311,13 +75606,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введите запрос"
+            "value" : "Введи запрос"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введіть запит"
+            "value" : "Введи запит"
           }
         }
       }
@@ -74630,7 +75925,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви приготували рецепт з бібліотеки."
+            "value" : "Ти приготував(ла) рецепт з бібліотеки."
           }
         }
       }
@@ -75423,13 +76718,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Неограниченные AI-запросы"
+            "value" : "Неограниченные ИИ-запросы"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Необмежені AI-запити"
+            "value" : "Необмежені ШІ-запити"
           }
         }
       }
@@ -75598,13 +76893,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Используйте заморозку — сохраните день без записей"
+            "value" : "Используй заморозку — сохрани день без записей"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Використайте заморозку — збережіть день без записів"
+            "value" : "Використай заморозку — збережи день без записів"
           }
         }
       }
@@ -75978,13 +77273,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Заполнить продукт через AI"
+            "value" : "Заполнить продукт через ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Заповнити продукт через AI"
+            "value" : "Заповнити продукт через ШІ"
           }
         }
       }
@@ -76053,7 +77348,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Використайте freeze (залишилось %lld), щоб зберегти серію без запису."
+            "value" : "Використай заморозку (залишилось %lld), щоб зберегти серію без запису."
           }
         }
       }
@@ -76082,13 +77377,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Рассчитано на основе %lld ингредиентов. Скорректируйте при необходимости."
+            "value" : "Рассчитано по %lld ингредиентам. Поправь при необходимости."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Значення розраховані з %lld інгредієнтів. Скоригуйте за потреби."
+            "value" : "Значення розраховані з %lld інгредієнтів. Скоригуй за потреби."
           }
         }
       }
@@ -76251,19 +77546,19 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bardzo szybko"
+            "value" : "Bardzo szybkie"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Очень быстро"
+            "value" : "Очень быстрый"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дуже швидко"
+            "value" : "Дуже швидкий"
           }
         }
       }
@@ -76501,13 +77796,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии AI заполняет 2 отдельных продукта в день. В Premium лимитов нет."
+            "value" : "В бесплатной версии ИИ заполняет 2 отдельных продукта в день. В Premium лимитов нет."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії AI заповнює 2 окремі продукти на день. У Premium немає лімітів."
+            "value" : "У безкоштовній версії ШІ заповнює 2 окремі продукти на день. У Premium немає лімітів."
           }
         }
       }
@@ -76606,13 +77901,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии есть 3 AI-запроса в день. Pro дает больше пространства для тестов."
+            "value" : "В бесплатной версии есть 3 ИИ-запроса в день. Pro дает больше пространства для тестов."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії є 3 AI-запити на день. Pro дає більше простору для тестів."
+            "value" : "У безкоштовній версії є 3 ШІ-запити на день. Pro дає більше простору для тестів."
           }
         }
       }
@@ -76641,13 +77936,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии можно сохранить 3 AI-блюда в день. В Premium лимитов нет."
+            "value" : "В бесплатной версии можно сохранить 3 ИИ-блюда в день. В Premium лимитов нет."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії можна зберегти 3 AI-прийоми їжі на день. У Premium немає лімітів."
+            "value" : "У безкоштовній версії можна зберегти 3 ШІ-прийоми їжі на день. У Premium немає лімітів."
           }
         }
       }
@@ -76752,7 +78047,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "За 30 днів ви схудли на %@. Послідовність окупається — так тримати."
+            "value" : "За 30 днів ти схуд(ла) на %@. Послідовність окупається — так тримати."
           }
         }
       }
@@ -76815,7 +78110,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В Premium Оля пишет отчеты, когда захотите — каждый день или по запросу."
+            "value" : "В Premium Оля пишет итоги, когда захочешь — каждый день или по запросу."
           }
         },
         "uk" : {
@@ -76827,7 +78122,38 @@
       }
     },
     "W Pro odblokujesz" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W Pro odblokujesz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro unlocks"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У Pro відкриваються"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В Pro открываются"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Pro desbloqueas"
+          }
+        }
+      }
     },
     "Waga" : {
       "extractionState" : "stale",
@@ -77379,7 +78705,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перераховано з %lld інгредієнтів. Підлаштуйте за потреби."
+            "value" : "Перераховано з %lld інгредієнтів. Підлаштуй за потреби."
           }
         }
       }
@@ -77722,13 +79048,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мы не поняли. Пожалуйста, попробуйте еще раз."
+            "value" : "Мы не поняли. Попробуй ещё раз."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми не зрозуміли. Спробуйте ще раз."
+            "value" : "Ми не зрозуміли. Спробуй ще раз."
           }
         }
       }
@@ -77797,7 +79123,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми імпортуємо лише вагу з Apple Health. Запит на дозвіл надсилається лише тоді, коли ви натискаєте кнопку."
+            "value" : "Ми імпортуємо лише вагу з Apple Health. Дозвіл запитуємо лише тоді, коли ти натискаєш кнопку."
           }
         }
       }
@@ -77930,13 +79256,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мы поможем ИИ лучше оценивать ваши порции."
+            "value" : "Мы поможем ИИ лучше оценивать твои порции."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми допоможемо ШІ краще оцінювати ваші порції."
+            "value" : "Ми допоможемо ШІ краще оцінювати твої порції."
           }
         }
       }
@@ -77971,7 +79297,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми також оновимо вашу вагу в профілі."
+            "value" : "Ми також оновимо твою вагу в профілі."
           }
         }
       }
@@ -78942,13 +80268,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что вы добавляете?"
+            "value" : "Что добавляешь?"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Що ви додаєте?"
+            "value" : "Що додаєш?"
           }
         }
       }
@@ -79011,13 +80337,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что именно вы съели"
+            "value" : "Что именно ты съел(а)"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Що саме ви з'їли"
+            "value" : "Що саме ти з'їв(ла)"
           }
         }
       }
@@ -79363,7 +80689,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Що ви отримуєте в Premium"
+            "value" : "Що ти отримуєш у Premium"
           }
         }
       }
@@ -79392,13 +80718,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что сегодня на завтрак? Тапните плюсик, когда будет готов."
+            "value" : "Что сегодня на завтрак? Нажми плюсик, когда будет готово."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Що сьогодні на сніданок? Тапніть плюсик, коли буде готово."
+            "value" : "Що сьогодні на сніданок? Натисни плюсик, коли буде готово."
           }
         }
       }
@@ -79427,13 +80753,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Как вас зовут?"
+            "value" : "Как тебя зовут?"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Як вас звати?"
+            "value" : "Як тебе звати?"
           }
         }
       }
@@ -79532,13 +80858,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Когда в 16:00 хочется перекусить, сначала выпейте стакан воды. Многие сигналы «голода» исчезают через 10 минут."
+            "value" : "Когда в 16:00 хочется перекусить, сначала выпей стакан воды. Многие сигналы «голода» исчезают через 10 минут."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Коли о 16:00 хочеться перекусити, спочатку випийте склянку води. Багато сигналів «голоду» зникають за 10 хвилин."
+            "value" : "Коли о 16:00 хочеться перекусити, спершу випий склянку води. Багато сигналів «голоду» зникають за 10 хвилин."
           }
         }
       }
@@ -79637,13 +80963,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ВОЗ рекомендует < 10% ккал (≈50 г), в идеале < 5% (25 г). Чайная ложка сахара = 4 г. Кола 500 мл = 53 г. Читайте этикетки — у сахара более 60 названий."
+            "value" : "ВОЗ рекомендует < 10% ккал (≈50 г), в идеале < 5% (25 г). Чайная ложка сахара = 4 г. Кола 500 мл = 53 г. Читай этикетки — у сахара более 60 названий."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ВООЗ рекомендує < 10% ккал (≈50 г), в ідеалі < 5% (25 г). Чайка ложка цукру = 4 г. Кола 500 мл = 53 г. Читайте етикетки — цукор має понад 60 назв."
+            "value" : "ВООЗ рекомендує < 10% ккал (≈50 г), в ідеалі < 5% (25 г). Чайна ложка цукру = 4 г. Кола 500 мл = 53 г. Читай етикетки — цукор має понад 60 назв."
           }
         }
       }
@@ -80547,7 +81873,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Увімкніть мікрофон + розпізнавання мовлення в Налаштуваннях, щоб диктувати страви."
+            "value" : "Увімкни мікрофон і розпізнавання мовлення в Параметрах, щоб диктувати страви."
           }
         }
       }
@@ -81060,13 +82386,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введи блюдо и обнови данные через AI"
+            "value" : "Введи блюдо и обнови данные через ИИ"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введи страву й онови дані через AI"
+            "value" : "Введи страву й онови дані через ШІ"
           }
         }
       }
@@ -81100,7 +82426,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введіть сьогоднішню вагу"
+            "value" : "Введи сьогоднішню вагу"
           }
         }
       }
@@ -81135,7 +82461,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введіть сьогоднішню вагу — подивіться, як іде ціль"
+            "value" : "Введи сьогоднішню вагу — подивись, як іде ціль"
           }
         }
       }
@@ -81169,7 +82495,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Записуйте кожен інгредієнт з нового рядка."
+            "value" : "Записуй кожен інгредієнт з нового рядка."
           }
         }
       }
@@ -81198,13 +82524,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введите имя, проверьте профиль, отправьте приглашение."
+            "value" : "Введи имя, проверь профиль, отправь приглашение."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введіть імʼя, перевірте профіль, надішліть запрошення."
+            "value" : "Введи імʼя, перевір профіль, надішли запрошення."
           }
         }
       }
@@ -81267,13 +82593,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введите корректный email."
+            "value" : "Введи корректный email."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Введіть правильну адресу email."
+            "value" : "Введи правильну адресу email."
           }
         }
       }
@@ -81799,7 +83125,38 @@
       }
     },
     "Wszystkie odznaki" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wszystkie odznaki"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All badges"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі відзнаки"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все значки"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas las insignias"
+          }
+        }
+      }
     },
     "Wszystkie wpisy." : {
       "localizations" : {
@@ -81969,7 +83326,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оберіть «Схуднути» або «Набрати вагу» у Профілі → Цілі, щоб активувати відстеження."
+            "value" : "Обери «Схуднути» або «Набрати вагу» у Профілі → Цілі, щоб увімкнути відстеження."
           }
         }
       }
@@ -82108,7 +83465,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оберіть дати «Від» і «До»."
+            "value" : "Обери дати «Від» і «До»."
           }
         }
       }
@@ -82172,13 +83529,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "выберите греческий 0% или скир"
+            "value" : "выбери греческий 0% или скир"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "виберіть грецький 0 % або skyr"
+            "value" : "обери грецький 0 % або skyr"
           }
         }
       }
@@ -82213,7 +83570,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виберіть мову застосунку"
+            "value" : "Обери мову застосунку"
           }
         }
       }
@@ -82318,13 +83675,44 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оберіть найшвидший спосіб для цієї страви"
+            "value" : "Обери найшвидший спосіб для цієї страви"
           }
         }
       }
     },
     "Wybierz plan" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz plan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a plan"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обери план"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери план"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un plan"
+          }
+        }
+      }
     },
     "Wybierz wielkość…" : {
       "extractionState" : "manual",
@@ -82406,7 +83794,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elegir de la galería"
+            "value" : "Elige de la galería"
           }
         },
         "pl" : {
@@ -82418,13 +83806,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выбрать из галереи"
+            "value" : "Выбери из галереи"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вибрати з галереї"
+            "value" : "Обери з галереї"
           }
         }
       }
@@ -82458,7 +83846,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оберіть, що найчастіше поряд із вашою тарілкою. Це допоможе ШІ в майбутніх сканах."
+            "value" : "Обери, що найчастіше видно поряд із тарілкою. Це допоможе ШІ в майбутніх сканах."
           }
         }
       }
@@ -82701,7 +84089,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви вичерпали ліміт %lld рецептів"
+            "value" : "Ліміт у %lld рецептів вичерпано"
           }
         }
       }
@@ -82730,13 +84118,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вы исчерпали лимит сканирований на эту неделю"
+            "value" : "Лимит сканирований на эту неделю исчерпан"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви вичерпали ліміт сканувань на цей тиждень"
+            "value" : "Ліміт сканувань на цей тиждень вичерпано"
           }
         }
       }
@@ -82798,13 +84186,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "График тренда, ежедневные записи, напоминания и AI-советы для твоей цели."
+            "value" : "График тренда, ежедневные записи, напоминания и ИИ-советы для твоей цели."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Графік тренду, щоденні записи, нагадування й AI-поради для твоєї цілі."
+            "value" : "Графік тренду, щоденні записи, нагадування й ШІ-поради для твоєї цілі."
           }
         }
       }
@@ -82938,13 +84326,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Попробуйте Fitgram Premium"
+            "value" : "Попробуй Fitgram Premium"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спробуйте Fitgram Premium"
+            "value" : "Спробуй Fitgram Premium"
           }
         }
       }
@@ -83146,13 +84534,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мы отправим вам ссылку для входа. Без паролей, без лишних хлопот."
+            "value" : "Мы отправим тебе ссылку для входа. Без паролей и лишних хлопот."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми надішлемо вам посилання для входу. Без паролів, без зайвого клопоту."
+            "value" : "Ми надішлемо тобі посилання для входу. Без паролів і зайвого клопоту."
           }
         }
       }
@@ -83355,13 +84743,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мы отправляем фото через наш прокси в Gemini, которая распознает ингредиенты и оценивает порции. Мы никогда не храним фото вне вашего телефона или нашего прокси — никакой передачи третьим лицам."
+            "value" : "Мы отправляем фото через наш прокси в Gemini, которая распознаёт ингредиенты и оценивает порции. Мы никогда не храним фото вне твоего телефона или нашего прокси — никакой передачи третьим лицам."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ми надсилаємо фото через наш проксі до Gemini, який розпізнає інгредієнти та оцінює порції. Ми ніколи не зберігаємо фото поза вашим телефоном або нашим проксі — жодної передачі третім особам."
+            "value" : "Ми надсилаємо фото через наш проксі до Gemini, який розпізнає інгредієнти та оцінює порції. Ми ніколи не зберігаємо фото поза твоїм телефоном або нашим проксі — жодної передачі третім особам."
           }
         }
       }
@@ -83954,7 +85342,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви додали перший тег до страви."
+            "value" : "Ти додав(ла) перший тег до страви."
           }
         }
       }
@@ -84018,13 +85406,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вы сможете изменить это позже в профиле."
+            "value" : "Это можно изменить позже в Профиле."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви зможете змінити це пізніше у Профілі."
+            "value" : "Це можна змінити пізніше у Профілі."
           }
         }
       }
@@ -84088,13 +85476,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вы присоединились сегодня"
+            "value" : "Ты с нами с сегодняшнего дня"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви приєдналися сьогодні"
+            "value" : "Ти з нами від сьогодні"
           }
         }
       }
@@ -84129,7 +85517,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви додали першу страву."
+            "value" : "Ти записав(ла) першу страву."
           }
         }
       }
@@ -84234,7 +85622,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви близько до цілі. Легка вечеря чи перекус — і досить."
+            "value" : "Ти близько до цілі. Легка вечеря чи перекус — і досить."
           }
         }
       }
@@ -84263,13 +85651,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша серия: %lld дн. — сегодня еще ничего не записано. Достаточно быстрой записи."
+            "value" : "Твоя серия: %lld дн. — сегодня ещё ничего не записано. Хватит быстрой записи."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша серія: %lld дн. — сьогодні ще нічого не записано. Достатньо швидкого запису."
+            "value" : "Твоя серія: %lld дн. — сьогодні ще нічого не записано. Вистачить швидкого запису."
           }
         }
       }
@@ -84298,13 +85686,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша активность"
+            "value" : "Твоя активность"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша активність"
+            "value" : "Твоя активність"
           }
         }
       }
@@ -84362,19 +85750,19 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twoje dziennej norma"
+            "value" : "Twoja dzienna norma"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша дневная цель"
+            "value" : "Твоя дневная цель"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша денна ціль"
+            "value" : "Твоя денна ціль"
           }
         }
       }
@@ -84403,13 +85791,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша дневная цель — %lld мл. Стакан воды за 15 минут до еды часто помогает уменьшить порцию."
+            "value" : "Твоя дневная цель — %lld мл. Стакан воды за 15 минут до еды часто сам уменьшает порцию."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша денна ціль — %lld мл. Склянка води за 15 хвилин до їди часто природно зменшує порцію."
+            "value" : "Твоя денна ціль — %lld мл. Склянка води за 15 хвилин до їди часто природно зменшує порцію."
           }
         }
       }
@@ -84444,7 +85832,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші дані"
+            "value" : "Твої дані"
           }
         }
       }
@@ -84473,13 +85861,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша диета: %@"
+            "value" : "Твоя диета: %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша дієта: %@"
+            "value" : "Твоя дієта: %@"
           }
         }
       }
@@ -84513,7 +85901,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша ціль"
+            "value" : "Твоя ціль"
           }
         }
       }
@@ -84646,13 +86034,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваше блюдо"
+            "value" : "Твоё блюдо"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш прийом їжі"
+            "value" : "Твоя страва"
           }
         }
       }
@@ -84681,13 +86069,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш темп был слишком агрессивным — мы установили минимум калорий для защиты вашего здоровья."
+            "value" : "Твой темп был слишком агрессивным — мы установили минимум калорий, чтобы защитить твоё здоровье."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш темп був занадто агресивним — ми встановили мінімум калорій, щоб захистити ваше здоров'я."
+            "value" : "Твій темп був занадто агресивним — ми встановили мінімум калорій, щоб захистити твоє здоров'я."
           }
         }
       }
@@ -84820,13 +86208,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал и полный контроль макросов. Мы держим вас на рекомендуемом уровне."
+            "value" : "Твой план: %lld ккал и полный контроль макро. Мы держим тебя на рекомендуемом уровне."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал та повний контроль макросів. Ми тримаємо вас на рекомендованому рівні."
+            "value" : "Твій план: %lld ккал і повний контроль макро. Ми тримаємо тебе на рекомендованому рівні."
           }
         }
       }
@@ -84855,13 +86243,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал для ориентира. Записывайте еду — узнайте, что вы едите на самом деле."
+            "value" : "Твой план: %lld ккал как ориентир. Записывай еду — узнай, что ты ешь на самом деле."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал як орієнтир. Записуйте їжу — дізнайтеся, що ви їсте насправді."
+            "value" : "Твій план: %lld ккал як орієнтир. Записуй їжу — дізнайся, що ти їси насправді."
           }
         }
       }
@@ -84890,13 +86278,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал в день, %lld г белка. Легкий профицит — масса в основном из мышц."
+            "value" : "Твой план: %lld ккал в день, %lld г белка. Лёгкий профицит — масса в основном за счёт мышц."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал на день, %lld г білка. Легкий профіцит — маса переважно з м'язів."
+            "value" : "Твій план: %lld ккал на день, %lld г білка. Легкий профіцит — маса переважно з м'язів."
           }
         }
       }
@@ -84925,13 +86313,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал в день, %lld г белка. Безопасный темп для сбалансированного похудения."
+            "value" : "Твой план: %lld ккал в день, %lld г белка. Безопасный темп для сбалансированного похудения."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал на день, %lld г білка. Безпечний темп для збалансованого схуднення."
+            "value" : "Твій план: %lld ккал на день, %lld г білка. Безпечний темп для збалансованого схуднення."
           }
         }
       }
@@ -84960,13 +86348,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал в день. Цель — держать вес и внедрять здоровые привычки."
+            "value" : "Твой план: %lld ккал в день. Цель — держать вес и выстраивать здоровые привычки."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш план: %lld ккал щодня. Ціль — зберегти вагу та сформувати корисні звички."
+            "value" : "Твій план: %lld ккал на день. Ціль — зберегти вагу та сформувати корисні звички."
           }
         }
       }
@@ -84995,13 +86383,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш рецепт"
+            "value" : "Твой рецепт"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваш рецепт"
+            "value" : "Твій рецепт"
           }
         }
       }
@@ -85035,7 +86423,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші постійні страви будуть тут. Створіть нову або додайте з будь-якого скана — кнопкою ⭐."
+            "value" : "Тут будуть твої постійні страви. Створи нову або додай з будь-якого скану кнопкою ⭐."
           }
         }
       }
@@ -85064,13 +86452,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваши сохраненные блюда"
+            "value" : "Твои сохранённые блюда"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші збережені страви"
+            "value" : "Твої збережені страви"
           }
         }
       }
@@ -85134,13 +86522,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша серия"
+            "value" : "Твоя серия"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваша серія"
+            "value" : "Твоя серія"
           }
         }
       }
@@ -85378,13 +86766,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "С Premium вы сканируете коды без лимита — и получаете всю Открытую базу продуктов."
+            "value" : "С Premium ты сканируешь коды без лимита — и получаешь всю Открытую базу продуктов."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "З Premium ви скануєте коди безлімітно — і отримуєте всю Відкриту базу продуктів."
+            "value" : "З Premium ти скануєш коди без ліміту — і отримуєш усю Відкриту базу продуктів."
           }
         }
       }
@@ -85447,7 +86835,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Из вашей кулинарной книги"
+            "value" : "Из твоей кулинарной книги"
           }
         },
         "uk" : {
@@ -85528,7 +86916,38 @@
       }
     },
     "Za chwilę pokażemy wynik do poprawienia." : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Za chwilę pokażemy wynik do poprawienia."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In a moment you'll see a result you can edit."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За мить покажемо результат, який можна поправити."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Через мгновение покажем результат, который можно поправить."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En un momento verás un resultado que puedes editar."
+          }
+        }
+      }
     },
     "Za duże" : {
       "localizations" : {
@@ -85622,7 +87041,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Слишком мало углеводов. Оставьте хотя бы 15% для энергии."
+            "value" : "Слишком мало углеводов. Оставь хотя бы 15% на энергию."
           }
         },
         "uk" : {
@@ -85969,13 +87388,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Начните свою неделю"
+            "value" : "Начни свою неделю"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Почніть свій тиждень"
+            "value" : "Почни свій тиждень"
           }
         }
       }
@@ -85997,7 +87416,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zacznijmy"
+            "value" : "Zaczynamy"
           }
         },
         "ru" : {
@@ -86009,7 +87428,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Починаймо"
+            "value" : "Почнімо"
           }
         }
       }
@@ -86044,7 +87463,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Починайте день зі страви — 5 сніданків на тиждень."
+            "value" : "Починай день зі страви — 5 сніданків на тиждень."
           }
         }
       }
@@ -86251,7 +87670,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Купівля не вдалася. Спробуйте ще раз."
+            "value" : "Купівля не вдалася. Спробуй ще раз."
           }
         }
       }
@@ -86280,13 +87699,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Покупка была прервана. Вы можете вернуться к ней в любой момент."
+            "value" : "Покупка прервана. Ты можешь вернуться к ней в любой момент."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Покупку перервано. Ви можете повернутися до неї будь-коли."
+            "value" : "Покупку перервано. Ти можеш повернутися до неї будь-коли."
           }
         }
       }
@@ -87046,13 +88465,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сохраняйте привычные продукты и добавляйте их одним нажатием без лимитов."
+            "value" : "Сохраняй привычные продукты и добавляй их одним нажатием без лимитов."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Зберігайте звичні продукти й додавайте їх одним дотиком без лімітів."
+            "value" : "Зберігай звичні продукти й додавай їх одним дотиком без лімітів."
           }
         }
       }
@@ -87086,7 +88505,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Зберігайте постійні страви та додавайте одним тапом."
+            "value" : "Зберігай постійні страви та додавай одним дотиком."
           }
         }
       }
@@ -87155,7 +88574,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Збережіть перший рецепт, щоб швидко додати його у щоденник наступного разу."
+            "value" : "Збережи перший рецепт, щоб наступного разу швидко додати його в щоденник."
           }
         }
       }
@@ -87190,7 +88609,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Запишіть хоча б одну страву кожного дня цього тижня."
+            "value" : "Запиши хоча б одну страву кожного дня цього тижня."
           }
         }
       }
@@ -87288,13 +88707,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Запишем одну позицию. AI можно поправить названием, весом и макро."
+            "value" : "Запишем одну позицию. ИИ можно поправить названием, весом и макро."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Запишемо одну позицію. AI можна виправити назвою, вагою та макро."
+            "value" : "Запишемо одну позицію. ШІ можна виправити назвою, вагою та макро."
           }
         }
       }
@@ -87711,7 +89130,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фото не читається. Спробуйте ще раз при кращому освітленні."
+            "value" : "Фото не читається. Спробуй ще раз при кращому освітленні."
           }
         }
       }
@@ -87816,7 +89235,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви здобули десять значків."
+            "value" : "Ти здобув(ла) десять значків."
           }
         }
       }
@@ -88128,7 +89547,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви відсканували штрих-код."
+            "value" : "Ти відсканував(ла) штрих-код."
           }
         }
       }
@@ -88163,7 +89582,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ви відсканували тарілку з фото."
+            "value" : "Ти відсканував(ла) тарілку з фото."
           }
         }
       }
@@ -88712,13 +90131,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Найдите человека по username, вставьте QR-код или откройте профиль и отправьте приглашение."
+            "value" : "Найди человека по username, вставь QR-код или открой профиль и отправь приглашение."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Знайдіть людину за username, вставте QR-код або відкрийте профіль і надішліть запрошення."
+            "value" : "Знайди людину за username, встав QR-код або відкрий профіль і надішли запрошення."
           }
         }
       }
@@ -88852,13 +90271,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Друзья сегодня еще ничего не добавили. Вернитесь позже или отправьте приглашение."
+            "value" : "Друзья сегодня ещё ничего не добавили. Загляни позже или отправь приглашение."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Друзі ще нічого не додали сьогодні. Поверніться пізніше або надішліть запрошення."
+            "value" : "Друзі сьогодні ще нічого не додали. Зазирни пізніше або надішли запрошення."
           }
         }
       }
@@ -88992,13 +90411,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Осталось около %lld ккал. Добавьте ужин или оставьте запас, если уже сыты."
+            "value" : "Осталось около %lld ккал. Добавь ужин или оставь запас, если уже сыт(а)."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Залишилось близько %lld ккал. Додайте вечерю або залиште запас, якщо вже ситі."
+            "value" : "Залишилось близько %lld ккал. Додай вечерю або залиш запас, якщо вже ситий(а)."
           }
         }
       }
@@ -89269,7 +90688,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "увеличьте порцию творога на 50%"
+            "value" : "увеличь порцию творога на 50%"
           }
         },
         "uk" : {
@@ -90354,13 +91773,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 дней бесплатно. Полный AI, очень большие лимиты, AI-коуч и экспорт."
+            "value" : "7 дней бесплатно. Полный ИИ, очень большие лимиты, ИИ-коуч и экспорт."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 днів безкоштовно. Повний AI, дуже великі ліміти, AI-коуч та експорт."
+            "value" : "7 днів безкоштовно. Повний ШІ, дуже великі ліміти, ШІ-коуч та експорт."
           }
         }
       }
@@ -90389,13 +91808,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии — 3 AI-запроса в день. Pro даёт очень большие лимиты и 7 дней пробного периода."
+            "value" : "В бесплатной версии — 3 ИИ-запроса в день. Pro даёт очень большие лимиты и 7 дней пробного периода."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії — 3 AI-запити на день. Pro дає дуже великі ліміти та 7 днів пробного періоду."
+            "value" : "У безкоштовній версії — 3 ШІ-запити на день. Pro дає дуже великі ліміти та 7 днів пробного періоду."
           }
         }
       }
@@ -90494,13 +91913,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии можно сохранить 3 AI-блюда в день. В Premium очень большие лимиты, чтобы всё работало плавно."
+            "value" : "В бесплатной версии можно сохранить 3 ИИ-блюда в день. В Premium очень большие лимиты, чтобы всё работало плавно."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії можна зберегти 3 AI-страви на день. Premium має дуже великі ліміти, щоб усе працювало плавно."
+            "value" : "У безкоштовній версії можна зберегти 3 ШІ-страви на день. Premium має дуже великі ліміти, щоб усе працювало плавно."
           }
         }
       }
@@ -90564,13 +91983,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии AI заполнит 2 отдельных продукта в день. В Premium очень большие лимиты."
+            "value" : "В бесплатной версии ИИ заполнит 2 отдельных продукта в день. В Premium очень большие лимиты."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії AI заповнить 2 окремі продукти на день. Premium має дуже великі ліміти."
+            "value" : "У безкоштовній версії ШІ заповнить 2 окремі продукти на день. Premium має дуже великі ліміти."
           }
         }
       }
@@ -90634,13 +92053,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В бесплатной версии Кухня Оли сначала использует локальную библиотеку блюд, а AI только дополняет детали. Premium даёт очень большие лимиты и больше AI."
+            "value" : "В бесплатной версии Кухня Оли сначала использует локальную библиотеку блюд, а ИИ только дополняет детали. Premium даёт очень большие лимиты и больше ИИ."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "У безкоштовній версії Кухня Олі спершу використовує локальну бібліотеку страв, а AI лише доповнює деталі. Premium дає дуже великі ліміти та більше AI."
+            "value" : "У безкоштовній версії Кухня Олі спершу використовує локальну бібліотеку страв, а ШІ лише доповнює деталі. Premium дає дуже великі ліміти та більше ШІ."
           }
         }
       }
@@ -90809,13 +92228,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сначала работает локальная библиотека, а затем AI доводит блюда, порции и макро."
+            "value" : "Сначала работает локальная библиотека, а затем ИИ доводит блюда, порции и макро."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Спершу працює локальна бібліотека, а потім AI доточує страви, порції та макро."
+            "value" : "Спершу працює локальна бібліотека, а потім ШІ доточує страви, порції та макро."
           }
         }
       }
@@ -91270,7 +92689,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "/ рік — заощаджуйте 24%"
+            "value" : "/ рік — економія 24%"
           }
         }
       }
@@ -91936,6 +93355,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пароль"
+          }
+        }
+      }
+    },
+    "AI z dużym limitem" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI z dużym limitem"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI with high limits"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ШІ з великим лімітом"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ с большим лимитом"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IA con límite alto"
+          }
+        }
+      }
+    },
+    "Biblioteka z dużym limitem" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteka z dużym limitem"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Library with high limits"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бібліотека з великим лімітом"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Библиотека с большим лимитом"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteca con límite alto"
+          }
+        }
+      }
+    },
+    "Duże limity" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duże limity"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High limits"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Великі ліміти"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Большие лимиты"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límites altos"
           }
         }
       }

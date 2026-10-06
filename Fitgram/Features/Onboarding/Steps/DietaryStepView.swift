@@ -95,7 +95,7 @@ struct DietaryStepView: View {
                                     pl: "Polecana", en: "Recommended", uk: "Рекомендована", ru: "Рекомендуемая",
                                     es: "Recomendada")
                             )
-                            .font(.system(size: 10, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(10, weight: 800))
                             .foregroundStyle(isSelected ? .white : Tokens.Palette.primary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
@@ -168,14 +168,7 @@ struct DietaryStepView: View {
                     .fill(
                         isOn
                             ? AnyShapeStyle(
-                                LinearGradient(
-                                    colors: [
-                                        Tokens.Palette.primary,
-                                        Tokens.Palette.primary.opacity(0.85),
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                                Tokens.Palette.primary
                             )
                             : AnyShapeStyle(Tokens.Palette.surface)
                     )

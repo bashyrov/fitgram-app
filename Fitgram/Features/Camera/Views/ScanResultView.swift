@@ -146,7 +146,6 @@ struct ScanResultView: View {
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 40, height: 40)
-                    .background(.ultraThinMaterial, in: Circle())
             }
             .accessibilityLabel(Text("Close"))
             Spacer()
@@ -176,11 +175,7 @@ struct ScanResultView: View {
                     .resizable()
                     .scaledToFill()
             } else {
-                LinearGradient(
-                    colors: [Tokens.Palette.primarySoft, Tokens.Palette.surfaceMuted],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+                Tokens.Palette.primarySoft
             }
         }
         .frame(maxWidth: .infinity)

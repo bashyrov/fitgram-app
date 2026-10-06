@@ -56,9 +56,12 @@ final class OnboardingFlow {
     private let userProfileService: (any UserProfileServing)?
     private let onFinished: @MainActor (CompletionOutcome) -> Void
 
-    /// Surface name for the celebration step ("Witaj, X!"). Sourced from
-    /// the AuthUser the flow was initialised with.
-    var displayName: String? { authUser.displayName }
+    /// Surface name for the celebration step ("Witaj, X!"). Prefers the
+    /// name typed on the account step, falling back to the AuthUser's.
+    var displayName: String? {
+        let typed = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return typed.isEmpty ? authUser.displayName : typed
+    }
 
     /// Preview of the computed goal — surfaced on CalibrationStepView so
     /// the user sees the number before committing.

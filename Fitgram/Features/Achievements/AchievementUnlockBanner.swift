@@ -16,52 +16,32 @@ struct AchievementUnlockBanner: View {
                         Image(systemName: "sparkles")
                             .font(.system(size: 10, weight: .heavy))
                         Text("Nowa odznaka")
-                            .font(.system(size: 11, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(11, weight: 800))
                     }
-                    .foregroundStyle(Tokens.Palette.warning)
+                    .foregroundStyle(Tokens.Mono.hi)
                     .textCase(.uppercase)
 
                     Text(definition.title)
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.archivo(size: 18, weight: 800, width: 112))
+                        .foregroundStyle(Tokens.Mono.onHero)
                         .lineLimit(1)
                         .minimumScaleFactor(0.82)
                     Text(definition.summary)
                         .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                         .lineLimit(2)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                    .foregroundStyle(Tokens.Mono.heroMuted)
             }
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
             .background(
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(Tokens.Palette.surface.opacity(0.86))
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                    .fill(Tokens.Mono.hero)
             )
-            .overlay {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .strokeBorder(.white.opacity(0.10), lineWidth: 0.35)
-            }
-            .overlay(alignment: .bottom) {
-                Capsule()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.warning.opacity(0.75),
-                                Tokens.Palette.primary.opacity(0.55),
-                            ],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .frame(height: 3)
-                    .padding(.horizontal, Tokens.Space.lg)
-            }
-            .shadow(color: Tokens.Palette.primary.opacity(0.18), radius: 24, y: 12)
+            .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
         }
         .buttonStyle(.plain)
         .padding(.horizontal, Tokens.Space.screenPadding)
@@ -73,6 +53,5 @@ struct AchievementUnlockBanner: View {
 
     private var icon: some View {
         AchievementMedallion(definition: definition, isEarned: true, size: 58, showsLock: false)
-            .shadow(color: Tokens.Palette.warning.opacity(0.28), radius: 14, y: 7)
     }
 }

@@ -66,32 +66,26 @@ struct OlaLivingHero: View {
             HStack(alignment: .top, spacing: Tokens.Space.md) {
                 ZStack {
                     Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                        .fill(Tokens.Mono.hi)
                         .frame(width: 60, height: 60)
                     Image(systemName: "sparkles")
                         .font(.system(size: 24, weight: .heavy))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Tokens.Mono.onHi)
                 }
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Ola")
-                        .font(.system(size: 34, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.monoDisplay(34))
+                        .foregroundStyle(Tokens.Mono.onHero)
                     Text(L("Twój spokojny coach od decyzji żywieniowych"))
                         .font(Tokens.Font.subheadline)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                 }
                 Spacer(minLength: 0)
             }
 
             Text(L(recommendations.summary))
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.manrope(22, weight: 800))
+                .foregroundStyle(Tokens.Mono.onHero)
                 .lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -103,33 +97,31 @@ struct OlaLivingHero: View {
             if !recommendations.nextSteps.isEmpty {
                 HStack(spacing: Tokens.Space.sm) {
                     Image(systemName: "arrow.right.circle.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .foregroundStyle(Tokens.Mono.hi)
                     Text(L(recommendations.nextSteps))
                         .font(Tokens.Font.footnote.weight(.semibold))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .foregroundStyle(Tokens.Mono.onHero)
                         .lineLimit(3)
                 }
                 .padding(Tokens.Space.md)
                 .background(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Tokens.Palette.surface.opacity(0.62))
+                        .fill(Tokens.Mono.heroLine)
                 )
             }
         }
         .padding(Tokens.Space.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
-        .background(RoundedRectangle(cornerRadius: 30, style: .continuous).fill(Tokens.Palette.surface.opacity(0.78)))
+        .background(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous).fill(Tokens.Mono.hero))
         .overlay(alignment: .topTrailing) {
             Text(lastUpdated?.formatted(.relative(presentation: .named)) ?? L("Na żywo"))
                 .font(Tokens.Font.caption.weight(.bold))
-                .foregroundStyle(Tokens.Palette.primary)
+                .foregroundStyle(Tokens.Mono.hi)
                 .padding(.horizontal, 11)
                 .padding(.vertical, 7)
-                .background(Capsule().fill(Tokens.Palette.primarySoft))
+                .background(Capsule().fill(Tokens.Mono.heroLine))
                 .padding(Tokens.Space.md)
         }
-        .shadow(color: Tokens.Palette.primary.opacity(0.13), radius: 26, y: 16)
     }
 
     private func heroPill(symbol: String, text: String) -> some View {
@@ -141,10 +133,10 @@ struct OlaLivingHero: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
         }
-        .foregroundStyle(Tokens.Palette.ink)
+        .foregroundStyle(Tokens.Mono.onHero)
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
-        .background(Capsule().fill(Tokens.Palette.primarySoft.opacity(0.8)))
+        .background(Capsule().fill(Tokens.Mono.heroLine))
     }
 }
 
@@ -194,10 +186,8 @@ struct OlaAdviceCard: View {
         }
         .padding(Tokens.Space.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.84)))
         .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(.white.opacity(0.10), lineWidth: 0.35))
-        .shadow(color: Tokens.Palette.primary.opacity(0.06), radius: 14, y: 8)
     }
 
     private func reactionButton(
@@ -248,7 +238,6 @@ struct OlaMemoryRow: View {
         }
         .padding(Tokens.Space.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
     }
 }

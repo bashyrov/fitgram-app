@@ -43,7 +43,7 @@ struct ActivityHeatmapCard: View {
                             Image(systemName: "flame.fill")
                                 .font(.system(size: 10, weight: .bold))
                             Text(bestRunLabel)
-                                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                .font(Tokens.Font.manrope(11, weight: 700))
                         }
                         .foregroundStyle(Tokens.Palette.warning)
                         .padding(.horizontal, 8)

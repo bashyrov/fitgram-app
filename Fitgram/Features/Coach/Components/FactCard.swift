@@ -66,14 +66,7 @@ struct FactCard: View {
         ZStack {
             Circle()
                 .fill(
-                    LinearGradient(
-                        colors: [
-                            tint(for: fact.category).opacity(0.30),
-                            tint(for: fact.category).opacity(0.08),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    tint(for: fact.category).opacity(0.30)
                 )
                 .frame(width: highlighted ? 56 : 44, height: highlighted ? 56 : 44)
             Text(fact.icon)

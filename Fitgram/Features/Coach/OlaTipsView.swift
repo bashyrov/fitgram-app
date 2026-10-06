@@ -179,7 +179,6 @@ extension OlaTipsView {
         }
         .padding(Tokens.Space.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
     }
 
@@ -297,7 +296,7 @@ extension OlaTipsView {
     private var fallbackHero: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             Text(L("Ola"))
-                .font(.system(size: 34, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 34, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(
                 TL(
@@ -394,7 +393,6 @@ extension OlaTipsView {
                         Spacer(minLength: 0)
                     }
                     .padding(Tokens.Space.md)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .background(
                         RoundedRectangle(cornerRadius: 20, style: .continuous)
                             .fill(Tokens.Palette.surface.opacity(0.82))

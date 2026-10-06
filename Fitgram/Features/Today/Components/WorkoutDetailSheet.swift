@@ -82,22 +82,17 @@ extension WorkoutDetailSheet {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [palette.primary, palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            palette.primary
                         )
                         .frame(width: 68, height: 68)
-                        .shadow(color: palette.accent.opacity(0.24), radius: 18, y: 10)
                     Image(systemName: activityIcon)
-                        .font(.system(size: 28, weight: .black, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.onPrimary)
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(workout.activityName)
-                        .font(.system(size: 28, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(sourceLabel)
@@ -109,7 +104,7 @@ extension WorkoutDetailSheet {
 
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text("+\(Int(workout.caloriesBurnedKcal.rounded()))")
-                    .font(.system(size: 44, weight: .black, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 44, weight: 800, width: 115))
                     .foregroundStyle(palette.accent)
                     .contentTransition(.numericText())
                 Text("kcal")
@@ -211,7 +206,7 @@ extension WorkoutDetailSheet {
                 .frame(width: 34, height: 34)
                 .background(Circle().fill(tint.opacity(0.14)))
             Text(value)
-                .font(.system(size: 18, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(18, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)

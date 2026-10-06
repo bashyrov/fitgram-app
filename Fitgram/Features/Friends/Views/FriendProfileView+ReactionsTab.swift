@@ -45,14 +45,9 @@ extension FriendProfileView {
                 ZStack {
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [tint, tint.opacity(0.7)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            tint
                         )
                         .frame(width: 48, height: 48)
-                        .shadow(color: tint.opacity(0.35), radius: 8, y: 3)
                     Image(systemName: symbol)
                         .font(.system(size: 20, weight: .bold))
                         .foregroundStyle(Tokens.Palette.onPrimary)
@@ -72,7 +67,6 @@ extension FriendProfileView {
                     .foregroundStyle(tint)
             }
             .padding(Tokens.Space.md)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .fill(Tokens.Palette.surface.opacity(0.82))
@@ -81,7 +75,6 @@ extension FriendProfileView {
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .stroke(tint.opacity(0.24).opacity(0.55), lineWidth: 0.55)
             )
-            .shadow(color: tint.opacity(0.10), radius: 16, y: 9)
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(Text(title))

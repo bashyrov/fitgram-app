@@ -22,11 +22,14 @@ struct OnboardingStepScaffold<Content: View>: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Tokens.Space.xl) {
                     VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                        Text(title)
+                        // `Text(String)` renders verbatim, so route the
+                        // catalog keys through L(); already-localized
+                        // strings (TL) fall through unchanged.
+                        Text(L(title))
                             .font(Tokens.Font.title)
                             .foregroundStyle(Tokens.Palette.ink)
                         if let subtitle {
-                            Text(subtitle)
+                            Text(L(subtitle))
                                 .font(Tokens.Font.body)
                                 .foregroundStyle(Tokens.Palette.inkMuted)
                         }

@@ -445,7 +445,7 @@ struct SettingsView: View {
             return TL(
                 pl: "Spróbuj ponownie za chwilę",
                 en: "Try again in a moment",
-                uk: "Спробуйте ще раз трохи пізніше",
+                uk: "Спробуй ще раз трохи пізніше",
                 ru: "Попробуйте еще раз чуть позже",
                 es: "Inténtalo de nuevo en un momento"
             )
@@ -817,7 +817,7 @@ struct SettingsView: View {
     }
 
     private var yourDataTitle: String {
-        TL(pl: "Twoje dane", en: "Your data", uk: "Ваші дані", ru: "Ваши данные", es: "Tus datos")
+        TL(pl: "Twoje dane", en: "Your data", uk: "Твої дані", ru: "Твои данные", es: "Tus datos")
     }
 
     private var preparingTitle: String {
@@ -920,8 +920,8 @@ struct SettingsView: View {
         TL(
             pl: "Nie usunęliśmy konta. Sprawdź połączenie i spróbuj ponownie.",
             en: "We did not delete the account. Check your connection and try again.",
-            uk: "Ми не видалили акаунт. Перевірте з'єднання й спробуйте ще раз.",
-            ru: "Мы не удалили аккаунт. Проверьте соединение и попробуйте ещё раз.",
+            uk: "Ми не видалили акаунт. Перевір з'єднання й спробуй ще раз.",
+            ru: "Мы не удалили аккаунт. Проверь соединение и попробуй ещё раз.",
             es: "No eliminamos la cuenta. Revisa la conexión e inténtalo de nuevo."
         )
     }
@@ -930,7 +930,7 @@ struct SettingsView: View {
         TL(
             pl: "Nie udało się ponownie uruchomić onboardingu. Spróbuj jeszcze raz.",
             en: "We could not restart onboarding. Try again.",
-            uk: "Не вдалося перезапустити онбординг. Спробуйте ще раз.",
+            uk: "Не вдалося перезапустити онбординг. Спробуй ще раз.",
             ru: "Не удалось перезапустить онбординг. Попробуйте ещё раз.",
             es: "No pudimos reiniciar la introducción. Inténtalo de nuevo."
         )
@@ -1004,8 +1004,8 @@ struct SettingsView: View {
         TL(
             pl: "Twoje dane zostaną — przeprowadzimy Cię tylko jeszcze raz przez ustawienia.",
             en: "Your data stays. We will only guide you through setup again.",
-            uk: "Ваші дані залишаться. Ми лише ще раз проведемо вас через налаштування.",
-            ru: "Ваши данные останутся. Мы только снова проведем вас через настройки.",
+            uk: "Твої дані залишаться. Ми лише ще раз проведемо тебе через налаштування.",
+            ru: "Твои данные останутся. Мы только снова проведём тебя через настройки.",
             es: "Tus datos se conservan. Solo te guiaremos de nuevo por la configuración."
         )
     }
@@ -1187,7 +1187,7 @@ struct ActivitySettingsView: View {
                 .frame(width: 58, height: 58)
                 .background(Circle().fill(palette.accentSoft.opacity(0.78)))
             Text(title)
-                .font(.system(size: 30, weight: .black, design: .rounded))
+                .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(subtitle)
                 .font(Tokens.Font.body)

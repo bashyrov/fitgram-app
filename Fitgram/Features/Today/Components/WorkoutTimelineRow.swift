@@ -23,18 +23,11 @@ struct WorkoutTimelineRow: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                palette.accent.opacity(0.22),
-                                palette.primary.opacity(0.12),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        palette.accent.opacity(0.22)
                     )
                     .frame(width: 50, height: 50)
                 Image(systemName: activityIcon)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.manrope(20, weight: 800))
                     .foregroundStyle(palette.accent)
             }
 
@@ -87,27 +80,7 @@ struct WorkoutTimelineRow: View {
         }
         .padding(.horizontal, Tokens.Space.md)
         .padding(.vertical, 14)
-        .background {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            palette.surface.opacity(0.80),
-                            palette.accentSoft.opacity(0.54),
-                            palette.surfaceMuted.opacity(0.18),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        }
-        .overlay(alignment: .leading) {
-            Capsule()
-                .fill(palette.accent.opacity(0.22))
-                .frame(width: 4, height: 34)
-                .padding(.leading, 1)
-        }
-        .shadow(color: palette.accent.opacity(0.045), radius: 12, x: 0, y: 6)
+        .monoCard(radius: Tokens.Mono.Radius.tile, padding: nil)
         .contextMenu {
             Button(role: .destructive) {
                 isDeleteConfirmationPresented = true

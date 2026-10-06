@@ -174,6 +174,9 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Agbalumo-Regular.ttf</string>
+		<string>Archivo-Variable.ttf</string>
+		<string>Archivo-Italic-Variable.ttf</string>
+		<string>Manrope-Variable.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

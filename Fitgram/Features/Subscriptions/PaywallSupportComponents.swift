@@ -9,7 +9,7 @@ struct PaywallComparisonSection: View {
                     .foregroundStyle(Tokens.Palette.ink)
                 Spacer()
                 Text("7 dni testu")
-                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(11, weight: 800))
                     .foregroundStyle(Tokens.Palette.primary)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
@@ -100,11 +100,7 @@ struct PaywallErrorCard: View {
                 .frame(width: 42, height: 42)
                 .background(
                     Circle().fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.warning, Tokens.Palette.primary],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.warning
                     )
                 )
             VStack(alignment: .leading, spacing: 4) {
@@ -123,6 +119,5 @@ struct PaywallErrorCard: View {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.80))
         )
-        .shadow(color: Tokens.Palette.warning.opacity(0.08), radius: 10, y: 5)
     }
 }

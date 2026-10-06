@@ -62,7 +62,7 @@ struct FactsLibraryView: View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             HStack {
                 Label(factOfDayTitle, systemImage: "lightbulb.fill")
-                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(13, weight: 800))
                     .foregroundStyle(Tokens.Palette.primary)
                 Spacer()
                 Text(FactCard.localizedCategory(fact.category))
@@ -92,7 +92,6 @@ struct FactsLibraryView: View {
             }
             .padding(4)
         }
-        .background(.ultraThinMaterial, in: Capsule())
         .background(Capsule().fill(Tokens.Palette.surface.opacity(0.72)))
     }
 
@@ -102,7 +101,7 @@ struct FactsLibraryView: View {
             withAnimation(Tokens.Motion.gentle) { action() }
         } label: {
             Text(label)
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(13, weight: 700))
                 .foregroundStyle(isSelected ? .white : Tokens.Palette.ink)
                 .padding(.horizontal, Tokens.Space.md)
                 .padding(.vertical, 8)

@@ -217,8 +217,8 @@ struct ProfileView: View {
                     avatarHero
                     VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                         Text(displayName)
-                            .font(.system(size: 31, weight: .heavy, design: .rounded))
-                            .foregroundStyle(Tokens.Palette.ink)
+                            .font(Tokens.Font.archivo(size: 31, weight: 800, width: 115))
+                            .foregroundStyle(Tokens.Mono.onHero)
                             .lineLimit(1)
                             .minimumScaleFactor(0.68)
                         profileIdentityPills
@@ -227,53 +227,34 @@ struct ProfileView: View {
                 }
 
                 Text(vibeLine)
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Tokens.Palette.ink)
+                    .font(Tokens.Font.manrope(14, weight: 700))
+                    .foregroundStyle(Tokens.Mono.onHero)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, Tokens.Space.md)
                     .padding(.vertical, 11)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(Tokens.Palette.primarySoft.opacity(0.62))
+                            .fill(Tokens.Mono.heroLine)
                     )
 
                 profileHeroStats
             }
             .padding(Tokens.Space.lg)
         }
-        .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 24, y: 12)
     }
 
     private var identityCardBackground: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 34, style: .continuous)
-                .fill(.ultraThinMaterial)
-            RoundedRectangle(cornerRadius: 34, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        stops: [
-                            .init(color: Tokens.Palette.surface.opacity(0.94), location: 0.00),
-                            .init(color: Tokens.Palette.primarySoft.opacity(0.42), location: 0.48),
-                            .init(color: Tokens.Palette.accentSoft.opacity(0.26), location: 1.00),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-            identityBackdrop
-                .opacity(0.20)
-                .clipShape(RoundedRectangle(cornerRadius: 34, style: .continuous))
-        }
+        RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+            .fill(Tokens.Mono.hero)
     }
 
     private var profileIdentityPills: some View {
         HStack(spacing: Tokens.Space.xs) {
-            profileIdentityPill(symbol: "envelope.fill", text: emailLine, tint: Tokens.Palette.primary)
+            profileIdentityPill(symbol: "envelope.fill", text: emailLine, tint: Tokens.Mono.heroMuted)
             if entitlementsStore.current.isPremium {
-                profileIdentityPill(symbol: "checkmark.seal.fill", text: L("PREMIUM"), tint: Tokens.Palette.accent)
+                profileIdentityPill(symbol: "checkmark.seal.fill", text: L("PREMIUM"), tint: Tokens.Mono.hi)
             }
         }
     }
@@ -283,15 +264,14 @@ struct ProfileView: View {
             Image(systemName: symbol)
                 .font(.system(size: 10, weight: .bold))
             Text(text)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 700))
                 .lineLimit(1)
                 .minimumScaleFactor(0.72)
         }
         .foregroundStyle(tint)
         .padding(.horizontal, 9)
         .frame(height: 28)
-        .background(.regularMaterial, in: Capsule())
-        .background(Capsule().fill(tint.opacity(0.12)))
+        .background(Capsule().fill(Tokens.Mono.heroLine))
     }
 
     private var profileHeroStats: some View {
@@ -300,19 +280,19 @@ struct ProfileView: View {
                 title: L("Seria"),
                 value: "\(streak?.currentLength ?? 0)",
                 symbol: "flame.fill",
-                tint: Tokens.Palette.warning
+                tint: Tokens.Mono.heroMuted
             )
             profileHeroStat(
                 title: L("Odznaki"),
                 value: "\(earnedAchievements.count)",
                 symbol: "trophy.fill",
-                tint: Tokens.Palette.accent
+                tint: Tokens.Mono.heroMuted
             )
             profileHeroStat(
                 title: L("Waga"),
                 value: weightAuxiliary ?? "—",
                 symbol: "scalemass.fill",
-                tint: Tokens.Palette.success
+                tint: Tokens.Mono.heroMuted
             )
         }
     }
@@ -323,24 +303,23 @@ struct ProfileView: View {
                 Image(systemName: symbol)
                     .font(.system(size: 10, weight: .bold))
                 Text(title)
-                    .font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(10, weight: 800))
                     .textCase(.uppercase)
                     .tracking(0.5)
             }
             .foregroundStyle(tint)
             Text(value)
-                .font(.system(size: 20, weight: .heavy, design: .rounded))
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.monoNumber(24))
+                .foregroundStyle(Tokens.Mono.onHero)
                 .lineLimit(1)
                 .minimumScaleFactor(0.68)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, Tokens.Space.sm)
         .frame(height: 74)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(tint.opacity(0.10))
+                .fill(Tokens.Mono.heroLine)
         )
     }
 
@@ -348,16 +327,7 @@ struct ProfileView: View {
         ZStack(alignment: .topTrailing) {
             ZStack {
                 Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primary,
-                                Tokens.Palette.accent,
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .fill(Tokens.Mono.hi)
                     .frame(width: 88, height: 88)
                 if let user, user.avatarFilename != nil {
                     AvatarPicker(user: user, store: AvatarStore(), size: 80)
@@ -368,7 +338,6 @@ struct ProfileView: View {
                         .overlay(avatarPlaceholder)
                 }
             }
-            .shadow(color: Tokens.Palette.primary.opacity(0.22), radius: 16, y: 8)
             if let current = streak?.currentLength, current > 0 {
                 streakBadge(count: current)
                     .offset(x: 6, y: -3)
@@ -384,13 +353,9 @@ struct ProfileView: View {
     @ViewBuilder
     private var avatarPlaceholder: some View {
         Text(initial)
-            .font(.system(size: 28, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
             .foregroundStyle(
-                LinearGradient(
-                    colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Tokens.Palette.primary
             )
     }
 
@@ -399,7 +364,7 @@ struct ProfileView: View {
             Image(systemName: "flame.fill")
                 .font(.system(size: 10, weight: .bold))
             Text(String.localizedStringWithFormat(L("%lld"), count))
-                .font(.system(size: 12, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 800))
                 .monospacedDigit()
         }
         .foregroundStyle(.white)
@@ -408,18 +373,13 @@ struct ProfileView: View {
         .background(
             Capsule()
                 .fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.warning, Tokens.Palette.error],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.warning
                 )
         )
         .overlay(
             Capsule()
                 .stroke(Tokens.Palette.surface, lineWidth: 2)
         )
-        .shadow(color: Tokens.Palette.warning.opacity(0.4), radius: 6, y: 2)
         .accessibilityLabel(Text(String.localizedStringWithFormat(L("Seria %lld dni"), count)))
     }
 
@@ -536,7 +496,7 @@ struct ProfileView: View {
 
     private var accountBadge: some View {
         Text(entitlementsStore.current.isPremium ? "PRO" : "FREE")
-            .font(.system(size: 11, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.manrope(11, weight: 800))
             .tracking(1.2)
             .foregroundStyle(entitlementsStore.current.isPremium ? Tokens.Palette.primary : Tokens.Palette.inkMuted)
             .padding(.horizontal, 10)
@@ -575,12 +535,12 @@ struct ProfileView: View {
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
             Text(value)
-                .font(.system(size: 20, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(20, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.72)
             Text(title)
-                .font(.system(size: 11, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(11, weight: 800))
                 .tracking(0.5)
                 .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.inkMuted)
@@ -685,7 +645,7 @@ struct ProfileView: View {
                     .rotationEffect(.degrees(-6))
                     VStack(alignment: .leading, spacing: 3) {
                         Text(L("PREMIUM"))
-                            .font(.system(size: 10, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(10, weight: 800))
                             .tracking(2.0)
                             .foregroundStyle(Tokens.Palette.primary)
                         Text(L("Fitgram Premium"))
@@ -708,28 +668,16 @@ struct ProfileView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primarySoft,
-                                Tokens.Palette.accentSoft,
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primarySoft
                     )
                 sparkleParticles
                 HStack(spacing: Tokens.Space.md) {
                     ZStack {
                         Circle()
                             .fill(
-                                LinearGradient(
-                                    colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                                Tokens.Palette.primary
                             )
                             .frame(width: 48, height: 48)
-                            .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 10, y: 4)
                         Image(systemName: "sparkles")
                             .font(.system(size: 22, weight: .bold))
                             .foregroundStyle(.white)
@@ -848,7 +796,7 @@ struct ProfileView: View {
         VStack(spacing: 8) {
             AchievementMedallion(definition: definition, isEarned: true, size: 82, showsLock: false)
             Text(definition.title)
-                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(11, weight: 700))
                 .foregroundStyle(Tokens.Palette.ink)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
@@ -885,7 +833,7 @@ struct ProfileView: View {
                     Image(systemName: "trophy.fill")
                         .font(.system(size: 10, weight: .bold))
                     Text(String.localizedStringWithFormat(L("%lld days record"), summary.longestStreakLength))
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(11, weight: 700))
                 }
                 .foregroundStyle(Tokens.Palette.warning)
                 .padding(.horizontal, 8)
@@ -955,12 +903,12 @@ struct ProfileView: View {
                     .foregroundStyle(.white)
             }
             Text(value)
-                .font(.system(size: 24, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
             Text(caption)
-                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(11, weight: 700))
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .textCase(.uppercase)
                 .tracking(0.4)
@@ -1001,7 +949,7 @@ struct ProfileView: View {
                         .foregroundStyle(Tokens.Palette.primary)
                 }
                 Text(L("Cele i targety"))
-                    .font(.system(size: 12, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.manrope(12, weight: 800))
                     .tracking(1.3)
                     .textCase(.uppercase)
                     .foregroundStyle(Tokens.Palette.primary)
@@ -1112,7 +1060,7 @@ struct ProfileView: View {
                 Spacer()
                 if let auxiliary {
                     Text(auxiliary)
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .font(Tokens.Font.manrope(13, weight: 700))
                         .foregroundStyle(Tokens.Palette.inkMuted)
                         .monospacedDigit()
                 }
@@ -1132,7 +1080,7 @@ struct ProfileView: View {
     /// Bundle.main.infoDictionary so it stays accurate.
     private var footer: some View {
         Text(Self.versionFooterString)
-            .font(.system(size: 11, weight: .regular, design: .rounded))
+            .font(Tokens.Font.manrope(11, weight: 500))
             .foregroundStyle(Tokens.Palette.inkSubtle)
             .frame(maxWidth: .infinity)
             .padding(.top, Tokens.Space.md)

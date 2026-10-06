@@ -11,7 +11,7 @@ struct MealUndoBanner: View {
     var body: some View {
         HStack(spacing: Tokens.Space.md) {
             Image(systemName: "trash")
-                .foregroundStyle(Tokens.Palette.warning)
+                .foregroundStyle(Tokens.Mono.hi)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Posiłek usunięty")
                     .font(Tokens.Font.bodyEmphasized)
@@ -28,10 +28,10 @@ struct MealUndoBanner: View {
             } label: {
                 Text("Undo")
                     .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .foregroundStyle(Tokens.Mono.onHi)
                     .padding(.horizontal, Tokens.Space.md)
                     .padding(.vertical, Tokens.Space.xs)
-                    .background(Capsule().fill(.white))
+                    .background(Capsule().fill(Tokens.Mono.hi))
             }
             .buttonStyle(.plain)
             Button(action: onDismiss) {
@@ -44,7 +44,7 @@ struct MealUndoBanner: View {
         .padding(Tokens.Space.md)
         .background(
             RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.ink)
+                .fill(Tokens.Mono.hero)
         )
         .padding(.horizontal, Tokens.Space.screenPadding)
         .shadow(color: .black.opacity(0.18), radius: 10, x: 0, y: 4)

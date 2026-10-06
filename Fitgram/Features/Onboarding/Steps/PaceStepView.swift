@@ -89,7 +89,7 @@ struct PaceStepView: View {
                 .font(Tokens.Font.footnote)
                 .foregroundStyle(Tokens.Palette.inkMuted)
             HStack(alignment: .firstTextBaseline) {
-                Text(String(format: "%.1f kg", targetWeightKg))
+                Text(String.localizedStringWithFormat("%.1f %@", targetWeightKg, L("kg")))
                     .font(Tokens.Font.title2)
                 Spacer()
                 Text(String.localizedStringWithFormat(L("current %.1f kg"), currentWeightKg))

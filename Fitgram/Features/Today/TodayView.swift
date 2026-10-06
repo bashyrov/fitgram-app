@@ -363,12 +363,7 @@ struct EmptyMealsCallout: View {
                     .foregroundStyle(Tokens.Palette.inkSubtle)
             }
             .padding(Tokens.Space.lg)
-            .frostedGlass(
-                cornerRadius: Tokens.Radius.lg,
-                fillOpacity: 0.80,
-                borderOpacity: 0.07,
-                glowOpacity: 0.05
-            )
+            .monoCard(radius: Tokens.Mono.Radius.tile, padding: nil)
         }
         .buttonStyle(PressableButtonStyle())
     }
@@ -457,7 +452,7 @@ private struct DailyMacroGoalEditorSheet: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             Text(title)
-                .font(.system(size: 34, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 34, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(
                 TL(

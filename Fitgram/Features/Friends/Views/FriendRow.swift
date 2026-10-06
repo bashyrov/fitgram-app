@@ -20,21 +20,16 @@ struct FriendRow: View {
         }
         .padding(Tokens.Space.md)
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-        .shadow(color: Tokens.Palette.primary.opacity(0.028), radius: 8, y: 4)
     }
 
     private var avatar: some View {
         Text(initial)
-            .font(.system(size: 17, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.manrope(17, weight: 800))
             .foregroundStyle(Tokens.Palette.onPrimary)
             .frame(width: 48, height: 48)
             .background(
                 Circle().fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.primary
                 )
             )
     }

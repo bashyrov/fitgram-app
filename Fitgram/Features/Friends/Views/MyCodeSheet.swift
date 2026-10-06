@@ -51,17 +51,13 @@ struct MyCodeSheet: View {
                 .frame(width: 58, height: 58)
                 .background(
                     Circle().fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primary
                     )
                 )
             VStack(alignment: .leading, spacing: 5) {
                 if let displayName, !displayName.isEmpty {
                     Text(displayName)
-                        .font(.system(size: 28, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                 }
                 Text(L("Pokaż kod znajomemu. Może go zeskanować albo przepisać identyfikator poniżej."))
@@ -72,13 +68,11 @@ struct MyCodeSheet: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
         .overlay(
             RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(
                 Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
         )
-        .shadow(color: Tokens.Palette.primary.opacity(0.10), radius: 24, y: 14)
     }
 
     private var qrTile: some View {
@@ -100,17 +94,15 @@ struct MyCodeSheet: View {
                 }
             }
             Text("fitgram://friend")
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 700))
                 .foregroundStyle(Tokens.Palette.inkMuted)
         }
         .padding(Tokens.Space.md)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 30, style: .continuous).fill(Tokens.Palette.surface.opacity(0.86)))
         .overlay(
             RoundedRectangle(cornerRadius: 30, style: .continuous).stroke(
                 Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
         )
-        .shadow(color: Tokens.Palette.primary.opacity(0.12), radius: 24, y: 14)
     }
 
     private var codeRow: some View {
@@ -164,7 +156,6 @@ struct MyCodeSheet: View {
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.84)))
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(

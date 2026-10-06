@@ -12,13 +12,14 @@ struct Card<Content: View>: View {
     var body: some View {
         content()
             .padding(padding)
-            .frostedGlass(
-                cornerRadius: 22,
-                fillOpacity: 0.70,
-                borderOpacity: 0.04,
-                glowOpacity: 0.026
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                    .fill(background)
             )
-            .fitgramShadow(elevation)
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                    .stroke(Tokens.Mono.line, lineWidth: 1)
+            )
     }
 }
 

@@ -93,17 +93,8 @@ struct RecipePortionSheet: View {
 // MARK: - Sections
 extension RecipePortionSheet {
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Tokens.Palette.background,
-                Tokens.Palette.primarySoft.opacity(0.44),
-                Tokens.Palette.accentSoft.opacity(0.26),
-                Tokens.Palette.background,
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
+        Tokens.Palette.background
+            .ignoresSafeArea()
     }
 
     private var summaryHero: some View {
@@ -118,15 +109,15 @@ extension RecipePortionSheet {
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text(L("Przepis"))
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .font(Tokens.Font.manrope(12, weight: 800))
                     .foregroundStyle(.white.opacity(0.78))
                     .textCase(.uppercase)
                 Text(String.localizedStringWithFormat(L("%lld kcal"), Int(selectedCalories.rounded())))
-                    .font(.system(size: 34, weight: .heavy, design: .rounded))
+                    .font(Tokens.Font.archivo(size: 34, weight: 800, width: 115))
                     .foregroundStyle(.white)
                     .contentTransition(.numericText())
                 Text(String.localizedStringWithFormat(L("%lld g · przed zapisem"), Int(selectedGrams.rounded())))
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .font(Tokens.Font.manrope(13, weight: 700))
                     .foregroundStyle(.white.opacity(0.82))
             }
             Spacer(minLength: 0)
@@ -136,22 +127,13 @@ extension RecipePortionSheet {
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.graphite,
-                            Tokens.Palette.graphiteSoft,
-                            Tokens.Palette.lime.opacity(0.42),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Mono.hero
                 )
         )
         .overlay {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .stroke(.white.opacity(0.10), lineWidth: 0.35)
         }
-        .shadow(color: Tokens.Palette.graphite.opacity(0.24), radius: 24, y: 14)
     }
 
     private var modePicker: some View {
@@ -190,7 +172,7 @@ extension RecipePortionSheet {
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     Text(String.localizedStringWithFormat(L("%lld g"), Int(overallGrams.rounded())))
-                        .font(.system(size: 24, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.primary)
                         .contentTransition(.numericText())
                 }

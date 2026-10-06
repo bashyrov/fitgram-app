@@ -161,8 +161,8 @@ struct AvatarPicker: View {
         TL(
             pl: "Nie udało się odczytać tego zdjęcia. Wybierz inne.",
             en: "We could not read this photo. Choose another one.",
-            uk: "Не вдалося прочитати це фото. Виберіть інше.",
-            ru: "Не удалось прочитать это фото. Выберите другое.",
+            uk: "Не вдалося прочитати це фото. Обери інше.",
+            ru: "Не удалось прочитать это фото. Выбери другое.",
             es: "No pudimos leer esta foto. Elige otra."
         )
     }
@@ -171,7 +171,7 @@ struct AvatarPicker: View {
         TL(
             pl: "Spróbuj ponownie za chwilę.",
             en: "Try again in a moment.",
-            uk: "Спробуйте ще раз трохи пізніше.",
+            uk: "Спробуй ще раз трохи пізніше.",
             ru: "Попробуйте ещё раз чуть позже.",
             es: "Inténtalo de nuevo en un momento."
         )

@@ -97,7 +97,6 @@ struct BarcodeProductView: View {
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(width: 36, height: 36)
-                        .background(.ultraThinMaterial, in: Circle())
                 }
                 .padding(.leading, Tokens.Space.screenPadding)
                 .padding(.top, Tokens.Space.md)
@@ -125,16 +124,12 @@ struct BarcodeProductView: View {
     }
 
     private var fallbackGradient: some View {
-        LinearGradient(
-            colors: [Tokens.Palette.primarySoft, Tokens.Palette.surfaceMuted],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .overlay(
-            Image(systemName: "barcode.viewfinder")
-                .font(.system(size: 56))
-                .foregroundStyle(Tokens.Palette.primary)
-        )
+        Tokens.Palette.primarySoft
+            .overlay(
+                Image(systemName: "barcode.viewfinder")
+                    .font(.system(size: 56))
+                    .foregroundStyle(Tokens.Palette.primary)
+            )
     }
 
     private var summaryCard: some View {

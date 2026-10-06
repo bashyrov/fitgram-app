@@ -9,15 +9,15 @@ struct StreakFreezeCard: View {
     let onUse: () -> Void
 
     var body: some View {
-        Card(background: Tokens.Palette.warning.opacity(0.12)) {
+        Card(background: Tokens.Palette.surface) {
             HStack(alignment: .top, spacing: Tokens.Space.md) {
                 ZStack {
                     Circle()
-                        .fill(Tokens.Palette.warning.opacity(0.25))
+                        .fill(Tokens.Mono.track)
                         .frame(width: 40, height: 40)
                     Image(systemName: "snowflake")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.warning)
+                        .foregroundStyle(Tokens.Palette.ink)
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(String.localizedStringWithFormat(L("Seria %lld dni czeka"), streakLength))
@@ -39,7 +39,7 @@ struct StreakFreezeCard: View {
                             Image(systemName: "arrow.right")
                                 .font(.system(size: 12, weight: .bold))
                         }
-                        .foregroundStyle(Tokens.Palette.warning)
+                        .foregroundStyle(Tokens.Palette.ink)
                         .padding(.top, 4)
                     }
                     .buttonStyle(.plain)

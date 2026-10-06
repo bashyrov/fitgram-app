@@ -18,17 +18,9 @@ struct OnboardingProgressBar: View {
                     .fill(Tokens.Palette.surfaceMuted)
                 Capsule()
                     .fill(
-                        LinearGradient(
-                            colors: [
-                                Tokens.Palette.primary,
-                                Tokens.Palette.primary.opacity(0.7),
-                            ],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
+                        Tokens.Palette.primary
                     )
                     .frame(width: max(8, proxy.size.width * progress))
-                    .shadow(color: Tokens.Palette.primary.opacity(0.35), radius: 4, y: 0)
                     .animation(Tokens.Motion.gentle, value: progress)
             }
         }

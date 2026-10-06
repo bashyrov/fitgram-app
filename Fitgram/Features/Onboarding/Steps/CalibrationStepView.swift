@@ -81,11 +81,7 @@ private struct DailyTargetHeroCard: View {
         ZStack {
             RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
                 .fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.primary.opacity(0.85)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.primary
                 )
             VStack(spacing: Tokens.Space.xs) {
                 HStack(spacing: 4) {
@@ -98,7 +94,7 @@ private struct DailyTargetHeroCard: View {
 
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text("\(targets.dailyCalorieGoalKcal)")
-                        .font(.system(size: 56, weight: .bold, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 56, weight: 800, width: 115))
                     Text("kcal")
                         .font(Tokens.Font.body.weight(.semibold))
                         .foregroundStyle(.white.opacity(0.85))
@@ -211,13 +207,13 @@ private struct SecondaryMetricsRow: View {
             SecondaryChip(
                 symbol: "drop.fill",
                 color: Tokens.Palette.lime,
-                value: "\(targets.waterGoalMl) ml",
+                value: "\(targets.waterGoalMl) \(L("ml"))",
                 label: "Woda"
             )
             SecondaryChip(
                 symbol: "leaf.fill",
                 color: Tokens.Palette.success,
-                value: "\(targets.fiberGoalGrams) g",
+                value: "\(targets.fiberGoalGrams) \(L("g"))",
                 label: "Fiber"
             )
         }
@@ -327,11 +323,7 @@ private struct OlaHeader: View {
             ZStack {
                 Circle()
                     .fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.accent, Tokens.Palette.accent.opacity(0.7)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.accent
                     )
                     .frame(width: 32, height: 32)
                 Image(systemName: "sparkles")

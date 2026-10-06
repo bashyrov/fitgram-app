@@ -4,22 +4,23 @@ extension Tokens {
     /// Typography scale. SF Pro Rounded everywhere; Dynamic Type respected by
     /// pairing each preset with its closest `Font.TextStyle`.
     enum Font {
-        static let display = SwiftUI.Font.system(.largeTitle, design: .rounded, weight: .bold)
-        static let title = SwiftUI.Font.system(.title, design: .rounded, weight: .semibold)
-        static let title2 = SwiftUI.Font.system(.title2, design: .rounded, weight: .semibold)
-        static let title3 = SwiftUI.Font.system(.title3, design: .rounded, weight: .medium)
-        static let headline = SwiftUI.Font.system(.headline, design: .rounded, weight: .semibold)
-        static let body = SwiftUI.Font.system(.body, design: .rounded, weight: .regular)
-        static let bodyEmphasized = SwiftUI.Font.system(.body, design: .rounded, weight: .medium)
-        static let callout = SwiftUI.Font.system(.callout, design: .rounded, weight: .regular)
-        static let subheadline = SwiftUI.Font.system(.subheadline, design: .rounded, weight: .regular)
-        static let footnote = SwiftUI.Font.system(.footnote, design: .rounded, weight: .regular)
-        static let caption = SwiftUI.Font.system(.caption, design: .rounded, weight: .regular)
-        static let caption2 = SwiftUI.Font.system(.caption2, design: .rounded, weight: .regular)
+        // Design D: Archivo for display sizes, Manrope for text. Both scale with
+        // Dynamic Type through `UIFontMetrics` (see MonoTheme.swift).
+        static var display: SwiftUI.Font { archivoScaled(34, weight: 800, style: .largeTitle) }
+        static var title: SwiftUI.Font { archivoScaled(28, weight: 800, style: .title1) }
+        static var title2: SwiftUI.Font { archivoScaled(22, weight: 800, style: .title2) }
+        static var title3: SwiftUI.Font { manropeScaled(20, weight: 800, style: .title3) }
+        static var headline: SwiftUI.Font { manropeScaled(17, weight: 800, style: .headline) }
+        static var body: SwiftUI.Font { manropeScaled(17, weight: 500, style: .body) }
+        static var bodyEmphasized: SwiftUI.Font { manropeScaled(17, weight: 700, style: .body) }
+        static var callout: SwiftUI.Font { manropeScaled(16, weight: 500, style: .callout) }
+        static var subheadline: SwiftUI.Font { manropeScaled(15, weight: 500, style: .subheadline) }
+        static var footnote: SwiftUI.Font { manropeScaled(13, weight: 600, style: .footnote) }
+        static var caption: SwiftUI.Font { manropeScaled(12, weight: 600, style: .caption1) }
+        static var caption2: SwiftUI.Font { manropeScaled(11, weight: 700, style: .caption2) }
 
         /// Monospaced digits, for calorie counters and timers, keeping width stable.
-        static let counter = SwiftUI.Font.system(size: 44, weight: .semibold, design: .rounded)
-            .monospacedDigit()
+        static var counter: SwiftUI.Font { monoNumber(44).monospacedDigit() }
 
         /// Brand display face — Agbalumo Regular. Use for the splash logo and
         /// large hero moments. Falls back to SF Pro Rounded when the bundled

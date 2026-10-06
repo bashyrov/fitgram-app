@@ -79,17 +79,8 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Tokens.Palette.background,
-                Tokens.Palette.primarySoft.opacity(0.62),
-                Tokens.Palette.accentSoft.opacity(0.35),
-                Tokens.Palette.background,
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
+        Tokens.Palette.background
+            .ignoresSafeArea()
     }
 
     private var hero: some View {
@@ -97,7 +88,7 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(L("Kuchnia Oli"))
-                        .font(.system(size: 32, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 32, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.ink)
                     Text(L("Najpierw leci lokalna biblioteka, a potem AI dopina dania, porcje i makro."))
                         .font(Tokens.Font.subheadline)
@@ -116,13 +107,11 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
             }
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.78))
         )
         .overlay(RoundedRectangle(cornerRadius: 30, style: .continuous).stroke(.white.opacity(0.10), lineWidth: 0.35))
-        .shadow(color: Tokens.Palette.primary.opacity(0.10), radius: 24, y: 14)
     }
 
     private var modeNote: some View {
@@ -172,7 +161,7 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     Text(String.localizedStringWithFormat(L("%lld kcal"), targetCalories))
-                        .font(.system(size: 24, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
                         .foregroundStyle(Tokens.Palette.warning)
                         .contentTransition(.numericText())
                 }
@@ -192,7 +181,7 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                             Haptics.selection()
                         } label: {
                             Text("\(value)")
-                                .font(.system(size: 12, weight: .bold, design: .rounded))
+                                .font(Tokens.Font.manrope(12, weight: 800))
                                 .foregroundStyle(targetCalories == value ? .white : Tokens.Palette.ink)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 34)
@@ -235,7 +224,7 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                                 Image(systemName: preference.symbol)
                                     .font(.system(size: 11, weight: .bold))
                                 Text(preference.title)
-                                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                                    .font(Tokens.Font.manrope(12, weight: 800))
                             }
                             .foregroundStyle(preferences.contains(preference) ? .white : Tokens.Palette.ink)
                             .padding(.horizontal, 10)
@@ -432,9 +421,9 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
             Image(systemName: symbol)
                 .font(.system(size: 11, weight: .bold))
             Text(value)
-                .font(.system(size: 12, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 800))
             Text(label)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .font(Tokens.Font.manrope(12, weight: 700))
         }
         .foregroundStyle(Tokens.Palette.primary)
         .padding(.horizontal, 10)

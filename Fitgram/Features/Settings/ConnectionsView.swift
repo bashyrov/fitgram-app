@@ -45,15 +45,11 @@ struct ConnectionsView: View {
                 .frame(width: 58, height: 58)
                 .background(
                     Circle().fill(
-                        LinearGradient(
-                            colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        Tokens.Palette.primary
                     )
                 )
             Text(heroTitle)
-                .font(.system(size: 28, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(heroSubtitle)
                 .font(Tokens.Font.footnote)
@@ -79,7 +75,7 @@ struct ConnectionsView: View {
                             .foregroundStyle(Tokens.Palette.ink)
                         Spacer()
                         Text(provider == .appleHealth ? appleHealthBadge : soonLabel)
-                            .font(.system(size: 10, weight: .heavy, design: .rounded))
+                            .font(Tokens.Font.manrope(10, weight: 800))
                             .foregroundStyle(
                                 provider == .appleHealth && healthWorkoutsEnabled
                                     ? Tokens.Palette.primary : Tokens.Palette.inkMuted

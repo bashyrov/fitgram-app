@@ -186,7 +186,7 @@ private struct DemoScanCTA: View {
                 heroTile(
                     symbol: "photo.on.rectangle",
                     title: "Wybierz z galerii",
-                    caption: "Idealne na symulatorze"
+                    caption: "Dowolne zdjęcie z telefonu"
                 )
                 .frame(maxWidth: .infinity, minHeight: 0)
             }

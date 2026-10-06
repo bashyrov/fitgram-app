@@ -62,24 +62,14 @@ struct PaywallView: View {
 
     private var header: some View {
         ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: 34, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Tokens.Palette.primary.opacity(0.96),
-                            Tokens.Palette.accent.opacity(0.88),
-                            Tokens.Palette.graphite.opacity(0.92),
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
             Circle()
-                .fill(Tokens.Palette.warmWhite.opacity(0.18))
+                .fill(Tokens.Mono.heroLine)
                 .frame(width: 210, height: 210)
                 .offset(x: 170, y: -116)
             Circle()
-                .fill(Tokens.Palette.primarySoft.opacity(0.30))
+                .fill(Tokens.Mono.heroLine.opacity(0.6))
                 .frame(width: 190, height: 190)
                 .offset(x: -92, y: 118)
 
@@ -90,38 +80,39 @@ struct PaywallView: View {
                             Image(systemName: "sparkles")
                                 .font(.system(size: 12, weight: .black))
                             Text("FITGRAM PRO")
-                                .font(.system(size: 11, weight: .black, design: .rounded))
+                                .font(Tokens.Font.manrope(11, weight: 800))
                                 .tracking(1.2)
                         }
-                        .foregroundStyle(Tokens.Palette.onPrimary)
+                        .foregroundStyle(Tokens.Mono.onHi)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Capsule().fill(Tokens.Palette.warmWhite.opacity(0.16)))
+                        .background(Capsule().fill(Tokens.Mono.hi))
 
                         Text("7 dni za darmo")
-                            .font(.system(size: 38, weight: .black, design: .rounded))
-                            .foregroundStyle(Tokens.Palette.onPrimary)
+                            .font(Tokens.Font.monoDisplay(38))
+                            .foregroundStyle(Tokens.Mono.onHero)
                             .lineLimit(2)
                             .minimumScaleFactor(0.76)
                     }
                     Spacer(minLength: 0)
                     ZStack {
                         Circle()
-                            .fill(Tokens.Palette.warmWhite.opacity(0.18))
+                            .fill(Tokens.Mono.hi)
                         Image(systemName: "crown.fill")
                             .font(.system(size: 24, weight: .black))
-                            .foregroundStyle(Tokens.Palette.onPrimary)
+                            .foregroundStyle(Tokens.Mono.onHi)
                     }
                     .frame(width: 56, height: 56)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Pełny AI-coach, bez limitów")
-                        .font(.system(size: 24, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
+                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text("Skanuj jedzenie, poprawiaj AI, korzystaj z Oli, przepisów i celów bez dziennych blokad.")
                         .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.onPrimary.opacity(0.78))
+                        .foregroundStyle(Tokens.Mono.onHero.opacity(0.78))
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -129,14 +120,13 @@ struct PaywallView: View {
         }
         .frame(minHeight: 290)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .clipShape(RoundedRectangle(cornerRadius: 34, style: .continuous))
-        .shadow(color: Tokens.Palette.primary.opacity(0.16), radius: 20, y: 10)
+        .clipShape(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous))
     }
 
     private var premiumStrip: some View {
         HStack(spacing: Tokens.Space.sm) {
             premiumMetric(value: "∞", label: "AI")
-            premiumMetric(value: "Ola", label: "coach")
+            premiumMetric(value: L("Ola"), label: "coach")
             premiumMetric(value: "7", label: "dni free")
         }
     }
@@ -144,10 +134,10 @@ struct PaywallView: View {
     private func premiumMetric(value: String, label: LocalizedStringKey) -> some View {
         VStack(spacing: 3) {
             Text(value)
-                .font(.system(size: 19, weight: .black, design: .rounded))
+                .font(Tokens.Font.manrope(19, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
             Text(label)
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.manrope(10, weight: 800))
                 .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.primary)
                 .lineLimit(1)
@@ -419,7 +409,7 @@ private struct PaywallOfferingRow: View {
                             .foregroundStyle(Tokens.Palette.ink)
                         if offering.isFeatured {
                             Text("NAJLEPSZA")
-                                .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .font(Tokens.Font.manrope(10, weight: 800))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
@@ -459,7 +449,6 @@ private struct PaywallOfferingRow: View {
                         lineWidth: 1
                     )
             }
-            .shadow(color: Tokens.Palette.primary.opacity(isSelected ? 0.10 : 0.025), radius: 12, y: 5)
         }
         .buttonStyle(.plain)
     }

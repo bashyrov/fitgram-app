@@ -76,14 +76,9 @@ struct CelebrationStepView: View {
                     )
                 )
                 .frame(width: 160, height: 160)
-                .shadow(color: Tokens.Palette.primary.opacity(0.45), radius: 28, y: 14)
             Circle()
                 .fill(
-                    LinearGradient(
-                        colors: [Tokens.Palette.primary, Tokens.Palette.accent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    Tokens.Palette.primary
                 )
                 .frame(width: 126, height: 126)
                 .overlay(Circle().stroke(.white.opacity(0.10), lineWidth: 0.35))
@@ -131,7 +126,6 @@ struct CelebrationStepView: View {
             checkRow("Przypomnienia i streak są gotowe", delay: 0.2)
         }
         .padding(Tokens.Space.lg)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .background(
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .fill(Tokens.Palette.surface.opacity(0.82))
@@ -140,7 +134,6 @@ struct CelebrationStepView: View {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .strokeBorder(.white.opacity(0.10), lineWidth: 0.35)
         }
-        .shadow(color: Tokens.Palette.primary.opacity(0.14), radius: 22, y: 12)
         .padding(.horizontal, Tokens.Space.screenPadding)
     }
 

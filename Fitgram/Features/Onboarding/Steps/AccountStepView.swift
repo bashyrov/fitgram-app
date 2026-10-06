@@ -77,7 +77,7 @@ struct AccountStepView: View {
     @ViewBuilder
     private func fieldCard(
         label: LocalizedStringKey,
-        placeholder: LocalizedStringKey,
+        placeholder: String,
         text: Binding<String>,
         focusField: Field
     ) -> some View {
@@ -86,7 +86,9 @@ struct AccountStepView: View {
                 .font(Tokens.Font.caption)
                 .foregroundStyle(Tokens.Palette.inkMuted)
                 .textCase(.uppercase)
-            TextField(placeholder, text: text)
+            // String (not LocalizedStringKey) placeholder so the sample
+            // address isn't auto-linked as Markdown.
+            TextField(L(placeholder), text: text)
                 .focused($focused, equals: focusField)
                 .textContentType(focusField.contentType)
                 .textInputAutocapitalization(focusField.capitalization)

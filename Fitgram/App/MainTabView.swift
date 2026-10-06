@@ -279,6 +279,7 @@ struct MainTabView: View {
                     Task { await todayState.refresh(for: authUser.id) }
                 }
             )
+            .monoTabBarStyle()
             .tabItem {
                 Label("Today", systemImage: "sun.max.fill")
             }
@@ -288,6 +289,7 @@ struct MainTabView: View {
             // bounces selection back to Today so the user never lands on an
             // empty scene.
             Color.clear
+                .monoTabBarStyle()
                 .tabItem {
                     Label("Add", systemImage: "plus.circle.fill")
                 }
@@ -298,6 +300,7 @@ struct MainTabView: View {
                 state: progressState,
                 onOpenWeeklyDebrief: { presentWeeklyDebrief() }
             )
+            .monoTabBarStyle()
             .tabItem {
                 Label("Week", systemImage: "chart.bar.fill")
             }
@@ -310,6 +313,7 @@ struct MainTabView: View {
                 yourID: authUser.id,
                 friendService: friendService
             )
+            .monoTabBarStyle()
             .tabItem {
                 Label("Friends", systemImage: "person.2.fill")
             }
@@ -343,12 +347,18 @@ struct MainTabView: View {
                 onDeleteAccount: onDeleteAccount,
                 onRestartOnboarding: onRestartOnboarding
             )
+            .monoTabBarStyle()
             .tabItem {
                 Label("Profile", systemImage: "person.crop.circle")
             }
             .tag(Tab.profile)
         }
-        .tint(Tokens.Palette.primary)
+        .tint(Tokens.Mono.hi)
+        .overlay(alignment: .bottom) {
+            MonoTabBar(selection: tabSelectionBinding)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
+        }
         .overlay(alignment: .top) {
             if let current = unlockBus.current {
                 AchievementUnlockBanner(definition: current) {
@@ -366,7 +376,7 @@ struct MainTabView: View {
                     onDismiss: { dismissUndo() }
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                .padding(.bottom, Tokens.Space.xxxl)
+                .padding(.bottom, 96)
             }
         }
         .animation(Tokens.Motion.gentle, value: unlockBus.queue.count)
@@ -985,3 +995,60 @@ struct MainTabView: View {
     }
 }
 // swiftlint:enable type_body_length
+
+/// Floating "pill" tab bar from design D. Selecting `.add` goes through the
+/// same binding as before, so the add-options sheet logic is unchanged.
+private struct MonoTabBar: View {
+    @Binding var selection: MainTabView.Tab
+
+    private struct Item: Identifiable {
+        let tab: MainTabView.Tab
+        let title: LocalizedStringKey
+        let symbol: String
+        var id: MainTabView.Tab { tab }
+    }
+
+    private let items: [Item] = [
+        Item(tab: .today, title: "Today", symbol: "sun.max.fill"),
+        Item(tab: .add, title: "Add", symbol: "plus.circle"),
+        Item(tab: .progress, title: "Week", symbol: "chart.bar.fill"),
+        Item(tab: .friends, title: "Friends", symbol: "person.2.fill"),
+        Item(tab: .profile, title: "Profile", symbol: "person.crop.circle"),
+    ]
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(items) { item in
+                let isActive = item.tab == selection
+                Button {
+                    Haptics.light()
+                    selection = item.tab
+                } label: {
+                    VStack(spacing: 3) {
+                        Image(systemName: item.symbol)
+                            .font(.system(size: 19, weight: .semibold))
+                        Text(item.title)
+                            .font(Tokens.Font.manrope(10, weight: isActive ? 800 : 700))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
+                    .foregroundStyle(isActive ? Tokens.Mono.onHi : Tokens.Mono.heroMuted)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .background(
+                        Capsule(style: .continuous)
+                            .fill(isActive ? Tokens.Mono.hi : Color.clear)
+                    )
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(isActive ? [.isButton, .isSelected] : .isButton)
+            }
+        }
+        .padding(.horizontal, 6)
+        .frame(height: 68)
+        .background(Capsule(style: .continuous).fill(Tokens.Mono.hero))
+        .shadow(color: .black.opacity(0.18), radius: 16, y: 8)
+        .animation(Tokens.Motion.gentle, value: selection)
+    }
+}
