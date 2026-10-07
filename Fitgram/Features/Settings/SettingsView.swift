@@ -68,24 +68,22 @@ struct SettingsView: View {
     @AppStorage(AppAccentPalette.storageKey) private var accentRaw = AppAccentPalette.rose.rawValue
 
     var body: some View {
-        ZStack {
-            settingsBackground
-            ScrollView {
-                LazyVStack(spacing: Tokens.Space.lg) {
-                    preferencesSection
-                    integrationsSection
-                    dataSection
-                    legalSection
-                    accountSection
-                    appVersionFooter
-                }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
-                .id(accentRaw)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                MonoH1(text: settingsTitle)
+                preferencesSection
+                integrationsSection
+                dataSection
+                legalSection
+                accountSection
+                appVersionFooter
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .id(accentRaw)
         }
-        .navigationTitle(Text(settingsTitle))
-        .navigationBarTitleDisplayMode(.inline)
+        .scrollIndicators(.hidden)
+        .background(Tokens.Palette.background.ignoresSafeArea())
+        .monoNavigationTitle(settingsTitle)
         .sheet(isPresented: $isPrivacyPresented) {
             PrivacySettingsSheet(store: privacyStore) { isPrivacyPresented = false }
         }
@@ -195,114 +193,62 @@ struct SettingsView: View {
     }
 
     private var preferencesSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                sectionHeader(preferencesTitle, symbol: "slider.horizontal.3", tint: Tokens.Palette.primary)
-                separator
+        VStack(alignment: .leading, spacing: 0) {
+            groupHeader(number: "01", title: preferencesTitle)
+            VStack(spacing: 0) {
+                actionRow(
+                    symbol: "bell",
+                    title: preferencesTitle,
+                    role: nil,
+                    action: { isEditingPreferences = true },
+                    subtitle: preferencesRowTitle
+                )
+                .disabled(user == nil)
+                MonoRowDivider()
                 NavigationLink {
                     LanguageSettingsView(store: localizationStore) {}
                 } label: {
-                    HStack(spacing: Tokens.Space.md) {
-                        ZStack {
-                            Circle()
-                                .fill(Tokens.Palette.lime.opacity(0.16))
-                                .frame(width: 36, height: 36)
-                            Image(systemName: "globe")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(Tokens.Palette.graphite)
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(appLanguageTitle)
-                                .font(Tokens.Font.body)
-                                .foregroundStyle(Tokens.Palette.ink)
-                            Text(activeLanguageLabel)
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
-                    .padding(.vertical, 6)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
+                    MonoRow(icon: "globe", title: appLanguageTitle, sub: activeLanguageLabel)
                 }
                 .buttonStyle(.plain)
-                separator
+                MonoRowDivider()
                 NavigationLink {
                     AppearanceSettingsView()
                 } label: {
-                    HStack(spacing: Tokens.Space.md) {
-                        ZStack {
-                            Circle()
-                                .fill(Tokens.Palette.primarySoft)
-                                .frame(width: 36, height: 36)
-                            Image(systemName: "paintpalette.fill")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(Tokens.Palette.primary)
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(appearanceTitle)
-                                .font(Tokens.Font.body)
-                                .foregroundStyle(Tokens.Palette.ink)
-                            Text(appearanceSubtitle)
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
-                    .padding(.vertical, 6)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
+                    MonoRow(icon: "paintpalette", title: appearanceTitle, sub: appearanceSubtitle)
                 }
                 .buttonStyle(.plain)
-                separator
+                MonoRowDivider()
                 actionRow(
-                    symbol: "bell.fill",
-                    title: preferencesRowTitle,
-                    role: nil,
-                    action: { isEditingPreferences = true },
-                    tint: Tokens.Palette.warning
-                )
-                .disabled(user == nil)
-                separator
-                actionRow(
-                    symbol: "lock.shield.fill",
-                    title: privacyRowTitle,
-                    role: nil,
-                    action: { isPrivacyPresented = true },
-                    tint: Tokens.Palette.accent
-                )
-                separator
-                actionRow(
-                    symbol: "wand.and.stars",
+                    symbol: "camera",
                     title: aiCalibrationTitle,
                     role: nil,
-                    action: { isCalibrating = true },
-                    tint: Tokens.Palette.primary
+                    action: { isCalibrating = true }
                 )
                 .disabled(user == nil)
-                separator
+                MonoRowDivider()
                 actionRow(
-                    symbol: "calendar",
+                    symbol: "flame",
                     title: streakHistoryTitle,
                     role: nil,
-                    action: { isStreakCalendarPresented = true },
-                    tint: Tokens.Palette.accent
+                    action: { isStreakCalendarPresented = true }
                 )
-                separator
+                MonoRowDivider()
                 actionRow(
                     symbol: "arrow.counterclockwise",
                     title: restartOnboardingTitle,
                     role: nil,
-                    action: { isRestartOnboardingConfirmed = true },
-                    tint: Tokens.Palette.inkMuted
+                    action: { isRestartOnboardingConfirmed = true }
+                )
+                MonoRowDivider()
+                actionRow(
+                    symbol: "shield",
+                    title: privacyRowTitle,
+                    role: nil,
+                    action: { isPrivacyPresented = true }
                 )
             }
+            .monoRowsCard()
         }
         .confirmationDialog(
             repeatOnboardingQuestion,
@@ -342,43 +288,42 @@ struct SettingsView: View {
     @ViewBuilder
     private var integrationsSection: some View {
         if weightService != nil, user != nil {
-            Card {
-                VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                    sectionHeader(
-                        integrationsTitle,
-                        symbol: "heart.text.square.fill",
-                        tint: Tokens.Palette.error
-                    )
-                    separator
+            VStack(alignment: .leading, spacing: 0) {
+                groupHeader(number: "02", title: integrationsTitle)
+                VStack(spacing: 0) {
                     actionRow(
-                        symbol: "point.3.connected.trianglepath.dotted",
-                        title: connectionsRowTitle,
+                        symbol: "waveform.path.ecg",
+                        title: connectionsShortTitle,
                         role: nil,
                         action: { isConnectionsPresented = true },
-                        tint: Tokens.Palette.success
+                        subtitle: "Health, Strava, Oura, Garmin, Whoop"
                     )
-                    separator
+                    MonoRowDivider()
                     NavigationLink {
                         ActivitySettingsView()
                     } label: {
-                        settingsNavigationRow(
-                            symbol: "figure.run.circle.fill",
-                            title: activitySettingsTitle,
-                            subtitle: activitySettingsSubtitle,
-                            tint: Tokens.Palette.primary
-                        )
+                        MonoRow(icon: "figure.run", title: activitySettingsTitle, sub: activitySettingsSubtitle)
                     }
                     .buttonStyle(.plain)
-                    Text(
-                        connectionsHint
+                    MonoRowDivider()
+                    actionRow(
+                        symbol: "square.and.arrow.down",
+                        title: healthImportRowTitle,
+                        role: nil,
+                        action: { Task { await runHealthImport() } },
+                        subtitle: appleHealthHint
                     )
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .padding(.horizontal, Tokens.Space.md)
-                    .padding(.bottom, Tokens.Space.sm)
+                    .disabled(isImportingHealth)
                 }
+                .monoRowsCard()
+                MonoHint(text: connectionsHint)
+                    .padding(.top, 8)
             }
         }
+    }
+
+    private var connectionsShortTitle: String {
+        TL(pl: "Połączenia", en: "Connections", uk: "Підключення", ru: "Подключения", es: "Conexiones")
     }
 
     private var healthImportRowTitle: String {
@@ -453,54 +398,49 @@ struct SettingsView: View {
     }
 
     private var dataSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                sectionHeader(yourDataTitle, symbol: "tray.full.fill", tint: Tokens.Palette.accent)
-                separator
+        VStack(alignment: .leading, spacing: 0) {
+            groupHeader(number: "03", title: yourDataTitle)
+            VStack(spacing: 0) {
                 actionRow(
-                    symbol: "square.and.arrow.up",
+                    symbol: "doc.text",
                     title: isPreparingExport ? preparingTitle : jsonExportTitle,
                     role: nil,
-                    action: { Task { await runExport() } },
-                    tint: Tokens.Palette.primary
+                    action: { Task { await runExport() } }
                 )
                 .disabled(isPreparingExport || user == nil)
-                separator
+                MonoRowDivider()
                 actionRow(
-                    symbol: "tablecells",
+                    symbol: "list.bullet",
                     title: csvExportTitle,
                     role: nil,
-                    action: { isCSVRangePresented = true },
-                    tint: Tokens.Palette.success
+                    action: { isCSVRangePresented = true }
                 )
-                separator
-                actionRow(
-                    symbol: "archivebox.fill",
-                    title: bundleRowTitle,
-                    role: nil,
-                    action: { runBundleExport() },
-                    tint: Tokens.Palette.warning
-                )
-                .disabled(isPreparingBundle || user == nil)
-                separator
+                MonoRowDivider()
                 actionRow(
                     symbol: "magnifyingglass",
                     title: searchHistoryTitle,
                     role: nil,
-                    action: { isSearchPresented = true },
-                    tint: Tokens.Palette.accent
+                    action: { isSearchPresented = true }
                 )
+                MonoRowDivider()
+                actionRow(
+                    symbol: "doc.zipper",
+                    title: bundleRowTitle,
+                    role: nil,
+                    action: { runBundleExport() }
+                )
+                .disabled(isPreparingBundle || user == nil)
                 if photoStore != nil {
-                    separator
+                    MonoRowDivider()
                     actionRow(
-                        symbol: "photo.stack.fill",
+                        symbol: "trash",
                         title: photosRowTitle,
                         role: nil,
-                        action: { runOrphanPhotoSweep() },
-                        tint: Tokens.Palette.inkMuted
+                        action: { runOrphanPhotoSweep() }
                     )
                 }
             }
+            .monoRowsCard()
         }
     }
 
@@ -579,49 +519,51 @@ struct SettingsView: View {
     // MARK: - Legal
 
     private var legalSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                sectionHeader(legalHelpTitle, symbol: "doc.text.fill", tint: Tokens.Palette.success)
-                separator
+        VStack(alignment: .leading, spacing: 0) {
+            groupHeader(number: "04", title: legalHelpTitle)
+            VStack(spacing: 0) {
                 Button {
                     isHelpPresented = true
                 } label: {
-                    legalRow(symbol: "questionmark.circle.fill", title: helpFAQTitle)
+                    legalRow(symbol: "questionmark.circle", title: helpFAQTitle)
                 }
                 .buttonStyle(.plain)
-                separator
+                MonoRowDivider()
                 Button {
                     isLegalPresented = true
                 } label: {
-                    legalRow(symbol: "lock.shield.fill", title: legalPrivacyTitle)
+                    legalRow(symbol: "shield", title: legalPrivacyTitle)
                 }
                 .buttonStyle(.plain)
             }
+            .monoRowsCard()
         }
     }
 
     // MARK: - Account
 
     private var accountSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                sectionHeader(accountTitle, symbol: "person.crop.circle.fill", tint: Tokens.Palette.inkMuted)
-                separator
+        VStack(alignment: .leading, spacing: 0) {
+            groupHeader(number: "05", title: accountTitle)
+            VStack(spacing: 0) {
                 actionRow(
                     symbol: "rectangle.portrait.and.arrow.right",
                     title: signOutTitle,
-                    role: .destructive,
-                    action: onSignOut
+                    role: nil,
+                    action: onSignOut,
+                    showsChevron: false
                 )
-                separator
+                MonoRowDivider()
                 actionRow(
-                    symbol: "trash.fill",
+                    symbol: "trash",
                     title: isDeletingAccount ? deletingAccountTitle : deleteAccountTitle,
                     role: .destructive,
-                    action: { deleteConfirmation = true }
+                    action: { deleteConfirmation = true },
+                    showsChevron: false
                 )
                 .disabled(isDeletingAccount)
             }
+            .monoRowsCard()
         }
     }
 
@@ -649,16 +591,14 @@ struct SettingsView: View {
     // MARK: - Footer
 
     private var appVersionFooter: some View {
-        VStack(spacing: 2) {
-            Text(String.localizedStringWithFormat(L("Fitgram %@"), Self.appVersionString))
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-            Text(madeInPolandTitle)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.top, Tokens.Space.sm)
+        Text(String.localizedStringWithFormat(L("Fitgram %@"), Self.appVersionString) + " · " + madeInPolandTitle)
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 6)
+            .padding(.top, 22)
+            .padding(.bottom, 34)
     }
 
     private static var appVersionString: String {
@@ -1018,35 +958,12 @@ struct SettingsView: View {
 
     // MARK: - Helpers
 
-    private var separator: some View {
-        Rectangle()
-            .fill(Tokens.Palette.separator)
-            .frame(height: 0.5)
-            .padding(.leading, 48)
-    }
-
-    private func sectionHeader(
-        _ text: String,
-        symbol: String? = nil,
-        tint: Color = Tokens.Palette.primary
-    ) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            if let symbol {
-                ZStack {
-                    Circle()
-                        .fill(tint.opacity(0.18))
-                        .frame(width: 28, height: 28)
-                    Image(systemName: symbol)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(tint)
-                }
-            }
-            Text(text)
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-        }
-        .padding(.bottom, 2)
+    /// `sec(n, title, '', 24)` — numbered group header above a rows card.
+    private func groupHeader(number: String, title: String) -> some View {
+        MonoSectionHeader(number: number, title: title)
+            .padding(.horizontal, 6)
+            .padding(.top, 8)
+            .padding(.bottom, 12)
     }
 
     private func actionRow(
@@ -1055,99 +972,24 @@ struct SettingsView: View {
         role: ButtonRole?,
         action: @escaping () -> Void,
         tint: Color? = nil,
-        subtitle: String? = nil
+        subtitle: String? = nil,
+        showsChevron: Bool = true
     ) -> some View {
-        let resolvedTint =
-            role == .destructive
-            ? Tokens.Palette.error
-            : (tint ?? Tokens.Palette.primary)
+        let titleColor = role == .destructive ? Tokens.Mono.danger : Tokens.Palette.ink
         return Button(role: role, action: action) {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(resolvedTint.opacity(0.15))
-                        .frame(width: 36, height: 36)
-                    Image(systemName: symbol)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(resolvedTint)
+            if showsChevron {
+                MonoRow(icon: symbol, title: title, sub: subtitle, titleColor: titleColor)
+            } else {
+                MonoRow(icon: symbol, title: title, sub: subtitle, titleColor: titleColor) {
+                    EmptyView()
                 }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(role == .destructive ? Tokens.Palette.error : Tokens.Palette.ink)
-                    if let subtitle {
-                        Text(subtitle)
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
             }
-            .padding(.vertical, 6)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
 
-    private func settingsNavigationRow(
-        symbol: String,
-        title: String,
-        subtitle: String,
-        tint: Color
-    ) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(tint.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(tint)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(subtitle)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .lineLimit(2)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-        }
-        .padding(.vertical, 6)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .contentShape(Rectangle())
-    }
-
     private func legalRow(symbol: String, title: String) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primary.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            Text(title)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-            Image(systemName: "arrow.up.right")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-        }
-        .padding(.vertical, 6)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .contentShape(Rectangle())
+        MonoRow(icon: symbol, title: title)
     }
 }
 
@@ -1160,57 +1002,34 @@ struct ActivitySettingsView: View {
     }
 
     var body: some View {
-        ZStack {
-            ScreenBackground(mood: .calm)
-            ScrollView {
-                VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-                    header
-                    toggleCard
-                    explanationCard
-                }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                toggleCard
+                    .padding(.top, 16)
+                explanationCard
+                    .padding(.top, 10)
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.bottom, 34)
         }
-        .navigationTitle(Text(title))
-        .navigationBarTitleDisplayMode(.inline)
+        .scrollIndicators(.hidden)
+        .background(Tokens.Palette.background.ignoresSafeArea())
+        .monoNavigationTitle(title)
         .onAppear {
             includeActivityCalories = ActivityCaloriePolicyStore().currentValue
         }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Image(systemName: "figure.run.circle.fill")
-                .font(.system(size: 30, weight: .bold))
-                .foregroundStyle(palette.accent)
-                .frame(width: 58, height: 58)
-                .background(Circle().fill(palette.accentSoft.opacity(0.78)))
-            Text(title)
-                .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(subtitle)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(Tokens.Space.lg)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frostedGlass(cornerRadius: 30, fillOpacity: 0.86, borderOpacity: 0.04, glowOpacity: 0.08)
+        MonoH1(text: title, sub: subtitle)
     }
 
     private var toggleCard: some View {
-        HStack(alignment: .center, spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(toggleTitle)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(includeActivityCalories ? enabledSubtitle : disabledSubtitle)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: Tokens.Space.md)
+        MonoRow(
+            title: toggleTitle,
+            sub: includeActivityCalories ? enabledSubtitle : disabledSubtitle
+        ) {
             Toggle(
                 "",
                 isOn: Binding(
@@ -1223,28 +1042,31 @@ struct ActivitySettingsView: View {
                 )
             )
             .labelsHidden()
-            .tint(palette.accent)
+            .toggleStyle(MonoToggleStyle())
+            .fixedSize()
         }
-        .padding(Tokens.Space.lg)
-        .frostedGlass(cornerRadius: 26, fillOpacity: 0.82, borderOpacity: 0.04, glowOpacity: 0.05)
+        .monoRowsCard()
     }
 
     private var explanationCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Label(historyTitle, systemImage: "calendar.badge.clock")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(historyDescription)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .fixedSize(horizontal: false, vertical: true)
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "info.circle")
+                .font(.system(size: 17, weight: .medium))
+                .foregroundStyle(Tokens.Mono.muted)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(historyTitle)
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(historyDescription)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
         }
-        .padding(Tokens.Space.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(palette.accentSoft.opacity(0.34))
-        )
+        .monoCard(padding: 16)
     }
 
     private var title: String {

@@ -12,139 +12,136 @@ struct LeaderboardView: View {
             ZStack {
                 boardBackground
                 ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        boardHero
+                    VStack(alignment: .leading, spacing: 0) {
+                        MonoH1(
+                            text: L("Tablica wyników"),
+                            sub: L("Ranking serii pokazuje, kto dziś trzyma rytm najdłużej.")
+                        )
+                        Color.clear.frame(height: 16)
                         if entries.isEmpty {
                             empty
                         } else {
-                            LazyVStack(spacing: Tokens.Space.sm) {
-                                ForEach(entries) { entry in
+                            podium
+                            Color.clear.frame(height: 12)
+                            VStack(spacing: 0) {
+                                ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+                                    if index > 0 {
+                                        MonoRowDivider(inset: 0)
+                                    }
                                     row(entry)
                                 }
                             }
+                            .monoRowsCard()
                         }
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .padding(.bottom, 24)
                 }
             }
-            .navigationTitle(Text(L("Tablica wyników")))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Tablica wyników"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(L("Zamknij"), action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
         }
     }
 
     private var boardBackground: some View {
-        ScreenBackground(mood: .warm)
+        Tokens.Palette.background.ignoresSafeArea()
     }
 
-    private var boardHero: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "trophy.fill")
-                .font(.system(size: 26, weight: .bold))
-                .foregroundStyle(Tokens.Palette.warning)
-                .frame(width: 58, height: 58)
-                .background(Circle().fill(Tokens.Palette.warning.opacity(0.16)))
-            Text(L("Tablica wyników"))
-                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(L("Ranking serii pokazuje, kto dziś trzyma rytm najdłużej."))
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
+    /// Top-3 podium tiles in 2 · 1 · 3 order (heights 130 / 160 / 110 like the mockup).
+    private var podium: some View {
+        HStack(alignment: .bottom, spacing: 8) {
+            ForEach(Array(podiumItems.enumerated()), id: \.offset) { _, item in
+                podiumTile(item.entry, height: item.height)
+            }
         }
+    }
+
+    private var podiumItems: [(entry: LeaderboardEntry, height: CGFloat)] {
+        var items: [(entry: LeaderboardEntry, height: CGFloat)] = []
+        if entries.count > 1 { items.append((entry: entries[1], height: 130)) }
+        if let first = entries.first { items.append((entry: first, height: 160)) }
+        if entries.count > 2 { items.append((entry: entries[2], height: 110)) }
+        return items
+    }
+
+    private func podiumTile(_ entry: LeaderboardEntry, height: CGFloat) -> some View {
+        VStack(spacing: 6) {
+            Image(systemName: "medal")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.fat)
+            Text(entry.isYou ? L("To Ty") : entry.displayName)
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+            Text("\(entry.streak)")
+                .font(Tokens.Font.monoNumber(26))
+                .foregroundStyle(Tokens.Palette.ink)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 14)
         .frame(maxWidth: .infinity)
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
+        .frame(height: height, alignment: .bottom)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                .fill(Tokens.Palette.surface)
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                .stroke(Tokens.Mono.line, lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
     }
 
     private func row(_ entry: LeaderboardEntry) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(medalColor(for: entry.rank).opacity(0.2))
-                    .frame(width: 36, height: 36)
-                if let medal = medalSymbol(for: entry.rank) {
-                    Image(systemName: medal)
-                        .foregroundStyle(medalColor(for: entry.rank))
-                } else {
-                    Text("\(entry.rank)")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(medalColor(for: entry.rank))
-                }
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.displayName)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                if entry.isYou {
-                    Text(L("To Ty"))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-            }
-            Spacer(minLength: 0)
+        HStack(spacing: 12) {
+            Text("\(entry.rank)")
+                .font(Tokens.Font.monoNumber(20))
+                .foregroundStyle(rankColor(for: entry))
+                .frame(width: 30, alignment: .leading)
+            FriendInitialAvatar(name: entry.displayName, size: 40)
+            Text(entry.isYou ? "\(entry.displayName) · \(L("To Ty"))" : entry.displayName)
+                .font(Tokens.Font.manrope(15, weight: 800))
+                .foregroundStyle(entry.isYou ? Tokens.Mono.onHero : Tokens.Palette.ink)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 4) {
                 Image(systemName: "flame.fill")
-                    .foregroundStyle(Tokens.Palette.warning)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.fat)
                 Text("\(entry.streak)")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
+                    .font(Tokens.Font.monoNumber(18))
+                    .foregroundStyle(entry.isYou ? Tokens.Mono.onHero : Tokens.Palette.ink)
             }
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(entry.isYou ? Tokens.Palette.primarySoft.opacity(0.92) : Tokens.Palette.surface.opacity(0.82))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(
-                    entry.isYou ? Tokens.Palette.primary.opacity(0.22) : Tokens.Palette.separator.opacity(0.55),
-                    lineWidth: entry.isYou ? 1.5 : 1
-                )
-        )
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .background(entry.isYou ? Tokens.Mono.hero : Color.clear)
+        .accessibilityElement(children: .combine)
     }
 
     private var empty: some View {
-        VStack(spacing: Tokens.Space.md) {
-            Image(systemName: "trophy")
-                .font(.system(size: 36))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-            Text(L("Pusta tablica"))
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(L("Dodaj znajomego, żeby porównać serie."))
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "trophy", style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(L("Pusta tablica"))
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(L("Dodaj znajomego, żeby porównać serie."))
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            Spacer(minLength: 0)
         }
-        .padding(.vertical, Tokens.Space.xxxl)
+        .monoCard(padding: 16)
     }
 
-    private func medalSymbol(for rank: Int) -> String? {
-        switch rank {
-        case 1: return "1.circle.fill"
-        case 2: return "2.circle.fill"
-        case 3: return "3.circle.fill"
-        default: return nil
-        }
-    }
-
-    private func medalColor(for rank: Int) -> Color {
-        switch rank {
-        case 1: return Tokens.Palette.primary
-        case 2: return Color(red: 0.75, green: 0.75, blue: 0.78)
-        case 3: return Tokens.Palette.warning
-        default: return Tokens.Palette.inkMuted
-        }
+    private func rankColor(for entry: LeaderboardEntry) -> Color {
+        if entry.isYou { return Tokens.Mono.hi }
+        return entry.rank <= 3 ? Tokens.Mono.fat : Tokens.Mono.muted
     }
 }

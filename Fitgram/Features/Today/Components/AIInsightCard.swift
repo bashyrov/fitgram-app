@@ -9,44 +9,46 @@ struct AIInsightCard: View {
     var onDismiss: (() -> Void)?
 
     var body: some View {
-        Card(background: background, elevation: Tokens.Shadow.card) {
-            HStack(alignment: .top, spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(accent)
-                        .frame(width: 36, height: 36)
-                    Image(systemName: iconName)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Ola")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(accent)
-                    Text(insight.headline)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(insight.body)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if let actionTitle = insight.actionTitle, let actionKind = insight.actionKind {
-                        Button {
-                            onAction?(actionKind)
-                        } label: {
-                            HStack(spacing: 4) {
-                                Text(actionTitle)
-                                    .font(Tokens.Font.footnote.bold())
-                                Image(systemName: "arrow.right")
-                                    .font(.system(size: 12, weight: .bold))
-                            }
-                            .foregroundStyle(accent)
-                            .padding(.top, 2)
+        HStack(alignment: .top, spacing: 12) {
+            MonoIconBox(systemName: iconName, style: .dark, size: 40)
+            VStack(alignment: .leading, spacing: 4) {
+                MonoLabel(text: "Ola")
+                Text(insight.headline)
+                    .font(Tokens.Font.manrope(16, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(insight.body)
+                    .font(Tokens.Font.manrope(13, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                if let actionTitle = insight.actionTitle, let actionKind = insight.actionKind {
+                    Button {
+                        onAction?(actionKind)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(actionTitle)
+                                .font(Tokens.Font.manrope(13, weight: 800))
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 11, weight: .bold))
                         }
-                        .buttonStyle(.plain)
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .frame(height: 32)
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
                 }
-                Spacer(minLength: 0)
+            }
+            Spacer(minLength: 0)
+        }
+        .monoCard(padding: 16)
+        .overlay(alignment: .topTrailing) {
+            if insight.tone == .nudge || insight.tone == .celebration {
+                Circle()
+                    .fill(accent)
+                    .frame(width: 8, height: 8)
+                    .padding(14)
+                    .accessibilityHidden(true)
             }
         }
         .contextMenu {
@@ -69,19 +71,12 @@ struct AIInsightCard: View {
         }
     }
 
+    /// Tone dot colour (design D keeps the card neutral; tone shows as a small marker).
     private var accent: Color {
         switch insight.tone {
-        case .encouragement, .suggestion: return Tokens.Palette.primary
-        case .nudge: return Tokens.Palette.warning
-        case .celebration: return Tokens.Palette.accent
-        }
-    }
-
-    private var background: Color {
-        switch insight.tone {
-        case .nudge: return Tokens.Palette.warning.opacity(0.12)
-        case .celebration: return Tokens.Palette.accent.opacity(0.12)
-        default: return Tokens.Palette.primarySoft
+        case .encouragement, .suggestion: return Tokens.Mono.strong
+        case .nudge: return Tokens.Mono.fat
+        case .celebration: return Tokens.Mono.hi
         }
     }
 }

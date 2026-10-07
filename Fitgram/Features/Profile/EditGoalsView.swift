@@ -28,33 +28,34 @@ struct EditGoalsView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        Card {
-                            stepper(label: "Calories (kcal)", value: $calories, step: 50, range: 1000...4500)
-                        }
-                        dietPresetCard
-                        Card {
-                            VStack(spacing: Tokens.Space.md) {
-                                stepper(label: "Protein (g)", value: $protein, step: 5, range: 30...300)
-                                stepper(label: "Carbs (g)", value: $carbs, step: 5, range: 50...500)
-                                stepper(label: "Fat (g)", value: $fat, step: 5, range: 20...200)
-                            }
-                        }
-                        macroPresetsCard
-                        PrimaryButton(title: "Save", systemImage: "checkmark") { save() }
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: L("Daily goals"))
+                        .padding(.bottom, 14)
+                    caloriesCard
+                    MonoSectionHeader(number: "01", title: quickSplitTitle)
+                        .padding(.horizontal, 6)
+                        .padding(.top, 6)
+                        .padding(.bottom, 12)
+                    MonoHint(text: quickSplitHint)
+                        .padding(.top, -4)
+                        .padding(.bottom, 10)
+                    dietPresetChips
+                    macrosCard
+                        .padding(.top, 10)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text("Daily goals"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Daily goals"))
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Close"), action: onDismiss)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                    MonoNavPill(title: L("Save")) { save() }
                 }
             }
             .alert(
@@ -71,92 +72,73 @@ struct EditGoalsView: View {
         }
     }
 
-    private var macroPresetsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(
-                    TL(
-                        pl: "Szybki podział makro",
-                        en: "Quick macro split",
-                        uk: "Швидкий розподіл макро",
-                        ru: "Быстрый сплит макро",
-                        es: "Reparto rápido de macros"
-                    )
-                )
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-                Text(
-                    TL(
-                        pl: "Przeliczane z aktualnej puli kalorii — możesz dalej dostroić ręcznie.",
-                        en: "Calculated from your current calories — you can still fine-tune it manually.",
-                        uk: "Розраховано з поточної норми калорій — далі можна налаштувати вручну.",
-                        ru: "Считается от текущей нормы калорий — дальше можно настроить вручную.",
-                        es: "Calculado desde tus calorías actuales; puedes ajustarlo manualmente."
-                    )
-                )
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                ForEach(MacroSplit.presets, id: \.id) { preset in
-                    Button {
-                        apply(preset)
-                    } label: {
-                        HStack {
-                            Text(preset.label)
-                                .font(Tokens.Font.body)
-                                .foregroundStyle(Tokens.Palette.ink)
-                            Spacer()
-                            Image(systemName: "arrow.right.circle")
-                                .foregroundStyle(Tokens.Palette.primary)
-                        }
-                        .padding(.vertical, 6)
-                    }
-                    .buttonStyle(.plain)
-                    if preset.id != MacroSplit.presets.last?.id {
-                        Divider().background(Tokens.Palette.separator)
+    private var quickSplitTitle: String {
+        TL(
+            pl: "Szybki podział makro",
+            en: "Quick macro split",
+            uk: "Швидкий розподіл макро",
+            ru: "Быстрый сплит макро",
+            es: "Reparto rápido de macros"
+        )
+    }
+
+    private var quickSplitHint: String {
+        TL(
+            pl: "Przeliczane z aktualnej puli kalorii — możesz dalej dostroić ręcznie.",
+            en: "Calculated from your current calories — you can still fine-tune it manually.",
+            uk: "Розраховано з поточної норми калорій — далі можна налаштувати вручну.",
+            ru: "Считается от текущей нормы калорий — дальше можно настроить вручную.",
+            es: "Calculado desde tus calorías actuales; puedes ajustarlo manualmente."
+        )
+    }
+
+    /// Mockup: card with "KALORIE" label left and the − 1800 kcal + stepper right.
+    private var caloriesCard: some View {
+        HStack(spacing: 12) {
+            MonoLabel(text: TL(pl: "Kalorie", en: "Calories", uk: "Калорії", ru: "Калории", es: "Calorías"))
+            Spacer(minLength: 8)
+            MonoStepper(value: intBinding($calories), range: 1000...4500, step: 50, unit: "kcal")
+        }
+        .monoCard(padding: 16)
+    }
+
+    /// Mockup `chips([...], wrapit=True)`: diet style presets; tapping one stores the style and
+    /// recalculates the macro grams from the current calories.
+    private var dietPresetChips: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            FlowLayout(spacing: 6) {
+                ForEach(DietMacroPreset.allCases) { preset in
+                    MonoChip(title: preset.title, isSelected: dietPreset == preset) {
+                        dietPreset = preset
+                        apply(MacroSplit.presets.first { $0.id == preset.rawValue } ?? MacroSplit.presets[0])
                     }
                 }
             }
+            MonoHint(text: L("Protein") + " / " + L("Carbs") + " / " + L("Fat") + " · " + dietPreset.splitLabel + " %")
         }
     }
 
-    private var dietPresetCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(
-                    TL(
-                        pl: "Styl diety", en: "Diet style", uk: "Стиль харчування", ru: "Стиль питания",
-                        es: "Estilo de dieta")
-                )
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-                ForEach(DietMacroPreset.allCases) { preset in
-                    Button {
-                        dietPreset = preset
-                        apply(MacroSplit.presets.first { $0.id == preset.rawValue } ?? MacroSplit.presets[0])
-                    } label: {
-                        HStack(spacing: Tokens.Space.sm) {
-                            Image(systemName: preset.symbol)
-                                .foregroundStyle(preset.tint)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(preset.title)
-                                    .font(Tokens.Font.bodyEmphasized)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text(preset.splitLabel)
-                                    .font(Tokens.Font.caption)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                            }
-                            Spacer()
-                            if dietPreset == preset {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(Tokens.Palette.primary)
-                            }
-                        }
-                        .padding(.vertical, 5)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
+    /// Mockup card (gap 6): 15/800 macro name + − value g + stepper per row.
+    private var macrosCard: some View {
+        VStack(spacing: 6) {
+            macroRow(title: L("Protein"), value: $protein, range: 30...300)
+            macroRow(title: L("Carbs"), value: $carbs, range: 50...500)
+            macroRow(title: L("Fat"), value: $fat, range: 20...200)
         }
+        .monoCard(padding: 16)
+    }
+
+    private func macroRow(title: String, value: Binding<Int>, range: ClosedRange<Double>) -> some View {
+        HStack(spacing: 12) {
+            Text(title)
+                .font(Tokens.Font.manrope(15, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 8)
+            MonoStepper(value: intBinding(value), range: range, step: 5, unit: "g")
+        }
+        .padding(.vertical, 4)
     }
 
     private func apply(_ split: MacroSplit) {
@@ -167,27 +149,11 @@ struct EditGoalsView: View {
         Haptics.light()
     }
 
-    private func stepper(
-        label: LocalizedStringKey,
-        value: Binding<Int>,
-        step: Int,
-        range: ClosedRange<Int>
-    ) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label)
-                    .font(Tokens.Font.subheadline)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text("\(value.wrappedValue)")
-                    .font(Tokens.Font.title3)
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            Spacer()
-            Stepper(value: value, in: range, step: step) {
-                EmptyView()
-            }
-            .labelsHidden()
-        }
+    private func intBinding(_ value: Binding<Int>) -> Binding<Double> {
+        Binding(
+            get: { Double(value.wrappedValue) },
+            set: { value.wrappedValue = Int($0.rounded()) }
+        )
     }
 
     private func save() {

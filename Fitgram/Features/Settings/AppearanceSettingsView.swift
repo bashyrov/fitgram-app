@@ -21,21 +21,19 @@ struct AppearanceSettingsView: View {
     }
 
     var body: some View {
-        ZStack {
-            ScreenBackground(mood: .calm)
-            ScrollView {
-                LazyVStack(spacing: Tokens.Space.lg) {
-                    hero
-                    paletteSection
-                    iconSection
-                }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
-                .id(accentRaw)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                MonoH1(text: heroTitle, sub: heroSubtitle, kicker: title)
+                paletteSection
+                iconSection
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.bottom, 34)
+            .id(accentRaw)
         }
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .scrollIndicators(.hidden)
+        .background(Tokens.Palette.background.ignoresSafeArea())
+        .monoNavigationTitle(title)
         .alert(errorTitle, isPresented: Binding(get: { iconError != nil }, set: { if !$0 { iconError = nil } })) {
             Button(okTitle, role: .cancel) {}
         } message: {
@@ -43,85 +41,90 @@ struct AppearanceSettingsView: View {
         }
     }
 
-    private var hero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                    Text(heroTitle)
-                        .font(Tokens.Font.title2)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(heroSubtitle)
-                        .font(Tokens.Font.callout)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-                iconPreview(for: selectedIcon, size: 62)
-            }
-            HStack(spacing: Tokens.Space.sm) {
-                ForEach(AppAccentPalette.selectableCases) { palette in
-                    Circle()
-                        .fill(palette.primary)
-                        .overlay(Circle().stroke(Tokens.Palette.warmWhite.opacity(0.55), lineWidth: 1))
-                        .frame(width: palette == selectedAccent ? 34 : 26, height: palette == selectedAccent ? 34 : 26)
-                        .animation(Tokens.Motion.gentle, value: selectedAccent)
-                }
-            }
-        }
-        .padding(Tokens.Space.lg)
-        .frostedGlass(cornerRadius: 30, fillOpacity: 0.76, borderOpacity: 0.00, glowOpacity: 0.12)
-    }
+    // MARK: - 01 Theme
 
     private var paletteSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                sectionHeader(paletteTitle, symbol: "paintpalette.fill")
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(number: "01", title: paletteTitle, topSpacing: 6)
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3),
+                spacing: 8
+            ) {
                 ForEach(AppAccentPalette.selectableCases) { palette in
-                    Button {
-                        withAnimation(Tokens.Motion.gentle) {
-                            accentRaw = palette.rawValue
-                        }
-                        Haptics.light()
-                    } label: {
-                        HStack(spacing: Tokens.Space.md) {
-                            palettePreview(palette)
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(palette.title)
-                                    .font(Tokens.Font.bodyEmphasized)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text(palette.subtitle)
-                                    .font(Tokens.Font.caption)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                            }
-                            Spacer()
-                            selectionMark(isSelected: palette == selectedAccent)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.plain)
-                    if palette.id != AppAccentPalette.selectableCases.last?.id {
-                        separator
-                    }
+                    paletteButton(palette)
                 }
             }
         }
     }
 
-    private var iconSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                sectionHeader(iconTitle, symbol: "app.badge.fill")
-                Text(iconSubtitle)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-
-                LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: 96), spacing: Tokens.Space.md)], spacing: Tokens.Space.md
-                ) {
-                    ForEach(AppIconChoice.allCases) { choice in
-                        iconOptionButton(choice)
+    private func paletteButton(_ palette: AppAccentPalette) -> some View {
+        let isSelected = palette == selectedAccent
+        return Button {
+            withAnimation(Tokens.Motion.gentle) {
+                accentRaw = palette.rawValue
+            }
+            Haptics.light()
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                // Swatch uses the palette's own colours (not the active theme's).
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(palette.background)
+                    .frame(height: 58)
+                    .frame(maxWidth: .infinity)
+                    .overlay(alignment: .bottomLeading) {
+                        Circle()
+                            .fill(palette.primary)
+                            .frame(width: 22, height: 22)
+                            .padding(8)
                     }
+                Text(palette.title)
+                    .font(Tokens.Font.manrope(12, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(Tokens.Palette.surface)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(Tokens.Mono.line, lineWidth: 1)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 21, style: .continuous)
+                    .stroke(isSelected ? Tokens.Palette.ink : Color.clear, lineWidth: 2)
+                    .padding(-3)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(palette.title))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    // MARK: - 02 App icon
+
+    private var iconSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(number: "02", title: iconTitle, topSpacing: 12)
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4),
+                spacing: 8
+            ) {
+                ForEach(AppIconChoice.allCases) { choice in
+                    iconOptionButton(choice)
                 }
             }
+            Text(iconSubtitle)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 6)
+                .padding(.top, 10)
         }
     }
 
@@ -130,87 +133,31 @@ struct AppearanceSettingsView: View {
         return Button {
             Task { await applyIcon(choice) }
         } label: {
-            VStack(spacing: Tokens.Space.sm) {
-                iconPreview(for: choice, size: 64)
-                Text(choice.title)
-                    .font(Tokens.Font.caption.weight(.semibold))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                selectionMark(isSelected: isSelected)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Tokens.Space.md)
-            .frostedGlass(
-                cornerRadius: 22,
-                fillOpacity: isSelected ? 0.82 : 0.60,
-                borderOpacity: 0.00,
-                glowOpacity: isSelected ? 0.10 : 0.04
-            )
+            Color.clear
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    Image(choice.previewAssetName)
+                        .resizable()
+                        .scaledToFill()
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(isSelected ? Tokens.Palette.ink : Tokens.Mono.line, lineWidth: isSelected ? 2 : 1)
+                )
+                .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         }
         .buttonStyle(PressableButtonStyle())
         .disabled(isChangingIcon)
+        .accessibilityLabel(Text(choice.title))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    private func sectionHeader(_ text: String, symbol: String) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 28, height: 28)
-                .background(Circle().fill(Tokens.Palette.primarySoft))
-            Text(text)
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-        }
-    }
-
-    private var separator: some View {
-        Rectangle()
-            .fill(Tokens.Palette.separator)
-            .frame(height: 0.5)
-            .padding(.leading, 62)
-    }
-
-    private func palettePreview(_ palette: AppAccentPalette) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(
-                    palette.background
-                )
-                .frame(width: 50, height: 50)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(palette.primary.opacity(0.35), lineWidth: 1)
-                }
-            Circle()
-                .fill(palette.primary)
-                .frame(width: 18, height: 18)
-                .offset(x: 12, y: 12)
-        }
-    }
-
-    private func iconPreview(for choice: AppIconChoice, size: CGFloat) -> some View {
-        Image(choice.previewAssetName)
-            .resizable()
-            .scaledToFill()
-            .frame(width: size, height: size)
-            .clipShape(RoundedRectangle(cornerRadius: size * 0.22, style: .continuous))
-            .shadow(color: choice.shadowColor.opacity(0.24), radius: 14, y: 8)
-    }
-
-    @ViewBuilder
-    private func selectionMark(isSelected: Bool) -> some View {
-        if isSelected {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
-        } else {
-            Circle()
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-                .frame(width: 20, height: 20)
-        }
+    private func sectionHeader(number: String, title: String, topSpacing: CGFloat) -> some View {
+        MonoSectionHeader(number: number, title: title)
+            .padding(.horizontal, 6)
+            .padding(.top, topSpacing)
+            .padding(.bottom, 12)
     }
 
     @MainActor

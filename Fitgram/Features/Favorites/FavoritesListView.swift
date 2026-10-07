@@ -43,38 +43,34 @@ struct FavoritesListView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                if favorites.isEmpty {
-                    emptyState
-                } else {
-                    list
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: L("My recipes"), sub: headerSubtitle, kicker: capLabel)
+                    if favorites.isEmpty {
+                        emptyState
+                            .padding(.top, 30)
+                    } else {
+                        list
+                            .padding(.top, 14)
+                    }
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text("My recipes"))
-            .navigationBarTitleDisplayMode(.inline)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("My recipes"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Close", action: onDismiss)
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                    MonoNavIcon(systemName: "plus", accessibilityLabel: L("Dodaj")) {
                         let cap = entitlementsStore.current.favoritesCap
                         if let cap, favorites.count >= cap {
                             paywallCoordinator.present(.favoritesUnavailable)
                         } else {
                             onAddNew()
                         }
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                }
-                if let capLabel {
-                    ToolbarItem(placement: .principal) {
-                        Text(capLabel)
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
                     }
                 }
             }
@@ -113,170 +109,134 @@ struct FavoritesListView: View {
         .toastSurface()
     }
 
+    private var headerSubtitle: String {
+        TL(
+            pl: "Dodaj jednym tapnięciem to, co jesz najczęściej.",
+            en: "Add what you eat most often with a single tap.",
+            uk: "Додавай одним дотиком те, що їси найчастіше.",
+            ru: "Добавляй одним касанием то, что ешь чаще всего.",
+            es: "Añade con un toque lo que más comes.")
+    }
+
     private var list: some View {
-        ScrollView {
-            VStack(spacing: Tokens.Space.sm) {
-                if let cap = entitlementsStore.current.favoritesCap {
-                    capHint(used: min(favorites.count, cap), cap: cap)
-                }
-                ForEach(visibleFavorites) { favorite in
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(spacing: 0) {
+                ForEach(Array(visibleFavorites.enumerated()), id: \.element.id) { index, favorite in
+                    if index > 0 {
+                        MonoRowDivider(inset: 16)
+                    }
                     favoriteRow(favorite)
                 }
-                if hiddenCount > 0 {
-                    hiddenRowsUpsell
-                }
             }
-            .padding(.horizontal, Tokens.Space.screenPadding)
-            .padding(.vertical, Tokens.Space.lg)
+            .monoRowsCard()
+            if hiddenCount > 0 {
+                hiddenRowsUpsell
+            }
+            if let cap = entitlementsStore.current.favoritesCap {
+                capHint(used: min(favorites.count, cap), cap: cap)
+            }
         }
     }
 
     private var hiddenRowsUpsell: some View {
-        Button {
-            paywallCoordinator.present(.favoritesUnavailable)
-        } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
-                        .frame(width: 44, height: 44)
-                    Image(systemName: "lock.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(String.localizedStringWithFormat(L("+%lld hidden recipes"), hiddenCount))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("Premium pokazuje całą Twoją kolekcję bez limitu.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(2)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "lock.fill", style: .dark, size: 36)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(String.localizedStringWithFormat(L("+%lld hidden recipes"), hiddenCount))
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text("Premium pokazuje całą Twoją kolekcję bez limitu.")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .strokeBorder(Tokens.Palette.primary.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                    .background(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                            .fill(Tokens.Palette.surface)
-                    )
-            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+            MonoButton(title: "Premium", kind: .accent, icon: "star.fill", height: 40, fullWidth: false) {
+                paywallCoordinator.present(.favoritesUnavailable)
+            }
         }
-        .buttonStyle(PressableButtonStyle())
+        .monoCard(padding: 16)
     }
 
     private var emptyState: some View {
-        VStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
-                    .frame(width: 120, height: 120)
-                Image(systemName: "book.closed.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            VStack(spacing: Tokens.Space.sm) {
-                Text("No recipes")
-                    .font(Tokens.Font.title2)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(
-                    "Your regular meals will appear here. Enter a new one or add it from any scan using the ⭐ button."
-                )
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, Tokens.Space.xl)
-            }
-            PrimaryButton(title: "Wpisz pierwszy", systemImage: "plus") {
+        VStack(spacing: 8) {
+            MonoIconBox(systemName: "book.closed", style: .track, size: 44)
+            Text("No recipes")
+                .font(Tokens.Font.manrope(15, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+            Text(
+                "Your regular meals will appear here. Enter a new one or add it from any scan using the ⭐ button."
+            )
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            MonoButton(title: L("Wpisz pierwszy"), kind: .outline, icon: "plus", height: 44, fullWidth: false) {
                 onAddNew()
             }
-            .padding(.horizontal, Tokens.Space.screenPadding)
         }
-        .padding(.bottom, Tokens.Space.xxxl)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 12)
     }
 
     private func capHint(used: Int, cap: Int) -> some View {
         let remaining = max(0, cap - used)
-        return HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: remaining == 0 ? "lock.fill" : "info.circle")
-                .foregroundStyle(remaining == 0 ? Tokens.Palette.error : Tokens.Palette.primary)
-            VStack(alignment: .leading, spacing: 2) {
-                if remaining == 0 {
-                    Text(String.localizedStringWithFormat(L("Wykorzystałeś limit %lld przepisów"), cap))
-                        .font(Tokens.Font.bodyEmphasized)
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                MonoIconBox(
+                    systemName: remaining == 0 ? "lock.fill" : "star",
+                    style: remaining == 0 ? .dark : .track,
+                    size: 36
+                )
+                VStack(alignment: .leading, spacing: 2) {
+                    if remaining == 0 {
+                        Text(String.localizedStringWithFormat(L("Wykorzystałeś limit %lld przepisów"), cap))
+                            .font(Tokens.Font.manrope(14, weight: 800))
+                            .foregroundStyle(Tokens.Palette.ink)
+                        Text("Premium daje nieograniczoną książkę.")
+                            .font(Tokens.Font.manrope(12, weight: 600))
+                            .foregroundStyle(Tokens.Mono.muted)
+                    } else {
+                        Text(
+                            String.localizedStringWithFormat(
+                                L("%lld miejsce(a) zostało w bezpłatnej wersji"), remaining)
+                        )
+                        .font(Tokens.Font.manrope(14, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
-                    Text("Premium daje nieograniczoną książkę.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                } else {
-                    Text(String.localizedStringWithFormat(L("%lld miejsce(a) zostało w bezpłatnej wersji"), remaining))
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("Premium odblokowuje nieograniczone przepisy.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        Text("Premium odblokowuje nieograniczone przepisy.")
+                            .font(Tokens.Font.manrope(12, weight: 600))
+                            .foregroundStyle(Tokens.Mono.muted)
+                    }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            Spacer()
-            if remaining == 0 {
-                Button("Premium") {
-                    paywallCoordinator.present(.favoritesUnavailable)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(Tokens.Palette.primary)
-                .controlSize(.small)
+            MonoButton(title: "Premium", kind: .accent, icon: "star.fill", height: 44) {
+                paywallCoordinator.present(.favoritesUnavailable)
             }
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(remaining == 0 ? Tokens.Palette.error.opacity(0.10) : Tokens.Palette.primarySoft)
-        )
+        .monoCard(padding: 16)
     }
 
     private func favoriteRow(_ favorite: FavoriteMeal) -> some View {
         Button {
             quickAdd(favorite)
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.warning.opacity(0.18))
-                        .frame(width: 44, height: 44)
-                    Image(systemName: "star.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(favorite.name)
-                        .font(Tokens.Font.bodyEmphasized)
+            MonoRow(title: favorite.name, sub: detailLine(favorite)) {
+                HStack(spacing: 10) {
+                    Text("\(Int(favorite.caloriesKcal))")
+                        .font(Tokens.Font.monoNumber(18))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
-                    Text(detailLine(favorite))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(String.localizedStringWithFormat(L("%lld"), Int(favorite.caloriesKcal)))
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.primary)
-                    Text("kcal")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                    Image(systemName: "plus")
+                        .font(.system(size: 13, weight: .heavy))
+                        .foregroundStyle(Tokens.Mono.hi)
+                        .frame(width: 36, height: 36)
+                        .background(Circle().fill(Tokens.Mono.hero))
+                        .accessibilityHidden(true)
                 }
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-                    .shadow(color: .black.opacity(0.05), radius: 8, y: 3)
-            )
         }
-        .buttonStyle(PressableButtonStyle())
+        .buttonStyle(.plain)
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
                 pendingDelete = favorite

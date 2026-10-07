@@ -84,73 +84,83 @@ struct FavoritePortionSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        summaryCard
-                        modePicker
-                        if portionMode == .overall {
-                            portionCard
-                        } else {
-                            detailedIngredientsCard
-                        }
-                        macroCard
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    summaryCard
+                    modePicker
+                    if portionMode == .overall {
+                        portionCard
+                    } else {
+                        detailedIngredientsCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
-                .scrollDismissesKeyboard(.interactively)
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, 10)
+                .padding(.bottom, 24)
             }
-            .navigationTitle(Text(favorite.name))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(favorite.name)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(L("Cancel"), action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(L("Add")) {
-                        Haptics.success()
-                        onSave(itemsToSave())
-                    }
-                    .fontWeight(.semibold)
+                    MonoNavPill(title: L("Add")) { save() }
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button(L("Gotowe")) {
                         isTextInputFocused = false
                     }
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Dodaj do dziennika"), kind: .dark, icon: "checkmark") { save() }
                 }
             }
         }
+    }
+
+    private func save() {
+        Haptics.success()
+        onSave(itemsToSave())
     }
 }
 
 // MARK: - Sections
 extension FavoritePortionSheet {
     private var summaryCard: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack(spacing: 4) {
-                    Image(systemName: "star.fill")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.warning)
-                    Text(L("Z Twoich przepisów"))
-                        .font(.system(size: 11, weight: .semibold))
-                        .textCase(.uppercase)
-                        .tracking(0.8)
-                        .foregroundStyle(Tokens.Palette.warning)
-                }
-                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(displayCalories.rounded())))
-                    .font(Tokens.Font.counter)
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .contentTransition(.numericText())
-                Text(String.localizedStringWithFormat(L("%lld g porcja"), Int(grams)))
-                    .font(Tokens.Font.subheadline)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: "star.fill", style: .hi, size: 40)
+                MonoLabel(
+                    text: L("Z Twoich przepisów") + " · "
+                        + String.localizedStringWithFormat(L("%lld g porcja"), Int(grams.rounded())),
+                    onHero: true
+                )
             }
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text("\(Int(displayCalories.rounded()))")
+                    .font(Tokens.Font.monoNumber(60))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .contentTransition(.numericText())
+                Text("kcal")
+                    .font(Tokens.Font.manrope(16, weight: 800))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+            }
+            MonoMacroRow(protein: currentProtein, carbs: currentCarbs, fat: currentFat, dark: true)
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
     }
 
     private var modePicker: some View {
@@ -170,135 +180,132 @@ extension FavoritePortionSheet {
     }
 
     private var portionCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text(L("Porcja"))
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .contentTransition(.numericText())
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: L("Porcja"))
+                Spacer()
+                Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
+                    .font(Tokens.Font.monoNumber(22))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+            }
+            VStack(spacing: 6) {
                 Slider(value: $grams, in: range, step: 5) { editing in
                     if editing { Haptics.selection() }
                 }
-                .tint(Tokens.Palette.primary)
+                .tint(Tokens.Mono.strong)
                 HStack {
                     Text(String.localizedStringWithFormat(L("%lld g"), Int(range.lowerBound)))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
                     Spacer()
                     Text(String.localizedStringWithFormat(L("Default %lld g"), Int(favorite.defaultQuantityGrams)))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
                     Spacer()
                     Text(String.localizedStringWithFormat(L("%lld g"), Int(range.upperBound)))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
                 }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
             }
+            Text(L("Dopasuj wagę przed dodaniem"))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
         }
-    }
-
-    private var macroCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(L("Makro"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                HStack(spacing: Tokens.Space.lg) {
-                    macroPill(label: L("Protein"), grams: currentProtein, color: Tokens.Palette.primary)
-                    macroPill(label: L("Węgle"), grams: currentCarbs, color: Tokens.Palette.warning)
-                    macroPill(label: L("Tłuszcz"), grams: currentFat, color: Tokens.Palette.accent)
-                }
-            }
-        }
+        .monoCard(padding: 16)
     }
 
     private var detailedIngredientsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(L("Składniki"))
-                            .font(Tokens.Font.headline)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text(L("Dopasuj zapisany produkt przed dodaniem"))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Składniki")) {
+                HStack(spacing: 8) {
                     Text(String.localizedStringWithFormat(L("%lld g"), Int(detailTotalGrams.rounded())))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .font(Tokens.Font.manrope(11, weight: 800))
+                        .foregroundStyle(Tokens.Mono.muted)
+                    MonoLabel(text: "\(detailDrafts.count)")
                 }
-                AIRequestHint.productNutrition
+            }
+            .padding(.horizontal, 6)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
+            Text(L("Dopasuj zapisany produkt przed dodaniem"))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .padding(.horizontal, 6)
+                .padding(.top, -4)
+                .padding(.bottom, 10)
+            AIRequestHint.productNutrition
+                .padding(.bottom, 10)
 
+            VStack(spacing: 0) {
                 ForEach($detailDrafts) { $draft in
-                    VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                        HStack(spacing: Tokens.Space.xs) {
-                            TextField(L("Produkt"), text: $draft.name)
-                                .font(Tokens.Font.bodyEmphasized)
-                                .textFieldStyle(.roundedBorder)
-                                .focused($isTextInputFocused)
-                                .submitLabel(.done)
-                                .onSubmit { isTextInputFocused = false }
-                            productAIButton(for: $draft)
-                            if detailDrafts.count > 1 {
-                                Button {
-                                    detailDrafts.removeAll { $0.id == draft.id }
-                                    Haptics.selection()
-                                } label: {
-                                    Image(systemName: "minus.circle.fill")
-                                        .foregroundStyle(Tokens.Palette.error)
-                                }
-                                .buttonStyle(.pressable)
-                            }
-                        }
-                        HStack {
-                            Text(
-                                String.localizedStringWithFormat(
-                                    L("%lld g"),
-                                    Int(draft.quantityGrams.rounded())
-                                )
-                            )
-                            .font(Tokens.Font.title3)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .contentTransition(.numericText())
-                            Spacer()
-                            Text(
-                                String.localizedStringWithFormat(
-                                    L("%lld kcal"),
-                                    Int(draft.scaledCaloriesKcal.rounded())
-                                )
-                            )
-                            .font(Tokens.Font.footnote.weight(.bold))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                        Slider(value: $draft.quantityGrams, in: 10...1500, step: 5)
-                            .tint(Tokens.Palette.primary)
+                    if draft.id != detailDrafts.first?.id {
+                        Rectangle()
+                            .fill(Tokens.Mono.line)
+                            .frame(height: 1)
+                            .padding(.horizontal, 14)
+                    }
+                    ingredientRow($draft)
+                }
+                HStack(spacing: 8) {
+                    MonoButton(title: L("Dodaj składnik"), kind: .outline, icon: "plus", height: 44) {
+                        detailDrafts.append(FavoriteIngredientDraft(name: "", quantityGrams: 100))
+                        Haptics.selection()
                     }
                 }
-
-                Button {
-                    detailDrafts.append(FavoriteIngredientDraft(name: "", quantityGrams: 100))
-                    Haptics.selection()
-                } label: {
-                    Label(L("Dodaj składnik"), systemImage: "plus.circle.fill")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                .buttonStyle(.pressable)
+                .padding(.horizontal, 14)
+                .padding(.top, 10)
+                .padding(.bottom, 14)
             }
+            .monoRowsCard()
         }
         .onChange(of: detailDrafts) { _, _ in
             if portionMode == .detailed {
                 grams = detailTotalGrams
             }
         }
+    }
+
+    private func ingredientRow(_ draft: Binding<FavoriteIngredientDraft>) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            if detailDrafts.count > 1 {
+                Button {
+                    let id = draft.wrappedValue.id
+                    detailDrafts.removeAll { $0.id == id }
+                    Haptics.selection()
+                } label: {
+                    Image(systemName: "minus")
+                        .font(.system(size: 15, weight: .heavy))
+                        .foregroundStyle(Tokens.Mono.danger)
+                        .frame(width: 32, height: 32)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(L("Delete")))
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 8) {
+                    TextField(L("Produkt"), text: draft.name)
+                        .font(Tokens.Font.manrope(14, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .focused($isTextInputFocused)
+                        .submitLabel(.done)
+                        .onSubmit { isTextInputFocused = false }
+                    Text(
+                        String.localizedStringWithFormat(
+                            L("%lld kcal"), Int(draft.wrappedValue.scaledCaloriesKcal.rounded()))
+                    )
+                    .font(Tokens.Font.manrope(13, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+                    productAIButton(for: draft)
+                }
+                Slider(value: draft.quantityGrams, in: 10...1500, step: 5)
+                    .tint(Tokens.Mono.strong)
+                Text(String.localizedStringWithFormat(L("%lld g"), Int(draft.wrappedValue.quantityGrams.rounded())))
+                    .font(Tokens.Font.manrope(11, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .contentTransition(.numericText())
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
     }
 
     private func productAIButton(for draft: Binding<FavoriteIngredientDraft>) -> some View {
@@ -317,19 +324,6 @@ extension FavoritePortionSheet {
 
     private var productNutritionRemaining: Int? {
         usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
-    }
-
-    private func macroPill(label: String, grams: Double, color: Color) -> some View {
-        VStack(spacing: 2) {
-            Text(String(format: "%.1f g", grams))
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(color)
-                .contentTransition(.numericText())
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-        }
-        .frame(maxWidth: .infinity)
     }
 
     private var detailTotalGrams: Double {

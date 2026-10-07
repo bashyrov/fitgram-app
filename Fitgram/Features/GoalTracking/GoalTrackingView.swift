@@ -16,39 +16,61 @@ struct GoalTrackingView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        if let snapshot = state.snapshot {
-                            if snapshot.isGoalReached {
-                                goalReachedPill
-                            }
-                            summaryCard(snapshot)
-                            chartCard(snapshot)
-                            if !tips.isEmpty {
-                                tipsCard
-                            }
-                            PrimaryButton(
-                                title: "Wpisz dzisiejszą wagę",
-                                systemImage: "scalemass.fill",
-                                isLoading: state.isSaving
-                            ) {
-                                isAddPresented = true
-                            }
-                        } else {
-                            emptyCard
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    if let snapshot = state.snapshot {
+                        if snapshot.isGoalReached {
+                            goalReachedPill
+                                .padding(.bottom, 10)
                         }
+                        summaryCard(snapshot)
+                        chartCard(snapshot)
+                            .padding(.top, 10)
+                        if !tips.isEmpty {
+                            MonoSectionHeader(title: L("AI Coach tips"))
+                                .padding(.horizontal, 6)
+                                .padding(.top, 6)
+                                .padding(.bottom, 12)
+                            tipsCard
+                        }
+                    } else {
+                        emptyCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                if state.snapshot != nil {
+                    MonoBottomBar {
+                        Button {
+                            isAddPresented = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                if state.isSaving {
+                                    ProgressView()
+                                        .tint(Tokens.Mono.onHero)
+                                } else {
+                                    Image(systemName: "scalemass")
+                                        .font(.system(size: 15, weight: .bold))
+                                }
+                                Text("Wpisz dzisiejszą wagę")
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.8)
+                            }
+                        }
+                        .buttonStyle(MonoButtonStyle(kind: .dark))
+                        .disabled(state.isSaving)
+                    }
                 }
             }
-            .navigationTitle(Text("Your goal"))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Your goal"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Close", action: onDismiss)
+                    MonoNavText(title: L("Close"), action: onDismiss)
                 }
             }
             .task { state.refresh(for: userRemoteID) }
@@ -71,61 +93,52 @@ struct GoalTrackingView: View {
     private var goalReachedPill: some View {
         HStack(spacing: Tokens.Space.sm) {
             Image(systemName: "checkmark.seal.fill")
-                .foregroundStyle(.white)
+                .foregroundStyle(Tokens.Mono.onHi)
             Text("Goal reached 🎉")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(.white)
+                .font(Tokens.Font.manrope(15, weight: 800))
+                .foregroundStyle(Tokens.Mono.onHi)
         }
         .padding(.horizontal, Tokens.Space.lg)
         .padding(.vertical, Tokens.Space.sm)
         .background(
-            Capsule().fill(Tokens.Palette.success)
+            Capsule().fill(Tokens.Mono.goalDone)
         )
         .frame(maxWidth: .infinity)
     }
 
+    /// Mockup hero: "TWÓJ CEL · AI" / day counter, current vs goal (44 pt), 8 pt hi progress bar, "Postęp 34%".
     private func summaryCard(_ snapshot: GoalTrackingService.Snapshot) -> some View {
-        Card(elevation: Tokens.Shadow.float) {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Aktualnie")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        Text(String(format: "%.1f kg", snapshot.currentWeightKg))
-                            .font(Tokens.Font.counter)
-                            .foregroundStyle(Tokens.Palette.ink)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text("Goal")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        Text(String(format: "%.1f kg", snapshot.targetWeightKg))
-                            .font(Tokens.Font.title2)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 8) {
+                MonoLabel(text: L("Twój cel · AI"), onHero: true)
+                Spacer(minLength: 8)
+                MonoLabel(text: daysLabel(snapshot), onHero: true)
+            }
+            HStack(alignment: .bottom, spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
+                    MonoLabel(text: L("Aktualnie"), onHero: true)
+                    Text(String(format: "%.1f", snapshot.currentWeightKg))
+                        .font(Tokens.Font.monoNumber(44))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                 }
-                GeometryReader { proxy in
-                    ZStack(alignment: .leading) {
-                        Capsule().fill(Tokens.Palette.primarySoft)
-                        Capsule()
-                            .fill(Tokens.Palette.primary)
-                            .frame(width: proxy.size.width * CGFloat(snapshot.progress))
-                    }
-                }
-                .frame(height: 10)
-                HStack {
-                    Text(progressLabel(snapshot))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    Spacer()
-                    Text(daysLabel(snapshot))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                Spacer(minLength: 8)
+                VStack(alignment: .trailing, spacing: 4) {
+                    MonoLabel(text: L("Goal"), onHero: true)
+                    Text(String(format: "%.1f", snapshot.targetWeightKg))
+                        .font(Tokens.Font.monoNumber(44))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                 }
             }
+            MonoBar(progress: snapshot.progress, color: Tokens.Mono.hi, track: Tokens.Mono.heroLine, height: 8)
+            Text(progressLabel(snapshot))
+                .font(Tokens.Font.manrope(13, weight: 700))
+                .foregroundStyle(Tokens.Mono.heroMuted)
         }
+        .monoHero(padding: 20)
     }
 
     private func progressLabel(_ snapshot: GoalTrackingService.Snapshot) -> String {
@@ -144,52 +157,43 @@ struct GoalTrackingView: View {
         GoalTrendChart(snapshot: snapshot)
     }
 
+    /// Mockup `rows([row('spark', tip, None, None, 'track'), …])`.
     private var tipsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Tokens.Palette.primary)
-                    Text("AI Coach tips")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
+        VStack(spacing: 0) {
+            ForEach(Array(tips.enumerated()), id: \.element.id) { index, tip in
+                if index > 0 {
+                    MonoRowDivider()
                 }
-                ForEach(tips) { tip in
-                    HStack(alignment: .top, spacing: Tokens.Space.sm) {
-                        Text(tip.icon)
-                            .font(.system(size: 22))
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(LocalizedStringKey(tip.title))
-                                .font(Tokens.Font.bodyEmphasized)
-                                .foregroundStyle(Tokens.Palette.ink)
-                            Text(LocalizedStringKey(tip.description))
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
+                MonoRow(
+                    icon: "sparkles",
+                    iconStyle: .track,
+                    title: L(tip.title),
+                    sub: tip.description.isEmpty ? nil : L(tip.description)
+                ) {
+                    EmptyView()
                 }
             }
         }
+        .monoRowsCard()
     }
 
     private var emptyCard: some View {
-        Card {
-            VStack(spacing: Tokens.Space.md) {
-                Image(systemName: "target")
-                    .font(.system(size: 36))
-                    .foregroundStyle(Tokens.Palette.primary)
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "target", style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Brak aktywnego celu")
-                    .font(Tokens.Font.headline)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(
                     "Select the goal \"Lose weight\" or \"Gain weight\" in Profile → Goals to activate tracking."
                 )
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: .infinity)
+            Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 }

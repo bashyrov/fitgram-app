@@ -31,77 +31,66 @@ struct StreakShareCard: View {
             if case .photo = background {
                 LinearGradient(
                     colors: [
-                        Color.black.opacity(0.55),
-                        Color.black.opacity(0.15),
-                        Color.black.opacity(0.55),
+                        Color.black.opacity(0.45),
+                        Color.black.opacity(0.10),
+                        Color.black.opacity(0.60),
                     ],
                     startPoint: .top,
                     endPoint: .bottom
                 )
             }
-            VStack(spacing: 48) {
-                Spacer()
-                VStack(spacing: 8) {
-                    Image(systemName: "leaf.fill")
-                        .font(.system(size: 64, weight: .regular))
-                        .foregroundStyle(.white)
-                    Text("Fitgram")
-                        .font(Tokens.Font.manrope(42, weight: 700))
-                        .foregroundStyle(.white)
-                }
-
-                VStack(spacing: 16) {
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 96, weight: .bold))
-                        .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.28), radius: 16, x: 0, y: 6)
+            // Mockup preview card ×4: 24 pt padding, brand label top, big count bottom-left.
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Fitgram")
+                    .font(Tokens.Font.monoDisplay(64))
+                    .textCase(.uppercase)
+                    .foregroundStyle(textColor)
+                Spacer(minLength: 0)
+                VStack(alignment: .leading, spacing: 24) {
                     Text("\(streakLength)")
-                        .font(Tokens.Font.archivo(size: 220, weight: 800, width: 115))
-                        .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.25), radius: 22, x: 0, y: 6)
+                        .font(Tokens.Font.monoNumber(440))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.3)
+                        .foregroundStyle(textColor)
                     Text(streakLength == 1 ? L("day in a row") : L("days in a row"))
-                        .font(Tokens.Font.manrope(36, weight: 600))
-                        .foregroundStyle(.white.opacity(0.95))
-                        .shadow(color: .black.opacity(0.30), radius: 8, x: 0, y: 3)
-                }
-
-                VStack(spacing: 6) {
+                        .font(Tokens.Font.manrope(72, weight: 800))
+                        .foregroundStyle(textColor)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                     if longestLength > streakLength {
                         Text(String.localizedStringWithFormat(L("personal record: %lld days"), longestLength))
-                            .font(Tokens.Font.manrope(26, weight: 600))
-                            .foregroundStyle(.white.opacity(0.9))
+                            .font(Tokens.Font.manrope(52, weight: 700))
+                            .foregroundStyle(Tokens.Mono.hi)
                     } else if longestLength > 0 {
                         Text(L("new personal record!"))
-                            .font(Tokens.Font.manrope(28, weight: 700))
-                            .foregroundStyle(.white)
+                            .font(Tokens.Font.manrope(52, weight: 700))
+                            .foregroundStyle(Tokens.Mono.hi)
                     }
                     if let displayName, !displayName.isEmpty {
                         Text(displayName)
-                            .font(Tokens.Font.manrope(30, weight: 600))
-                            .foregroundStyle(.white.opacity(0.95))
-                            .padding(.top, 12)
+                            .font(Tokens.Font.manrope(40, weight: 700))
+                            .foregroundStyle(textColor.opacity(0.7))
+                            .lineLimit(1)
                     }
                 }
-                .shadow(color: .black.opacity(0.30), radius: 8, x: 0, y: 3)
-                Spacer()
             }
-            .padding(80)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .padding(96)
         }
         .frame(width: 1080, height: 1920)
+    }
+
+    /// Hero text on the brand backdrop; plain white over photos / transparent stories.
+    private var textColor: Color {
+        if case .gradient = background { return Tokens.Mono.onHero }
+        return .white
     }
 
     @ViewBuilder
     private var backgroundLayer: some View {
         switch background {
         case .gradient:
-            LinearGradient(
-                colors: [
-                    Tokens.Palette.primarySoft,
-                    Tokens.Palette.primary.opacity(0.85),
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            Tokens.Mono.hero
         case .transparent:
             Color.clear
         case .photo(let image):

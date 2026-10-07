@@ -14,21 +14,22 @@ extension FriendProfileView {
 
     @ViewBuilder
     func statsTab(_ snapshot: FriendProfileSnapshot) -> some View {
-        let tiles = statTiles(snapshot)
-        if tiles.isEmpty {
+        // Streak / badges / level already sit in the identity tiles above the tabs.
+        let tiles = statTiles(snapshot).filter { !["streak", "badges", "level"].contains($0.id) }
+        if tiles.isEmpty && (snapshot.weeklyStats?.topFoods ?? []).isEmpty {
             placeholder(
                 symbol: "chart.bar.fill",
                 title: L("Brak statystyk"),
                 subtitle: L("Ta osoba nie udostępnia jeszcze swoich liczb.")
             )
         } else {
-            VStack(spacing: Tokens.Space.md) {
+            VStack(spacing: 10) {
                 LazyVGrid(
                     columns: [
-                        GridItem(.flexible(), spacing: Tokens.Space.md),
-                        GridItem(.flexible(), spacing: Tokens.Space.md),
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8),
                     ],
-                    spacing: Tokens.Space.md
+                    spacing: 8
                 ) {
                     ForEach(tiles, id: \.id) { tile in
                         statTile(tile)
@@ -135,21 +136,12 @@ extension FriendProfileView {
     }
 
     func statTile(_ tile: StatTile) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            ZStack {
-                Circle()
-                    .fill(
-                        tile.tint
-                    )
-                    .frame(width: 34, height: 34)
-                    .shadow(color: tile.tint.opacity(0.35), radius: 6, y: 2)
-                Image(systemName: tile.symbol)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-            }
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: tile.label)
+                .minimumScaleFactor(0.7)
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(tile.value)
-                    .font(Tokens.Font.archivo(size: 26, weight: 800, width: 115))
+                    .font(Tokens.Font.monoNumber(26))
                     .foregroundStyle(Tokens.Palette.ink)
                     .contentTransition(.numericText())
                     .lineLimit(1)
@@ -157,60 +149,38 @@ extension FriendProfileView {
                 if !tile.unit.isEmpty {
                     Text(tile.unit)
                         .font(Tokens.Font.manrope(12, weight: 700))
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .lineLimit(1)
                 }
             }
-            Text(tile.label)
-                .font(Tokens.Font.manrope(10, weight: 700))
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .textCase(.uppercase)
-                .tracking(0.6)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.72))
-        )
-        .shadow(color: tile.tint.opacity(0.10), radius: 14, y: 8)
+        .monoTile()
+        .accessibilityElement(children: .combine)
     }
 
     func topFoodsCard(_ foods: [String]) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(spacing: Tokens.Space.sm) {
-                Image(systemName: "fork.knife")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .frame(width: 30, height: 30)
-                    .background(Circle().fill(Tokens.Palette.primarySoft))
-                Text(L("Top produkty"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-            }
-            ForEach(Array(foods.enumerated()), id: \.offset) { idx, food in
-                HStack(spacing: Tokens.Space.sm) {
-                    Text("\(idx + 1)")
-                        .font(Tokens.Font.manrope(13, weight: 800))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                        .frame(width: 24, height: 24)
-                        .background(Circle().fill(Tokens.Palette.primary))
-                    Text(food)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                }
-                if idx < foods.count - 1 {
-                    Rectangle()
-                        .fill(Tokens.Palette.separator.opacity(0.7))
-                        .frame(height: 0.5)
-                        .padding(.leading, 34)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Top produkty"))
+            VStack(spacing: 0) {
+                ForEach(Array(foods.enumerated()), id: \.offset) { idx, food in
+                    if idx > 0 {
+                        MonoRowDivider(inset: 36)
+                    }
+                    HStack(spacing: 12) {
+                        Text("\(idx + 1)")
+                            .font(Tokens.Font.monoNumber(16))
+                            .foregroundStyle(Tokens.Mono.muted)
+                            .frame(width: 24, alignment: .leading)
+                        Text(food)
+                            .font(Tokens.Font.manrope(15, weight: 700))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .lineLimit(1)
+                        Spacer(minLength: 0)
+                    }
+                    .padding(.vertical, 10)
                 }
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.72)))
+        .monoCard(padding: 16)
     }
 }

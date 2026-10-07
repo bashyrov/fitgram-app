@@ -28,42 +28,25 @@ struct FriendsRootView: View {
             ZStack {
                 friendsBackground
                 ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        friendsHeader
+                        Color.clear.frame(height: 14)
                         friendsHero
-                        socialActionHub
-                        friendHighlights
                         if !state.incoming.isEmpty {
                             incomingCard
                         }
                         feedSection
                         friendsSection
+                        friendHighlights
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .padding(.bottom, 20)
                     .id(accentRaw)
                 }
                 .refreshable { await state.refresh() }
             }
             .navigationTitle(Text(L("Friends")))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        isLeaderboardPresented = true
-                    } label: {
-                        Image(systemName: "trophy.fill")
-                    }
-                    .accessibilityLabel(Text(L("Tablica wyników")))
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isAddPresented = true
-                    } label: {
-                        Image(systemName: "person.crop.circle.badge.plus")
-                    }
-                    .accessibilityLabel(Text(L("Dodaj znajomego")))
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .task { await state.refresh() }
             .sheet(isPresented: $isAddPresented) {
                 AddFriendSheet(
@@ -110,57 +93,90 @@ struct FriendsRootView: View {
     // MARK: - Sections
 
     private var friendsBackground: some View {
-        ScreenBackground(mood: .social)
+        Tokens.Palette.background.ignoresSafeArea()
     }
 
-    private var friendsHero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(L("Znajomi"))
-                        .font(Tokens.Font.monoDisplay(32))
-                        .foregroundStyle(Tokens.Mono.onHero)
-                    Text(L("Streaki, reakcje i małe zwycięstwa ludzi, którzy trzymają rytm razem z Tobą."))
-                        .font(Tokens.Font.subheadline)
-                        .foregroundStyle(Tokens.Mono.heroMuted)
-                        .fixedSize(horizontal: false, vertical: true)
+    /// Page header: big title + subtitle with leaderboard / add buttons (mockup "Znajomi").
+    private var friendsHeader: some View {
+        HStack(alignment: .top, spacing: 10) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(L("Znajomi"))
+                    .font(Tokens.Font.monoDisplay(30))
+                    .textCase(.uppercase)
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(L("Streaki, reakcje i małe zwycięstwa ludzi, którzy trzymają rytm razem z Tobą."))
+                    .font(Tokens.Font.manrope(14, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
+                    .frame(maxWidth: 250, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 0)
+            HStack(spacing: 6) {
+                Button {
+                    isLeaderboardPresented = true
+                } label: {
+                    Image(systemName: "trophy")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .frame(width: 44, height: 44)
+                        .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                        .contentShape(Circle())
                 }
-                Spacer(minLength: Tokens.Space.md)
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(L("Tablica wyników")))
                 Button {
                     isAddPresented = true
                 } label: {
-                    Image(systemName: "person.crop.circle.badge.plus")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(Tokens.Mono.onHi)
-                        .frame(width: 46, height: 46)
-                        .background(Circle().fill(Tokens.Mono.hi))
+                    Image(systemName: "plus")
+                        .font(.system(size: 17, weight: .heavy))
+                        .foregroundStyle(Tokens.Mono.hi)
+                        .frame(width: 44, height: 44)
+                        .background(Circle().fill(Tokens.Mono.hero))
                 }
-                .buttonStyle(.pressable)
+                .buttonStyle(.plain)
                 .accessibilityLabel(Text(L("Dodaj znajomego")))
             }
+        }
+        .padding(.horizontal, 6)
+        .padding(.top, 14)
+    }
 
-            HStack(spacing: Tokens.Space.sm) {
-                heroMetric(
-                    value: "\(state.friends.count)",
-                    label: L("Friends"),
-                    symbol: "person.2.fill",
-                    tint: Tokens.Mono.hi
-                )
-                heroMetric(
-                    value: "\(yourStreak)",
-                    label: L("Streak"),
-                    symbol: "flame.fill",
-                    tint: Tokens.Mono.fat
-                )
-                heroMetric(
-                    value: "\(state.feed.count)",
-                    label: L("Today"),
-                    symbol: "bolt.fill",
-                    tint: Tokens.Mono.heroMuted
-                )
+    private var friendsHero: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 10) {
+                MonoStat(label: L("dni serii"), value: "\(yourStreak)", dark: true)
+                MonoStat(label: L("Friends"), value: "\(state.friends.count)", dark: true)
+                MonoStat(label: L("nowa aktywność"), value: "\(state.feed.count)", dark: true)
+            }
+            HStack(spacing: 8) {
+                MonoButton(title: L("Znajdź profil"), kind: .hi, icon: "magnifyingglass", height: 44) {
+                    isAddPresented = true
+                }
+                Button {
+                    isAddPresented = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "qrcode")
+                            .font(.system(size: 14, weight: .bold))
+                        Text(L("Pokaż kod"))
+                            .lineLimit(1)
+                    }
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .padding(.horizontal, 14)
+                    .frame(height: 44)
+                    .overlay(Capsule().stroke(Tokens.Mono.heroLine, lineWidth: 1))
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .fixedSize()
             }
         }
-        .padding(Tokens.Space.lg)
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
                 .fill(Tokens.Mono.hero)
@@ -168,60 +184,45 @@ struct FriendsRootView: View {
     }
 
     private var incomingCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            sectionHeader(title: L("Zaproszenia"), symbol: "envelope.badge.fill")
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(number: "01", title: L("Zaproszenia"), trailing: "\(state.incoming.count)")
+            VStack(spacing: 8) {
                 ForEach(state.incoming) { request in
                     requestRow(request)
                 }
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.78)))
         }
     }
 
     private func requestRow(_ request: FriendRequest) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            Circle()
-                .fill(Tokens.Palette.primarySoft)
-                .frame(width: 32, height: 32)
-                .overlay(
-                    Image(systemName: "person.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
-                )
-            VStack(alignment: .leading, spacing: 2) {
-                Text(L("Nowe zaproszenie"))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(String.localizedStringWithFormat(L("od %@"), request.fromUserID))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                FriendInitialAvatar(name: request.fromUserID, size: 44)
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoLabel(text: L("Nowe zaproszenie"))
+                    Text(String.localizedStringWithFormat(L("od %@"), request.fromUserID))
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
-            Button {
-                Task { await state.reject(request) }
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 24))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            HStack(spacing: 8) {
+                MonoButton(title: L("Odrzuć"), kind: .outline, height: 44) {
+                    Task { await state.reject(request) }
+                }
+                MonoButton(title: L("Akceptuj"), kind: .dark, icon: "checkmark", height: 44) {
+                    Task { await state.accept(request) }
+                }
             }
-            .accessibilityLabel(Text(L("Odrzuć")))
-            Button {
-                Task { await state.accept(request) }
-            } label: {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 24))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            .accessibilityLabel(Text(L("Akceptuj")))
         }
+        .monoCard(padding: 16)
     }
 
     @ViewBuilder
     private var feedSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            sectionHeader(title: L("Co u znajomych"), symbol: "sparkles")
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(number: "02", title: L("Co u znajomych"))
             if state.feed.isEmpty {
                 emptyStateCard(
                     symbol: "sparkles",
@@ -231,7 +232,7 @@ struct FriendsRootView: View {
                     isAddPresented = true
                 }
             } else {
-                VStack(spacing: Tokens.Space.sm) {
+                VStack(spacing: 8) {
                     ForEach(state.feed) { event in
                         FeedEventCard(event: event) { kind in
                             Task {
@@ -254,10 +255,10 @@ struct FriendsRootView: View {
 
     @ViewBuilder
     private var friendsSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: 0) {
             sectionHeader(
-                title: String.localizedStringWithFormat(L("Twoi znajomi (%lld)"), state.friends.count),
-                symbol: "person.2.fill"
+                number: "03",
+                title: String.localizedStringWithFormat(L("Twoi znajomi (%lld)"), state.friends.count)
             )
             if state.friends.isEmpty {
                 emptyStateCard(
@@ -268,8 +269,11 @@ struct FriendsRootView: View {
                     isAddPresented = true
                 }
             } else {
-                LazyVStack(spacing: Tokens.Space.sm) {
-                    ForEach(state.friends) { profile in
+                VStack(spacing: 0) {
+                    ForEach(Array(state.friends.enumerated()), id: \.element.id) { index, profile in
+                        if index > 0 {
+                            MonoRowDivider(inset: 16)
+                        }
                         Button {
                             openedProfileID = profile.id
                         } label: {
@@ -290,22 +294,21 @@ struct FriendsRootView: View {
                         }
                     }
                 }
+                .monoRowsCard()
             }
         }
     }
 
-    func sectionHeader(title: String, symbol: String) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: symbol)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 28, height: 28)
-                .background(Circle().fill(Tokens.Palette.primarySoft))
-            Text(title)
-                .font(Tokens.Font.manrope(18, weight: 800))
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
+    /// Mockup `sec(n, title, trailing)`: numbered display title with hairline, 28 pt above, 12 pt below.
+    func sectionHeader(number: String?, title: String, trailing: String? = nil) -> some View {
+        MonoSectionHeader(number: number, title: title) {
+            if let trailing {
+                MonoLabel(text: trailing)
+            }
         }
+        .padding(.horizontal, 6)
+        .padding(.top, 12)
+        .padding(.bottom, 12)
     }
 
     private func emptyStateCard(
@@ -314,25 +317,22 @@ struct FriendsRootView: View {
         message: String,
         action: @escaping () -> Void
     ) -> some View {
-        VStack(spacing: Tokens.Space.md) {
-            Image(systemName: symbol)
-                .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 54, height: 54)
-                .background(Circle().fill(Tokens.Palette.primarySoft))
-            VStack(spacing: 4) {
-                Text(title)
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(message)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: symbol, style: .track, size: 40)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(message)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
             }
-            PrimaryButton(title: "Dodaj znajomego", systemImage: "plus", action: action)
+            MonoButton(title: L("Dodaj znajomego"), kind: .dark, icon: "plus", height: 46, action: action)
         }
-        .frame(maxWidth: .infinity)
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.78)))
+        .monoCard(padding: 16)
     }
 }

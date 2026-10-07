@@ -16,36 +16,39 @@ struct UpgradeSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: Tokens.Space.lg) {
+                VStack(alignment: .leading, spacing: 0) {
                     header
                     featuresList
+                        .padding(.top, 14)
                     planSection
+                        .padding(.top, 14)
                     if let error {
                         Text(error)
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.error)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, Tokens.Space.lg)
+                            .font(Tokens.Font.manrope(12, weight: 700))
+                            .foregroundStyle(Tokens.Mono.danger)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 6)
+                            .padding(.top, 12)
                     }
                     legalNote
+                        .padding(.top, 16)
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.lg)
-                .padding(.bottom, 120)
+                .padding(.bottom, Tokens.Space.lg)
             }
-            .background(upgradeBackground)
-            .navigationTitle(Text("Premium"))
-            .navigationBarTitleDisplayMode(.inline)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Premium"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Później", action: onDismiss)
+                    MonoNavText(title: L("Później"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Przywróć") { Task { await restore() } }
+                    MonoNavText(title: L("Przywróć"), emphasized: true) { Task { await restore() } }
                         .disabled(isPurchasing)
                 }
             }
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .bottom, spacing: 0) {
                 bottomBar
             }
         }
@@ -58,75 +61,32 @@ struct UpgradeSheet: View {
         return offerings.first { $0.id == selectedID }
     }
 
-    private var upgradeBackground: some View {
-        ScreenBackground(mood: .warm)
-    }
-
     private var header: some View {
         let copy = trigger.copy
-        return VStack(spacing: Tokens.Space.md) {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Tokens.Palette.primary)
-                .frame(width: 74, height: 74)
-                .overlay {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 32, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-
-            VStack(spacing: Tokens.Space.xs) {
-                if let badge = copy.badge {
-                    Text(badge.uppercased())
-                        .font(Tokens.Font.manrope(11, weight: 800))
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Capsule().fill(Tokens.Palette.primarySoft))
-                }
-                Text(copy.headline)
-                    .font(Tokens.Font.title2)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .multilineTextAlignment(.center)
-                Text(copy.body)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.top, Tokens.Space.sm)
+        return MonoH1(text: copy.headline, sub: copy.body, kicker: copy.badge)
     }
 
     private var featuresList: some View {
         VStack(spacing: 0) {
             feature(
-                symbol: "camera.viewfinder",
+                symbol: "camera",
                 title: "Nieograniczone skany AI",
                 detail: "Zdjęcia, kody i głos bez tygodniowych limitów"
             )
-            Divider().padding(.leading, 44)
+            MonoRowDivider()
             feature(
                 symbol: "sparkles",
                 title: "Ola — Twój coach AI",
                 detail: "Codzienne wskazówki i tygodniowe podsumowania pod Twoje cele"
             )
-            Divider().padding(.leading, 44)
+            MonoRowDivider()
             feature(
-                symbol: "chart.line.uptrend.xyaxis",
+                symbol: "chart.bar",
                 title: "Pełna historia postępów",
                 detail: "Trendy, eksporty, przepisy, ulubione i synchronizacja iCloud"
             )
         }
-        .padding(.vertical, Tokens.Space.xs)
-        .background {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-        }
+        .monoRowsCard()
     }
 
     private func feature(
@@ -134,73 +94,63 @@ struct UpgradeSheet: View {
         title: LocalizedStringKey,
         detail: LocalizedStringKey
     ) -> some View {
-        HStack(alignment: .top, spacing: Tokens.Space.md) {
-            Image(systemName: symbol)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 28, height: 28)
-            VStack(alignment: .leading, spacing: 3) {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: symbol, style: .dark, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(detail)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.horizontal, Tokens.Space.lg)
-        .padding(.vertical, Tokens.Space.md)
+        .padding(.vertical, 13)
+        .padding(.horizontal, 16)
+        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder
     private var planSection: some View {
         if isLoading {
-            VStack(spacing: Tokens.Space.md) {
+            VStack(spacing: 12) {
                 ProgressView()
-                    .tint(Tokens.Palette.primary)
+                    .tint(Tokens.Mono.strong)
                 Text("Ładowanie planów…")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, Tokens.Space.xxl)
-            .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            }
+            .padding(.vertical, 24)
+            .monoCard(padding: 16)
         } else if offerings.isEmpty {
-            VStack(spacing: Tokens.Space.sm) {
-                Image(systemName: "sparkles")
-                    .font(.title2)
-                    .foregroundStyle(Tokens.Palette.primary)
-                Text("Plany testowe są gotowe")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 10) {
+                    MonoIconBox(systemName: "sparkles", style: .dark, size: 36)
+                    Text("Plany testowe są gotowe")
+                        .font(Tokens.Font.manrope(14, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                }
                 Text(
                     "Apple może nie zwrócić produktów w lokalnej instalacji. Do testu pokażemy konfigurację z aplikacji."
                 )
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
-                Button("Pokaż plany testowe") {
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+                MonoButton(title: L("Pokaż plany testowe"), kind: .outline, height: 44) {
                     offerings = [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
                     selectedID = offerings.first(where: \.isFeatured)?.id ?? offerings.first?.id
                     error = nil
                 }
-                .font(Tokens.Font.footnote.weight(.semibold))
             }
-            .frame(maxWidth: .infinity)
-            .padding(Tokens.Space.xl)
-            .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            }
+            .monoCard(padding: 16)
         } else {
-            VStack(spacing: Tokens.Space.sm) {
+            VStack(spacing: 12) {
                 ForEach(offerings) { offering in
-                    UpgradeOfferingRow(
+                    PaywallOfferingRow(
                         offering: offering,
                         isSelected: selectedID == offering.id,
                         action: {
@@ -210,30 +160,35 @@ struct UpgradeSheet: View {
                     )
                 }
             }
+            // Room for the "NAJLEPSZA" badge that overhangs the top edge.
+            .padding(.top, 10)
         }
     }
 
     private var legalNote: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label("Bezpieczna płatność przez Apple", systemImage: "lock.shield.fill")
-                .font(Tokens.Font.caption.weight(.semibold))
-                .foregroundStyle(Tokens.Palette.inkMuted)
+            Label("Bezpieczna płatność przez Apple", systemImage: "lock")
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
             Text(autoRenewalDisclosure)
-                .font(Tokens.Font.caption2)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
+                .font(Tokens.Font.manrope(11, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: 14) {
+            HStack(spacing: 6) {
                 if let privacyURL {
                     Link("Polityka prywatności", destination: privacyURL)
                 }
+                Text(verbatim: "·")
+                    .foregroundStyle(Tokens.Mono.muted)
                 if let termsURL {
                     Link("Warunki korzystania", destination: termsURL)
                 }
                 Spacer()
             }
-            .font(Tokens.Font.caption2.weight(.semibold))
-            .foregroundStyle(Tokens.Palette.primary)
+            .font(Tokens.Font.manrope(12, weight: 800))
+            .foregroundStyle(Tokens.Palette.ink)
         }
+        .padding(.horizontal, 6)
     }
 
     private var privacyURL: URL? {
@@ -245,28 +200,29 @@ struct UpgradeSheet: View {
     }
 
     private var bottomBar: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            PrimaryButton(
-                title: selectedOffering?.trialDays == nil
-                    ? "Dalej"
-                    : "Zacznij okres próbny",
-                systemImage: "checkmark",
-                isLoading: isPurchasing,
-                isEnabled: selectedOffering != nil && !isLoading
-            ) {
+        MonoBottomBar {
+            Button {
                 Task { await purchase() }
+            } label: {
+                HStack(spacing: 8) {
+                    if isPurchasing {
+                        ProgressView()
+                            .tint(Tokens.Mono.onHero)
+                    }
+                    Text(selectedOffering?.trialDays == nil ? "Dalej" : "Zacznij okres próbny")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
             }
-            HStack(spacing: Tokens.Space.xs) {
-                Image(systemName: "apple.logo")
-                Text("Zarządzaj lub anuluj kiedy chcesz w Ustawieniach")
-            }
-            .font(Tokens.Font.caption)
-            .foregroundStyle(Tokens.Palette.inkSubtle)
+            .buttonStyle(MonoButtonStyle(kind: .dark))
+            .disabled(selectedOffering == nil || isLoading || isPurchasing)
+
+            Text("Zarządzaj lub anuluj kiedy chcesz w Ustawieniach")
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.md)
-        .padding(.bottom, Tokens.Space.sm)
-        .background(.regularMaterial)
     }
 
     /// Apple App Store guideline 3.1.2 requires clear subscription terms.
@@ -329,71 +285,5 @@ struct UpgradeSheet: View {
         } catch {
             self.error = (error as? any LocalizedError)?.errorDescription ?? L("Nothing to restore.")
         }
-    }
-}
-
-private struct UpgradeOfferingRow: View {
-    let offering: SubscriptionOffering
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(alignment: .center, spacing: Tokens.Space.md) {
-                VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                    HStack(spacing: Tokens.Space.xs) {
-                        Text(offering.title)
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        if offering.isFeatured {
-                            Text("NAJLEPSZA")
-                                .font(Tokens.Font.manrope(10, weight: 800))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 3)
-                                .background(Capsule().fill(Tokens.Palette.primary))
-                        }
-                    }
-                    Text(detail)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: Tokens.Space.sm)
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(offering.priceLabel)
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(offering.periodLabel)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(isSelected ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
-            }
-            .padding(Tokens.Space.lg)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(
-                        isSelected ? Tokens.Palette.primary : Tokens.Palette.separator.opacity(0.65),
-                        lineWidth: isSelected ? 1.5 : 0.5
-                    )
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var detail: LocalizedStringKey {
-        if let trialDays = offering.trialDays {
-            return LocalizedStringKey(
-                String.localizedStringWithFormat(L("%lld dni za darmo"), trialDays)
-            )
-        }
-        return "Anuluj kiedy chcesz"
     }
 }

@@ -43,33 +43,33 @@ struct AddWorkoutSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ScreenBackground(mood: .social)
-                ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        hero
-                        searchCard
-                        durationCard
-                        manualCaloriesCard
-                        goalImpactCard
-                        noteCard
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.top, Tokens.Space.md)
-                    .padding(.bottom, 120)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(text: title, sub: subtitle)
+                        .padding(.bottom, 4)
+                    searchCard
+                    durationCard
+                    manualCaloriesCard
+                    goalImpactCard
+                    noteCard
                 }
-                .scrollDismissesKeyboard(.interactively)
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
             }
-            .navigationTitle(Text(title))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(closeTitle, action: onDismiss)
+                    MonoNavText(title: closeTitle, action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: doneTitle) { save() }
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button(doneTitle) { focusedField = nil }
-                        .font(Tokens.Font.bodyEmphasized)
+                        .font(Tokens.Font.manrope(15, weight: 800))
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -83,223 +83,198 @@ struct AddWorkoutSheet: View {
         }
     }
 
-    private var hero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: selected.symbol)
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-                    .frame(width: 58, height: 58)
-                    .background(
-                        Circle().fill(
-                            Tokens.Palette.primary
-                        )
-                    )
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(selected.localizedName)
-                        .font(Tokens.Font.archivo(size: 26, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(String.localizedStringWithFormat(heroSubtitleFormat, selected.met, currentWeightKg))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-            }
-            HStack(spacing: Tokens.Space.sm) {
-                statPill(String.localizedStringWithFormat("%lld min", durationMinutes), tint: Tokens.Palette.primary)
-                statPill(
-                    String.localizedStringWithFormat("%lld kcal", Int(estimatedCalories.rounded())),
-                    tint: Tokens.Palette.accent)
-                statPill(manualCalories == nil ? "MET" : manualTitle, tint: Tokens.Palette.warning)
-            }
-        }
-        .padding(Tokens.Space.lg)
-        .frostedGlass(cornerRadius: 28, fillOpacity: 0.80, borderOpacity: 0.06, glowOpacity: 0.05)
-    }
-
     private var searchCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(activityTitle)
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: activityTitle)
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Tokens.Mono.muted)
                 TextField(searchPlaceholder, text: $query)
+                    .font(Tokens.Font.manrope(14, weight: 600))
+                    .foregroundStyle(Tokens.Palette.ink)
                     .textInputAutocapitalization(.never)
                     .focused($focusedField, equals: .search)
-                    .padding(Tokens.Space.md)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(Tokens.Palette.surfaceMuted)
-                    )
-                LazyVStack(spacing: Tokens.Space.xs) {
-                    ForEach(filteredItems.prefix(8)) { item in
-                        Button {
-                            selected = item
-                            Haptics.selection()
-                        } label: {
-                            workoutRow(item)
-                        }
-                        .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 46)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Tokens.Mono.line2, lineWidth: 1)
+            )
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3),
+                spacing: 8
+            ) {
+                ForEach(filteredItems.prefix(9)) { item in
+                    Button {
+                        selected = item
+                        Haptics.selection()
+                    } label: {
+                        sportTile(item)
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(item.id == selected.id ? .isSelected : [])
                 }
             }
         }
+        .monoCard(padding: 16)
     }
 
     private var durationCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    Text(durationTitle)
-                        .font(Tokens.Font.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: durationTitle)
+                Spacer()
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text("\(durationMinutes)")
+                        .font(Tokens.Font.monoNumber(24))
                         .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(String.localizedStringWithFormat("%lld min", durationMinutes))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .contentTransition(.numericText())
+                    Text("min")
+                        .font(Tokens.Font.manrope(12, weight: 700))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
+            }
+            VStack(spacing: 6) {
                 Slider(
                     value: Binding(get: { Double(durationMinutes) }, set: { durationMinutes = Int($0.rounded()) }),
-                    in: 5...240, step: 5)
+                    in: 5...240, step: 5
+                )
+                .tint(Tokens.Mono.strong)
+                HStack {
+                    Text("5 min")
+                    Spacer()
+                    Text("240 min")
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
             }
+            Text(String.localizedStringWithFormat(heroSubtitleFormat, selected.met, currentWeightKg))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
         }
+        .monoCard(padding: 16)
     }
 
     private var manualCaloriesCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(manualCaloriesTitle)
-                    .font(Tokens.Font.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .center) {
+                MonoLabel(text: manualCaloriesTitle)
+                Spacer(minLength: 8)
+                manualCaloriesStepper
+            }
+            Text(manualCaloriesHint)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private var metCalories: Int {
+        Int(
+            WorkoutCatalog.calories(
+                met: selected.met, weightKg: currentWeightKg, durationMinutes: durationMinutes
+            ).rounded())
+    }
+
+    private var manualCaloriesStepper: some View {
+        HStack(spacing: 10) {
+            stepperButton("minus") {
+                guard let current = manualCalories else { return }
+                let next = Int(current.rounded()) - 10
+                manualCaloriesText = next > 0 ? "\(next)" : ""
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                TextField("—", text: $manualCaloriesText, prompt: Text("—"))
+                    .keyboardType(.decimalPad)
+                    .focused($focusedField, equals: .calories)
+                    .multilineTextAlignment(.center)
+                    .font(Tokens.Font.monoNumber(20))
                     .foregroundStyle(Tokens.Palette.ink)
-                Text(manualCaloriesHint)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                TextField(
-                    String.localizedStringWithFormat(
-                        "%lld kcal",
-                        Int(
-                            WorkoutCatalog.calories(
-                                met: selected.met, weightKg: currentWeightKg, durationMinutes: durationMinutes
-                            ).rounded())), text: $manualCaloriesText
-                )
-                .keyboardType(.decimalPad)
-                .focused($focusedField, equals: .calories)
-                .padding(Tokens.Space.md)
-                .background(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted)
-                )
+                    .frame(width: 52)
+                Text("kcal")
+                    .font(Tokens.Font.manrope(12, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            stepperButton("plus") {
+                let base = manualCalories.map { Int($0.rounded()) } ?? metCalories
+                manualCaloriesText = "\(base + 10)"
             }
         }
+    }
+
+    private func stepperButton(_ symbol: String, action: @escaping () -> Void) -> some View {
+        Button {
+            action()
+            Haptics.light()
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 40, height: 40)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     private var noteCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(noteTitle)
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                TextField(notePlaceholder, text: $note, axis: .vertical)
-                    .focused($focusedField, equals: .note)
-                    .lineLimit(2...4)
-                    .padding(Tokens.Space.md)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(Tokens.Palette.surfaceMuted)
-                    )
-            }
+        MonoField(label: noteTitle, multiline: true) {
+            TextField(notePlaceholder, text: $note, axis: .vertical)
+                .focused($focusedField, equals: .note)
+                .lineLimit(2...4)
         }
+        .monoCard(padding: 16)
     }
 
     private var goalImpactCard: some View {
-        Card {
-            HStack(alignment: .center, spacing: Tokens.Space.md) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(goalImpactTitle)
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(goalImpactSubtitle)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: Tokens.Space.md)
+        VStack(spacing: 0) {
+            MonoRow(title: goalImpactTitle, sub: goalImpactSubtitle) {
                 Toggle("", isOn: $countsTowardDailyGoal)
                     .labelsHidden()
-                    .tint(Tokens.Palette.primary)
+                    .toggleStyle(MonoToggleStyle())
             }
         }
+        .monoRowsCard()
     }
 
     private var bottomBar: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            Button {
+        MonoBottomBar {
+            MonoButton(
+                title: String.localizedStringWithFormat(saveFormat, Int(estimatedCalories.rounded())),
+                kind: .dark,
+                icon: "checkmark"
+            ) {
                 save()
-            } label: {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 17, weight: .semibold))
-                    Text(String.localizedStringWithFormat(saveFormat, Int(estimatedCalories.rounded())))
-                        .font(Tokens.Font.bodyEmphasized)
-                }
-                .foregroundStyle(Tokens.Palette.onPrimary)
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                        .fill(
-                            Tokens.Palette.primary
-                        )
-                )
             }
-            .buttonStyle(PressableButtonStyle())
-        }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.md)
-        .padding(.bottom, Tokens.Space.sm)
-        .background {
-            LinearGradient(
-                colors: [
-                    Tokens.Palette.background.opacity(0),
-                    Tokens.Palette.background.opacity(0.86),
-                    Tokens.Palette.background,
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
         }
     }
 
-    private func workoutRow(_ item: WorkoutCatalogItem) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
+    private func sportTile(_ item: WorkoutCatalogItem) -> some View {
+        let isOn = item.id == selected.id
+        return VStack(spacing: 6) {
             Image(systemName: item.symbol)
-                .foregroundStyle(item.id == selected.id ? Tokens.Palette.onPrimary : Tokens.Palette.primary)
-                .frame(width: 32, height: 32)
-                .background(Circle().fill(item.id == selected.id ? Tokens.Palette.primary : Tokens.Palette.primarySoft))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.localizedName)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(String.localizedStringWithFormat("MET %.1f", item.met))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer()
-            if item.id == selected.id {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
+                .font(.system(size: 19, weight: .semibold))
+            Text(item.localizedName)
+                .font(Tokens.Font.manrope(12, weight: 800))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .padding(.horizontal, 4)
         }
-        .padding(.vertical, 7)
-    }
-
-    private func statPill(_ text: String, tint: Color) -> some View {
-        Text(text)
-            .font(Tokens.Font.caption.weight(.bold))
-            .foregroundStyle(tint)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 7)
-            .background(Capsule().fill(tint.opacity(0.12)))
+        .foregroundStyle(isOn ? Tokens.Mono.hi : Tokens.Palette.ink)
+        .frame(maxWidth: .infinity)
+        .frame(height: 74)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(isOn ? Tokens.Mono.hero : Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(isOn ? Color.clear : Tokens.Mono.line2, lineWidth: 1)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
     private func save() {
@@ -327,6 +302,14 @@ extension AddWorkoutSheet {
         TL(
             pl: "Dodaj trening", en: "Add workout", uk: "Додати тренування", ru: "Добавить тренировку",
             es: "Añadir entrenamiento")
+    }
+    fileprivate var subtitle: String {
+        TL(
+            pl: "Trening ma własny budżet kcal i nie miesza się z posiłkami.",
+            en: "Workouts have their own kcal budget and don't mix with meals.",
+            uk: "Тренування має власний бюджет ккал і не змішується з їжею.",
+            ru: "У тренировки свой бюджет ккал, он не смешивается с едой.",
+            es: "El entreno tiene su propio presupuesto de kcal y no se mezcla con las comidas.")
     }
     fileprivate var closeTitle: String { TL(pl: "Zamknij", en: "Close", uk: "Закрити", ru: "Закрыть", es: "Cerrar") }
     fileprivate var doneTitle: String { TL(pl: "Gotowe", en: "Done", uk: "Готово", ru: "Готово", es: "Listo") }

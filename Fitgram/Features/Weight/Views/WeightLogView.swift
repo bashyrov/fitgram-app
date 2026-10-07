@@ -1,6 +1,8 @@
 import Charts
 import SwiftUI
 
+// swiftlint:disable file_length
+
 // swiftlint:disable type_body_length
 
 /// History + trend chart for weigh-ins. Reachable from Profile → "Weight".
@@ -31,42 +33,47 @@ struct WeightLogView: View {
     }
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        if let summary = state.summary {
-                            summaryCard(summary)
-                            if let bmi = bmiSummary(latest: summary.latest.weightKg) {
-                                bmiCard(bmi)
-                            }
-                            chartCard
-                        } else {
-                            emptyCard
-                        }
-                        if healthImporter != nil {
-                            healthImportCard
-                        }
-                        entriesCard
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: L("Weight"))
+                        .padding(.bottom, 14)
+                    if let summary = state.summary {
+                        summaryCard(summary)
+                        chartCard
+                            .padding(.top, 10)
+                    } else {
+                        emptyCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    tilesGrid
+                        .padding(.top, 10)
+                    MonoSectionHeader(title: L("Historia"))
+                        .padding(.horizontal, 6)
+                        .padding(.top, 6)
+                        .padding(.bottom, 12)
+                    entriesCard
                 }
-                .refreshable { await state.refresh(for: userRemoteID) }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
             }
-            .navigationTitle(Text("Weight"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .refreshable { await state.refresh(for: userRemoteID) }
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Dodaj wpis"), kind: .dark, icon: "plus") {
+                        isAddingPresented = true
+                    }
+                }
+            }
+            .monoNavigationTitle(L("Weight"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Close", action: onDismiss)
+                    MonoNavText(title: L("Close"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                    MonoNavIcon(systemName: "plus", accessibilityLabel: L("Add weight entry")) {
                         isAddingPresented = true
-                    } label: {
-                        Image(systemName: "plus")
                     }
-                    .accessibilityLabel(Text("Add weight entry"))
                 }
             }
             .task { await state.refresh(for: userRemoteID) }
@@ -125,44 +132,44 @@ struct WeightLogView: View {
         }
     }
 
+    /// Mockup `hero` with three dark stats: latest, 7-day average, weekly trend.
     private func summaryCard(_ summary: WeightService.Summary) -> some View {
-        Card(elevation: Tokens.Shadow.float) {
-            HStack(alignment: .firstTextBaseline, spacing: Tokens.Space.lg) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Latest")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    Text(String(format: "%.1f kg", summary.latest.weightKg))
-                        .font(Tokens.Font.counter)
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                Spacer(minLength: 0)
-                if let avg = summary.sevenDayAverageKg {
-                    VStack(alignment: .center, spacing: 2) {
-                        Text("7-day average")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        Text(String(format: "%.1f kg", avg))
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    Spacer(minLength: 0)
-                }
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("30 days")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    Text(deltaText(summary.thirtyDayDelta))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(deltaColor(summary.thirtyDayDelta))
-                    if let rate = summary.weeklyRateKg {
-                        Text(rateText(rate))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
-                }
-            }
+        HStack(alignment: .top, spacing: 10) {
+            MonoStat(
+                label: L("Latest"),
+                value: String(format: "%.1f", summary.latest.weightKg),
+                unit: "kg",
+                dark: true
+            )
+            MonoStat(
+                label: L("7-day average"),
+                value: summary.sevenDayAverageKg.map { String(format: "%.1f", $0) } ?? "—",
+                unit: summary.sevenDayAverageKg == nil ? "" : "kg",
+                dark: true
+            )
+            MonoStat(
+                label: L("Trend"),
+                value: summary.weeklyRateKg.map { signedValue($0, decimals: 2) } ?? "—",
+                unit: summary.weeklyRateKg == nil ? "" : "kg/tyg.",
+                dark: true
+            )
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoHero(padding: 18)
+    }
+
+    /// "30 DNI · −1.2 KG" header of the trend card.
+    private var thirtyDayLabel: String {
+        guard let summary = state.summary else { return L("30 days") }
+        return L("30 days") + " · " + deltaText(summary.thirtyDayDelta)
+    }
+
+    /// Signed number with a typographic minus ("+0.4", "−0.2", "0.0").
+    private func signedValue(_ value: Double, decimals: Int = 1) -> String {
+        let threshold = decimals >= 2 ? 0.005 : 0.05
+        let formatted = String(format: "%.\(decimals)f", abs(value))
+        if abs(value) < threshold { return formatted }
+        return (value > 0 ? "+" : "−") + formatted
     }
 
     /// Dynamic x-axis range so a freshly-started log with 2-3 entries
@@ -187,203 +194,228 @@ struct WeightLogView: View {
         return "\(sign)\(String(format: "%.2f", value)) kg/tyg."
     }
 
+    private var chronologicalEntries: [WeightEntry] {
+        Array(state.entries.reversed())
+    }
+
+    /// Mockup trend card: "30 dni" label + goal on the right, strong line, dashed goal line, hi end dot.
     private var chartCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Trend")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Button {
-                        targetDraftKg =
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                MonoLabel(text: thirtyDayLabel)
+                Spacer(minLength: 8)
+                Button {
+                    targetDraftKg =
+                        targetWeightStored > 0
+                        ? targetWeightStored
+                        : (state.summary?.latest.weightKg ?? 70)
+                    isEditingTarget = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "flag.checkered")
+                            .font(.system(size: 11, weight: .bold))
+                        Text(
                             targetWeightStored > 0
-                            ? targetWeightStored
-                            : (state.summary?.latest.weightKg ?? 70)
-                        isEditingTarget = true
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "flag.checkered")
-                            Text(
-                                targetWeightStored > 0
-                                    ? String(format: "%.1f kg", targetWeightStored)
-                                    : "Set")
-                        }
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.primary)
+                                ? String(format: "%.1f kg", targetWeightStored)
+                                : L("Set")
+                        )
                     }
-                    .buttonStyle(.plain)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .contentShape(Rectangle())
                 }
-                if state.entries.count >= 2 {
-                    Chart(state.entries.reversed()) { entry in
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Weight goal"))
+            }
+            if state.entries.count >= 2 {
+                Chart {
+                    if targetWeightStored > 0 {
+                        RuleMark(y: .value("Target", targetWeightStored))
+                            .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
+                            .foregroundStyle(Tokens.Mono.muted)
+                    }
+                    ForEach(chronologicalEntries) { entry in
                         LineMark(
                             x: .value("Date", entry.recordedAt),
                             y: .value("Weight", entry.weightKg)
                         )
                         .interpolationMethod(.monotone)
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                        .foregroundStyle(Tokens.Mono.strong)
+                    }
+                    if let latest = state.entries.first {
                         PointMark(
-                            x: .value("Date", entry.recordedAt),
-                            y: .value("Weight", entry.weightKg)
+                            x: .value("Date", latest.recordedAt),
+                            y: .value("Weight", latest.weightKg)
                         )
-                        .symbolSize(28)
-                        .foregroundStyle(Tokens.Palette.primary)
-                        if targetWeightStored > 0 {
-                            // Dashed warning line + small dot anchor on the
-                            // right. No "Goal/Cel" text — the chip button
-                            // below carries the numeric value.
-                            RuleMark(y: .value("Target", targetWeightStored))
-                                .lineStyle(StrokeStyle(lineWidth: 1.2, dash: [4, 4]))
-                                .foregroundStyle(Tokens.Palette.warning.opacity(0.85))
-                                .annotation(position: .top, alignment: .trailing, spacing: 2) {
-                                    Circle()
-                                        .fill(Tokens.Palette.warning)
-                                        .frame(width: 6, height: 6)
-                                }
+                        .symbol {
+                            Circle()
+                                .fill(Tokens.Mono.hi)
+                                .frame(width: 10, height: 10)
+                                .overlay(Circle().stroke(Tokens.Mono.strong, lineWidth: 2))
                         }
                     }
-                    .chartXScale(domain: weightChartXDomain)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisValueLabel(format: .dateTime.day().month())
-                                .font(Tokens.Font.caption2)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                            AxisGridLine().foregroundStyle(Tokens.Palette.separator)
-                        }
+                }
+                .chartXScale(domain: weightChartXDomain)
+                .chartXAxis {
+                    AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                        AxisValueLabel(format: .dateTime.day().month())
+                            .font(Tokens.Font.manrope(10, weight: 700))
+                            .foregroundStyle(Tokens.Mono.muted)
                     }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Tokens.Palette.separator)
-                            AxisValueLabel()
-                                .font(Tokens.Font.caption2)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
+                }
+                .chartYAxis {
+                    AxisMarks { _ in
+                        AxisGridLine().foregroundStyle(Tokens.Mono.line)
+                        AxisValueLabel()
+                            .font(Tokens.Font.manrope(10, weight: 700))
+                            .foregroundStyle(Tokens.Mono.muted)
                     }
-                    .frame(height: 180)
-                } else {
-                    Text("Add one more entry to see a trend.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                }
+                .frame(height: 140)
+            } else {
+                Text("Add one more entry to see a trend.")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
+    }
+
+    private var currentBMI: BMI? {
+        guard let summary = state.summary else { return nil }
+        return bmiSummary(latest: summary.latest.weightKg)
+    }
+
+    /// Mockup 2-column grid: BMI tile + Apple Health tile.
+    @ViewBuilder
+    private var tilesGrid: some View {
+        if currentBMI != nil || healthImporter != nil {
+            HStack(alignment: .top, spacing: 8) {
+                if let bmi = currentBMI {
+                    bmiTile(bmi)
+                }
+                if healthImporter != nil {
+                    healthImportTile
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
-    private var healthImportCard: some View {
-        Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.card) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack(spacing: Tokens.Space.md) {
-                    Image(systemName: "heart.text.square.fill")
-                        .foregroundStyle(Tokens.Palette.accent)
-                    Text("Apple Health")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                Text("Pobierz wpisy wagi zapisane w Apple Health. Importujemy tylko nowe wpisy.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                if let importStatus {
-                    Text(importStatus)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                Button {
-                    Task { await runHealthImport() }
-                } label: {
-                    HStack(spacing: Tokens.Space.sm) {
-                        if isImporting {
-                            ProgressView().tint(Tokens.Palette.primary)
-                        } else {
-                            Image(systemName: "arrow.down.circle.fill")
-                        }
-                        Text(isImporting ? "Importing…" : "Importuj z Apple Health")
-                    }
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
-                }
-                .disabled(isImporting)
+    private var healthImportTile: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: "Apple Health")
+            Text("Pobierz wpisy wagi zapisane w Apple Health. Importujemy tylko nowe wpisy.")
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+            if let importStatus {
+                Text(importStatus)
+                    .font(Tokens.Font.manrope(12, weight: 700))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 4)
+            Button {
+                Task { await runHealthImport() }
+            } label: {
+                HStack(spacing: 6) {
+                    if isImporting {
+                        ProgressView()
+                            .controlSize(.mini)
+                            .tint(Tokens.Palette.ink)
+                    } else {
+                        Image(systemName: "arrow.down.circle.fill")
+                    }
+                    Text(isImporting ? "Importing…" : "Importuj z Apple Health")
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                }
+                .font(Tokens.Font.manrope(13, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+            }
+            .buttonStyle(.plain)
+            .disabled(isImporting)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .monoTile()
     }
 
     private var emptyCard: some View {
-        Card {
-            VStack(spacing: Tokens.Space.md) {
-                Image(systemName: "scalemass.fill")
-                    .font(.system(size: 36))
-                    .foregroundStyle(Tokens.Palette.primary)
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "scalemass", style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
                 Text("No weight entries")
-                    .font(Tokens.Font.headline)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text("Dodaj pierwszy wpis, żeby śledzić trend. Aktualizujemy też wagę w Twoim profilu.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
-                PrimaryButton(title: "Dodaj wpis", systemImage: "plus") {
-                    isAddingPresented = true
-                }
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: .infinity)
+            Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 
+    /// Mockup `rows([...], inset=16)`: weight title, date subtitle, muted delta vs. the previous entry.
+    @ViewBuilder
     private var entriesCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text("Historia")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                if state.entries.isEmpty {
-                    Text("Pusto. Dodaj pierwszy wpis ↑")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                } else {
-                    ForEach(state.entries) { entry in
+        if state.entries.isEmpty {
+            Text("Pusto. Dodaj pierwszy wpis ↑")
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .monoRowsCard()
+        } else {
+            VStack(spacing: 0) {
+                ForEach(Array(state.entries.enumerated()), id: \.element.id) { index, entry in
+                    if index > 0 {
+                        MonoRowDivider(inset: 16)
+                    }
+                    Button {
+                        editingEntry = entry
+                    } label: {
+                        row(entry, previous: index + 1 < state.entries.count ? state.entries[index + 1] : nil)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
                         Button {
                             editingEntry = entry
                         } label: {
-                            row(entry)
+                            Label("Edit", systemImage: "pencil")
                         }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            Button {
-                                editingEntry = entry
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            Button(role: .destructive) {
-                                Task { await state.delete(entry, for: userRemoteID) }
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                        if entry.id != state.entries.last?.id {
-                            Divider().background(Tokens.Palette.separator)
+                        Button(role: .destructive) {
+                            Task { await state.delete(entry, for: userRemoteID) }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
                     }
                 }
             }
+            .monoRowsCard()
         }
     }
 
-    private func row(_ entry: WeightEntry) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(String(format: "%.1f kg", entry.weightKg))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                if let note = entry.note, !note.isEmpty {
-                    Text(note)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(2)
-                }
+    private func row(_ entry: WeightEntry, previous: WeightEntry?) -> some View {
+        MonoRow(title: String(format: "%.1f kg", entry.weightKg), sub: rowSubtitle(entry)) {
+            if let previous {
+                Text(signedValue(entry.weightKg - previous.weightKg))
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
-            Spacer(minLength: 0)
-            Text(Self.dayFormatter.string(from: entry.recordedAt))
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
         }
+    }
+
+    private func rowSubtitle(_ entry: WeightEntry) -> String {
+        let date = Self.dayFormatter.string(from: entry.recordedAt)
+        guard let note = entry.note, !note.isEmpty else { return date }
+        return date + " · " + note
     }
 
     /// BMI calculation + WHO band label. Returns nil when the user hasn't
@@ -418,26 +450,23 @@ struct WeightLogView: View {
         return BMI(value: value, label: label, color: color)
     }
 
-    private func bmiCard(_ bmi: BMI) -> some View {
-        Card {
-            HStack(spacing: Tokens.Space.md) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("BMI")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    Text(String(format: "%.1f", bmi.value))
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                Spacer()
+    private func bmiTile(_ bmi: BMI) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: "BMI")
+            Text(String(format: "%.1f", bmi.value))
+                .font(Tokens.Font.monoNumber(24))
+                .foregroundStyle(Tokens.Palette.ink)
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(bmi.color)
+                    .frame(width: 7, height: 7)
                 Text(bmi.label)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, Tokens.Space.md)
-                    .padding(.vertical, Tokens.Space.sm)
-                    .background(Capsule().fill(bmi.color))
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .monoTile()
     }
 
     private func deltaText(_ value: Double) -> String {

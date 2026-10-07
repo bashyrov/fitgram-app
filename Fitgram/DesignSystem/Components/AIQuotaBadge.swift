@@ -5,16 +5,13 @@ struct AIQuotaBadge: View {
 
     var body: some View {
         Text(label)
-            .font(.system(size: 10, weight: .heavy, design: .rounded))
+            .font(Tokens.Font.manrope(10, weight: 800))
             .foregroundStyle(tint)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .padding(.horizontal, 6)
             .padding(.vertical, 3)
-            .background(Capsule().fill(tint.opacity(0.13)))
-            .overlay {
-                Capsule().strokeBorder(tint.opacity(0.18), lineWidth: 1)
-            }
+            .overlay(Capsule().stroke(Tokens.Mono.line2, lineWidth: 1))
             .accessibilityLabel(Text(accessibilityLabel))
     }
 
@@ -29,8 +26,8 @@ struct AIQuotaBadge: View {
     }
 
     private var tint: Color {
-        guard let remaining else { return Tokens.Palette.primary }
-        return remaining == 0 ? Tokens.Palette.error : Tokens.Palette.primary
+        guard let remaining else { return Tokens.Palette.ink }
+        return remaining == 0 ? Tokens.Palette.error : Tokens.Palette.ink
     }
 }
 
@@ -45,21 +42,21 @@ struct AIProductLookupButton: View {
         HStack(spacing: 5) {
             Button(action: action) {
                 ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
+                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                        .fill(Tokens.Mono.hero)
                         .frame(width: 34, height: 34)
                     if isLoading {
                         ProgressView()
                             .controlSize(.mini)
-                            .tint(Tokens.Palette.primary)
+                            .tint(Tokens.Mono.hi)
                     } else {
                         Image(systemName: "sparkles")
                             .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.primary)
+                            .foregroundStyle(Tokens.Mono.hi)
                     }
                 }
                 .frame(width: 34, height: 34)
-                .contentShape(Circle())
+                .contentShape(Rectangle())
             }
             .buttonStyle(.pressable)
             .disabled(isDisabled)
@@ -79,7 +76,7 @@ struct AIRequestHint: View {
         HStack(alignment: .top, spacing: 7) {
             Image(systemName: "lightbulb.min.fill")
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
+                .foregroundStyle(Tokens.Palette.ink)
                 .frame(width: 16, height: 16)
             Text(text)
                 .font(Tokens.Font.caption)
@@ -90,7 +87,7 @@ struct AIRequestHint: View {
         .padding(.vertical, 8)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Tokens.Palette.primarySoft.opacity(0.72))
+                .stroke(Tokens.Mono.line2, style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
         )
     }
 

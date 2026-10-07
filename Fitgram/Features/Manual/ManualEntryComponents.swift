@@ -24,7 +24,8 @@ extension ManualIngredientDraft {
     }
 }
 
-/// Icon + label + current value with a stepper, for one nutrition number.
+/// `nrow(label, value, unit)`: 14/800 label on the left, − value + stepper on the right.
+/// `symbol` / `tint` are kept for API compatibility; design D shows label + stepper only.
 struct ManualNumericRow: View {
     struct Config {
         let symbol: String
@@ -39,87 +40,60 @@ struct ManualNumericRow: View {
     @Binding var value: Double
 
     var body: some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle().fill(config.tint.opacity(0.15))
-                    .frame(width: 36, height: 36)
-                Image(systemName: config.symbol)
-                    .foregroundStyle(config.tint)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(config.label)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(Int(value))")
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(config.unit)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-            }
-            Spacer()
-            Stepper("", value: $value, in: config.range, step: config.step)
-                .labelsHidden()
+        HStack(spacing: 8) {
+            Text(config.label)
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
+            MonoStepper(value: $value, range: config.range, step: config.step, unit: config.unit)
         }
+        .padding(.vertical, 8)
     }
 }
 
+/// "Posiłek" card with the meal-type segmented control.
 struct ManualMealTypeCard: View {
     @Binding var mealType: MealType
 
     var body: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Posiłek")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Picker("Typ posiłku", selection: $mealType) {
-                    Text("Breakfast").tag(MealType.breakfast)
-                    Text("Lunch").tag(MealType.lunch)
-                    Text("Dinner").tag(MealType.dinner)
-                    Text("Snack").tag(MealType.snack)
-                }
-                .pickerStyle(.segmented)
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Posiłek"))
+            MonoSegmented(
+                selection: $mealType,
+                options: [
+                    (value: MealType.breakfast, title: L("Breakfast")),
+                    (value: MealType.lunch, title: L("Lunch")),
+                    (value: MealType.dinner, title: L("Dinner")),
+                    (value: MealType.snack, title: L("Snack")),
+                ]
+            )
+            .accessibilityLabel(Text("Typ posiłku"))
         }
+        .monoCard(padding: 16)
     }
 }
 
+/// `portion_card` (grams slider) + the "Kalorie" stepper card.
 struct ManualPortionCard: View {
     @Binding var quantityGrams: Double
     @Binding var caloriesKcal: Double
 
     var body: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                ManualNumericRow(
-                    config: .init(
-                        symbol: "scalemass",
-                        label: "Porcja",
-                        range: 1...2000,
-                        step: 5,
-                        unit: "g"
-                    ),
-                    value: $quantityGrams
-                )
-                ManualNumericRow(
-                    config: .init(
-                        symbol: "flame.fill",
-                        label: "Kalorie",
-                        range: 0...3000,
-                        step: 5,
-                        unit: "kcal",
-                        tint: Tokens.Palette.warning
-                    ),
-                    value: $caloriesKcal
-                )
+        VStack(spacing: 10) {
+            AddFlowPortionCard(grams: $quantityGrams, range: 1...2000, step: 5)
+            HStack(spacing: 8) {
+                MonoLabel(text: L("Kalorie"))
+                Spacer(minLength: 0)
+                MonoStepper(value: $caloriesKcal, range: 0...3000, step: 5, unit: "kcal")
             }
+            .monoCard(padding: 16)
         }
     }
 }
 
+/// "Makro (opcjonalnie)" card: one stepper row per macro.
 struct ManualMacrosCard: View {
     @Binding var proteinGrams: Double
     @Binding var carbsGrams: Double
@@ -127,53 +101,45 @@ struct ManualMacrosCard: View {
     @Binding var fiberGrams: Double
 
     var body: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text("Makro (opcjonalnie)")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                ManualNumericRow(
-                    config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
-                    value: $proteinGrams
-                )
-                ManualNumericRow(
-                    config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
-                    value: $carbsGrams
-                )
-                ManualNumericRow(
-                    config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
-                    value: $fatGrams
-                )
-                ManualNumericRow(
-                    config: .init(symbol: "leaf", label: "Fiber", range: 0...100, step: 1, unit: "g"),
-                    value: $fiberGrams
-                )
-            }
+        VStack(alignment: .leading, spacing: 4) {
+            MonoLabel(text: L("Makro (opcjonalnie)"))
+                .padding(.bottom, 4)
+            ManualNumericRow(
+                config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
+                value: $proteinGrams
+            )
+            ManualNumericRow(
+                config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
+                value: $carbsGrams
+            )
+            ManualNumericRow(
+                config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
+                value: $fatGrams
+            )
+            ManualNumericRow(
+                config: .init(symbol: "leaf", label: "Fiber", range: 0...100, step: 1, unit: "g"),
+                value: $fiberGrams
+            )
         }
+        .monoCard(padding: 16)
     }
 }
 
+/// `rows([row('star', 'Dodaj do moich przepisów', sub, toggle)])`.
 struct ManualFavoriteToggleCard: View {
     @Binding var isOn: Bool
 
     var body: some View {
-        Card {
-            Toggle(isOn: $isOn) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: isOn ? "star.fill" : "star")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Add to my recipes")
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text("Szybki ponowny dodatek z karuzeli na Dziś")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                }
-            }
-            .tint(Tokens.Palette.primary)
+        MonoRow(
+            icon: isOn ? "star.fill" : "star",
+            title: L("Add to my recipes"),
+            sub: L("Szybki ponowny dodatek z karuzeli na Dziś")
+        ) {
+            Toggle("", isOn: $isOn)
+                .labelsHidden()
+                .toggleStyle(MonoToggleStyle())
         }
+        .monoRowsCard()
     }
 }
 
@@ -185,23 +151,25 @@ struct ManualFavoritePromoCard: View {
         Button {
             onTap()
         } label: {
-            Card(background: Tokens.Palette.primarySoft) {
-                HStack(spacing: Tokens.Space.sm) {
-                    Image(systemName: "star.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Moje przepisy — Premium")
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text("Zapisuj stałe posiłki i dodawaj jednym tapnięciem.")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundStyle(Tokens.Palette.primary)
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: "lock", style: .dark, size: 36)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Moje przepisy — Premium")
+                        .font(Tokens.Font.manrope(14, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text("Zapisuj stałe posiłki i dodawaj jednym tapnięciem.")
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
+            .monoCard(padding: 16)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

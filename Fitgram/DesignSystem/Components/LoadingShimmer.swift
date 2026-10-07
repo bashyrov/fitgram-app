@@ -9,7 +9,7 @@ struct LoadingShimmer: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(Tokens.Palette.surfaceMuted)
+            .fill(Tokens.Mono.track)
             .overlay(
                 LinearGradient(
                     stops: [
@@ -42,12 +42,12 @@ struct LoadingHero: View {
     var body: some View {
         VStack(spacing: Tokens.Space.md) {
             ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                    .fill(Tokens.Mono.track)
                     .frame(width: 96, height: 96)
                 Image(systemName: "leaf.fill")
                     .font(.system(size: 38, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .foregroundStyle(Tokens.Palette.ink)
             }
             .scaleEffect(scale)
             .opacity(opacity)

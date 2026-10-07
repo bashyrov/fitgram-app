@@ -20,17 +20,29 @@ struct WeekProgressView: View {
         ZStack {
             progressBackground
             ScrollView {
-                LazyVStack(spacing: Tokens.Space.lg) {
+                VStack(alignment: .leading, spacing: 0) {
+                    weekHeader
+                    Color.clear.frame(height: 14)
                     weeklyHero
-                    metricsGrid
-                    if let onOpenWeeklyDebrief {
-                        WeeklyDebriefShortcut(onTap: onOpenWeeklyDebrief)
-                    }
+                    chartSectionHeader
                     chartCard
+                    Color.clear.frame(height: 10)
+                    metricsGrid
+                    weekSection("02", L("Makro"))
+                    macroCard
+                    breakdownSectionHeader
                     breakdownCard
+                    if let onOpenWeeklyDebrief {
+                        weekSection("04", TL(pl: "Coach", en: "Coach", uk: "Коуч", ru: "Коуч", es: "Coach"))
+                        coachRows(onOpen: onOpenWeeklyDebrief)
+                    }
+                    if !hasWeekEntries {
+                        Color.clear.frame(height: 20)
+                        emptyWeekCard
+                    }
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
+                .padding(.bottom, 20)
                 .id(accentRaw)
             }
             .refreshable { await state.refresh(for: userRemoteID) }

@@ -36,7 +36,8 @@ struct MacroDistributionCard: View {
             VStack(alignment: .leading, spacing: Tokens.Space.md) {
                 HStack(alignment: .top) {
                     Text("Makro")
-                        .font(Tokens.Font.headline)
+                        .font(Tokens.Font.monoDisplay(18))
+                        .textCase(.uppercase)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     if hasIntake {
@@ -98,7 +99,7 @@ struct MacroDistributionCard: View {
             GeometryReader { proxy in
                 let progress = goal > 0 ? min(1.0, grams / Double(goal)) : 0
                 ZStack(alignment: .leading) {
-                    Capsule().fill(color.opacity(0.15))
+                    Capsule().fill(Tokens.Mono.track)
                     Capsule()
                         .fill(color)
                         .frame(width: proxy.size.width * progress)

@@ -15,7 +15,8 @@ struct StreakHeader: View {
         HStack(alignment: .center, spacing: Tokens.Space.md) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(greeting)
-                    .font(Tokens.Font.title3)
+                    .font(Tokens.Font.monoDisplay(24))
+                    .textCase(.uppercase)
                     .foregroundStyle(Tokens.Palette.inkMuted)
                 Text(name)
                     .font(Tokens.Font.title)
@@ -40,7 +41,7 @@ struct StreakHeader: View {
                     Capsule().fill(
                         streakLength > 0
                             ? Tokens.Palette.warning.opacity(0.15)
-                            : Tokens.Palette.surfaceMuted
+                            : Tokens.Mono.track
                     )
                 )
             }
@@ -48,8 +49,8 @@ struct StreakHeader: View {
             .accessibilityLabel(Text(String.localizedStringWithFormat(L("Streak %lld dni"), streakLength)))
             .accessibilityHint(Text("Stuknij, aby zobaczyć jak działa streak"))
             Button(action: onTapProfile) {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                    .fill(Tokens.Mono.track)
                     .frame(width: 40, height: 40)
                     .overlay(
                         Text(initial)

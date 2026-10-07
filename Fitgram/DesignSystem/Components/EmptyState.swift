@@ -15,19 +15,20 @@ struct EmptyState: View {
 
     var body: some View {
         VStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
-                    .frame(width: 96, height: 96)
-                Image(systemName: symbol)
-                    .font(.system(size: 36, weight: .medium))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            .accessibilityHidden(true)
+            Image(systemName: symbol)
+                .font(.system(size: 32, weight: .medium))
+                .foregroundStyle(Tokens.Mono.hi)
+                .frame(width: 88, height: 88)
+                .background(
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                        .fill(Tokens.Mono.hero)
+                )
+                .accessibilityHidden(true)
 
             VStack(spacing: Tokens.Space.sm) {
                 Text(title)
-                    .font(Tokens.Font.title3)
+                    .font(Tokens.Font.monoDisplay(24))
+                    .textCase(.uppercase)
                     .foregroundStyle(Tokens.Palette.ink)
                     .multilineTextAlignment(.center)
                 Text(message)

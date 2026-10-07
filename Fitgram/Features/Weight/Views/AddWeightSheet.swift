@@ -30,45 +30,140 @@ struct AddWeightSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        Card(elevation: Tokens.Shadow.float) {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                field(
-                                    label: "Waga (kg)",
-                                    placeholder: "70.5",
-                                    text: $weightText,
-                                    keyboard: .decimalPad
-                                )
-                                field(
-                                    label: "Notatka (opcjonalnie)",
-                                    placeholder: "po treningu, rano…",
-                                    text: $note,
-                                    keyboard: .default
-                                )
-                            }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    bigValue
+                        .padding(.top, 40)
+                    VStack(alignment: .leading, spacing: 12) {
+                        weightSlider
+                        MonoField(label: L("Notatka (opcjonalnie)"), multiline: true) {
+                            TextField("po treningu, rano…", text: $note, axis: .vertical)
+                                .textInputAutocapitalization(.sentences)
+                                .lineLimit(1...4)
                         }
-                        PrimaryButton(
-                            title: "Save",
-                            systemImage: "checkmark",
-                            isEnabled: parsed != nil,
-                            action: commit
-                        )
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .monoCard(padding: 16)
+                    .padding(.top, 20)
+                    MonoHint(
+                        text: L(
+                            "Twoja waga zaktualizuje się w profilu, a my przeliczymy normy dzienne (jeśli nie są zablokowane)."
+                        )
+                    )
+                    .padding(.top, 12)
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Save"), kind: .dark, icon: "checkmark", action: commit)
+                        .disabled(parsed == nil)
                 }
             }
-            .navigationTitle(Text(title))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(title)
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: L("Save"), action: commit)
+                        .disabled(parsed == nil)
+                        .opacity(parsed == nil ? 0.45 : 1)
                 }
             }
         }
+    }
+
+    /// Mockup: − 72 pt italic value kg + with 56 pt outline round buttons (±0.1 kg).
+    private var bigValue: some View {
+        HStack(spacing: 18) {
+            roundStepButton(symbol: "minus", accessibilityLabel: "−0.1 kg") { adjust(by: -0.1) }
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                TextField("70.5", text: $weightText)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.center)
+                    .font(Tokens.Font.monoNumber(72))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize()
+                Text(verbatim: "kg")
+                    .font(Tokens.Font.manrope(20, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            roundStepButton(symbol: "plus", accessibilityLabel: "+0.1 kg") { adjust(by: 0.1) }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func roundStepButton(
+        symbol: String,
+        accessibilityLabel: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            Haptics.light()
+            action()
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 18, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 56, height: 56)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: accessibilityLabel))
+    }
+
+    /// Slider window: ±20 kg around the starting weight.
+    private var sliderCenter: Double {
+        (initialWeight ?? 70).rounded()
+    }
+
+    private var sliderRange: ClosedRange<Double> {
+        let lower = max(21, sliderCenter - 20)
+        let upper = min(399, sliderCenter + 20)
+        return lower...upper
+    }
+
+    private var weightSlider: some View {
+        VStack(spacing: 6) {
+            Slider(
+                value: Binding(
+                    get: {
+                        let current = parsed ?? sliderCenter
+                        return min(max(current, sliderRange.lowerBound), sliderRange.upperBound)
+                    },
+                    set: { newValue in
+                        weightText = String(format: "%.1f", (newValue * 10).rounded() / 10)
+                    }
+                ),
+                in: sliderRange,
+                step: 0.1
+            )
+            .tint(Tokens.Mono.strong)
+            HStack {
+                Text(verbatim: "\(Int(sliderRange.lowerBound)) kg")
+                Spacer()
+                Text(verbatim: "\(Int(sliderRange.upperBound)) kg")
+            }
+            .font(Tokens.Font.manrope(11, weight: 700))
+            .foregroundStyle(Tokens.Mono.muted)
+        }
+    }
+
+    private func adjust(by delta: Double) {
+        let base = parsed ?? initialWeight ?? 70
+        let next = min(399.9, max(20.1, ((base + delta) * 10).rounded() / 10))
+        weightText = String(format: "%.1f", next)
     }
 
     private var parsed: Double? {
@@ -82,28 +177,5 @@ struct AddWeightSheet: View {
         let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
         onCommit(value, trimmed.isEmpty ? nil : trimmed)
         onDismiss()
-    }
-
-    private func field(
-        label: LocalizedStringKey,
-        placeholder: LocalizedStringKey,
-        text: Binding<String>,
-        keyboard: UIKeyboardType
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            TextField(placeholder, text: text)
-                .keyboardType(keyboard)
-                .textInputAutocapitalization(keyboard == .default ? .sentences : .never)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink)
-                .padding(Tokens.Space.sm)
-                .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted)
-                )
-        }
     }
 }

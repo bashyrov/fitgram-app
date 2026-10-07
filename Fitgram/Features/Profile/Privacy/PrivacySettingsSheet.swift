@@ -18,29 +18,42 @@ struct PrivacySettingsSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        explainer
-                        visibilityCard
-                        if draft.visibility != .privateOnly {
-                            toggleCard
-                            sensitiveCard
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(
+                        text: L("Prywatność najpierw"),
+                        sub: L(
+                            "By default, we don't share anything. Enable only what you actually want to show your friends."
+                        ),
+                        kicker: L("Privacy")
+                    )
+                    sectionHeader(number: "01", title: L("Kto może zobaczyć Twój profil"), top: 4)
+                    visibilityCard
+                    if draft.visibility != .privateOnly {
+                        sectionHeader(number: "02", title: L("What to share"), top: 12)
+                        toggleCard
+                        sectionHeader(number: "03", title: L("Wrażliwe dane"), top: 12, bottom: 8)
+                        MonoHint(
+                            text: L(
+                                "This data is disabled by default. You only enable it if you consciously want to show it."
+                            )
+                        )
+                        .padding(.bottom, 10)
+                        sensitiveCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text("Privacy"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Privacy"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    MonoNavPill(title: L("Save")) {
                         store.replace(draft)
                         Haptics.success()
                         onDismiss()
@@ -50,137 +63,92 @@ struct PrivacySettingsSheet: View {
         }
     }
 
-    private var explainer: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            VStack(alignment: .leading, spacing: 4) {
-                Label("Prywatność najpierw", systemImage: "lock.shield.fill")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.primary)
-                Text(
-                    "By default, we don't share anything. Enable only what you actually want to show your friends."
-                )
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.ink)
-            }
-        }
+    /// `sec(n, title, '', mt)` — 16 pt built into the header plus `top`.
+    private func sectionHeader(number: String, title: String, top: CGFloat, bottom: CGFloat = 12) -> some View {
+        MonoSectionHeader(number: number, title: title)
+            .padding(.horizontal, 6)
+            .padding(.top, top)
+            .padding(.bottom, bottom)
     }
 
+    /// rows(inset 16): three visibility options, a check marks the selected one.
     private var visibilityCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Kto może zobaczyć Twój profil")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                visibilityRow(.privateOnly, label: "Tylko ja", subtitle: "Profil ukryty dla wszystkich")
-                visibilityRow(.friendsOnly, label: "Tylko znajomi", subtitle: "Widoczne dla osób, które dodały Cię")
-                visibilityRow(
-                    .publicLink, label: "Wszyscy z linkiem", subtitle: "Anyone with your code can see your profile")
-            }
+        VStack(spacing: 0) {
+            visibilityRow(.privateOnly, label: L("Tylko ja"), subtitle: L("Profil ukryty dla wszystkich"))
+            MonoRowDivider(inset: 16)
+            visibilityRow(.friendsOnly, label: L("Tylko znajomi"), subtitle: L("Widoczne dla osób, które dodały Cię"))
+            MonoRowDivider(inset: 16)
+            visibilityRow(
+                .publicLink, label: L("Wszyscy z linkiem"), subtitle: L("Anyone with your code can see your profile"))
         }
+        .monoRowsCard()
     }
 
     private func visibilityRow(
         _ option: PrivacySettings.Visibility,
-        label: LocalizedStringKey,
-        subtitle: LocalizedStringKey
+        label: String,
+        subtitle: String
     ) -> some View {
-        Button {
-            draft.visibility = option
+        let isSelected = draft.visibility == option
+        return Button {
+            Haptics.selection()
+            withAnimation(Tokens.Motion.quick) {
+                draft.visibility = option
+            }
         } label: {
-            HStack(alignment: .top, spacing: Tokens.Space.sm) {
-                Image(systemName: draft.visibility == option ? "circle.inset.filled" : "circle")
-                    .foregroundStyle(Tokens.Palette.primary)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(label)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(subtitle)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
+            MonoRow(title: label, sub: subtitle) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 16, weight: .heavy))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .opacity(isSelected ? 1 : 0)
             }
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var toggleCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("What to share")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                toggle(
-                    title: "Mój streak",
-                    detail: "np. 🔥 30 dni",
-                    bind: $draft.showStreak
-                )
-                toggle(
-                    title: "Mój poziom",
-                    detail: "np. Lvl 12 — Pro",
-                    bind: $draft.showLevel
-                )
-                toggle(
-                    title: "Moje achievements",
-                    detail: "Odznaki, które zdobyłeś/aś",
-                    bind: $draft.showAchievements
-                )
-                toggle(
-                    title: "Mój widoczny cel",
-                    detail: "np. Schudnięcie 5 kg",
-                    bind: $draft.showGoal
-                )
-                toggle(
-                    title: "Moje statystyki tygodniowe",
-                    detail: "Średnie kcal, najczęstsze produkty",
-                    bind: $draft.showWeeklyStats
-                )
-                toggle(
-                    title: "Moje top przepisy",
-                    detail: "Z Twojej książki kucharskiej",
-                    bind: $draft.showRecipes
-                )
-            }
+        VStack(spacing: 0) {
+            toggle(title: L("Mój streak"), detail: L("np. 🔥 30 dni"), bind: $draft.showStreak)
+            MonoRowDivider(inset: 16)
+            toggle(title: L("Mój poziom"), detail: L("np. Lvl 12 — Pro"), bind: $draft.showLevel)
+            MonoRowDivider(inset: 16)
+            toggle(
+                title: L("Moje achievements"), detail: L("Odznaki, które zdobyłeś/aś"), bind: $draft.showAchievements)
+            MonoRowDivider(inset: 16)
+            toggle(title: L("Mój widoczny cel"), detail: L("np. Schudnięcie 5 kg"), bind: $draft.showGoal)
+            MonoRowDivider(inset: 16)
+            toggle(
+                title: L("Moje statystyki tygodniowe"),
+                detail: L("Średnie kcal, najczęstsze produkty"),
+                bind: $draft.showWeeklyStats
+            )
+            MonoRowDivider(inset: 16)
+            toggle(title: L("Moje top przepisy"), detail: L("Z Twojej książki kucharskiej"), bind: $draft.showRecipes)
         }
+        .monoRowsCard()
     }
 
     private var sensitiveCard: some View {
-        Card(background: Tokens.Palette.surface) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Image(systemName: "exclamationmark.lock.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    Text("Wrażliwe dane")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Text("This data is disabled by default. You only enable it if you consciously want to show it.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                toggle(
-                    title: "Moja waga / wzrost",
-                    detail: "Pokazuje aktualne wartości",
-                    bind: $draft.showWeightAndHeight
-                )
-                toggle(
-                    title: "Szczegóły posiłków",
-                    detail: "What exactly you ate",
-                    bind: $draft.showMealDetails
-                )
-            }
+        VStack(spacing: 0) {
+            toggle(
+                title: L("Moja waga / wzrost"),
+                detail: L("Pokazuje aktualne wartości"),
+                bind: $draft.showWeightAndHeight
+            )
+            MonoRowDivider(inset: 16)
+            toggle(title: L("Szczegóły posiłków"), detail: L("What exactly you ate"), bind: $draft.showMealDetails)
         }
+        .monoRowsCard()
     }
 
-    private func toggle(title: LocalizedStringKey, detail: LocalizedStringKey, bind: Binding<Bool>) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Toggle(isOn: bind) {
-                Text(title)
-                    .font(Tokens.Font.body)
-            }
-            .tint(Tokens.Palette.primary)
-            Text(detail)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+    /// `toggle_row(title)` — Mono switch as trailing view.
+    private func toggle(title: String, detail: String, bind: Binding<Bool>) -> some View {
+        MonoRow(title: title, sub: detail) {
+            Toggle(title, isOn: bind)
+                .labelsHidden()
+                .toggleStyle(MonoToggleStyle())
+                .fixedSize()
         }
     }
 }

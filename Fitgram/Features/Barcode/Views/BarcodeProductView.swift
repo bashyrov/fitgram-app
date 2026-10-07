@@ -41,23 +41,25 @@ struct BarcodeProductView: View {
         self.usageMeter = usageMeter
     }
 
+    /// Mockup `BarcodeProduct`: nav · total hero · portion card · "Na 100 g" card · bottom actions.
     var body: some View {
-        ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
-            VStack(spacing: 0) {
-                header
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        summaryCard
-                        favoriteButton
-                        portionCard
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+        VStack(spacing: 0) {
+            AddFlowNavBar(title: "", onLeft: onDismiss)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 10) {
+                    productImage
+                    summaryCard
+                    portionCard
+                    per100Card
+                    favoriteButton
                 }
-                footer
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, 10)
+                .padding(.bottom, 20)
             }
         }
+        .background(Tokens.Palette.background.ignoresSafeArea())
+        .safeAreaInset(edge: .bottom) { footer }
     }
 
     @ViewBuilder
@@ -85,121 +87,118 @@ struct BarcodeProductView: View {
                 entitlementsStore: entitlementsStore,
                 paywallCoordinator: paywallCoordinator
             )
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+                    .stroke(Tokens.Mono.line, lineWidth: 1)
+            )
         }
     }
 
-    private var header: some View {
-        ZStack(alignment: .topLeading) {
-            preview
-            HStack {
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 36, height: 36)
-                }
-                .padding(.leading, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.md)
-                .accessibilityLabel(Text("Close"))
-                Spacer()
-            }
-        }
-        .frame(height: 200)
-    }
-
+    /// Product photo from Open Food Facts (not in the mockup) — shown only when the lookup has one.
     @ViewBuilder
-    private var preview: some View {
+    private var productImage: some View {
         if let imageURL = product.imageURL {
             AsyncImage(url: imageURL) { phase in
                 switch phase {
                 case .success(let image):
-                    image.resizable().scaledToFill()
+                    Color.clear
+                        .overlay(image.resizable().scaledToFill())
                 default:
-                    fallbackGradient
+                    Tokens.Mono.track
+                        .overlay(
+                            Image(systemName: "barcode.viewfinder")
+                                .font(.system(size: 40, weight: .semibold))
+                                .foregroundStyle(Tokens.Mono.muted)
+                        )
                 }
             }
-        } else {
-            fallbackGradient
-        }
-    }
-
-    private var fallbackGradient: some View {
-        Tokens.Palette.primarySoft
+            .frame(height: 150)
+            .frame(maxWidth: .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
             .overlay(
-                Image(systemName: "barcode.viewfinder")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Tokens.Palette.primary)
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(Tokens.Mono.line, lineWidth: 1)
             )
+            .accessibilityHidden(true)
+        }
     }
 
+    /// `total_hero(kcal, 'Kod … · name', p, c, f, 'barcode')`.
     private var summaryCard: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(product.name)
-                    .font(Tokens.Font.title3)
-                    .foregroundStyle(Tokens.Palette.ink)
-                if let brand = product.brand {
-                    Text(brand)
-                        .font(Tokens.Font.subheadline)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(adjustedCalories)))
-                    .font(Tokens.Font.counter)
-                    .foregroundStyle(Tokens.Palette.primary)
-
-                HStack(spacing: Tokens.Space.lg) {
-                    macroPill(label: "Protein", grams: adjustedProtein, color: Tokens.Palette.primary)
-                    macroPill(label: "Węgle", grams: adjustedCarbs, color: Tokens.Palette.warning)
-                    macroPill(label: "Tłuszcz", grams: adjustedFat, color: Tokens.Palette.accent)
-                }
-
-                Text(String.localizedStringWithFormat(L("Kod %@"), product.barcode))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-        }
+        AddFlowTotalHero(
+            icon: "barcode",
+            caption: heroCaption,
+            kcal: adjustedCalories,
+            protein: adjustedProtein,
+            carbs: adjustedCarbs,
+            fat: adjustedFat
+        )
     }
 
+    private var heroCaption: String {
+        var parts = [String.localizedStringWithFormat(L("Kod %@"), product.barcode), product.name]
+        if let brand = product.brand, !brand.isEmpty {
+            parts.append(brand)
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    /// `portion_card(g, pct)` — grams slider mapped onto the serving multiplier.
     private var portionCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Porcja")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
-                            .font(Tokens.Font.title3)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                        Text(String(format: "×%.2f", portion))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                }
-                Slider(value: $portion, in: 0.25...3.0, step: 0.05)
-                    .tint(Tokens.Palette.primary)
-            }
-        }
+        AddFlowPortionCard(
+            grams: gramsBinding,
+            range: (servingGrams * 0.25)...(servingGrams * 3.0),
+            step: servingGrams * 0.05,
+            note: String(format: "×%.2f", portion)
+        )
     }
 
+    private var servingGrams: Double { max(1, product.servingGrams ?? 100) }
+
+    private var gramsBinding: Binding<Double> {
+        Binding<Double>(
+            get: { grams },
+            set: { portion = $0 / servingGrams }
+        )
+    }
+
+    /// Card "Na 100 g": kcal and B / W / T per 100 g in one 14/700 row.
+    private var per100Card: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(
+                text: TL(pl: "Na 100 g", en: "Per 100 g", uk: "На 100 г", ru: "На 100 г", es: "Por 100 g")
+            )
+            HStack {
+                Text(
+                    String.localizedStringWithFormat(
+                        L("%lld kcal"), Int(product.nutrition.caloriesKcalPer100g.rounded())))
+                Spacer(minLength: 4)
+                Text(per100Macro(TL(pl: "B", en: "P", uk: "Б", ru: "Б", es: "P"), product.nutrition.proteinPer100g))
+                Spacer(minLength: 4)
+                Text(per100Macro(TL(pl: "W", en: "C", uk: "В", ru: "У", es: "C"), product.nutrition.carbsPer100g))
+                Spacer(minLength: 4)
+                Text(per100Macro(TL(pl: "T", en: "F", uk: "Ж", ru: "Ж", es: "G"), product.nutrition.fatPer100g))
+            }
+            .font(Tokens.Font.manrope(14, weight: 700))
+            .foregroundStyle(Tokens.Palette.ink)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func per100Macro(_ letter: String, _ value: Double) -> String {
+        letter + " " + String.localizedStringWithFormat(L("%lld g"), Int(value.rounded()))
+    }
+
+    /// `bottom(btn('Dodaj do dziennika', dark, check) + btn('Skanuj inny kod', outline, barcode))`.
     private var footer: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            PrimaryButton(title: "Dodaj do dziennika", systemImage: "checkmark") {
+        MonoBottomBar {
+            MonoButton(title: L("Dodaj do dziennika"), kind: .dark, icon: "checkmark") {
                 onSave(itemsToSave())
             }
-            Button(action: onRetake) {
-                Text("Skanuj inny kod")
-                    .font(Tokens.Font.callout)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+            MonoButton(title: L("Skanuj inny kod"), kind: .outline, icon: "barcode", action: onRetake)
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.bottom, Tokens.Space.xl)
-        .padding(.top, Tokens.Space.md)
-        .background(Tokens.Palette.background)
     }
 
     // MARK: - Helpers
@@ -207,7 +206,7 @@ struct BarcodeProductView: View {
     private func macroPill(label: LocalizedStringKey, grams: Double, color: Color) -> some View {
         VStack(spacing: 2) {
             Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
-                .font(Tokens.Font.bodyEmphasized)
+                .font(Tokens.Font.monoNumber(20))
                 .foregroundStyle(color)
             Text(label)
                 .font(Tokens.Font.caption)

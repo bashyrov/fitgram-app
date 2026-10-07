@@ -1,93 +1,72 @@
 import SwiftUI
 
 /// Reusable card used by the standalone facts library and the Today
-/// fact-of-day preview.
+/// fact-of-day preview. Design D (lib `fact`): category label + trailing
+/// mark, 19 pt display title, 14/600 body. Highlighted = dark hero with "Fakt dnia" pill.
 struct FactCard: View {
     let fact: NutritionFact
-    /// "Highlighted" style is used for today's fact: a bit larger emoji,
-    /// stronger accent ring. Catalog rows use the plain style.
+    /// "Highlighted" style is used for today's fact: dark hero surface with
+    /// the "Fakt dnia" pill. Catalog rows use the plain card style.
     var highlighted: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(alignment: .top, spacing: Tokens.Space.md) {
-                emojiPuck
-                VStack(alignment: .leading, spacing: 4) {
-                    categoryChip
-                    Text(fact.title)
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+        VStack(alignment: .leading, spacing: highlighted ? 14 : 12) {
+            HStack(alignment: .center, spacing: 8) {
+                MonoLabel(text: Self.localizedCategory(fact.category), onHero: highlighted)
                 Spacer(minLength: 0)
+                trailingMark
             }
+            Text(fact.title)
+                .font(Tokens.Font.monoDisplay(19))
+                .foregroundStyle(highlighted ? Tokens.Mono.onHero : Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
             Text(fact.body)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink.opacity(0.85))
-                .lineSpacing(3)
+                .font(Tokens.Font.manrope(14, weight: 600))
+                .foregroundStyle(highlighted ? Tokens.Mono.heroMuted : Tokens.Mono.muted)
+                .lineSpacing(5)
                 .fixedSize(horizontal: false, vertical: true)
             if let source = fact.source {
                 HStack(spacing: 4) {
                     Image(systemName: "book")
                         .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
                     Text(source)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .font(Tokens.Font.manrope(11, weight: 700))
                 }
-                .padding(.top, 2)
+                .foregroundStyle(highlighted ? Tokens.Mono.heroMuted : Tokens.Mono.muted)
             }
         }
-        .padding(highlighted ? Tokens.Space.lg : Tokens.Space.md)
+        .padding(highlighted ? 18 : 16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(
-                cornerRadius: highlighted ? Tokens.Radius.xl : Tokens.Radius.lg,
+                cornerRadius: highlighted ? Tokens.Mono.Radius.hero : Tokens.Mono.Radius.card,
                 style: .continuous
             )
-            .fill(.ultraThinMaterial)
+            .fill(highlighted ? Tokens.Mono.hero : Tokens.Palette.surface)
         )
-        .background(
+        .overlay(
             RoundedRectangle(
-                cornerRadius: highlighted ? Tokens.Radius.xl : Tokens.Radius.lg,
+                cornerRadius: highlighted ? Tokens.Mono.Radius.hero : Tokens.Mono.Radius.card,
                 style: .continuous
             )
-            .fill(Tokens.Palette.surface.opacity(highlighted ? 0.78 : 0.86))
-        )
-        .shadow(
-            color: tint(for: fact.category).opacity(highlighted ? 0.12 : 0.06),
-            radius: highlighted ? 18 : 10,
-            x: 0,
-            y: highlighted ? 10 : 5
+            .stroke(highlighted ? Color.clear : Tokens.Mono.line, lineWidth: 1)
         )
     }
 
-    private var emojiPuck: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    tint(for: fact.category).opacity(0.30)
-                )
-                .frame(width: highlighted ? 56 : 44, height: highlighted ? 56 : 44)
+    @ViewBuilder
+    private var trailingMark: some View {
+        if highlighted {
+            Text(TL(pl: "Fakt dnia", en: "Fact of the day", uk: "Факт дня", ru: "Факт дня", es: "Dato del día"))
+                .font(Tokens.Font.manrope(11, weight: 900))
+                .foregroundStyle(Tokens.Mono.onHi)
+                .padding(.horizontal, 10)
+                .frame(height: 24)
+                .background(Capsule().fill(Tokens.Mono.hi))
+        } else {
             Text(fact.icon)
-                .font(.system(size: highlighted ? 28 : 22))
+                .font(.system(size: 16))
+                .accessibilityHidden(true)
         }
-    }
-
-    private var categoryChip: some View {
-        Text(Self.localizedCategory(fact.category))
-            .font(.system(size: 10, weight: .heavy))
-            .textCase(.uppercase)
-            .tracking(1.2)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 3)
-            .foregroundStyle(tint(for: fact.category))
-            .background(
-                Capsule().fill(tint(for: fact.category).opacity(0.14))
-            )
-            .overlay(
-                Capsule().strokeBorder(tint(for: fact.category).opacity(0.35), lineWidth: 0.75)
-            )
     }
 
     /// Tint picked from the existing palette — never an invented hex.

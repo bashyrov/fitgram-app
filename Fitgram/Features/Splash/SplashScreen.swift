@@ -21,14 +21,23 @@ struct SplashScreen: View {
 
     var body: some View {
         ZStack {
-            palette.splashBackground.ignoresSafeArea()
+            Tokens.Mono.hero.ignoresSafeArea()
 
-            FitgramAnimatedLogo(
-                outlineProgress: outlineProgress,
-                fillOpacity: fillOpacity,
-                color: palette.splashLogoColor
-            )
-            .frame(width: 244, height: 116)
+            VStack(spacing: 18) {
+                FitgramAnimatedLogo(
+                    outlineProgress: outlineProgress,
+                    fillOpacity: fillOpacity,
+                    color: Tokens.Mono.hi
+                )
+                .frame(width: 180, height: 84)
+
+                Text(verbatim: "FITGRAM")
+                    .font(Tokens.Font.manrope(13, weight: 800))
+                    .tracking(3.9)
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+                    .opacity(fillOpacity)
+                    .accessibilityHidden(true)
+            }
             .scaleEffect(logoScale)
             .opacity(logoOpacity)
             .blur(radius: logoBlur)
@@ -61,6 +70,20 @@ struct SplashScreen: View {
     SplashScreen(onComplete: {})
 }
 
+/// Static, filled Fitgram mark (design D heroes on Auth / Onboarding).
+struct FitgramLogoMark: View {
+    var color: Color = Tokens.Mono.hi
+
+    var body: some View {
+        ZStack {
+            ForEach(FitgramLogoPart.Part.allCases) { part in
+                FitgramLogoPart(part: part).fill(color)
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
 private struct FitgramAnimatedLogo: View {
     let outlineProgress: CGFloat
     let fillOpacity: Double
@@ -88,7 +111,8 @@ private struct FitgramAnimatedLogo: View {
     }
 }
 
-private struct FitgramLogoPart: Shape {
+/// One of the three Fitgram mark strokes (shared with Auth / Onboarding heroes).
+struct FitgramLogoPart: Shape {
     enum Part: CaseIterable, Identifiable {
         case left
         case middle

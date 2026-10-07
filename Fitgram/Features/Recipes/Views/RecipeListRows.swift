@@ -1,57 +1,51 @@
 import SwiftUI
 
-/// Title, portion / kcal / ingredient summary and badges for one recipe
-/// in the library list.
+/// Title, portion / cook-count / rating summary and kcal per serving for one
+/// recipe in the library list. Rendered inside a shared rows card (design D).
 struct RecipeListRowLabel: View {
     let recipe: Recipe
 
     var body: some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
-                    .frame(width: 40, height: 40)
-                Image(systemName: "fork.knife")
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
+        HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(recipe.title)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(subtitle)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .lineLimit(1)
-            }
-            Spacer(minLength: 0)
-            if let rating = recipe.rating, rating > 0 {
-                HStack(spacing: 2) {
-                    Image(systemName: "star.fill")
-                        .font(.caption2)
-                    Text(String(format: "%.0f", rating))
-                        .font(Tokens.Font.caption)
+                HStack(alignment: .firstTextBaseline, spacing: 5) {
+                    Text(recipe.title)
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(2)
+                    if recipe.isFavorite {
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Tokens.Mono.fat)
+                            .accessibilityLabel(Text(L("Filtr ulubionych")))
+                    }
                 }
-                .foregroundStyle(Tokens.Palette.warning)
+                Text(subtitle)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
+                    .lineLimit(2)
             }
-            if recipe.cookCount > 0 {
-                Text(String.localizedStringWithFormat(L("× %lld"), recipe.cookCount))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            if recipe.isFavorite {
-                Image(systemName: "heart.fill")
-                    .foregroundStyle(Tokens.Palette.warning)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            // Trailing: italic kcal (num 20) over a muted "kcal" caption.
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(kcalText)
+                    .font(Tokens.Font.monoNumber(20))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                Text("kcal")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-        )
+        .padding(.vertical, 13)
+        .padding(.horizontal, 16)
+        .contentShape(Rectangle())
+    }
+
+    private var kcalText: String {
+        guard let kcal = recipe.caloriesPerServing, kcal > 0 else { return "—" }
+        return "\(Int(kcal.rounded()))"
     }
 
     private var subtitle: String {
@@ -62,13 +56,11 @@ struct RecipeListRowLabel: View {
                 recipe.servings
             )
         )
-        if let kcal = recipe.caloriesPerServing, kcal > 0 {
-            parts.append(
-                String.localizedStringWithFormat(
-                    L("%lld kcal / porcję"),
-                    Int(kcal)
-                )
-            )
+        if recipe.cookCount > 0 {
+            parts.append(String.localizedStringWithFormat(L("× %lld"), recipe.cookCount))
+        }
+        if let rating = recipe.rating, rating > 0 {
+            parts.append("★ " + String(format: "%.0f", rating))
         }
         if !recipe.ingredients.isEmpty {
             parts.append(
@@ -87,74 +79,62 @@ struct LockedRecipeRowLabel: View {
     let title: String
 
     var body: some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft.opacity(0.62))
-                    .frame(width: 40, height: 40)
-                Image(systemName: "lock.fill")
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            VStack(alignment: .leading, spacing: 3) {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(1)
                 Text("Przepis Pro")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                     .lineLimit(1)
             }
-            Spacer(minLength: 0)
-            Text("PRO")
-                .font(Tokens.Font.manrope(10, weight: 800))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 5)
-                .background(Capsule().fill(Tokens.Palette.primary))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            // Mockup `rec(..., lock=True)`: a 16 pt muted lock replaces the kcal column.
+            Image(systemName: "lock")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(Tokens.Mono.muted)
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.64))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-        )
-        .opacity(0.62)
+        .padding(.vertical, 13)
+        .padding(.horizontal, 16)
+        .contentShape(Rectangle())
     }
 }
 
+/// 46 pt search field from the recipe list mockup.
 struct RecipeSearchField: View {
     @Binding var query: String
 
     var body: some View {
-        HStack(spacing: Tokens.Space.sm) {
+        HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.muted)
             TextField("Szukaj przepisu", text: $query)
+                .font(Tokens.Font.manrope(14, weight: 600))
+                .foregroundStyle(Tokens.Palette.ink)
                 .textInputAutocapitalization(.never)
             if !query.isEmpty {
                 Button {
                     query = ""
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
+                .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, Tokens.Space.md)
-        .padding(.vertical, Tokens.Space.sm)
+        .padding(.horizontal, 12)
+        .frame(height: 46)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(Tokens.Palette.surface)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Tokens.Mono.line2, lineWidth: 1)
         )
-        .padding(.horizontal, Tokens.Space.screenPadding)
     }
 }
 

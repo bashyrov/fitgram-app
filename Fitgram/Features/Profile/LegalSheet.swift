@@ -9,6 +9,7 @@ struct LegalSheet: View {
     let onDismiss: () -> Void
 
     @State private var presentedURL: IdentifiedURL?
+    @Environment(\.openURL) private var openURL
 
     private struct IdentifiedURL: Identifiable {
         let id = UUID()
@@ -25,24 +26,28 @@ struct LegalSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        intro
-                        documentsCard
-                        contactCard
-                        attributionsCard
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(
+                        text: L("Wszystko w jednym miejscu"),
+                        sub: L("Terms, privacy, contact. Links open in a secure in-app browser.")
+                    )
+                    documentsCard
+                        .padding(.top, 14)
+                    sectionHeader(L("Kontakt"))
+                    contactCard
+                    sectionHeader(L("Atrybucje"))
+                    attributionsCard
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text("Prawo i dane"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Prawo i dane"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: closeText, action: onDismiss)
                 }
             }
             .sheet(item: $presentedURL) { wrapper in
@@ -52,93 +57,77 @@ struct LegalSheet: View {
         }
     }
 
-    private var intro: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Wszystko w jednym miejscu")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text("Terms, privacy, contact. Links open in a secure in-app browser.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
+    /// `sec('', title, '', 22)` — no number, 22 pt top margin.
+    private func sectionHeader(_ title: String) -> some View {
+        MonoSectionHeader(title: title)
+            .padding(.horizontal, 6)
+            .padding(.top, 6)
+            .padding(.bottom, 12)
     }
 
+    /// rows(): shield "Privacy policy", doc "Terms" with chevrons.
     private var documentsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: 0) {
-                row(symbol: "lock.shield", title: "Privacy policy") {
-                    presentedURL = IdentifiedURL(url: Self.privacyURL)
-                }
-                Divider().background(Tokens.Palette.separator)
-                row(symbol: "doc.text", title: "Terms") {
-                    presentedURL = IdentifiedURL(url: Self.termsURL)
-                }
+        VStack(spacing: 0) {
+            Button {
+                Haptics.light()
+                presentedURL = IdentifiedURL(url: Self.privacyURL)
+            } label: {
+                MonoRow(icon: "shield", title: L("Privacy policy"))
             }
+            .buttonStyle(.plain)
+            MonoRowDivider()
+            Button {
+                Haptics.light()
+                presentedURL = IdentifiedURL(url: Self.termsURL)
+            } label: {
+                MonoRow(icon: "doc.text", title: L("Terms"))
+            }
+            .buttonStyle(.plain)
         }
+        .monoRowsCard()
     }
 
     private var contactCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Kontakt")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text("onefitgram@gmail.com")
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .onTapGesture {
-                        if let url = URL(string: "mailto:\(Self.supportEmail)") {
-                            presentedURL = IdentifiedURL(url: url)
-                        }
-                    }
-                Text("Odpowiadamy w 24 godziny w dni robocze.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+        Button {
+            // SFSafariViewController only handles http(s); mail links go to the system handler.
+            if let url = URL(string: "mailto:\(Self.supportEmail)") {
+                openURL(url)
             }
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(Self.supportEmail)
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text("Odpowiadamy w 24 godziny w dni robocze.")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .monoCard(padding: 16)
         }
+        .buttonStyle(.plain)
     }
 
     private var attributionsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Atrybucje")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text("Food database: Open Food Facts (ODbL).")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text("Wartości makro: USDA + producent.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text("Symbole: SF Symbols (Apple).")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text("Tłumaczenia: ChatGPT, weryfikacja: native speakers.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+        VStack(alignment: .leading, spacing: 6) {
+            attribution("Food database: Open Food Facts (ODbL).")
+            attribution("Wartości makro: USDA + producent.")
+            attribution("Symbole: SF Symbols (Apple).")
+            attribution("Tłumaczenia: ChatGPT, weryfikacja: native speakers.")
         }
+        .monoCard(padding: 16)
     }
 
-    private func row(symbol: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: symbol)
-                    .frame(width: 22)
-                    .foregroundStyle(Tokens.Palette.primary)
-                Text(title)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Image(systemName: "arrow.up.right.square")
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            .padding(.vertical, Tokens.Space.sm)
-        }
-        .buttonStyle(.plain)
+    private func attribution(_ text: LocalizedStringKey) -> some View {
+        Text(text)
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .lineSpacing(2)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var closeText: String {
+        TL(pl: "Zamknij", en: "Close", uk: "Закрити", ru: "Закрыть", es: "Cerrar")
     }
 }
 

@@ -22,7 +22,7 @@ struct CalorieProgressCard: View {
             HStack(alignment: .center, spacing: Tokens.Space.lg) {
                 ZStack {
                     Circle()
-                        .stroke(Tokens.Palette.surfaceMuted, lineWidth: 12)
+                        .stroke(Tokens.Mono.track, lineWidth: 12)
                     Circle()
                         .trim(from: 0, to: max(0.001, min(1.0, progress)))
                         .stroke(
@@ -33,7 +33,7 @@ struct CalorieProgressCard: View {
                         .animation(Tokens.Motion.gentle, value: progress)
                     VStack(spacing: 0) {
                         Text("\(Int(consumed))")
-                            .font(Tokens.Font.counter)
+                            .font(Tokens.Font.monoNumber(44))
                             .foregroundStyle(Tokens.Palette.ink)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)

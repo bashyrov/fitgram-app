@@ -17,12 +17,16 @@ struct MacroTargetEditorRow: View {
                 HStack(spacing: Tokens.Space.md) {
                     Image(systemName: symbol)
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(color)
+                        .foregroundStyle(Tokens.Palette.ink)
                         .frame(width: 42, height: 42)
-                        .background(Circle().fill(color.opacity(0.14)))
+                        .background(
+                            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                                .fill(Tokens.Mono.track)
+                        )
                     VStack(alignment: .leading, spacing: 2) {
                         Text(title)
-                            .font(Tokens.Font.headline)
+                            .font(Tokens.Font.monoDisplay(18))
+                            .textCase(.uppercase)
                             .foregroundStyle(Tokens.Palette.ink)
                         Text(subtitle)
                             .font(Tokens.Font.caption)
@@ -38,13 +42,13 @@ struct MacroTargetEditorRow: View {
                     TextField("0", value: $value, format: .number)
                         .keyboardType(.numberPad)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: 32, weight: .heavy, design: .rounded))
+                        .font(Tokens.Font.monoNumber(36))
                         .foregroundStyle(Tokens.Palette.ink)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, Tokens.Space.sm)
                         .background(
                             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .fill(Tokens.Palette.surfaceMuted.opacity(0.86))
+                                .fill(Tokens.Mono.track)
                         )
                         .overlay(alignment: .trailing) {
                             Text("g")
@@ -77,9 +81,9 @@ struct MacroTargetEditorRow: View {
         } label: {
             Image(systemName: symbol)
                 .font(.system(size: 16, weight: .heavy))
-                .foregroundStyle(Tokens.Palette.primary)
+                .foregroundStyle(Tokens.Mono.hi)
                 .frame(width: 44, height: 44)
-                .background(Circle().fill(Tokens.Palette.primarySoft))
+                .background(Circle().fill(Tokens.Mono.hero))
         }
         .buttonStyle(.plain)
     }

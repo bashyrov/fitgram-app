@@ -142,7 +142,7 @@ extension Tokens {
 
 extension Tokens.Mono {
     enum Radius {
-        static let hero: CGFloat = 28
+        static let hero: CGFloat = 26
         static let card: CGFloat = 24
         static let tile: CGFloat = 20
         static let icon: CGFloat = 12
@@ -183,6 +183,18 @@ extension Tokens.Font {
         archivo(size: size, weight: 900, width: 122, italic: true)
     }
 
+    /// UIKit variant of Archivo (navigation bar, segmented controls).
+    static func uiArchivo(size: CGFloat, weight: CGFloat, width: CGFloat, italic: Bool = false) -> UIFont {
+        variable(
+            italic ? "Archivo-SemiBoldItalic" : "Archivo-SemiBold", size: size,
+            axes: [wghtAxis: weight, wdthAxis: width])
+    }
+
+    /// UIKit variant of Manrope.
+    static func uiManrope(_ size: CGFloat, weight: CGFloat) -> UIFont {
+        variable("Manrope-ExtraLight", size: size, axes: [wghtAxis: weight])
+    }
+
     /// Manrope scaled with Dynamic Type for the given text style.
     static func manropeScaled(_ size: CGFloat, weight: CGFloat, style: UIFont.TextStyle) -> SwiftUI.Font {
         let base = variable("Manrope-ExtraLight", size: size, axes: [wghtAxis: weight])
@@ -198,5 +210,27 @@ extension Tokens.Font {
     /// Manrope body text. `weight` 200…800.
     static func manrope(_ size: CGFloat, weight: CGFloat = 600) -> SwiftUI.Font {
         SwiftUI.Font(variable("Manrope-ExtraLight", size: size, axes: [wghtAxis: weight]))
+    }
+}
+
+/// UIKit chrome (navigation bars, segmented pickers) in design D typography.
+enum MonoAppearance {
+    @MainActor
+    static func apply() {
+        let navigationBar = UINavigationBar.appearance()
+        navigationBar.titleTextAttributes = [
+            .font: UIFontMetrics(forTextStyle: .headline)
+                .scaledFont(for: Tokens.Font.uiManrope(15, weight: 800))
+        ]
+        navigationBar.largeTitleTextAttributes = [
+            .font: UIFontMetrics(forTextStyle: .largeTitle)
+                .scaledFont(for: Tokens.Font.uiArchivo(size: 32, weight: 900, width: 122, italic: true))
+        ]
+
+        UISwitch.appearance().onTintColor = UIColor(Tokens.Mono.accent)
+
+        let segmented = UISegmentedControl.appearance()
+        segmented.setTitleTextAttributes([.font: Tokens.Font.uiManrope(13, weight: 700)], for: .normal)
+        segmented.setTitleTextAttributes([.font: Tokens.Font.uiManrope(13, weight: 800)], for: .selected)
     }
 }

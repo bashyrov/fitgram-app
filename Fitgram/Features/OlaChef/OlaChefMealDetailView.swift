@@ -17,42 +17,42 @@ struct OlaChefMealDetailView: View {
     @State private var grams: Double = 0
     @State private var ingredientDrafts: [OlaChefIngredientDraft] = []
 
+    /// Mockup `OlaChefMeal`: h1 (name + meal · min · g) · dark kcal hero with macro chips · portion
+    /// mode · portion card / ingredients · "Przepis" steps · favourite toggle row · bottom CTA.
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        header
-                        modePicker
-                        ingredientsCard
-                        recipeCard
-                        if let error {
-                            Text(error)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.error)
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: suggestion.name(), sub: headerSubtitle)
+                    header
+                        .padding(.top, 14)
+                    modePicker
+                        .padding(.top, 10)
+                    ingredientsCard
+                        .padding(.top, 10)
+                    recipeCard
+                    favoriteRow
+                        .padding(.top, 10)
+                    if let error {
+                        Text(error)
+                            .font(Tokens.Font.manrope(12, weight: 700))
+                            .foregroundStyle(Tokens.Mono.danger)
+                            .padding(.horizontal, 6)
+                            .padding(.top, 10)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
             }
+            .background(Tokens.Palette.background.ignoresSafeArea())
             .safeAreaInset(edge: .bottom) {
                 bottomCTA
             }
-            .navigationTitle(Text(L("Kuchnia Oli")))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Kuchnia Oli"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: onClose) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
-                    }
-                    .buttonStyle(.pressable)
-                    .accessibilityLabel(L("Zamknij"))
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onClose)
+                        .accessibilityLabel(L("Zamknij"))
                 }
             }
         }
@@ -69,30 +69,41 @@ struct OlaChefMealDetailView: View {
 
 // MARK: - Sections
 extension OlaChefMealDetailView {
-    private var header: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(suggestion.name())
-                    .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                    .foregroundStyle(Tokens.Palette.ink)
-                HStack(spacing: Tokens.Space.sm) {
-                    macroPill(
-                        String.localizedStringWithFormat(L("%lld kcal"), Int(currentCalories.rounded())),
-                        Tokens.Palette.warning)
-                    macroPill(
-                        String.localizedStringWithFormat(L("%lld g"), Int(currentGrams.rounded())),
-                        Tokens.Palette.primary)
-                    macroPill(
-                        String.localizedStringWithFormat(L("%lld min"), suggestion.dish.prepMinutes),
-                        Tokens.Palette.accent)
-                }
-                HStack(spacing: Tokens.Space.sm) {
-                    nutritionBlock(L("Protein"), currentProtein)
-                    nutritionBlock(L("Carbs"), currentCarbs)
-                    nutritionBlock(L("Fat"), currentFat)
-                }
-            }
+    /// "Obiad · 25 min · 420 g".
+    private var headerSubtitle: String {
+        [
+            mealTypeTitle,
+            String.localizedStringWithFormat(L("%lld min"), suggestion.dish.prepMinutes),
+            String.localizedStringWithFormat(L("%lld g"), Int(currentGrams.rounded())),
+        ].joined(separator: " · ")
+    }
+
+    private var mealTypeTitle: String {
+        switch mealType {
+        case .breakfast: return L("Śniadanie")
+        case .lunch: return L("Obiad")
+        case .dinner: return L("Kolacja")
+        case .snack: return L("Przekąska")
         }
+    }
+
+    /// `hero(num(52) kcal + macro_pills(dark))`.
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(verbatim: "\(Int(currentCalories.rounded()))")
+                    .font(Tokens.Font.monoNumber(52))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .contentTransition(.numericText())
+                Text(verbatim: "kcal")
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+            }
+            MonoMacroRow(protein: currentProtein, carbs: currentCarbs, fat: currentFat, dark: true)
+        }
+        .monoHero(padding: 18)
     }
 
     private var modePicker: some View {
@@ -112,129 +123,91 @@ extension OlaChefMealDetailView {
         }
     }
 
+    /// General mode → `portion_card`; detailed mode → `ingr_list` with weighed ingredients.
+    @ViewBuilder
     private var ingredientsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(portionMode == .overall ? L("Porcja") : L("Składniki"))
-                            .font(Tokens.Font.headline)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text(
-                            portionMode == .overall
-                                ? L("Dopasuj wagę przed dodaniem") : L("Edytuj gramaturę produktu przed zapisem")
-                        )
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        if portionMode == .overall {
+            AddFlowPortionCard(grams: $grams, range: 100...900, step: 5)
+        } else {
+            AddFlowIngredientsSection(
+                title: L("Składniki"),
+                count: ingredientDrafts.count,
+                sub: L("Edytuj gramaturę produktu przed zapisem")
+            ) {
+                ForEach($ingredientDrafts) { $draft in
+                    AddFlowIngredientRow(
+                        showsDivider: draft.id != ingredientDrafts.first?.id,
+                        kcal: draft.caloriesKcal,
+                        grams: $draft.grams,
+                        range: 10...800,
+                        step: 5,
+                        onRemove: removeAction(for: draft.id)
+                    ) {
+                        TextField(L("Produkt"), text: $draft.name)
+                            .submitLabel(.done)
                     }
-                    Spacer()
-                    Text(String.localizedStringWithFormat(L("%lld g"), Int(currentGrams.rounded())))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Capsule().fill(Tokens.Palette.primarySoft))
                 }
-
-                if portionMode == .overall {
-                    Slider(value: $grams, in: 100...900, step: 5)
-                        .tint(Tokens.Palette.primary)
-                    HStack {
-                        Text(String.localizedStringWithFormat(L("%lld g"), 100))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                        Spacer()
-                        Text(String.localizedStringWithFormat(L("%lld g"), 900))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
-                } else {
-                    ForEach($ingredientDrafts) { $draft in
-                        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                            HStack {
-                                TextField(L("Produkt"), text: $draft.name)
-                                    .font(Tokens.Font.bodyEmphasized)
-                                    .textFieldStyle(.roundedBorder)
-                                    .submitLabel(.done)
-                                if ingredientDrafts.count > 1 {
-                                    Button {
-                                        ingredientDrafts.removeAll { $0.id == draft.id }
-                                        Haptics.selection()
-                                    } label: {
-                                        Image(systemName: "minus.circle.fill")
-                                            .foregroundStyle(Tokens.Palette.error)
-                                    }
-                                    .buttonStyle(.pressable)
-                                }
-                            }
-                            HStack {
-                                Text(String.localizedStringWithFormat(L("%lld g"), Int(draft.grams.rounded())))
-                                    .font(Tokens.Font.title3)
-                                    .foregroundStyle(Tokens.Palette.primary)
-                                Spacer()
-                                Text(
-                                    String.localizedStringWithFormat(L("%lld kcal"), Int(draft.caloriesKcal.rounded()))
-                                )
-                                .font(Tokens.Font.footnote.weight(.bold))
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                            }
-                            Slider(value: $draft.grams, in: 10...800, step: 5)
-                                .tint(Tokens.Palette.primary)
-                        }
-                        if draft.id != ingredientDrafts.last?.id {
-                            Divider().background(Tokens.Palette.separator)
-                        }
-                    }
-
-                    Button {
-                        ingredientDrafts.append(OlaChefIngredientDraft.empty())
-                        Haptics.selection()
-                    } label: {
-                        Label(L("Dodaj składnik"), systemImage: "plus.circle.fill")
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    .buttonStyle(.pressable)
+            } footer: {
+                MonoButton(title: L("Dodaj składnik"), kind: .outline, icon: "plus", height: 44) {
+                    ingredientDrafts.append(OlaChefIngredientDraft.empty())
+                    Haptics.selection()
                 }
             }
         }
     }
 
+    private func removeAction(for id: UUID) -> (() -> Void)? {
+        guard ingredientDrafts.count > 1 else { return nil }
+        return {
+            ingredientDrafts.removeAll { $0.id == id }
+        }
+    }
+
+    /// `sec('Przepis')` + card of numbered steps (28 pt track circles, 14/600 text).
     private var recipeCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(L("Przepis"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Przepis"))
+                .padding(.horizontal, 6)
+                .padding(.top, 22 - Tokens.Space.lg)
+                .padding(.bottom, 12)
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(suggestion.dish.steps.enumerated()), id: \.offset) { index, step in
-                    HStack(alignment: .top, spacing: Tokens.Space.sm) {
-                        Text("\(index + 1)")
-                            .font(Tokens.Font.caption.weight(.bold))
-                            .foregroundStyle(.white)
-                            .frame(width: 24, height: 24)
-                            .background(Circle().fill(Tokens.Palette.primary))
-                        Text(step)
-                            .font(Tokens.Font.body)
+                    HStack(alignment: .top, spacing: 12) {
+                        Text(verbatim: "\(index + 1)")
+                            .font(Tokens.Font.monoNumber(13))
                             .foregroundStyle(Tokens.Palette.ink)
+                            .frame(width: 28, height: 28)
+                            .background(Circle().fill(Tokens.Mono.track))
+                        Text(step)
+                            .font(Tokens.Font.manrope(14, weight: 600))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .lineSpacing(5)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                Toggle(L("Dodaj do moich przepisów"), isOn: $saveAsFavorite)
-                    .font(Tokens.Font.bodyEmphasized)
             }
+            .monoCard(padding: 16)
         }
+    }
+
+    /// `rows([row('book', 'Dodaj do moich przepisów', toggle)])`.
+    private var favoriteRow: some View {
+        MonoRow(icon: "book", title: L("Dodaj do moich przepisów")) {
+            Toggle("", isOn: $saveAsFavorite)
+                .labelsHidden()
+                .toggleStyle(MonoToggleStyle())
+        }
+        .monoRowsCard()
     }
 
     private var bottomCTA: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            PrimaryButton(title: isSaving ? "Dodaję..." : "Dodaj do dziennika", systemImage: "checkmark") {
+        MonoBottomBar {
+            MonoButton(title: isSaving ? L("Dodaję...") : L("Dodaj do dziennika"), kind: .dark, icon: "checkmark") {
                 save()
             }
             .disabled(isSaving)
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.md)
-        .padding(.bottom, Tokens.Space.lg)
-        .background(.ultraThinMaterial)
     }
 }
 
@@ -283,23 +256,25 @@ extension OlaChefMealDetailView {
             .foregroundStyle(tint)
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
-            .background(Capsule().fill(tint.opacity(0.13)))
+            .overlay(Capsule().stroke(Tokens.Mono.heroLine, lineWidth: 1))
     }
 
     private func nutritionBlock(_ title: String, _ value: Double) -> some View {
         VStack(spacing: 3) {
             Text(String.localizedStringWithFormat(L("%lld g"), Int(value.rounded())))
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.monoNumber(22))
+                .foregroundStyle(Tokens.Mono.onHero)
             Text(title)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(11, weight: 800))
+                .textCase(.uppercase)
+                .tracking(1)
+                .foregroundStyle(Tokens.Mono.heroMuted)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.surfaceMuted.opacity(0.7))
+        .overlay(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                .stroke(Tokens.Mono.heroLine, lineWidth: 1)
         )
     }
 }

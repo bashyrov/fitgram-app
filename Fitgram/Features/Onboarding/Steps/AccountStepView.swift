@@ -50,42 +50,41 @@ struct AccountStepView: View {
             primaryEnabled: canProceed,
             onPrimary: onContinue,
             content: {
-                VStack(spacing: Tokens.Space.lg) {
-                    fieldCard(
-                        label: "Name",
-                        placeholder: "Anna",
-                        text: $profile.displayName,
-                        focusField: .displayName
-                    )
-                    fieldCard(
-                        label: "Adres e-mail",
-                        placeholder: "ty@example.com",
-                        text: $profile.emailAddress,
-                        focusField: .email
-                    )
+                VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        field(
+                            label: L("Name"),
+                            placeholder: "Anna",
+                            text: $profile.displayName,
+                            focusField: .displayName
+                        )
+                        field(
+                            label: L("Adres e-mail"),
+                            placeholder: "ty@example.com",
+                            text: $profile.emailAddress,
+                            focusField: .email
+                        )
+                    }
+                    .monoCard(padding: 16)
+
                     Text("You can change this later in Profile.")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 6)
                 }
             }
         )
         .onAppear { focused = .displayName }
     }
 
-    @ViewBuilder
-    private func fieldCard(
-        label: LocalizedStringKey,
+    private func field(
+        label: String,
         placeholder: String,
         text: Binding<String>,
         focusField: Field
     ) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .textCase(.uppercase)
+        MonoField(label: label) {
             // String (not LocalizedStringKey) placeholder so the sample
             // address isn't auto-linked as Markdown.
             TextField(L(placeholder), text: text)
@@ -94,21 +93,6 @@ struct AccountStepView: View {
                 .textInputAutocapitalization(focusField.capitalization)
                 .keyboardType(focusField.keyboard)
                 .autocorrectionDisabled(focusField == .email)
-                .padding(.vertical, Tokens.Space.md)
-                .padding(.horizontal, Tokens.Space.lg)
-                .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                        .fill(.white)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                        .stroke(
-                            focused == focusField
-                                ? Tokens.Palette.primary
-                                : Tokens.Palette.inkSubtle.opacity(0.25),
-                            lineWidth: focused == focusField ? 2 : 1
-                        )
-                )
         }
     }
 }

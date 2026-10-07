@@ -47,7 +47,6 @@ struct MealUndoBanner: View {
                 .fill(Tokens.Mono.hero)
         )
         .padding(.horizontal, Tokens.Space.screenPadding)
-        .shadow(color: .black.opacity(0.18), radius: 10, x: 0, y: 4)
     }
 
     private var summary: String {

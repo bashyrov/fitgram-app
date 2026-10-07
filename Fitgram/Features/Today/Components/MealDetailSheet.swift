@@ -27,6 +27,7 @@ struct MealDetailSheet: View {
     @State private var notes: String
     @State private var zoomedPhoto: ZoomedPhoto?
     @State private var knownTags: [String] = []
+    @State private var isTimePickerExpanded = false
 
     private struct ZoomedPhoto: Identifiable {
         let id = UUID()
@@ -64,68 +65,71 @@ struct MealDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        if let photo = mealPhoto {
-                            photoHeader(photo)
-                        }
-                        summaryCard
-                        favoriteButton
-                        portionCard
-                        ratingCard
-                        tagsCard
-                        notesCard
-                        itemsCard
-                        if let errorMessage {
-                            Text(errorMessage)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.warning)
-                        }
-                        PrimaryButton(title: "Zapisz zmiany", systemImage: "checkmark") {
-                            save()
-                        }
-                        Button {
-                            duplicate()
-                        } label: {
-                            HStack(spacing: Tokens.Space.sm) {
-                                Image(systemName: "doc.on.doc")
-                                Text("Duplicate to today")
-                            }
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, Tokens.Space.md)
-                            .background(
-                                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                                    .fill(Tokens.Palette.primarySoft)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        Button(role: .destructive) {
-                            isConfirmingDelete = true
-                        } label: {
-                            HStack(spacing: Tokens.Space.sm) {
-                                Image(systemName: "trash")
-                                Text("Usuń posiłek")
-                            }
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.warning)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, Tokens.Space.md)
-                        }
-                        .buttonStyle(.plain)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    if let photo = mealPhoto {
+                        photoHeader(photo)
+                            .padding(.top, 6)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    titleBlock
+                        .padding(.top, 16)
+                    MonoMacroRow(protein: adjustedProtein, carbs: adjustedCarbs, fat: adjustedFat)
+                        .padding(.top, 14)
+                    timeCard
+                        .padding(.top, 14)
+                    favoriteButton
+                        .padding(.top, 10)
+                    ratingCard
+                        .padding(.top, 10)
+                    portionCard
+                        .padding(.top, 10)
+                    tagsCard
+                        .padding(.top, 10)
+                    notesCard
+                        .padding(.top, 10)
+                    MonoSectionHeader(title: L("Pozycje"))
+                        .padding(.horizontal, 6)
+                        .padding(.top, 8)
+                        .padding(.bottom, 12)
+                    itemsCard
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(Tokens.Font.manrope(13, weight: 700))
+                            .foregroundStyle(Tokens.Mono.danger)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, 6)
+                            .padding(.top, 12)
+                    }
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, Tokens.Space.lg)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Zapisz zmiany"), kind: .dark, icon: "checkmark") {
+                        save()
+                    }
+                    HStack(spacing: 8) {
+                        MonoButton(title: L("Duplicate to today"), kind: .outline, icon: "doc.on.doc") {
+                            duplicate()
+                        }
+                        MonoButton(title: L("Usuń posiłek"), kind: .danger, icon: "trash") {
+                            isConfirmingDelete = true
+                        }
+                    }
                 }
             }
-            .navigationTitle(Text(mealTypeLabel))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(mealTypeLabel)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Close"), action: onDismiss)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                    MonoNavPill(title: L("Zapisz zmiany")) {
+                        save()
+                    }
                 }
             }
             .confirmationDialog(
@@ -153,71 +157,85 @@ struct MealDetailSheet: View {
         return photoStore.image(forFilename: filename)
     }
 
+    // Mockup: 200 pt photo (radius 22) with a dark "Powiększ zdjęcie" pill bottom-right.
     private func photoHeader(_ image: UIImage) -> some View {
         Button {
             zoomedPhoto = ZoomedPhoto(image: image)
             Haptics.light()
         } label: {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
+            Color.clear
                 .frame(maxWidth: .infinity)
                 .frame(height: 200)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous))
-                .overlay(alignment: .topTrailing) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .font(.caption)
-                        .foregroundStyle(.white)
-                        .padding(8)
-                        .background(.black.opacity(0.4), in: Circle())
-                        .padding(8)
+                .overlay {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .overlay(alignment: .bottomTrailing) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                            .font(.system(size: 11, weight: .bold))
+                        Text(L("Powiększ zdjęcie"))
+                            .font(Tokens.Font.manrope(12, weight: 800))
+                    }
+                    .foregroundStyle(Color.white)
+                    .padding(.horizontal, 12)
+                    .frame(height: 34)
+                    .background(Capsule().fill(Color(red: 10 / 255, green: 11 / 255, blue: 12 / 255).opacity(0.7)))
+                    .padding(10)
                 }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text("Powiększ zdjęcie"))
+        .accessibilityLabel(Text(L("Powiększ zdjęcie")))
     }
 
-    private var ratingCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Ocena")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    if rating != nil {
-                        Button("Clear") {
-                            rating = nil
-                            Haptics.light()
-                        }
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
+    // Mockup: "OBIAD · 13:30" label + meal name (display 24) with the kcal number on the right.
+    private var titleBlock: some View {
+        HStack(alignment: .bottom, spacing: 10) {
+            VStack(alignment: .leading, spacing: 4) {
+                MonoLabel(text: mealTypeLabel + " · " + Self.clockFormatter.string(from: consumedAt))
+                Text(mealName)
+                    .font(Tokens.Font.monoDisplay(24))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(verbatim: "\(Int(adjustedCalories.rounded()))")
+                    .font(Tokens.Font.monoNumber(32))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+                Text(verbatim: " kcal")
+                    .font(Tokens.Font.manrope(13, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            .lineLimit(1)
+            .fixedSize()
+        }
+        .padding(.horizontal, 6)
+    }
+
+    // Mockup: rows card "Pora posiłku" with the time and a chevron; expands an inline picker.
+    private var timeCard: some View {
+        VStack(spacing: 0) {
+            Button {
+                withAnimation(Tokens.Motion.gentle) {
+                    isTimePickerExpanded.toggle()
                 }
-                HStack(spacing: Tokens.Space.xs) {
-                    ForEach(1...5, id: \.self) { star in
-                        Button {
-                            rating = star
-                            Haptics.light()
-                        } label: {
-                            let filled = star <= (rating ?? 0)
-                            Image(systemName: filled ? "star.fill" : "star")
-                                .font(.title3)
-                                .foregroundStyle(filled ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Text(String.localizedStringWithFormat(L("Oceń %lld gwiazdek"), star)))
-                    }
-                    Spacer()
+                Haptics.selection()
+            } label: {
+                MonoRow(icon: "clock", title: mealTimeTitle, sub: consumedAtDescription) {
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .rotationEffect(.degrees(isTimePickerExpanded ? 180 : 0))
                 }
             }
-        }
-    }
-
-    private var summaryCard: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+            .buttonStyle(.plain)
+            if isTimePickerExpanded {
+                MonoRowDivider(inset: 16)
                 DatePicker(
                     "",
                     selection: $consumedAt,
@@ -225,46 +243,87 @@ struct MealDetailSheet: View {
                     displayedComponents: [.date, .hourAndMinute]
                 )
                 .labelsHidden()
-                .datePickerStyle(.compact)
-                .tint(Tokens.Palette.primary)
-                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(adjustedCalories)))
-                    .font(Tokens.Font.counter)
-                    .foregroundStyle(Tokens.Palette.primary)
-                HStack(spacing: Tokens.Space.lg) {
-                    macroPill(label: "Protein", grams: adjustedProtein)
-                    macroPill(label: "Carbs", grams: adjustedCarbs)
-                    macroPill(label: "Fat", grams: adjustedFat)
-                }
+                .datePickerStyle(.graphical)
+                .tint(Tokens.Mono.strong)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
             }
         }
+        .monoRowsCard()
     }
 
-    private var portionCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Porcja")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(String.localizedStringWithFormat(L("%lld g"), Int(totalAdjustedGrams)))
-                            .font(Tokens.Font.title3)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                        Text(String(format: "×%.2f", portion))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
+    // Mockup: "OCENA" label + "Wyczyść", five 26 pt stars (fat colour when filled).
+    private var ratingCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                MonoLabel(text: L("Ocena"))
+                Spacer()
+                if rating != nil {
+                    Button {
+                        rating = nil
+                        Haptics.light()
+                    } label: {
+                        Text(L("Clear"))
+                            .font(Tokens.Font.manrope(13, weight: 700))
+                            .foregroundStyle(Tokens.Mono.muted)
+                            .frame(height: 32)
                     }
+                    .buttonStyle(.plain)
                 }
-                Slider(value: $portion, in: 0.25...3.0, step: 0.05)
-                    .tint(Tokens.Palette.primary)
-                Text("Skala dotyczy wszystkich pozycji w tym wpisie.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            }
+            HStack(spacing: 10) {
+                ForEach(1...5, id: \.self) { star in
+                    Button {
+                        rating = star
+                        Haptics.light()
+                    } label: {
+                        let filled = star <= (rating ?? 0)
+                        Image(systemName: filled ? "star.fill" : "star")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundStyle(filled ? Tokens.Mono.fat : Tokens.Mono.line2)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(String.localizedStringWithFormat(L("Oceń %lld gwiazdek"), star)))
+                }
+                Spacer(minLength: 0)
             }
         }
+        .monoCard(padding: 16)
+    }
+
+    // Mockup: "PORCJA" label + grams, slider with min/max captions, muted hint.
+    private var portionCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                MonoLabel(text: L("Porcja"))
+                Spacer()
+                Text(String.localizedStringWithFormat(L("%lld g"), Int(totalAdjustedGrams.rounded())))
+                    .font(Tokens.Font.monoNumber(18))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .contentTransition(.numericText())
+            }
+            VStack(spacing: 6) {
+                Slider(value: $portion, in: 0.25...3.0, step: 0.05)
+                    .tint(Tokens.Mono.strong)
+                HStack {
+                    Text(String.localizedStringWithFormat(L("%lld g"), Int((baseGrams * 0.25).rounded())))
+                    Spacer()
+                    Text(String.localizedStringWithFormat(L("%lld g"), Int((baseGrams * 3).rounded())))
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+            Text(L("Skala dotyczy wszystkich pozycji w tym wpisie."))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private var baseGrams: Double {
+        meal.items.reduce(0) { $0 + $1.quantityGrams }
     }
 
     private var totalAdjustedGrams: Double {
@@ -312,68 +371,72 @@ struct MealDetailSheet: View {
         )
     }
 
+    // Mockup: "TAGI" label, hint, track chips with ×, bordered input + dark square add button.
     private var tagsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Tags")
-                    .font(Tokens.Font.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Tags"))
+            Text(L("Dodaj tagi typu: restauracja, treningowy, domowe."))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            if !tags.isEmpty {
+                FlowLayout(spacing: 6) {
+                    ForEach(tags, id: \.self) { tag in
+                        tagChip(tag)
+                    }
+                }
+            }
+            HStack(spacing: 8) {
+                TextField(L("nowy tag"), text: $newTag)
+                    .font(Tokens.Font.manrope(14, weight: 600))
                     .foregroundStyle(Tokens.Palette.ink)
-                if tags.isEmpty {
-                    Text("Dodaj tagi typu: restauracja, treningowy, domowe.")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                } else {
-                    FlowLayout {
-                        ForEach(tags, id: \.self) { tag in
-                            tagChip(tag)
-                        }
-                    }
-                }
-                HStack(spacing: Tokens.Space.sm) {
-                    TextField("nowy tag", text: $newTag)
-                        .textInputAutocapitalization(.never)
-                        .submitLabel(.done)
-                        .onSubmit { commitNewTag() }
-                        .padding(Tokens.Space.sm)
+                    .textInputAutocapitalization(.never)
+                    .submitLabel(.done)
+                    .onSubmit { commitNewTag() }
+                    .padding(.horizontal, 14)
+                    .frame(height: 44)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(Tokens.Mono.line2, lineWidth: 1)
+                    )
+                Button {
+                    commitNewTag()
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 15, weight: .heavy))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .frame(width: 44, height: 44)
                         .background(
-                            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                                .fill(Tokens.Palette.surfaceMuted)
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .fill(Tokens.Mono.hero)
                         )
-                    Button {
-                        commitNewTag()
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(.white)
-                            .frame(width: 36, height: 36)
-                            .background(Circle().fill(Tokens.Palette.primary))
-                    }
-                    .disabled(newTag.trimmingCharacters(in: .whitespaces).isEmpty)
-                    .opacity(newTag.trimmingCharacters(in: .whitespaces).isEmpty ? 0.5 : 1)
                 }
-                if !tagSuggestions.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: Tokens.Space.sm) {
-                            ForEach(tagSuggestions, id: \.self) { suggestion in
-                                Button {
-                                    add(tag: suggestion)
-                                } label: {
-                                    Text(suggestion)
-                                        .font(Tokens.Font.caption)
-                                        .foregroundStyle(Tokens.Palette.inkMuted)
-                                        .padding(.horizontal, Tokens.Space.sm)
-                                        .padding(.vertical, 4)
-                                        .background(
-                                            Capsule().stroke(Tokens.Palette.separator, lineWidth: 0.35)
-                                        )
-                                }
-                                .buttonStyle(.plain)
+                .buttonStyle(.plain)
+                .disabled(newTag.trimmingCharacters(in: .whitespaces).isEmpty)
+                .opacity(newTag.trimmingCharacters(in: .whitespaces).isEmpty ? 0.5 : 1)
+                .accessibilityLabel(Text(L("Add tag")))
+            }
+            if !tagSuggestions.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(tagSuggestions, id: \.self) { suggestion in
+                            Button {
+                                add(tag: suggestion)
+                            } label: {
+                                Text(suggestion)
+                                    .font(Tokens.Font.manrope(13, weight: 700))
+                                    .foregroundStyle(Tokens.Palette.ink)
+                                    .padding(.horizontal, 12)
+                                    .frame(height: 32)
+                                    .overlay(Capsule().stroke(Tokens.Mono.line2, lineWidth: 1))
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
             }
         }
+        .monoCard(padding: 16)
         .task {
             knownTags = (try? repository.knownTags()) ?? []
         }
@@ -401,20 +464,22 @@ struct MealDetailSheet: View {
     private func tagChip(_ tag: String) -> some View {
         HStack(spacing: 4) {
             Text(tag)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.primary)
+                .font(Tokens.Font.manrope(13, weight: 700))
+                .foregroundStyle(Tokens.Palette.ink)
             Button {
                 tags.removeAll { $0 == tag }
             } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.primary.opacity(0.7))
+                    .font(.system(size: 10, weight: .heavy))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .frame(width: 24, height: 24)
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, Tokens.Space.sm)
-        .padding(.vertical, 4)
-        .background(Capsule().fill(Tokens.Palette.primarySoft))
+        .padding(.leading, 12)
+        .padding(.trailing, 6)
+        .frame(height: 32)
+        .background(Capsule().fill(Tokens.Mono.track))
     }
 
     private func commitNewTag() {
@@ -424,71 +489,100 @@ struct MealDetailSheet: View {
         newTag = ""
     }
 
+    // Mockup: "NOTATKA" label + bordered 70 pt editor with the hint as placeholder.
     private var notesCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Note")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Note"))
+            ZStack(alignment: .topLeading) {
+                if notes.isEmpty {
+                    Text(L("Co poszło dobrze, co warto zmienić? Zostanie w historii posiłku."))
+                        .font(Tokens.Font.manrope(14, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .lineSpacing(3)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                        .allowsHitTesting(false)
+                }
                 TextEditor(text: $notes)
-                    .font(Tokens.Font.body)
+                    .font(Tokens.Font.manrope(14, weight: 600))
+                    .foregroundStyle(Tokens.Palette.ink)
                     .scrollContentBackground(.hidden)
-                    .frame(minHeight: 88)
-                    .padding(Tokens.Space.sm)
-                    .background(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                            .fill(Tokens.Palette.surfaceMuted)
-                    )
-                Text("Co poszło dobrze, co warto zmienić? Zostanie w historii posiłku.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 4)
             }
+            .frame(minHeight: 70)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Tokens.Mono.line2, lineWidth: 1)
+            )
         }
+        .monoCard(padding: 16)
     }
 
+    // Mockup: rows card (divider inset 16), name + "180 g · 4 g B · …" + italic kcal.
     private var itemsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Pozycje")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                ForEach(meal.items) { item in
-                    itemRow(item)
+        VStack(spacing: 0) {
+            ForEach(Array(meal.items.enumerated()), id: \.element.id) { index, item in
+                if index > 0 {
+                    MonoRowDivider(inset: 16)
                 }
+                itemRow(item)
             }
         }
+        .monoRowsCard()
     }
 
     private func itemRow(_ item: FoodItem) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            Circle()
-                .fill(Tokens.Palette.primarySoft)
-                .frame(width: 8, height: 8)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(String.localizedStringWithFormat(L("%lld g"), Int(item.quantityGrams)))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer()
-            Text(String.localizedStringWithFormat(L("%lld kcal"), Int(item.caloriesKcal * portion)))
-                .font(Tokens.Font.bodyEmphasized)
+        MonoRow(title: item.name, sub: itemSubtitle(item)) {
+            Text(verbatim: "\(Int((item.caloriesKcal * portion).rounded()))")
+                .font(Tokens.Font.monoNumber(18))
                 .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .fixedSize()
         }
+        .accessibilityElement(children: .combine)
     }
 
-    private func macroPill(label: LocalizedStringKey, grams: Double) -> some View {
-        VStack(spacing: 2) {
-            Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.primary)
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+    private func itemSubtitle(_ item: FoodItem) -> String {
+        let letters = TL(pl: "B|W|T", en: "P|C|F", uk: "Б|В|Ж", ru: "Б|У|Ж", es: "P|C|G")
+            .split(separator: "|")
+            .map(String.init)
+        let proteinLetter = letters.first ?? "P"
+        let carbsLetter = letters.count > 1 ? letters[1] : "C"
+        let fatLetter = letters.count > 2 ? letters[2] : "F"
+        let grams = Int((item.quantityGrams * portion).rounded())
+        let protein = Int((item.proteinGrams * portion).rounded())
+        let carbs = Int((item.carbsGrams * portion).rounded())
+        let fat = Int((item.fatGrams * portion).rounded())
+        return "\(grams) g · \(protein) g \(proteinLetter) · \(carbs) g \(carbsLetter) · \(fat) g \(fatLetter)"
+    }
+
+    private var mealName: String {
+        let names = meal.items.map(\.name).filter { !$0.isEmpty }
+        if names.isEmpty { return mealTypeLabel }
+        return names.count > 1 ? names.joined(separator: " + ") : names[0]
+    }
+
+    private var mealTimeTitle: String {
+        TL(pl: "Pora posiłku", en: "Meal time", uk: "Час прийому їжі", ru: "Время приёма пищи", es: "Hora de la comida")
+    }
+
+    private var consumedAtDescription: String {
+        let clock = Self.clockFormatter.string(from: consumedAt)
+        if Calendar.current.isDateInToday(consumedAt) {
+            return L("Dziś") + ", " + clock
         }
-        .frame(maxWidth: .infinity)
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
+        formatter.setLocalizedDateFormatFromTemplate("EEEEdMMM")
+        return formatter.string(from: consumedAt) + ", " + clock
+    }
+
+    private static var clockFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
+        return formatter
     }
 
     // MARK: - Actions
@@ -563,12 +657,12 @@ struct MealDetailSheet: View {
         meal.items.reduce(0) { $0 + $1.fatGrams } * portion
     }
 
-    private var mealTypeLabel: LocalizedStringKey {
+    private var mealTypeLabel: String {
         switch meal.mealType {
-        case .breakfast: return "Breakfast"
-        case .lunch: return "Lunch"
-        case .dinner: return "Dinner"
-        case .snack: return "Snack"
+        case .breakfast: return L("Breakfast")
+        case .lunch: return L("Lunch")
+        case .dinner: return L("Dinner")
+        case .snack: return L("Snack")
         }
     }
 

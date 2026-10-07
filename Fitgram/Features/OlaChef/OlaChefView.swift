@@ -23,35 +23,40 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
 
     private let catalog = OlaChefCatalog.shared
 
+    /// Mockup `OlaChef`: h1 · two stat tiles · Free/Pro note · one controls card (target, meal,
+    /// style, "Pokaż dania") · "Najlepsze dopasowania" rows · "Pokaż więcej".
     var body: some View {
         NavigationStack {
-            ZStack {
-                background
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        hero
-                        modeNote
-                        targetCard
-                        preferenceCard
-                        generateButton
-                        if let error {
-                            errorCard(error)
-                        }
-                        if hasGenerated {
-                            suggestionsSection
-                        } else {
-                            previewCard
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(
+                        text: L("Kuchnia Oli"),
+                        sub: L("Najpierw leci lokalna biblioteka, a potem AI dopina dania, porcje i makro.")
+                    )
+                    statTiles
+                        .padding(.top, 14)
+                    modeNote
+                        .padding(.top, 8)
+                    controlsCard
+                        .padding(.top, 10)
+                    if let error {
+                        errorCard(error)
+                            .padding(.top, 10)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    if hasGenerated {
+                        suggestionsSection
+                    } else {
+                        previewCard
+                    }
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text(L("Kuchnia Oli")))
-            .navigationBarTitleDisplayMode(.inline)
+            .background(background)
+            .monoNavigationTitle(L("Kuchnia Oli"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(L("Zamknij"), action: onDismiss)
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
         }
@@ -83,43 +88,35 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
             .ignoresSafeArea()
     }
 
-    private var hero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(L("Kuchnia Oli"))
-                        .font(Tokens.Font.archivo(size: 32, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Najpierw leci lokalna biblioteka, a potem AI dopina dania, porcje i makro."))
-                        .font(Tokens.Font.subheadline)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 0)
-                Image(systemName: "fork.knife.circle.fill")
-                    .font(.system(size: 44, weight: .bold))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(Tokens.Palette.primary)
+    /// Two `tile`s: "DAŃ 300+" and "DZIŚ duży limit".
+    private var statTiles: some View {
+        HStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 6) {
+                MonoLabel(text: L("meals"))
+                Text(verbatim: "300+")
+                    .font(Tokens.Font.monoNumber(22))
+                    .foregroundStyle(Tokens.Palette.ink)
             }
-            HStack(spacing: Tokens.Space.sm) {
-                statChip("300+", L("meals"), "books.vertical.fill")
-                statChip(L("duży limit"), L("today"), "sparkles")
+            .monoTile()
+            VStack(alignment: .leading, spacing: 6) {
+                MonoLabel(text: L("today"))
+                Text(L("duży limit"))
+                    .font(Tokens.Font.monoNumber(18))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
+            .monoTile()
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
-        .overlay(RoundedRectangle(cornerRadius: 30, style: .continuous).stroke(.white.opacity(0.10), lineWidth: 0.35))
     }
 
+    /// Card with a muted info icon, "Free: …" (13/800) and the Pro line (muted 12/600).
     private var modeNote: some View {
-        HStack(alignment: .top, spacing: Tokens.Space.sm) {
-            Image(systemName: "info.circle.fill")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(Tokens.Palette.primary)
-            VStack(alignment: .leading, spacing: 3) {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "info.circle")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.muted)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(
                     TL(
                         pl: "Free: lokalna baza dań",
@@ -129,7 +126,7 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                         es: "Free: base local de platos"
                     )
                 )
-                .font(Tokens.Font.bodyEmphasized)
+                .font(Tokens.Font.manrope(13, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 Text(
                     TL(
@@ -140,31 +137,33 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                         es: "Pro: base local + IA para mejores sugerencias."
                     )
                 )
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.72))
-        )
+        .monoCard(padding: 16)
     }
 
-    private var targetCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    Label(L("Cel kalorii"), systemImage: "flame.fill")
-                        .font(Tokens.Font.headline)
+    /// One card: "Cel kalorii" + italic value, slider 200–1200, quick presets, "Posiłek" segmented,
+    /// "Styl dania" chips and the dark "Pokaż dania" button.
+    private var controlsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: L("Cel kalorii"))
+                Spacer(minLength: 8)
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text(verbatim: "\(targetCalories)")
+                        .font(Tokens.Font.monoNumber(26))
                         .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(String.localizedStringWithFormat(L("%lld kcal"), targetCalories))
-                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.warning)
                         .contentTransition(.numericText())
+                    Text(verbatim: "kcal")
+                        .font(Tokens.Font.manrope(12, weight: 700))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
+            }
+            VStack(spacing: 6) {
                 Slider(
                     value: Binding(
                         get: { Double(targetCalories) },
@@ -173,195 +172,148 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
                     in: 200...1200,
                     step: 25
                 )
-                .tint(Tokens.Palette.warning)
-                HStack(spacing: Tokens.Space.xs) {
-                    ForEach([300, 450, 600, 750, 900], id: \.self) { value in
-                        Button {
-                            targetCalories = value
-                            Haptics.selection()
-                        } label: {
-                            Text("\(value)")
-                                .font(Tokens.Font.manrope(12, weight: 800))
-                                .foregroundStyle(targetCalories == value ? .white : Tokens.Palette.ink)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 34)
-                                .background(
-                                    Capsule().fill(
-                                        targetCalories == value ? Tokens.Palette.primary : Tokens.Palette.surfaceMuted)
-                                )
+                .tint(Tokens.Mono.strong)
+                HStack {
+                    Text(verbatim: "200")
+                    Spacer()
+                    Text(verbatim: "1200")
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+            calorieShortcuts
+            MonoLabel(text: L("Posiłek"))
+            MonoSegmented(
+                selection: $mealType,
+                options: [
+                    (value: MealType.breakfast, title: L("Śniadanie")),
+                    (value: MealType.lunch, title: L("Obiad")),
+                    (value: MealType.dinner, title: L("Kolacja")),
+                    (value: MealType.snack, title: L("Przekąska")),
+                ]
+            )
+            MonoLabel(text: L("Styl dania"))
+            FlowLayout(horizontalSpacing: 6, verticalSpacing: 6) {
+                ForEach(OlaChefPreference.allCases) { preference in
+                    MonoChip(title: preference.title, isSelected: preferences.contains(preference)) {
+                        if preferences.contains(preference) {
+                            preferences.remove(preference)
+                        } else {
+                            preferences.insert(preference)
                         }
-                        .buttonStyle(.plain)
+                        Haptics.selection()
                     }
                 }
-                Picker(L("Posiłek"), selection: $mealType) {
-                    Text(L("Śniadanie")).tag(MealType.breakfast)
-                    Text(L("Obiad")).tag(MealType.lunch)
-                    Text(L("Kolacja")).tag(MealType.dinner)
-                    Text(L("Przekąska")).tag(MealType.snack)
+            }
+            MonoButton(title: L("Pokaż dania"), kind: .dark, icon: "sparkles") {
+                generate()
+            }
+        }
+        .monoCard(padding: 16)
+    }
+
+    /// Quick calorie presets (app feature, not in the mockup) as small track/dark capsules.
+    private var calorieShortcuts: some View {
+        HStack(spacing: 6) {
+            ForEach([300, 450, 600, 750, 900], id: \.self) { value in
+                Button {
+                    targetCalories = value
+                    Haptics.selection()
+                } label: {
+                    Text(verbatim: "\(value)")
+                        .font(Tokens.Font.manrope(12, weight: 800))
+                        .foregroundStyle(targetCalories == value ? Tokens.Mono.onHero : Tokens.Palette.ink)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 30)
+                        .background(
+                            Capsule().fill(targetCalories == value ? Tokens.Mono.hero : Tokens.Mono.track)
+                        )
                 }
-                .pickerStyle(.segmented)
+                .buttonStyle(.plain)
             }
         }
     }
 
-    private var preferenceCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(L("Styl dania"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                FlowLayout(horizontalSpacing: Tokens.Space.sm, verticalSpacing: Tokens.Space.sm) {
-                    ForEach(OlaChefPreference.allCases) { preference in
-                        Button {
-                            if preferences.contains(preference) {
-                                preferences.remove(preference)
-                            } else {
-                                preferences.insert(preference)
-                            }
-                            Haptics.selection()
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: preference.symbol)
-                                    .font(.system(size: 11, weight: .bold))
-                                Text(preference.title)
-                                    .font(Tokens.Font.manrope(12, weight: 800))
-                            }
-                            .foregroundStyle(preferences.contains(preference) ? .white : Tokens.Palette.ink)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 8)
-                            .background(
-                                Capsule()
-                                    .fill(
-                                        preferences.contains(preference)
-                                            ? Tokens.Palette.primary : Tokens.Palette.surfaceMuted)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-        }
-    }
-
-    private var generateButton: some View {
-        PrimaryButton(title: "Pokaż dania", systemImage: "sparkles") {
-            generate()
-        }
-    }
-
+    /// Before the first search: three ready suggestions in the same rows card.
     private var previewCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text(L("Gotowe propozycje"))
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            ForEach(suggestions.prefix(3)) { suggestion in
-                suggestionRow(suggestion, isPreview: true)
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Gotowe propozycje"))
+                .padding(.horizontal, 6)
+                .padding(.top, 22 - Tokens.Space.lg)
+                .padding(.bottom, 12)
+            suggestionRows(Array(suggestions.prefix(3)), isPreview: true)
         }
     }
 
+    /// `sec('Najlepsze dopasowania', count)` + rows card + outline "Pokaż więcej".
     private var suggestionsSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Text(L("Najlepsze dopasowania"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text("\(suggestions.count)")
-                    .font(Tokens.Font.caption.weight(.bold))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .padding(.horizontal, 9)
-                    .padding(.vertical, 5)
-                    .background(Capsule().fill(Tokens.Palette.primarySoft))
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Najlepsze dopasowania")) {
+                MonoLabel(text: "\(suggestions.count)")
             }
+            .padding(.horizontal, 6)
+            .padding(.top, 22 - Tokens.Space.lg)
+            .padding(.bottom, 12)
             if isLoadingAISuggestions {
-                HStack(spacing: Tokens.Space.sm) {
+                HStack(spacing: 8) {
                     ProgressView()
                         .controlSize(.small)
-                        .tint(Tokens.Palette.primary)
+                        .tint(Tokens.Mono.muted)
                     Text(L("Ola szuka jeszcze kilku pomysłów"))
-                        .font(Tokens.Font.caption.weight(.semibold))
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
-                .padding(.vertical, Tokens.Space.xs)
+                .padding(.horizontal, 6)
+                .padding(.bottom, 10)
             }
-            ForEach(suggestions.prefix(visibleSuggestionCount)) { suggestion in
-                suggestionRow(suggestion, isPreview: false)
-            }
+            suggestionRows(Array(suggestions.prefix(visibleSuggestionCount)), isPreview: false)
             if visibleSuggestionCount < suggestions.count {
-                Button {
+                MonoButton(title: L("Pokaż więcej"), kind: .outline, icon: "chevron.down", height: 46) {
                     withAnimation(Tokens.Motion.gentle) {
                         visibleSuggestionCount = min(visibleSuggestionCount + 18, suggestions.count)
                     }
                     Haptics.selection()
-                } label: {
-                    Label(L("Pokaż więcej"), systemImage: "chevron.down.circle.fill")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Tokens.Space.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                                .fill(Tokens.Palette.primarySoft)
-                        )
                 }
-                .buttonStyle(.pressable)
+                .padding(.top, 10)
             }
         }
     }
 
+    private func suggestionRows(_ items: [OlaChefSuggestion], isPreview: Bool) -> some View {
+        VStack(spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, suggestion in
+                if index > 0 {
+                    MonoRowDivider(inset: 16)
+                }
+                suggestionRow(suggestion, isPreview: isPreview)
+            }
+        }
+        .monoRowsCard()
+    }
+
+    /// `row(None, name, 'N g białka · M min', kcal + chevron)`.
     private func suggestionRow(_ suggestion: OlaChefSuggestion, isPreview: Bool) -> some View {
         Button {
             selected = suggestion
             Haptics.light()
         } label: {
-            Card {
-                HStack(spacing: Tokens.Space.md) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(Tokens.Palette.primarySoft)
-                        Image(systemName: icon(for: suggestion.dish.cuisine))
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    .frame(width: 54, height: 54)
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(suggestion.name())
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .lineLimit(1)
-                        Text(
-                            """
-                            \(OlaChefCatalog.localizedCuisineName(suggestion.dish.cuisine)) · \(Int(suggestion.servingGrams.rounded())) g \
-                            · \(suggestion.dish.prepMinutes) min
-                            """
-                        )
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(1)
-                    }
-                    Spacer(minLength: 0)
-                    VStack(alignment: .trailing, spacing: 3) {
-                        Text(String.localizedStringWithFormat(L("%lld kcal"), Int(suggestion.caloriesKcal.rounded())))
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.warning)
-                        Text(
-                            String.localizedStringWithFormat(
-                                L("%lld g protein"), Int(suggestion.proteinGrams.rounded()))
-                        )
-                        .font(Tokens.Font.caption2)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                    }
+            MonoRow(title: suggestion.name(), sub: suggestionSubtitle(suggestion)) {
+                HStack(spacing: 8) {
+                    Text(verbatim: "\(Int(suggestion.caloriesKcal.rounded()))")
+                        .font(Tokens.Font.monoNumber(18))
+                        .foregroundStyle(Tokens.Palette.ink)
                     if !isPreview {
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
+                        MonoChevron()
                     }
                 }
             }
         }
         .buttonStyle(.plain)
+    }
+
+    private func suggestionSubtitle(_ suggestion: OlaChefSuggestion) -> String {
+        let protein = String.localizedStringWithFormat(L("%lld g protein"), Int(suggestion.proteinGrams.rounded()))
+        return protein + " · \(suggestion.dish.prepMinutes) min"
     }
 
     private func generate() {
@@ -416,35 +368,18 @@ struct OlaChefView: View {  // swiftlint:disable:this type_body_length
         OlaChefRequest(targetCalories: targetCalories, mealType: mealType, preferences: preferences)
     }
 
-    private func statChip(_ value: String, _ label: String, _ symbol: String) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: symbol)
-                .font(.system(size: 11, weight: .bold))
-            Text(value)
-                .font(Tokens.Font.manrope(12, weight: 800))
-            Text(label)
-                .font(Tokens.Font.manrope(12, weight: 700))
-        }
-        .foregroundStyle(Tokens.Palette.primary)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
-        .background(Capsule().fill(Tokens.Palette.primarySoft))
-    }
-
     private func errorCard(_ message: String) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Tokens.Palette.error)
+        HStack(spacing: 10) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.danger)
             Text(message)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.error.opacity(0.10))
-        )
+        .monoCard(padding: 16)
     }
 
     private func icon(for cuisine: String) -> String {

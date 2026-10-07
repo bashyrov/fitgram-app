@@ -42,112 +42,133 @@ struct CustomFoodFormSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        nameCard
-                        nutritionCard
-                        portionCard
-                        PrimaryButton(title: "Dodaj do bazy", systemImage: "checkmark") {
-                            save()
-                        }
-                        .disabled(!canSave)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(text: L("Twoje danie"))
+                        .padding(.bottom, 4)
+                    nameCard
+                    nutritionCard
+                    portionCard
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Twoje danie"))
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: L("Dodaj do bazy")) {
+                        save()
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .disabled(!canSave)
+                    .opacity(canSave ? 1 : 0.45)
                 }
             }
-            .navigationTitle(Text("Twoje danie"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Cancel", action: onDismiss)
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Dodaj do bazy"), kind: .dark, icon: "checkmark") {
+                        save()
+                    }
+                    .disabled(!canSave)
                 }
             }
         }
     }
 
+    /// "Co dodajesz?": name, brand and category fields.
     private var nameCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Co dodajesz?")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Co dodajesz?"))
+            MonoField(label: L("Nazwa")) {
                 TextField("Nazwa dania", text: $name)
                     .textInputAutocapitalization(.sentences)
-                    .padding(Tokens.Space.sm)
-                    .background(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.sm, style: .continuous)
-                            .fill(Tokens.Palette.surfaceMuted)
-                    )
+            }
+            MonoField(label: L("Marka")) {
                 TextField("Marka (opcjonalnie)", text: $brand)
                     .textInputAutocapitalization(.words)
-                    .padding(Tokens.Space.sm)
-                    .background(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.sm, style: .continuous)
-                            .fill(Tokens.Palette.surfaceMuted)
-                    )
-                Picker("Kategoria", selection: $category) {
-                    ForEach(FoodCategory.allCases, id: \.self) { item in
-                        Text(item.localizedLabel).tag(item)
+            }
+            MonoField(label: L("Kategoria")) {
+                Menu {
+                    Picker(L("Kategoria"), selection: $category) {
+                        ForEach(FoodCategory.allCases, id: \.self) { item in
+                            Text(item.localizedLabel).tag(item)
+                        }
                     }
+                } label: {
+                    HStack(spacing: 8) {
+                        Text(category.localizedLabel)
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 12, weight: .heavy))
+                            .foregroundStyle(Tokens.Mono.muted)
+                    }
+                    .frame(height: 48)
+                    .contentShape(Rectangle())
                 }
-                .pickerStyle(.menu)
+                .buttonStyle(.plain)
             }
         }
+        .monoCard(padding: 16)
     }
 
+    /// "Wartości / 100 g": kcal + macro steppers.
     private var nutritionCard: some View {
-        Card {
-            VStack(spacing: Tokens.Space.md) {
-                Text("Wartości / 100 g")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                stepper(label: "Kalorie (kcal)", value: $kcal, step: 5, range: 0...900)
-                stepper(label: "Protein (g)", value: $protein, step: 1, range: 0...100)
-                stepper(label: "Węgle (g)", value: $carbs, step: 1, range: 0...100)
-                stepper(label: "Tłuszcz (g)", value: $fat, step: 1, range: 0...100)
-            }
+        VStack(alignment: .leading, spacing: 2) {
+            MonoLabel(text: L("Wartości / 100 g"))
+                .padding(.bottom, 4)
+            stepperRow(label: L("Kalorie"), value: $kcal, step: 5, range: 0...900, unit: "kcal")
+            stepperRow(label: L("Protein"), value: $protein, step: 1, range: 0...100, unit: "g")
+            stepperRow(label: L("Węgle"), value: $carbs, step: 1, range: 0...100, unit: "g")
+            stepperRow(label: L("Tłuszcz"), value: $fat, step: 1, range: 0...100, unit: "g")
         }
+        .monoCard(padding: 16)
     }
 
+    /// "Sugerowana porcja": one stepper + hint.
     private var portionCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Sugerowana porcja")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                stepper(label: "Porcja (g)", value: $defaultPortion, step: 10, range: 0...1000)
-                Text("0 = zostaw bez sugestii — wybierzesz wagę przy logowaniu.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Sugerowana porcja"))
+            stepperRow(label: L("Porcja"), value: $defaultPortion, step: 10, range: 0...1000, unit: "g")
+            Text("0 = zostaw bez sugestii — wybierzesz wagę przy logowaniu.")
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .monoCard(padding: 16)
     }
 
-    private func stepper(
-        label: LocalizedStringKey,
+    /// `nrow(label, value, unit)`: 14/800 label left, − value + stepper right.
+    private func stepperRow(
+        label: String,
         value: Binding<Int>,
         step: Int,
-        range: ClosedRange<Int>
+        range: ClosedRange<Int>,
+        unit: String
     ) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label)
-                    .font(Tokens.Font.subheadline)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text("\(value.wrappedValue)")
-                    .font(Tokens.Font.title3)
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            Spacer()
-            Stepper(value: value, in: range, step: step) {
-                EmptyView()
-            }
-            .labelsHidden()
+        let doubleValue = Binding<Double>(
+            get: { Double(value.wrappedValue) },
+            set: { value.wrappedValue = Int($0.rounded()) }
+        )
+        return HStack(spacing: 8) {
+            Text(label)
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
+            MonoStepper(
+                value: doubleValue,
+                range: Double(range.lowerBound)...Double(range.upperBound),
+                step: Double(step),
+                unit: unit
+            )
         }
+        .padding(.vertical, 6)
     }
 
     private func save() {

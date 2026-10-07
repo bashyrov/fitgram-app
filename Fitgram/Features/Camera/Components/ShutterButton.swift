@@ -10,17 +10,14 @@ struct ShutterButton: View {
         Button(action: action) {
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.9), lineWidth: 4)
-                    .frame(width: 80, height: 80)
+                    .fill(Tokens.Mono.hi)
+                    .frame(width: 84, height: 84)
+                    .overlay(Circle().strokeBorder(Color.white, lineWidth: 5))
                 if isBusy {
                     ProgressView()
                         .progressViewStyle(.circular)
-                        .tint(.white)
-                        .scaleEffect(1.4)
-                } else {
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 64, height: 64)
+                        .tint(Tokens.Mono.onHi)
+                        .scaleEffect(1.3)
                 }
             }
             .frame(width: 88, height: 88)

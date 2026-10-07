@@ -26,30 +26,36 @@ struct AddMealSheet: View {
     }
 
     var body: some View {
-        ZStack {
-            background
-            VStack(spacing: 0) {
-                header
-                ScrollView(showsIndicators: false) {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        scanButton
-                            .addHubStage(isVisible: hasAppeared, index: 0)
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 0) {
+                navRow
+                MonoH1(
+                    text: L("Dodaj posiłek"),
+                    sub: L("Każda metoda kończy się jasnym wyborem: ogólnie albo szczegółowo")
+                )
+                .padding(.horizontal, Tokens.Space.screenPadding)
 
-                        olaChefBlock
-                            .addHubStage(isVisible: hasAppeared, index: 1)
-
-                        quickActionGrid
-                            .addHubStage(isVisible: hasAppeared, index: 2)
-
-                        recentStrip
-                            .addHubStage(isVisible: hasAppeared, index: 3)
-                    }
+                scanButton
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.top, Tokens.Space.md)
-                    .padding(.bottom, Tokens.Space.huge)
-                }
+                    .padding(.top, 18)
+                    .addHubStage(isVisible: hasAppeared, index: 0)
+
+                olaChefBlock
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.top, 8)
+                    .addHubStage(isVisible: hasAppeared, index: 1)
+
+                quickActionGrid
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.top, 8)
+                    .addHubStage(isVisible: hasAppeared, index: 2)
+
+                recentStrip
+                    .addHubStage(isVisible: hasAppeared, index: 3)
             }
+            .padding(.bottom, 34)
         }
+        .background(Tokens.Palette.background.ignoresSafeArea())
         .onAppear {
             withAnimation(Tokens.Motion.gentle.delay(0.08)) {
                 hasAppeared = true
@@ -64,16 +70,29 @@ struct AddMealSheet: View {
 
 // MARK: - Sections
 extension AddMealSheet {
+    /// `nav('', 'Zamknij')` — muted text action on the left, no title.
+    private var navRow: some View {
+        HStack {
+            MonoNavText(title: L("Zamknij"), action: onCancel)
+                .frame(height: 44)
+                .accessibilityLabel(L("Zamknij"))
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 6)
+        .frame(minHeight: 52)
+    }
+
     private var quickActionGrid: some View {
         LazyVGrid(
             columns: [
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
+                GridItem(.flexible(), spacing: 8),
+                GridItem(.flexible(), spacing: 8),
             ],
-            spacing: Tokens.Space.sm
+            spacing: 8
         ) {
             AddMealMiniActionCard(
-                icon: "waveform",
+                icon: "mic",
                 tint: Tokens.Palette.lime,
                 title: "Głos",
                 subtitle: "Powiedz posiłek",
@@ -86,7 +105,7 @@ extension AddMealSheet {
             }
 
             AddMealMiniActionCard(
-                icon: "square.and.pencil",
+                icon: "pencil",
                 tint: Tokens.Palette.accent,
                 title: "Ręcznie",
                 subtitle: "Pełna kontrola",
@@ -96,17 +115,17 @@ extension AddMealSheet {
             }
 
             AddMealMiniActionCard(
-                icon: "magnifyingglass",
+                icon: "books.vertical",
                 tint: Tokens.Palette.primary,
                 title: "Baza",
-                subtitle: "Nasza baza dań",
+                subtitle: "Nasza baza dań · 300+ klasycznych dań",
                 quota: .unlimited
             ) {
                 run(onQuickDB)
             }
 
             AddMealMiniActionCard(
-                icon: "book.pages",
+                icon: "book.closed",
                 tint: Tokens.Palette.warning,
                 title: "Przepis",
                 subtitle: "Z biblioteki",
@@ -117,17 +136,16 @@ extension AddMealSheet {
         }
     }
 
+    /// `sec('', 'Jeszcze szybciej', mt 24)` + two outline pills.
     private var recentStrip: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text(L("Jeszcze szybciej"))
-                .font(Tokens.Font.caption.weight(.semibold))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-                .textCase(.uppercase)
-                .padding(.horizontal, Tokens.Space.xs)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoSectionHeader(title: L("Jeszcze szybciej"))
+                .padding(.horizontal, 18)
+                .padding(.top, 24 - Tokens.Space.lg)
 
-            HStack(spacing: Tokens.Space.sm) {
+            HStack(spacing: 8) {
                 AddMealCompactPill(
-                    icon: "barcode.viewfinder",
+                    icon: "barcode",
                     tint: Tokens.Palette.graphite,
                     title: "Kod",
                     quota: quotaLabel(
@@ -138,7 +156,7 @@ extension AddMealSheet {
                     run(onBarcode)
                 }
                 AddMealCompactPill(
-                    icon: "clock.arrow.circlepath",
+                    icon: "clock",
                     tint: Tokens.Palette.primary,
                     title: "Ostatnie",
                     quota: .unlimited
@@ -146,6 +164,7 @@ extension AddMealSheet {
                     run(onRecentMeal)
                 }
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
         }
     }
 
@@ -154,233 +173,97 @@ extension AddMealSheet {
         action()
     }
 
-    private var background: some View {
-        Tokens.Palette.background
-            .ignoresSafeArea()
-    }
-
-    private var header: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(L("Dodaj posiłek"))
-                    .font(Tokens.Font.archivo(size: 31, weight: 800, width: 115))
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(L("Każda metoda kończy się jasnym wyborem: ogólnie albo szczegółowo"))
-                    .font(Tokens.Font.subheadline)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer(minLength: 0)
-            Button(action: onCancel) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
-            }
-            .buttonStyle(.pressable)
-            .accessibilityLabel(L("Zamknij"))
-        }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.xl)
-        .padding(.bottom, Tokens.Space.lg)
-        .overlay(alignment: .bottom) {
-            LinearGradient(
-                colors: [
-                    Tokens.Palette.background.opacity(0),
-                    Tokens.Palette.separator.opacity(0.55),
-                    Tokens.Palette.background.opacity(0),
-                ],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-            .frame(height: 0.6)
-            .padding(.horizontal, Tokens.Space.screenPadding)
-            .allowsHitTesting(false)
-        }
-    }
-
+    /// Dark hero button: hi icon box 56, display title + AI tag, muted sub, quota pill, chevron.
     private var scanButton: some View {
         Button {
             run(onPhotoScan)
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .fill(photoIconBackground)
-                        .frame(width: 76, height: 76)
-                        .overlay(alignment: .topLeading) {
-                            Circle()
-                                .fill(.white.opacity(usesDarkActionGradient ? 0.16 : 0.26))
-                                .frame(width: 28, height: 28)
-                                .blur(radius: 5)
-                                .offset(x: 8, y: 8)
+            HStack(spacing: 14) {
+                MonoIconBox(systemName: "camera", style: .hi, size: 56)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Text(L("Skanuj zdjęciem"))
+                            .font(Tokens.Font.monoDisplay(22))
+                            .textCase(.uppercase)
+                            .foregroundStyle(Tokens.Mono.onHero)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        HStack(spacing: 4) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 10, weight: .bold))
+                            Text("AI")
+                                .font(Tokens.Font.manrope(11, weight: 800))
                         }
-                    Image(systemName: "camera.viewfinder")
-                        .font(.system(size: 34, weight: .medium))
-                        .foregroundStyle(primaryActionTextColor)
-                }
-                .shadow(color: photoGlowColor, radius: 18, y: 10)
-
-                VStack(alignment: .leading, spacing: 7) {
-                    HStack(spacing: 7) {
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 11, weight: .bold))
-                        Text("AI")
-                            .font(Tokens.Font.manrope(11, weight: 800))
+                        .foregroundStyle(Tokens.Mono.onHi)
+                        .padding(.horizontal, 8)
+                        .frame(height: 22)
+                        .background(Capsule().fill(Tokens.Mono.hi))
                     }
-                    .foregroundStyle(primaryActionTextColor.opacity(0.95))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(Capsule().fill(primaryActionTextColor.opacity(usesDarkActionGradient ? 0.14 : 0.20)))
-
-                    Text(L("Skanuj zdjęciem"))
-                        .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
-                        .foregroundStyle(primaryActionTextColor)
                     Text(L("AI rozpozna danie i pokaże tryb ogólny albo detale"))
                         .font(Tokens.Font.manrope(13, weight: 600))
-                        .foregroundStyle(primaryActionTextColor.opacity(0.78))
-                        .lineLimit(2)
-                }
-
-                Spacer(minLength: 0)
-
-                VStack(alignment: .trailing, spacing: Tokens.Space.sm) {
-                    AddMealQuotaBadge(
-                        quota: photoQuota,
-                        isProminent: true,
-                        foreground: primaryActionTextColor,
-                        background: primaryActionTextColor.opacity(usesDarkActionGradient ? 0.12 : 0.20)
-                    )
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(primaryActionTextColor.opacity(0.86))
-                }
-            }
-            .padding(Tokens.Space.lg)
-            .frame(maxWidth: .infinity)
-            .frame(minHeight: 154)
-            .background {
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .fill(
-                        primaryActionGradientStart
-                    )
-            }
-            .overlay(alignment: .top) {
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                .white.opacity(usesDarkActionGradient ? 0.14 : 0.30),
-                                .white.opacity(0),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                        .foregroundStyle(Tokens.Mono.heroMuted)
+                        .lineSpacing(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if photoQuota.label != nil {
+                        AddMealQuotaBadge(
+                            quota: photoQuota,
+                            isProminent: true,
+                            foreground: Tokens.Mono.onHero,
+                            background: Tokens.Mono.heroLine
                         )
-                    )
-                    .mask(
-                        RoundedRectangle(cornerRadius: 30, style: .continuous)
-                            .stroke(lineWidth: 1.1)
-                    )
+                        .padding(.top, 4)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.onHero)
             }
-            .overlay(alignment: .bottomTrailing) {
-                Image(systemName: "sparkle")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(primaryActionTextColor.opacity(0.16))
-                    .offset(x: -22, y: -18)
-            }
-            .shadow(color: primaryActionShadow, radius: 22, y: 12)
+            .padding(20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                    .fill(Tokens.Mono.hero)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous))
         }
         .buttonStyle(.pressable)
     }
-}
 
-// MARK: - Styling
-extension AddMealSheet {
-    private var primaryActionTextColor: Color {
-        Tokens.Mono.onHero
-    }
-
-    private var primaryActionGradientStart: Color {
-        Tokens.Mono.hero
-    }
-
-    private var primaryActionGradientMiddle: Color {
-        usesDarkActionGradient ? Tokens.Palette.surfaceMuted.opacity(0.92) : Tokens.Palette.accent
-    }
-
-    private var primaryActionGradientEnd: Color {
-        usesDarkActionGradient ? Tokens.Palette.primary.opacity(0.34) : Tokens.Palette.mutedGreen
-    }
-
-    private var primaryActionShadow: Color {
-        usesDarkActionGradient ? Tokens.Palette.primary.opacity(0.18) : Tokens.Palette.primary.opacity(0.22)
-    }
-
-    private var photoIconBackground: Color {
-        Tokens.Mono.heroLine
-    }
-
-    private var photoGlowColor: Color {
-        Color.clear
-    }
-
+    /// Accent "Kuchnia Oli" button: fork icon, Archivo title, onAccentSub copy, chevron.
     private var olaChefBlock: some View {
         Button {
             run(onOlaChef)
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: chefIconGradientColors,
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                    Image(systemName: "fork.knife.circle.fill")
-                        .font(.system(size: 30, weight: .bold))
-                        .foregroundStyle(Tokens.Mono.hi)
-                }
-                .frame(width: 64, height: 64)
-
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(spacing: 6) {
-                        Text(L("Kuchnia Oli"))
-                            .font(Tokens.Font.manrope(21, weight: 800))
-                            .foregroundStyle(Tokens.Palette.ink)
-                        AddMealQuotaBadge(quota: .unlimited, isProminent: false)
-                    }
+            HStack(spacing: 12) {
+                Image(systemName: "fork.knife")
+                    .font(.system(size: 24, weight: .medium))
+                    .frame(width: 28)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(L("Kuchnia Oli"))
+                        .font(Tokens.Font.archivo(size: 17, weight: 800, width: 115))
                     Text(L("Wybierz kalorie, a Ola dobierze danie, porcję, składniki i przepis."))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(2)
+                        .font(Tokens.Font.manrope(12, weight: 700))
+                        .foregroundStyle(Tokens.Mono.onAccentSub)
+                        .lineSpacing(2)
                         .fixedSize(horizontal: false, vertical: true)
-                    HStack(spacing: 6) {
-                        Image(systemName: "books.vertical.fill")
-                        Text(L("300+ klasycznych dań"))
-                    }
-                    .font(Tokens.Font.manrope(11, weight: 800))
-                    .foregroundStyle(Tokens.Mono.muted)
                 }
-                Spacer(minLength: 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(.system(size: 15, weight: .bold))
             }
-            .padding(Tokens.Space.md)
+            .foregroundStyle(Tokens.Mono.onAccent)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
-                RoundedRectangle(cornerRadius: 26, style: .continuous).fill(Tokens.Palette.surface.opacity(0.84))
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(Tokens.Mono.accent)
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(Tokens.Mono.line, lineWidth: 1)
-            )
+            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         }
         .buttonStyle(.pressable)
-    }
-
-    private var chefIconGradientColors: [Color] {
-        [Tokens.Mono.hero, Tokens.Mono.hero]
     }
 }
 

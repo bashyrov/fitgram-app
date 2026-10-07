@@ -16,52 +16,39 @@ struct QuickDatabaseRootView: View {
     @State private var pickedFood: Food?
     @State private var isResetConfirmed = false
     @State private var saveError: String?
+    @State private var isCustomFoodPresented = false
+    @State private var isLabelScannerPresented = false
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                VStack(spacing: Tokens.Space.md) {
-                    searchField
-                    categoryStrip
-                    list
-                }
-                .padding(.top, Tokens.Space.md)
+            VStack(spacing: 0) {
+                searchField
+                    .padding(.top, 6)
+                categoryStrip
+                    .padding(.top, 10)
+                list
             }
-            .navigationTitle(Text("Baza dań"))
-            .navigationBarTitleDisplayMode(.inline)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Baza dań"))
             .toolbar {
-                if state.shouldShowSuggestions {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Menu {
-                            Button(role: .destructive) {
-                                isResetConfirmed = true
-                            } label: {
-                                Label("Resetuj ostatnie i częste", systemImage: "arrow.counterclockwise")
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
-                        }
-                        .accessibilityLabel(Text("Więcej opcji"))
-                    }
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij", action: onDismiss)
+                if state.shouldShowSuggestions {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        optionsMenu
+                    }
                 }
             }
             .task { await state.refresh() }
             .sheet(item: $pickedFood) { food in
-                FoodDetailSheet(
-                    food: food,
-                    onSave: { commit(food: food, items: $0, suggestedMealType: Self.suggestedMealType()) },
-                    onDismiss: { pickedFood = nil },
-                    favoritesService: favoritesService,
-                    entitlementsStore: entitlementsStore,
-                    paywallCoordinator: paywallCoordinator,
-                    userRemoteID: userRemoteID,
-                    mealAnalyzer: mealAnalyzer,
-                    usageMeter: usageMeter
-                )
+                foodDetailSheet(food)
+            }
+            .sheet(isPresented: $isCustomFoodPresented) {
+                customFoodSheet
+            }
+            .sheet(isPresented: $isLabelScannerPresented) {
+                labelScannerSheet
             }
             .confirmationDialog(
                 "Zresetować ostatnie i częste?",
@@ -92,10 +79,65 @@ struct QuickDatabaseRootView: View {
 
 // MARK: - Sections
 extension QuickDatabaseRootView {
+    private func foodDetailSheet(_ food: Food) -> some View {
+        FoodDetailSheet(
+            food: food,
+            onSave: { commit(food: food, items: $0, suggestedMealType: Self.suggestedMealType()) },
+            onDismiss: { pickedFood = nil },
+            favoritesService: favoritesService,
+            entitlementsStore: entitlementsStore,
+            paywallCoordinator: paywallCoordinator,
+            userRemoteID: userRemoteID,
+            mealAnalyzer: mealAnalyzer,
+            usageMeter: usageMeter
+        )
+    }
+
+    private var customFoodSheet: some View {
+        CustomFoodFormSheet(
+            onSave: { food in
+                isCustomFoodPresented = false
+                Task { await state.createCustomFood(food) }
+            },
+            onDismiss: { isCustomFoodPresented = false }
+        )
+    }
+
+    private var labelScannerSheet: some View {
+        LabelScannerSheet(
+            scanner: FoodLabelScanner(),
+            onSave: { food in
+                isLabelScannerPresented = false
+                Task { await state.createCustomFood(food) }
+            },
+            onDismiss: { isLabelScannerPresented = false }
+        )
+    }
+
+    /// `nav(..., 'gear', 'icon')`: round outline icon button holding the reset menu.
+    private var optionsMenu: some View {
+        Menu {
+            Button(role: .destructive) {
+                isResetConfirmed = true
+            } label: {
+                Label("Resetuj ostatnie i częste", systemImage: "arrow.counterclockwise")
+            }
+        } label: {
+            Image(systemName: "gearshape")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 44, height: 44)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+        }
+        .accessibilityLabel(Text("Więcej opcji"))
+    }
+
+    /// 50 pt search bar: card fill, line2 border, radius 16.
     private var searchField: some View {
-        HStack(spacing: Tokens.Space.sm) {
+        HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.muted)
             TextField(
                 "Szukaj dania",
                 text: Binding(
@@ -103,6 +145,8 @@ extension QuickDatabaseRootView {
                     set: { value in Task { await state.applyQuery(value) } }
                 )
             )
+            .font(Tokens.Font.manrope(15, weight: 600))
+            .foregroundStyle(Tokens.Palette.ink)
             .textInputAutocapitalization(.never)
             .submitLabel(.search)
             if !state.query.isEmpty {
@@ -110,40 +154,43 @@ extension QuickDatabaseRootView {
                     Task { await state.applyQuery("") }
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
+                .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, Tokens.Space.md)
-        .padding(.vertical, Tokens.Space.sm)
+        .padding(.horizontal, 14)
+        .frame(height: 50)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Tokens.Palette.surface)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Tokens.Mono.line2, lineWidth: 1)
         )
         .padding(.horizontal, Tokens.Space.screenPadding)
     }
 
+    /// `chips([...], 0)`: Wszystko · categories · Tylko moje.
     private var categoryStrip: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Tokens.Space.sm) {
-                chip(label: "Wszystko", isSelected: state.selectedCategory == nil) {
+            HStack(spacing: 6) {
+                MonoChip(title: L("Wszystko"), isSelected: state.selectedCategory == nil) {
                     Task { await state.selectCategory(nil) }
                 }
-                if state.hasCustomFoods {
-                    chip(label: "Tylko moje", isSelected: state.customOnly) {
-                        Task { await state.toggleCustomOnly() }
-                    }
-                }
                 ForEach(state.availableCategories, id: \.self) { category in
-                    chip(
-                        label: category.localizedLabel,
+                    MonoChip(
+                        title: category.localizedLabel,
                         isSelected: state.selectedCategory == category
                     ) {
                         Task { await state.selectCategory(category) }
+                    }
+                }
+                if state.hasCustomFoods {
+                    MonoChip(title: L("Tylko moje"), isSelected: state.customOnly) {
+                        Task { await state.toggleCustomOnly() }
                     }
                 }
             }
@@ -151,93 +198,48 @@ extension QuickDatabaseRootView {
         }
     }
 
-    private func chip(label: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(label)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(isSelected ? .white : Tokens.Palette.ink)
-                .padding(.horizontal, Tokens.Space.md)
-                .padding(.vertical, Tokens.Space.sm)
-                .background(
-                    Capsule().fill(isSelected ? Tokens.Palette.primary : Tokens.Palette.surface)
-                )
-                .overlay(
-                    Capsule().stroke(
-                        isSelected ? Tokens.Palette.primary : Tokens.Palette.separator,
-                        lineWidth: 1
-                    )
-                )
-        }
-        .buttonStyle(PressableButtonStyle())
-    }
-
-    @ViewBuilder
     private var list: some View {
-        if state.isLoading && state.foods.isEmpty {
-            ScrollView {
-                VStack(spacing: Tokens.Space.sm) {
-                    ForEach(0..<8, id: \.self) { _ in
-                        LoadingShimmer(cornerRadius: Tokens.Radius.md)
-                            .frame(height: 64)
-                    }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                if state.shouldShowSuggestions && !state.foods.isEmpty {
+                    suggestionsSection
                 }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.sm)
+                allSection
+                addOwnCard
+                    .padding(.top, 12)
+                longPressCard
+                    .padding(.top, 14)
             }
-        } else if state.foods.isEmpty {
-            VStack(spacing: Tokens.Space.md) {
-                Spacer()
-                EmptyState(
-                    symbol: "magnifyingglass",
-                    title: "Nic nie znaleziono",
-                    message: "Spróbuj innego zapytania albo wyczyść filtr kategorii.",
-                    action: nil
-                )
-                Spacer()
-            }
-        } else {
-            ScrollView {
-                LazyVStack(spacing: Tokens.Space.sm, pinnedViews: []) {
-                    if state.shouldShowSuggestions {
-                        suggestionsSection
-                    }
-                    ForEach(state.foods) { food in
-                        foodRow(food)
-                    }
-                }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.bottom, Tokens.Space.xxxl)
-            }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.bottom, 34)
         }
+        .scrollDismissesKeyboard(.interactively)
     }
 
     @ViewBuilder
     private var suggestionsSection: some View {
         if !state.recentPicks.isEmpty {
-            suggestionGroup(title: "Ostatnie", foods: state.recentPicks)
+            suggestionGroup(title: L("Ostatnie"), foods: state.recentPicks)
         }
         if !state.popularPicks.isEmpty {
-            suggestionGroup(title: "Częste", foods: state.popularPicks)
+            suggestionGroup(title: L("Częste"), foods: state.popularPicks)
         }
-        Text("Wszystko")
-            .font(Tokens.Font.headline)
-            .foregroundStyle(Tokens.Palette.ink)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, Tokens.Space.md)
     }
 
-    private func suggestionGroup(title: LocalizedStringKey, foods: [Food]) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text(title)
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
+    /// `carousel(title, items)`: section header + 140 pt cards (radius 18).
+    private func suggestionGroup(title: String, foods: [Food]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoSectionHeader(title: title)
+                .padding(.horizontal, 6)
+                .padding(.top, 20 - Tokens.Space.lg)
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: Tokens.Space.sm) {
+                HStack(spacing: 8) {
                     ForEach(foods) { food in
                         suggestionChip(food)
                     }
                 }
             }
+            .scrollClipDisabled()
         }
     }
 
@@ -245,62 +247,76 @@ extension QuickDatabaseRootView {
         Button {
             pickedFood = food
         } label: {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(food.localizedName)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(14, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
-                    .lineLimit(1)
-                Text("\(Int(food.caloriesKcalPer100g)) kcal / 100g")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("\(Int(food.caloriesKcalPer100g)) kcal/100g")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
-            .padding(.vertical, Tokens.Space.sm)
-            .padding(.horizontal, Tokens.Space.md)
-            .frame(maxWidth: 220, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(Tokens.Palette.primarySoft)
-            )
+            .padding(12)
+            .frame(width: 140, alignment: .topLeading)
+            .monoSurface(radius: 18)
         }
         .buttonStyle(PressableButtonStyle())
     }
 
+    /// `sec('', 'Wszystko', count)` + one rows card (divider inset 16).
+    @ViewBuilder
+    private var allSection: some View {
+        MonoSectionHeader(title: L("Wszystko")) {
+            if !state.foods.isEmpty {
+                MonoLabel(text: "\(state.foods.count)")
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.top, 22 - Tokens.Space.lg)
+        .padding(.bottom, 12)
+        if state.isLoading && state.foods.isEmpty {
+            VStack(spacing: Tokens.Space.sm) {
+                ForEach(0..<8, id: \.self) { _ in
+                    LoadingShimmer(cornerRadius: Tokens.Radius.md)
+                        .frame(height: 64)
+                }
+            }
+        } else if state.foods.isEmpty {
+            EmptyState(
+                symbol: "magnifyingglass",
+                title: "Nic nie znaleziono",
+                message: "Spróbuj innego zapytania albo wyczyść filtr kategorii.",
+                action: nil
+            )
+            .padding(.vertical, Tokens.Space.lg)
+        } else {
+            LazyVStack(spacing: 0) {
+                ForEach(Array(state.foods.enumerated()), id: \.element.id) { index, food in
+                    if index > 0 {
+                        MonoRowDivider(inset: 16)
+                    }
+                    foodRow(food)
+                }
+            }
+            .monoRowsCard()
+        }
+    }
+
+    /// `row(None, name, 'X kcal / 100 g', dark + button)`.
     private func foodRow(_ food: Food) -> some View {
         Button {
             pickedFood = food
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
-                        .frame(width: 36, height: 36)
-                    Image(systemName: icon(for: food.category))
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(food.localizedName)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(subtitle(for: food))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .lineLimit(1)
-                }
-                Spacer(minLength: 0)
-                Text("\(Int(food.caloriesKcalPer100g)) kcal/100g")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+            MonoRow(title: food.localizedName, sub: subtitle(for: food)) {
+                Image(systemName: "plus")
+                    .font(.system(size: 13, weight: .heavy))
+                    .foregroundStyle(Tokens.Mono.hi)
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(Tokens.Mono.hero))
+                    .accessibilityHidden(true)
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-            )
         }
         .buttonStyle(.plain)
         .contextMenu {
@@ -317,6 +333,73 @@ extension QuickDatabaseRootView {
                 Label("Wybierz wielkość…", systemImage: "ruler")
             }
         }
+    }
+
+    /// "Nie ma Twojego dania?" — add a custom food or scan a nutrition label.
+    private var addOwnCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                MonoIconBox(systemName: "plus", style: .track, size: 36)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(
+                        TL(
+                            pl: "Nie ma Twojego dania?", en: "Can't find your dish?", uk: "Немає твоєї страви?",
+                            ru: "Нет твоего блюда?", es: "¿No encuentras tu plato?"
+                        )
+                    )
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    Text(
+                        TL(
+                            pl: "Dodaj własne albo zeskanuj etykietę.", en: "Add your own or scan a label.",
+                            uk: "Додай власну або скануй етикетку.", ru: "Добавь своё или отсканируй этикетку.",
+                            es: "Añade el tuyo o escanea una etiqueta."
+                        )
+                    )
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            HStack(spacing: 8) {
+                MonoButton(title: L("Dodaj do bazy"), kind: .outline, icon: "plus", height: 44) {
+                    isCustomFoodPresented = true
+                }
+                MonoButton(
+                    title: TL(
+                        pl: "Skanuj etykietę", en: "Scan label", uk: "Сканувати етикетку",
+                        ru: "Сканировать этикетку", es: "Escanear etiqueta"
+                    ),
+                    kind: .dark,
+                    icon: "camera",
+                    height: 44
+                ) {
+                    isLabelScannerPresented = true
+                }
+            }
+        }
+        .monoCard(padding: 16)
+    }
+
+    /// "Długie przytrzymanie" hint describing the row context menu.
+    private var longPressCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(
+                text: TL(
+                    pl: "Długie przytrzymanie", en: "Long press", uk: "Довге натискання",
+                    ru: "Долгое нажатие", es: "Mantén pulsado"
+                )
+            )
+            VStack(alignment: .leading, spacing: 6) {
+                Label("Dodaj domyślną porcję", systemImage: "bolt")
+                Label("Wybierz wielkość…", systemImage: "ruler")
+            }
+            .font(Tokens.Font.manrope(14, weight: 700))
+            .foregroundStyle(Tokens.Palette.ink)
+            .labelStyle(QuickDatabaseHintLabelStyle())
+        }
+        .monoCard(padding: 16)
     }
 
     /// One-tap commit using the food's default portion. Skips the
@@ -336,31 +419,20 @@ extension QuickDatabaseRootView {
         commit(food: food, items: [item], suggestedMealType: Self.suggestedMealType())
     }
 
+    /// "X kcal / 100 g · brand or category" (+ " · moje" for user-authored rows).
     private func subtitle(for food: Food) -> String {
-        if let restaurant = food.restaurantName, !restaurant.isEmpty { return restaurant }
-        if let brand = food.brand, !brand.isEmpty { return brand }
-        return food.category.localizedLabel
-    }
-
-    private static let categoryIcons: [FoodCategory: String] = [
-        .homemade: "house.fill",
-        .fastFood: "takeoutbag.and.cup.and.straw.fill",
-        .restaurant: "fork.knife",
-        .bakery: "birthday.cake.fill",
-        .beverage: "cup.and.saucer.fill",
-        .dairy: "drop.fill",
-        .meat: "flame.fill",
-        .seafood: "fish.fill",
-        .produce: "leaf.fill",
-        .grain: "bowl.fill",
-        .sweets: "birthday.cake.fill",
-        .packaged: "shippingbox.fill",
-        .snack: "popcorn.fill",
-        .general: "circle.fill",
-    ]
-
-    private func icon(for category: FoodCategory) -> String {
-        Self.categoryIcons[category] ?? "circle.fill"
+        var parts = ["\(Int(food.caloriesKcalPer100g)) kcal / 100 g"]
+        if let restaurant = food.restaurantName, !restaurant.isEmpty {
+            parts.append(restaurant)
+        } else if let brand = food.brand, !brand.isEmpty {
+            parts.append(brand)
+        } else {
+            parts.append(food.category.localizedLabel)
+        }
+        if !food.verified {
+            parts.append(TL(pl: "moje", en: "mine", uk: "моє", ru: "моё", es: "mío"))
+        }
+        return parts.joined(separator: " · ")
     }
 }
 
@@ -389,6 +461,18 @@ extension QuickDatabaseRootView {
         case 11..<16: return .lunch
         case 16..<21: return .dinner
         default: return .snack
+        }
+    }
+}
+
+/// Icon + title line used in the "Długie przytrzymanie" hint card.
+private struct QuickDatabaseHintLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 8) {
+            configuration.icon
+                .font(.system(size: 14, weight: .semibold))
+                .frame(width: 16)
+            configuration.title
         }
     }
 }

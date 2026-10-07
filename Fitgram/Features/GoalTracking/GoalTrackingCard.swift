@@ -22,108 +22,72 @@ struct GoalTrackingCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            Card(elevation: Tokens.Shadow.card) {
-                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                    header
-                    weightRow
-                    daysRow
-                    if !tips.isEmpty {
-                        Divider()
-                            .padding(.vertical, 2)
-                        tipsBlock
-                    }
+            VStack(alignment: .leading, spacing: 14) {
+                header
+                weightRow
+                if !tips.isEmpty {
+                    tipsBlock
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .monoCard(padding: 16)
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("Twój cel — zobacz postęp"))
     }
 
+    /// Mockup: "TWÓJ CEL · AI" label left, "Dzień 12 z 90" muted right.
     private var header: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "target")
-                .foregroundStyle(Tokens.Palette.ink)
-            Text("Twój cel · AI")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-        }
-    }
-
-    private var weightRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Teraz")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text(String(format: "%.1f kg", snapshot.currentWeightKg))
-                    .font(Tokens.Font.monoNumber(26))
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            Image(systemName: "arrow.right")
-                .font(.caption)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Goal")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text(String(format: "%.1f kg", snapshot.targetWeightKg))
-                    .font(Tokens.Font.monoNumber(26))
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            Spacer(minLength: Tokens.Space.sm)
-            sparkline
-        }
-    }
-
-    private var daysRow: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "calendar")
-                .font(.caption2)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-            Text(daysLabel)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            Spacer()
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            MonoLabel(text: L("Twój cel · AI"))
+            Spacer(minLength: 8)
             if snapshot.isGoalReached {
                 Text("Goal reached")
-                    .font(Tokens.Font.caption)
+                    .font(Tokens.Font.manrope(12, weight: 800))
                     .foregroundStyle(Tokens.Palette.success)
+                    .lineLimit(1)
             }
+            Text(daysLabel)
+                .font(Tokens.Font.manrope(12, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineLimit(1)
         }
     }
 
-    /// Compact list of 2–3 AI recommendations rendered as
-    /// emoji-chip · title rows. Keeps each line short — the user opens
-    /// the full sheet for bodies.
+    /// Mockup: "Teraz 68,4 kg" — progress bar — "Cel 62 kg".
+    private var weightRow: some View {
+        HStack(alignment: .bottom, spacing: 12) {
+            GoalWeightColumn(label: "Teraz", weightKg: snapshot.currentWeightKg, alignment: .leading)
+            MonoBar(progress: snapshot.progress, color: Tokens.Mono.strong, track: Tokens.Mono.track, height: 6)
+                .padding(.bottom, 10)
+            GoalWeightColumn(label: "Goal", weightKg: snapshot.targetWeightKg, alignment: .trailing)
+        }
+    }
+
+    /// Mockup "Co pomoże dziś": hairline on top, accent ✦ + 13/600 tip titles.
     private var tipsBlock: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 4) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.accent)
-                Text("What helps today")
-                    .font(.system(size: 11, weight: .heavy))
-                    .tracking(1)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Tokens.Palette.accent)
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            MonoLabel(text: L("What helps today"))
             ForEach(Array(tips.prefix(3).enumerated()), id: \.offset) { _, tip in
-                HStack(alignment: .top, spacing: 8) {
-                    Text(tip.icon)
-                        .font(.system(size: 14))
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(verbatim: "✦")
+                        .font(Tokens.Font.manrope(13, weight: 800))
+                        .foregroundStyle(Tokens.Mono.accent)
                     Text(L(tip.title))
-                        .font(Tokens.Font.footnote)
+                        .font(Tokens.Font.manrope(13, weight: 600))
                         .foregroundStyle(Tokens.Palette.ink)
+                        .lineSpacing(2)
                         .lineLimit(2)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
+        .padding(.top, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .top) {
+            Rectangle().fill(Tokens.Mono.line).frame(height: 1)
+        }
     }
 
     private var daysLabel: String {
@@ -131,34 +95,6 @@ struct GoalTrackingCard: View {
             return String.localizedStringWithFormat(L("Day %lld of %lld"), snapshot.daysElapsed, total)
         }
         return String.localizedStringWithFormat(L("Day %lld"), snapshot.daysElapsed)
-    }
-
-    @ViewBuilder
-    private var sparkline: some View {
-        let points = snapshot.last14Days
-        if points.count >= 2 {
-            Chart(points) { point in
-                LineMark(
-                    x: .value("Date", point.date),
-                    y: .value("Weight", point.weightKg)
-                )
-                .interpolationMethod(.monotone)
-                .foregroundStyle(Tokens.Palette.primary)
-            }
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartPlotStyle { $0.background(Color.clear) }
-            .frame(width: 92, height: 36)
-        } else {
-            RoundedRectangle(cornerRadius: Tokens.Radius.sm, style: .continuous)
-                .fill(Tokens.Palette.primarySoft)
-                .frame(width: 92, height: 36)
-                .overlay(
-                    Text("—")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                )
-        }
     }
 }
 
@@ -177,20 +113,24 @@ struct GoalTrackingPeekCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            Card(elevation: Tokens.Shadow.card) {
-                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                    header
-                    ZStack {
-                        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                            placeholderWeightRow
-                            placeholderTipsBlock
-                        }
-                        .blur(radius: 6)
-                        .allowsHitTesting(false)
+            VStack(alignment: .leading, spacing: 14) {
+                header
+                ZStack {
+                    VStack(alignment: .leading, spacing: 14) {
+                        placeholderWeightRow
+                        placeholderTipsLine
+                    }
+                    .blur(radius: 5)
+                    .opacity(0.7)
+                    .allowsHitTesting(false)
+                    if !isLocked {
                         actionChip
                     }
                 }
+                .clipped()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .monoCard(padding: 16)
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityElement(children: .combine)
@@ -198,101 +138,90 @@ struct GoalTrackingPeekCard: View {
     }
 
     private var header: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "target")
-                .foregroundStyle(Tokens.Palette.ink)
-            Text("Twój cel · AI")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
+        HStack(spacing: 8) {
+            MonoLabel(text: L("Twój cel · AI"))
+            Spacer(minLength: 8)
             if isLocked {
                 premiumHint
             } else {
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                MonoChevron()
             }
         }
     }
 
+    /// Mockup PRO badge: 22 pt hero chip, hi lock + "PRO".
     private var premiumHint: some View {
         HStack(spacing: 4) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 9, weight: .bold))
             Text("PRO")
                 .font(Tokens.Font.manrope(10, weight: 800))
-                .tracking(0.6)
+                .tracking(0.8)
         }
         .foregroundStyle(Tokens.Mono.hi)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
+        .padding(.horizontal, 8)
+        .frame(height: 22)
         .background(
-            Capsule().fill(Tokens.Mono.hero)
+            RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Tokens.Mono.hero)
         )
     }
 
     private var placeholderWeightRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Teraz")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text(currentWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
-                    .font(Tokens.Font.monoNumber(26))
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            Image(systemName: "arrow.right")
-                .font(.caption)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Goal")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Text(targetWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
-                    .font(Tokens.Font.monoNumber(26))
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            Spacer(minLength: Tokens.Space.sm)
-            RoundedRectangle(cornerRadius: Tokens.Radius.sm, style: .continuous)
-                .fill(Tokens.Palette.primarySoft)
-                .frame(width: 92, height: 36)
+        HStack(alignment: .bottom, spacing: 12) {
+            Text(currentWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
+                .font(Tokens.Font.monoNumber(26))
+                .foregroundStyle(Tokens.Palette.ink)
+            Capsule()
+                .fill(Tokens.Mono.strong)
+                .frame(height: 6)
+                .padding(.bottom, 8)
+            Text(targetWeightKg.map { String(format: "%.1f kg", $0) } ?? "— kg")
+                .font(Tokens.Font.monoNumber(26))
+                .foregroundStyle(Tokens.Palette.ink)
         }
     }
 
-    private var placeholderTipsBlock: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 4) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.accent)
-                Text("What helps today")
-                    .font(.system(size: 11, weight: .heavy))
-                    .tracking(1)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Tokens.Palette.accent)
-            }
-            ForEach(0..<3, id: \.self) { _ in
-                HStack(alignment: .top, spacing: 8) {
-                    Text("✦")
-                        .font(.system(size: 14))
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Tokens.Palette.separator)
-                        .frame(height: 12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    private var placeholderTipsLine: some View {
+        Text(verbatim: "✦ ••••••••• · ✦ ••••••••• · ✦ •••••••••")
+            .font(Tokens.Font.manrope(13, weight: 600))
+            .foregroundStyle(Tokens.Palette.ink)
+            .lineLimit(1)
     }
 
     private var actionChip: some View {
         HStack(spacing: 6) {
-            Image(systemName: isLocked ? "sparkles" : "target")
+            Image(systemName: "target")
                 .font(.system(size: 12, weight: .bold))
-            Text(isLocked ? "PRO" : "Otwórz cel")
+            Text("Otwórz cel")
                 .font(Tokens.Font.manrope(12, weight: 800))
-                .tracking(isLocked ? 0.7 : 0)
         }
         .foregroundStyle(Tokens.Mono.hi)
         .padding(.horizontal, 15)
         .padding(.vertical, 8)
         .background(Capsule().fill(Tokens.Mono.hero))
+    }
+}
+
+/// "Teraz / Cel" column: 11/700 muted caption over a 26 pt italic number + 13 pt "kg".
+private struct GoalWeightColumn: View {
+    let label: LocalizedStringKey
+    let weightKg: Double
+    let alignment: HorizontalAlignment
+
+    var body: some View {
+        VStack(alignment: alignment, spacing: 2) {
+            Text(label)
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(String(format: "%.1f", weightKg))
+                    .font(Tokens.Font.monoNumber(26))
+                Text(verbatim: "kg")
+                    .font(Tokens.Font.manrope(13, weight: 700))
+            }
+            .foregroundStyle(Tokens.Palette.ink)
+            .lineLimit(1)
+        }
+        .fixedSize()
     }
 }

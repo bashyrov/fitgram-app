@@ -15,120 +15,80 @@ struct WhatsNewSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                backgroundOrnament
-                ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        header
-                        highlightsList
-                        Spacer(minLength: 40)
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.top, Tokens.Space.lg)
-                    .padding(.bottom, 100)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    header
+                    highlightsList
+                        .padding(.top, 16)
                 }
-                VStack {
-                    Spacer()
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, Tokens.Space.lg)
+            }
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                MonoBottomBar {
                     primaryButton
                 }
             }
+            .monoNavigationTitle(L("Co nowego"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Later", action: onDismiss)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Later"), action: onDismiss)
                 }
             }
         }
     }
 
-    private var backgroundOrnament: some View {
-        ScreenBackground(mood: .calm)
-    }
-
     private var header: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack(spacing: Tokens.Space.sm) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            Tokens.Palette.primary
-                        )
-                        .frame(width: 56, height: 56)
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Co nowego")
-                        .font(Tokens.Font.caption)
-                        .textCase(.uppercase)
-                        .tracking(1.2)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    Text(String.localizedStringWithFormat(L("Fitgram %@"), entry.version))
-                        .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                Spacer(minLength: 0)
-            }
+        VStack(alignment: .leading, spacing: 6) {
+            MonoH1(
+                text: L("Co nowego"),
+                sub: String.localizedStringWithFormat(L("Fitgram %@"), entry.version)
+            )
             Text(entry.headline)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(14, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(3)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 6)
         }
     }
 
     private var highlightsList: some View {
-        VStack(spacing: Tokens.Space.md) {
-            ForEach(Array(entry.highlights.enumerated()), id: \.offset) { _, item in
-                Card {
-                    HStack(alignment: .top, spacing: Tokens.Space.md) {
-                        ZStack {
-                            Circle()
-                                .fill(item.tint.opacity(0.18))
-                                .frame(width: 44, height: 44)
-                            Image(systemName: item.symbol)
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(item.tint)
-                        }
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(item.title)
-                                .font(Tokens.Font.bodyEmphasized)
-                                .foregroundStyle(Tokens.Palette.ink)
-                            Text(item.body)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        Spacer(minLength: 0)
-                    }
+        VStack(spacing: 0) {
+            ForEach(Array(entry.highlights.enumerated()), id: \.offset) { index, item in
+                if index > 0 {
+                    MonoRowDivider()
                 }
+                HStack(spacing: 12) {
+                    MonoIconBox(systemName: item.symbol, style: .dark, size: 40)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.title)
+                            .font(Tokens.Font.manrope(15, weight: 800))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(item.body)
+                            .font(Tokens.Font.manrope(12, weight: 600))
+                            .foregroundStyle(Tokens.Mono.muted)
+                            .lineSpacing(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.vertical, 13)
+                .padding(.horizontal, 16)
+                .accessibilityElement(children: .combine)
             }
         }
+        .monoRowsCard()
     }
 
     private var primaryButton: some View {
-        Button {
+        MonoButton(title: L("Zaczynamy"), kind: .dark) {
             Haptics.success()
             onDismiss()
-        } label: {
-            HStack(spacing: 8) {
-                Text("Zaczynamy")
-                    .font(Tokens.Font.bodyEmphasized)
-                Image(systemName: "arrow.right")
-                    .font(.system(size: 14, weight: .bold))
-            }
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Tokens.Space.md)
-            .background(
-                Capsule().fill(
-                    Tokens.Palette.primary
-                )
-            )
         }
-        .buttonStyle(.plain)
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.bottom, Tokens.Space.lg)
     }
 }
 
@@ -170,13 +130,13 @@ enum WhatsNewCatalog {
             headline: "Pierwsze wydanie Fitgrama. Dzięki, że jesteś tu od dnia 1.",
             highlights: [
                 .init(
-                    symbol: "camera.fill",
+                    symbol: "camera",
                     tint: Tokens.Palette.primary,
                     title: "Skanowanie posiłków zdjęciem",
                     body: "AI rozpoznaje pierogi, schabowy, kasze, zupy — 160+ polskich dań w bazie."
                 ),
                 .init(
-                    symbol: "sparkles.tv",
+                    symbol: "sparkles",
                     tint: Tokens.Palette.accent,
                     title: "Trener AI Ola",
                     body: "Codzienne podsumowania + 150 ciekawostek o kaloriach, treningu i kuchni polskiej."
@@ -194,7 +154,7 @@ enum WhatsNewCatalog {
                     body: "Polski, English, Українська, Русский, Español — zmiana bez restartu w Ustawieniach."
                 ),
                 .init(
-                    symbol: "applewatch",
+                    symbol: "square.grid.2x2",
                     tint: Tokens.Palette.success,
                     title: "Widżety, Live Activity, Apple Watch",
                     body: "Kalorie na lock screenie, w Dynamic Island i na nadgarstku."

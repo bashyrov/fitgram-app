@@ -49,15 +49,13 @@ struct VoiceRootView: View {
                     onDismiss: onDismiss
                 )
             case .idle, .listening:
-                VStack {
-                    topBar
-                    Spacer(minLength: 0)
+                VStack(spacing: 0) {
+                    AddFlowNavBar(title: L("Meal by voice"), onLeft: onDismiss)
                     VoiceCaptureView(
                         isListening: isListening,
                         transcript: state.partialTranscript,
                         onToggle: toggleCapture
                     )
-                    Spacer(minLength: 0)
                 }
             case .finished(let transcript):
                 ConfirmationView(
@@ -72,18 +70,21 @@ struct VoiceRootView: View {
                     onDismiss: onDismiss
                 )
             case .error(let message):
-                VStack(spacing: Tokens.Space.xl) {
-                    Spacer()
-                    EmptyState(
-                        symbol: "exclamationmark.triangle.fill",
-                        title: "Something went wrong",
-                        message: LocalizedStringKey(message),
-                        action: .init(title: "Try again", perform: { Task { await state.start() } })
+                VStack(spacing: 0) {
+                    AddFlowNavBar(title: L("Meal by voice"), onLeft: onDismiss)
+                    VoiceMessageBlock(
+                        icon: "exclamationmark.triangle",
+                        title: L("Something went wrong"),
+                        message: L(message)
                     )
-                    Spacer()
-                    SecondaryButton(title: "Close", systemImage: "xmark", action: onDismiss)
-                        .padding(.horizontal, Tokens.Space.screenPadding)
-                        .padding(.bottom, Tokens.Space.xl)
+                    .padding(.top, 80)
+                    Spacer(minLength: 0)
+                    MonoBottomBar {
+                        MonoButton(title: L("Try again"), kind: .dark, icon: "arrow.clockwise") {
+                            Task { await state.start() }
+                        }
+                        MonoButton(title: L("Close"), kind: .outline, action: onDismiss)
+                    }
                 }
             }
         }
@@ -104,22 +105,6 @@ struct VoiceRootView: View {
     }
 
     // MARK: - Subviews
-
-    private var topBar: some View {
-        HStack {
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .frame(width: 36, height: 36)
-                    .background(Circle().fill(Tokens.Palette.surfaceMuted))
-            }
-            .padding(.leading, Tokens.Space.screenPadding)
-            .padding(.top, Tokens.Space.md)
-            .accessibilityLabel(Text("Close"))
-            Spacer()
-        }
-    }
 
     private var isListening: Bool {
         if case .listening = state.stage { return true }
@@ -165,29 +150,87 @@ private struct VoicePermissionGate: View {
     let onRetry: () -> Void
     let onDismiss: () -> Void
 
+    /// Mockup `Permissions` microphone card: dark 56 pt icon box, display title, muted copy and
+    /// the primary action next to an outline "Zamknij".
     var body: some View {
-        VStack(spacing: Tokens.Space.xl) {
-            Spacer()
-            EmptyState(
-                symbol: "mic.slash.fill",
-                title: "We need the microphone",
-                message: status == .denied
-                    ? "Enable microphone + speech recognition in Settings to dictate meals."
-                    : "Allow microphone + speech recognition to dictate meals.",
-                action: status == .denied
-                    ? .init(title: "Open Settings", perform: openSettings)
-                    : .init(title: "Allow", perform: onRetry)
-            )
-            Spacer()
-            SecondaryButton(title: "Close", systemImage: "xmark", action: onDismiss)
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.bottom, Tokens.Space.xl)
+        VStack(spacing: 0) {
+            AddFlowNavBar(title: L("Meal by voice"), onLeft: onDismiss)
+            VStack(spacing: 12) {
+                VStack(spacing: 10) {
+                    MonoIconBox(systemName: "mic.fill", style: .dark, size: 56)
+                    Text(L("We need the microphone"))
+                        .font(Tokens.Font.monoDisplay(20))
+                        .textCase(.uppercase)
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(
+                        status == .denied
+                            ? L("Enable microphone + speech recognition in Settings to dictate meals.")
+                            : L("Allow microphone + speech recognition to dictate meals.")
+                    )
+                    .font(Tokens.Font.manrope(13, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                HStack(spacing: 8) {
+                    MonoButton(
+                        title: status == .denied ? L("Open Settings") : L("Allow"),
+                        kind: .dark,
+                        height: 46
+                    ) {
+                        if status == .denied {
+                            openSettings()
+                        } else {
+                            onRetry()
+                        }
+                    }
+                    MonoButton(title: L("Close"), kind: .outline, height: 46, action: onDismiss)
+                }
+            }
+            .monoCard(padding: 16)
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.top, 10)
+            Spacer(minLength: 0)
         }
     }
 
     private func openSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(url)
+    }
+}
+
+/// Centred empty-state block from mockup `VoiceNotHeard`: 72 pt track icon box, 24 pt display
+/// title and a muted 14 pt explanation.
+private struct VoiceMessageBlock: View {
+    let icon: String
+    let title: String
+    let message: String
+    var inset: CGFloat = 28
+
+    var body: some View {
+        VStack(spacing: 14) {
+            MonoIconBox(systemName: icon, style: .track, size: 72)
+            Text(title)
+                .font(Tokens.Font.monoDisplay(24))
+                .textCase(.uppercase)
+                .foregroundStyle(Tokens.Palette.ink)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(message)
+                .font(Tokens.Font.manrope(14, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(3)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, inset)
     }
 }
 
@@ -327,53 +370,53 @@ private struct ConfirmationView: View {
         adjustedItems.reduce(0) { $0 + $1.quantityGrams }
     }
 
+    private var adjustedProtein: Double {
+        adjustedItems.reduce(0) { $0 + $1.proteinGrams }
+    }
+
+    private var adjustedCarbs: Double {
+        adjustedItems.reduce(0) { $0 + $1.carbsGrams }
+    }
+
+    private var adjustedFat: Double {
+        adjustedItems.reduce(0) { $0 + $1.fatGrams }
+    }
+
+    /// Mockups `VoiceReviewGeneral` / `VoiceReviewDetailed` (and `VoiceNotHeard` when nothing
+    /// edible was recognised): nav · total hero · "Co usłyszeliśmy" · portion mode · mode content.
     var body: some View {
-        ZStack {
-            Tokens.Palette.background
-                .ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                confirmationHeader
-
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: Tokens.Space.lg) {
-                        if hasRecognizedMeal {
-                            voiceSummaryHero
-                            transcriptCard
-                            modePicker
-                            if portionMode == .overall {
-                                overallPortionCard
-                            }
-                            portionsCard
+        VStack(spacing: 0) {
+            confirmationHeader
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 10) {
+                    if hasRecognizedMeal {
+                        voiceSummaryHero
+                            .padding(.top, 10)
+                        transcriptCard(showsRetake: true)
+                        modePicker
+                        if portionMode == .overall {
+                            overallPortionCard
                         } else {
-                            noMealHeardCard
-                            transcriptCard
+                            portionsSection
                         }
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.bottom, Tokens.Space.xl)
-                }
-
-                VStack(spacing: Tokens.Space.sm) {
-                    PrimaryButton(
-                        title: isCompletingNutrition ? "Uzupełniam..." : "Save",
-                        systemImage: isCompletingNutrition ? "sparkles" : "checkmark",
-                        isEnabled: hasRecognizedMeal && !isCompletingNutrition
-                    ) {
-                        Task { await saveAdjustedItems() }
-                    }
-                    Button(action: onRetake) {
-                        Text("Try again")
-                            .font(Tokens.Font.callout)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    } else {
+                        VoiceMessageBlock(
+                            icon: "waveform",
+                            title: L("Nie usłyszałem dania"),
+                            message: notHeardMessage,
+                            inset: 16
+                        )
+                        .padding(.top, 80)
+                        .padding(.bottom, 14)
+                        transcriptCard(showsRetake: false)
                     }
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.md)
-                .padding(.bottom, Tokens.Space.xl)
-                .background(.ultraThinMaterial)
+                .padding(.bottom, 20)
             }
         }
+        .background(Tokens.Palette.background.ignoresSafeArea())
+        .safeAreaInset(edge: .bottom) { footer }
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
@@ -443,204 +486,149 @@ private struct ConfirmationView: View {
         Haptics.success()
     }
 
-    private var noMealHeardCard: some View {
-        VStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.warning.opacity(0.16))
-                    .frame(width: 82, height: 82)
-                Image(systemName: "waveform.badge.exclamationmark")
-                    .font(.system(size: 34, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.warning)
-            }
+    private var notHeardMessage: String {
+        L("Powiedz nazwę jedzenia, np. „500 g ryżu i 200 g sera”. Dopiero wtedy pokażemy regulację gramów.")
+    }
 
-            VStack(spacing: Tokens.Space.sm) {
-                Text("Nie usłyszałem dania")
-                    .font(Tokens.Font.title3)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .multilineTextAlignment(.center)
-                Text("Powiedz nazwę jedzenia, np. „500 g ryżu i 200 g sera”. Dopiero wtedy pokażemy regulację gramów.")
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+    /// `bottom(...)`: "Dodaj do dziennika" for a recognised meal; "Nagraj ponownie" + "Zamknij"
+    /// when nothing was heard (mockup `VoiceNotHeard`).
+    @ViewBuilder
+    private var footer: some View {
+        if hasRecognizedMeal {
+            MonoBottomBar {
+                MonoButton(
+                    title: isCompletingNutrition ? L("Uzupełniam...") : L("Dodaj do dziennika"),
+                    kind: .dark,
+                    icon: isCompletingNutrition ? "sparkles" : "checkmark"
+                ) {
+                    Task { await saveAdjustedItems() }
+                }
+                .disabled(isCompletingNutrition)
             }
-
-            Button(action: onRetake) {
-                Label("Nagraj ponownie", systemImage: "mic.fill")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 52)
-                    .background(Capsule().fill(Tokens.Palette.primary))
+        } else {
+            MonoBottomBar {
+                MonoButton(title: L("Nagraj ponownie"), kind: .dark, icon: "mic.fill", action: onRetake)
+                MonoButton(title: L("Zamknij"), kind: .outline, action: onDismiss)
             }
-            .buttonStyle(.pressable)
-        }
-        .padding(Tokens.Space.xl)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.82))
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .strokeBorder(.white.opacity(0.10), lineWidth: 0.35)
         }
     }
 
+    /// `nav('Sprawdź wpis', 'Zamknij', 'Gotowe', 'pill')` / `nav('Posiłek głosem', 'Zamknij')`.
     private var confirmationHeader: some View {
-        HStack {
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .frame(width: 36, height: 36)
-                    .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
+        AddFlowNavBar(
+            title: hasRecognizedMeal ? L("Review entry") : L("Meal by voice"),
+            onLeft: onDismiss
+        ) {
+            if hasRecognizedMeal {
+                MonoNavPill(title: L("Gotowe")) {
+                    Task { await saveAdjustedItems() }
+                }
+                .disabled(isCompletingNutrition)
             }
-            .buttonStyle(.pressable)
-            .accessibilityLabel(Text("Close"))
-
-            Spacer()
-            Text("Review entry")
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-            Color.clear.frame(width: 36, height: 36)
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.lg)
-        .padding(.bottom, Tokens.Space.md)
     }
 
+    /// `total_hero(kcal, 'Posiłek głosem · N pozycje · X g', p, c, f, 'mic')`.
     private var voiceSummaryHero: some View {
-        HStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(.white.opacity(0.18))
-                    .frame(width: 72, height: 72)
-                Image(systemName: "waveform")
-                    .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Meal by voice")
-                    .font(Tokens.Font.manrope(13, weight: 800))
-                    .foregroundStyle(.white.opacity(0.78))
-                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(adjustedCalories.rounded())))
-                    .font(Tokens.Font.archivo(size: 34, weight: 800, width: 115))
-                    .foregroundStyle(.white)
-                    .contentTransition(.numericText())
-                Text(
-                    String.localizedStringWithFormat(
-                        L("%lld items · %lld g"),
-                        adjustedItems.count,
-                        Int(adjustedGrams.rounded())
-                    )
-                )
-                .font(Tokens.Font.manrope(13, weight: 700))
-                .foregroundStyle(.white.opacity(0.82))
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(Tokens.Space.lg)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(
-                    Tokens.Mono.hero
-                )
+        AddFlowTotalHero(
+            icon: "mic.fill",
+            caption: L("Meal by voice") + " · "
+                + String.localizedStringWithFormat(
+                    L("%lld items · %lld g"),
+                    adjustedItems.count,
+                    Int(adjustedGrams.rounded())
+                ),
+            kcal: adjustedCalories,
+            protein: adjustedProtein,
+            carbs: adjustedCarbs,
+            fat: adjustedFat
         )
-        .overlay {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .stroke(.white.opacity(0.10), lineWidth: 0.35)
-        }
     }
 
-    private var transcriptCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Text("What we heard")
-                    .font(Tokens.Font.caption.weight(.semibold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-                    .textCase(.uppercase)
-                Spacer()
-                aiRefreshButton
-            }
+    /// Card "Co usłyszeliśmy": the (editable) transcript in 16/700 and an outline 36 pt
+    /// "Nagraj ponownie" chip. Without a recognised meal it carries the AI refresh instead.
+    private func transcriptCard(showsRetake: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("What we heard"))
             TextEditor(text: $edited)
-                .font(Tokens.Font.body)
+                .font(Tokens.Font.manrope(16, weight: 700))
                 .foregroundStyle(Tokens.Palette.ink)
+                .lineSpacing(4)
                 .scrollContentBackground(.hidden)
                 .focused($isTextInputFocused)
-                .frame(minHeight: 96)
-                .padding(Tokens.Space.md)
-                .background(Tokens.Palette.surface.opacity(0.70), in: RoundedRectangle(cornerRadius: 20))
-            AIRequestHint.mealRefresh
+                .frame(minHeight: 72)
+                .padding(.horizontal, -5)
+            if showsRetake {
+                Button(action: onRetake) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "mic")
+                            .font(.system(size: 12, weight: .bold))
+                        Text("Nagraj ponownie")
+                            .font(Tokens.Font.manrope(12, weight: 800))
+                    }
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .padding(.horizontal, 12)
+                    .frame(height: 36)
+                    .overlay(Capsule().stroke(Tokens.Mono.line2, lineWidth: 1))
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            } else {
+                HStack {
+                    aiRefreshButton
+                    Spacer(minLength: 0)
+                }
+                AIRequestHint.mealRefresh
+            }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.76))
-        )
+        .monoCard(padding: 16)
     }
 
-    private var portionsCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                Text("Portions")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld g"), Int(adjustedGrams.rounded())))
-                    .font(Tokens.Font.footnote.weight(.bold))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(Capsule().fill(Tokens.Palette.primarySoft))
-            }
-
-            if portionMode == .overall {
-                Text("Szczegóły są pod spodem, ale do dziennika trafi jedna pozycja.")
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            } else {
-                AIRequestHint.productNutrition
+    /// Detailed mode — `ingr_list(..., 'Porcje', 'Produkty usłyszane osobno, z własnymi gramami.')`.
+    private var portionsSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            AddFlowIngredientsSection(
+                title: L("Portions"),
+                count: parsedRows.count,
+                sub: L("Produkty usłyszane osobno, z własnymi gramami.")
+            ) {
                 ForEach(Array(parsedRows.enumerated()), id: \.element.key) { index, row in
                     portionRow(row, index: index)
-                    if index < parsedRows.count - 1 {
-                        Divider().background(Tokens.Palette.separator)
-                    }
                 }
-                addProductButton
+            } footer: {
+                MonoButton(title: L("Dodaj produkt"), kind: .outline, icon: "plus", height: 44) {
+                    addProduct()
+                }
+                AddFlowAIButton(
+                    title: AddFlowCopy.fillWithAI,
+                    isLoading: isAnalyzingText,
+                    remaining: mealAIRefreshRemaining,
+                    showsQuota: false,
+                    height: 44,
+                    fullWidth: true,
+                    isDisabled: isAnalyzingText || edited.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                ) {
+                    isTextInputFocused = false
+                    Task { await refreshFromAI() }
+                }
             }
+            AIRequestHint.productNutrition
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
     }
 
-    private var addProductButton: some View {
-        Button {
-            let item = FoodItem(
-                name: "",
-                quantityGrams: 100,
-                caloriesKcal: 0,
-                proteinGrams: 0,
-                carbsGrams: 0,
-                fatGrams: 0,
-                confidence: 1.0
-            )
-            analyzedItems.append(item)
-            grams[portionKey(index: analyzedItems.count - 1, item: item)] = item.quantityGrams
-            Haptics.selection()
-        } label: {
-            Label("Dodaj produkt", systemImage: "plus.circle.fill")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, Tokens.Space.xs)
-        }
-        .buttonStyle(.pressable)
+    private func addProduct() {
+        let item = FoodItem(
+            name: "",
+            quantityGrams: 100,
+            caloriesKcal: 0,
+            proteinGrams: 0,
+            carbsGrams: 0,
+            fatGrams: 0,
+            confidence: 1.0
+        )
+        analyzedItems.append(item)
+        grams[portionKey(index: analyzedItems.count - 1, item: item)] = item.quantityGrams
+        Haptics.selection()
     }
 
     private var modePicker: some View {
@@ -652,31 +640,16 @@ private struct ConfirmationView: View {
         )
     }
 
+    /// Dark 48 pt "✦ Odśwież AI" (mockup `name_field`) — re-parses the transcript.
     private var aiRefreshButton: some View {
-        Button {
+        AddFlowAIButton(
+            isLoading: isAnalyzingText,
+            remaining: mealAIRefreshRemaining,
+            isDisabled: isAnalyzingText || edited.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        ) {
             isTextInputFocused = false
             Task { await refreshFromAI() }
-        } label: {
-            HStack(spacing: 5) {
-                if isAnalyzingText {
-                    ProgressView()
-                        .controlSize(.mini)
-                        .tint(Tokens.Palette.primary)
-                } else {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 11, weight: .bold))
-                }
-                Text("Odśwież AI")
-                    .font(Tokens.Font.caption.weight(.bold))
-                AIQuotaBadge(remaining: mealAIRefreshRemaining)
-            }
-            .foregroundStyle(Tokens.Palette.primary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Capsule().fill(Tokens.Palette.primarySoft))
         }
-        .buttonStyle(.pressable)
-        .disabled(isAnalyzingText || edited.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
 
     private var mealAIRefreshRemaining: Int? {
@@ -750,39 +723,24 @@ private struct ConfirmationView: View {
         onSave(completed)
     }
 
+    /// General mode — `name_field` + `portion_card` + the muted "one entry" note.
     private var overallPortionCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Nazwa dania")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 10) {
+            AddFlowNameCard(label: L("Nazwa dania")) {
                 TextField("Risotto z krewetkami", text: $overallName)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .textFieldStyle(.roundedBorder)
                     .focused($isTextInputFocused)
                     .submitLabel(.done)
                     .onSubmit { isTextInputFocused = false }
+            } action: {
+                aiRefreshButton
             }
-            HStack {
-                Text("Porcja")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld g"), Int(overallGrams.rounded())))
-                    .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .contentTransition(.numericText())
-            }
-            Slider(value: $overallGrams, in: 10...1500, step: 5)
-                .tint(Tokens.Palette.primary)
+            AIRequestHint.mealRefresh
+            AddFlowPortionCard(grams: $overallGrams, range: 10...1500, step: 5)
+            MonoHint(text: L("Szczegóły są pod spodem, ale do dziennika trafi jedna pozycja."))
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
     }
 
+    /// `ingredient(...)` row: red minus, editable name + AI lookup + kcal, grams slider.
     private func portionRow(_ row: VoicePortionRow, index: Int) -> some View {
         let item = row.item
         let binding = Binding<Double>(
@@ -801,48 +759,29 @@ private struct ConfirmationView: View {
         )
         let chosen = binding.wrappedValue
         let factor = item.quantityGrams > 0 ? chosen / item.quantityGrams : 1
-        return VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .center, spacing: Tokens.Space.xs) {
-                TextField("Produkt", text: nameBinding)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .textFieldStyle(.roundedBorder)
-                    .focused($isTextInputFocused)
-                    .submitLabel(.done)
-                    .onSubmit { isTextInputFocused = false }
-                Spacer(minLength: Tokens.Space.sm)
-                productAIButton(for: row)
-                if parsedRows.count > 1 {
-                    Button {
-                        analyzedItems.removeAll { $0.id == item.id }
-                        grams.removeValue(forKey: row.key)
-                        Haptics.selection()
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .foregroundStyle(Tokens.Palette.error)
-                    }
-                    .buttonStyle(.pressable)
-                }
+        var removeAction: (() -> Void)?
+        if parsedRows.count > 1 {
+            removeAction = {
+                analyzedItems.removeAll { $0.id == item.id }
+                grams.removeValue(forKey: row.key)
             }
-            HStack {
-                Text("\(Int((item.caloriesKcal * factor).rounded())) kcal")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .contentTransition(.numericText())
-                Spacer()
-            }
-            HStack {
-                Text("\(Int(binding.wrappedValue.rounded())) g")
-                    .font(Tokens.Font.manrope(15, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .frame(width: 64, alignment: .leading)
-                Slider(value: binding, in: 10...600, step: 5)
-                    .tint(Tokens.Palette.primary)
-            }
-            Text(macroSummary(for: item, factor: factor))
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkSubtle)
         }
-        .padding(.vertical, Tokens.Space.xs)
+        return AddFlowIngredientRow(
+            showsDivider: index > 0,
+            kcal: item.caloriesKcal * factor,
+            grams: binding,
+            range: 10...600,
+            step: 5,
+            onRemove: removeAction,
+            detail: macroSummary(for: item, factor: factor)
+        ) {
+            TextField("Produkt", text: nameBinding)
+                .focused($isTextInputFocused)
+                .submitLabel(.done)
+                .onSubmit { isTextInputFocused = false }
+        } accessory: {
+            productAIButton(for: row)
+        }
     }
 
     private func productAIButton(for row: VoicePortionRow) -> some View {

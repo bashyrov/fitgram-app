@@ -13,8 +13,9 @@ struct Card<Content: View>: View {
         content()
             .padding(padding)
             .background(
+                // Design D: every card is the same flat surface; tinted backgrounds are ignored.
                 RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
-                    .fill(background)
+                    .fill(Tokens.Palette.surface)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
@@ -35,7 +36,7 @@ struct Card<Content: View>: View {
                     .foregroundStyle(Tokens.Palette.primary)
             }
         }
-        Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.float) {
+        Card(background: Tokens.Mono.track, elevation: Tokens.Shadow.float) {
             Text("Wskazówka od Oli ✨")
                 .font(Tokens.Font.body)
                 .foregroundStyle(Tokens.Palette.ink)

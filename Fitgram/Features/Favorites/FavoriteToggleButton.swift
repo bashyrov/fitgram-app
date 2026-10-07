@@ -52,7 +52,6 @@ struct FavoriteToggleButton: View {
                 .background(
                     RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
                         .fill(stored != nil ? Tokens.Palette.warning.opacity(0.12) : Tokens.Palette.surface)
-                        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
                 )
             }
         }

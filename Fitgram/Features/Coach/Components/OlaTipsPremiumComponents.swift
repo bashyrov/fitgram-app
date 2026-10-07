@@ -23,19 +23,18 @@ struct OlaSummaryHero: View {
 
     private var header: some View {
         HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(
-                        Tokens.Palette.accent
-                    )
-                    .frame(width: 52, height: 52)
-                Image(systemName: "sparkles")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.white)
-            }
+            Image(systemName: "sparkles")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundStyle(Tokens.Mono.hi)
+                .frame(width: 48, height: 48)
+                .background(
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                        .fill(Tokens.Mono.hero)
+                )
             VStack(alignment: .leading, spacing: 2) {
                 Text(L("Twój asystent AI"))
-                    .font(Tokens.Font.manrope(22, weight: 800))
+                    .font(Tokens.Font.monoDisplay(22))
+                    .textCase(.uppercase)
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(subtitle)
                     .font(Tokens.Font.caption)
@@ -60,28 +59,15 @@ struct OlaSummaryHero: View {
                 .lineLimit(2)
         }
         .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.62))
-        )
+        .monoSurface(radius: 18)
     }
 
     private var background: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(.ultraThinMaterial)
+                .fill(Tokens.Palette.surface)
             RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.74))
-            Circle()
-                .fill(Tokens.Palette.accent.opacity(0.30))
-                .frame(width: 180, height: 180)
-                .blur(radius: 70)
-                .offset(x: 110, y: -90)
-            Circle()
-                .fill(Tokens.Palette.primary.opacity(0.22))
-                .frame(width: 160, height: 160)
-                .blur(radius: 70)
-                .offset(x: -100, y: 90)
+                .fill(Tokens.Palette.surface)
         }
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
     }
@@ -91,25 +77,22 @@ struct OlaWarningsBlock: View {
     let warnings: [String]
 
     var body: some View {
-        VStack(spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: 12) {
             ForEach(Array(warnings.enumerated()), id: \.offset) { _, warning in
-                HStack(alignment: .top, spacing: Tokens.Space.sm) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.warning)
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(Tokens.Mono.fat)
+                        .frame(width: 20)
                     Text(L(warning))
-                        .font(Tokens.Font.footnote)
+                        .font(Tokens.Font.manrope(15, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding(Tokens.Space.md)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Tokens.Palette.warning.opacity(0.15))
-                )
             }
         }
+        .monoCard(padding: 16)
     }
 }
 
@@ -119,7 +102,8 @@ struct OlaTipsList: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Tokens.Space.sm) {
             Text(L("Wskazówki na dziś"))
-                .font(Tokens.Font.headline)
+                .font(Tokens.Font.monoDisplay(18))
+                .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.ink)
                 .padding(.horizontal, 2)
             VStack(spacing: Tokens.Space.sm) {
@@ -161,66 +145,47 @@ private struct OlaTipRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.86))
+                .fill(Tokens.Palette.surface)
         }
-        .shadow(color: Color.black.opacity(0.035), radius: 10, x: 0, y: 5)
     }
 }
 
+/// Facts library headline (lib `h1`): big display title + count subtitle.
 struct OlaFactsHeader: View {
     let count: Int
 
     var body: some View {
-        HStack(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(L("Facts library"))
-                    .font(Tokens.Font.manrope(22, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(String.localizedStringWithFormat(L("%lld short tips"), count))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer()
-            Image(systemName: "book.closed.fill")
-                .foregroundStyle(Tokens.Palette.primary)
-        }
-        .padding(.bottom, Tokens.Space.xs)
+        MonoH1(
+            text: L("Facts library"),
+            sub: String.localizedStringWithFormat(L("%lld short tips"), count)
+        )
     }
 }
 
+/// Collapsed fact (tap to expand into `FactCard`): same card chrome as the expanded
+/// fact, with the category label, display title and a chevron.
 struct OlaCollapsedFactRow: View {
     let fact: NutritionFact
 
     var body: some View {
-        HStack(alignment: .center, spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(Self.tint(for: fact.category).opacity(0.14))
-                    .frame(width: 38, height: 38)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .center, spacing: 8) {
+                MonoLabel(text: FactCard.localizedCategory(fact.category))
+                Spacer(minLength: 0)
                 Text(fact.icon)
-                    .font(.system(size: 20))
+                    .font(.system(size: 16))
+                    .accessibilityHidden(true)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(fact.title)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .multilineTextAlignment(.leading)
-                Text(FactCard.localizedCategory(fact.category))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Self.tint(for: fact.category))
-            }
-            Spacer(minLength: 0)
-            Image(systemName: "chevron.down")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
+            Text(fact.title)
+                .font(Tokens.Font.monoDisplay(19))
+                .foregroundStyle(Tokens.Palette.ink)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(Tokens.Space.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.86))
-        }
-        .shadow(color: Color.black.opacity(0.03), radius: 9, x: 0, y: 4)
+        .monoCard(padding: 16)
     }
 
     static func tint(for category: NutritionFact.Category) -> Color {

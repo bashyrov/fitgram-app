@@ -76,29 +76,53 @@ struct FirstScanStepView: View {
 
     @ViewBuilder
     private var content: some View {
-        switch stage {
-        case .idle:
-            DemoScanCTA(
-                onCamera: { presentCamera() },
-                onLibrary: { pickerVisible = true }
-            )
-        case .processing:
-            VStack(spacing: Tokens.Space.md) {
-                if let pickedImage {
+        VStack(spacing: 10) {
+            photoSlot
+            switch stage {
+            case .idle:
+                EmptyView()
+            case .processing:
+                LoadingHero(title: "Reading the plate…")
+                    .frame(height: 200)
+            case .result(let result):
+                DemoScanResultCard(result: result)
+            case .failed(let message):
+                DemoScanFailureCard(message: message) { reset() }
+            }
+            if stage != .processing {
+                DemoScanCTA(
+                    onCamera: {
+                        reset()
+                        presentCamera()
+                    },
+                    onLibrary: {
+                        reset()
+                        pickerVisible = true
+                    }
+                )
+            }
+        }
+    }
+
+    /// 240 pt photo slot — the picked photo, or the striped placeholder.
+    @ViewBuilder
+    private var photoSlot: some View {
+        if let pickedImage {
+            Color.clear
+                .frame(height: 240)
+                .frame(maxWidth: .infinity)
+                .overlay(
                     Image(uiImage: pickedImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 220)
-                        .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
-                        .fitgramShadow(Tokens.Shadow.float)
-                }
-                LoadingHero(title: "Reading the plate…")
-                    .frame(height: 200)
-            }
-        case .result(let result):
-            DemoScanResultCard(image: pickedImage, result: result)
-        case .failed(let message):
-            DemoScanFailureCard(message: message) { reset() }
+                )
+                .clipShape(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                        .stroke(Tokens.Mono.line, lineWidth: 1)
+                )
+        } else {
+            DemoPlatePlaceholder()
         }
     }
 
@@ -172,121 +196,83 @@ private struct DemoScanCTA: View {
     let onLibrary: () -> Void
 
     var body: some View {
-        VStack(spacing: Tokens.Space.md) {
-            Button(action: onCamera) {
-                heroTile(
-                    symbol: "camera.viewfinder",
-                    title: "Take a photo",
-                    caption: "Camera opens right away"
-                )
-            }
-            .buttonStyle(PressableButtonStyle())
-
-            Button(action: onLibrary) {
-                heroTile(
-                    symbol: "photo.on.rectangle",
-                    title: "Wybierz z galerii",
-                    caption: "Dowolne zdjęcie z telefonu"
-                )
-                .frame(maxWidth: .infinity, minHeight: 0)
-            }
-            .buttonStyle(PressableButtonStyle())
-        }
-    }
-
-    private func heroTile(symbol: String, title: LocalizedStringKey, caption: LocalizedStringKey) -> some View {
-        VStack(spacing: Tokens.Space.sm) {
-            ZStack {
-                RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                    .fill(Tokens.Palette.primarySoft)
-                Image(systemName: symbol)
-                    .font(.system(size: 64, weight: .light))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            .frame(height: 160)
-            .fitgramShadow(Tokens.Shadow.float)
-
-            VStack(spacing: 2) {
-                Text(title)
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(caption)
-                    .font(Tokens.Font.callout)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+        HStack(spacing: 8) {
+            MonoButton(title: L("Take a photo"), kind: .outline, icon: "camera", height: 46, action: onCamera)
+            MonoButton(title: L("Wybierz z galerii"), kind: .outline, icon: "photo", height: 46, action: onLibrary)
         }
     }
 }
 
+/// Striped image slot from the mockup (`placeholder_img(240, …, 24)`).
+private struct DemoPlatePlaceholder: View {
+    var body: some View {
+        RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+            .fill(Tokens.Palette.surface)
+            .overlay(
+                Canvas { context, size in
+                    let stripe: CGFloat = 14
+                    var offset: CGFloat = -size.height
+                    while offset < size.width {
+                        var path = Path()
+                        path.move(to: CGPoint(x: offset, y: size.height))
+                        path.addLine(to: CGPoint(x: offset + size.height, y: 0))
+                        path.addLine(to: CGPoint(x: offset + size.height + stripe, y: 0))
+                        path.addLine(to: CGPoint(x: offset + stripe, y: size.height))
+                        path.closeSubpath()
+                        context.fill(path, with: .color(Tokens.Mono.track))
+                        offset += stripe * 2
+                    }
+                }
+            )
+            .clipShape(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                    .stroke(Tokens.Mono.line, lineWidth: 1)
+            )
+            .overlay(
+                Label(L("Wybierz z galerii"), systemImage: "photo")
+                    .font(Tokens.Font.manrope(13, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            )
+            .frame(height: 240)
+            .accessibilityHidden(true)
+    }
+}
+
 private struct DemoScanResultCard: View {
-    let image: UIImage?
     let result: ScanResult
 
     var body: some View {
-        VStack(spacing: Tokens.Space.md) {
-            if let image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 180)
-                    .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous))
-                    .fitgramShadow(Tokens.Shadow.float)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: headlineName)
+                Spacer(minLength: 8)
+                Text(verbatim: "~\(Int(result.totalCalories.rounded())) kcal")
+                    .font(Tokens.Font.monoNumber(24))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
             }
-            Card(elevation: Tokens.Shadow.float) {
-                VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                    HStack {
-                        Image(systemName: "fork.knife")
-                            .foregroundStyle(Tokens.Palette.primary)
-                        Text(headlineName)
-                            .font(Tokens.Font.headline)
-                            .lineLimit(2)
-                        Spacer()
-                        Text("~\(Int(result.totalCalories.rounded())) kcal")
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    Divider().background(Tokens.Palette.separator)
-                    macroLine(label: "Protein", grams: result.totalProtein)
-                    macroLine(label: "Carbs", grams: result.totalCarbs)
-                    macroLine(label: "Fat", grams: result.totalFat)
-                    if result.items.count > 1 {
-                        Divider().background(Tokens.Palette.separator)
-                        VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                            ForEach(result.items) { item in
-                                HStack {
-                                    Text(item.name)
-                                        .font(Tokens.Font.body)
-                                        .foregroundStyle(Tokens.Palette.ink)
-                                    Spacer()
-                                    Text("\(Int(item.quantityGrams.rounded())) g")
-                                        .font(Tokens.Font.callout)
-                                        .foregroundStyle(Tokens.Palette.inkMuted)
-                                }
-                            }
-                        }
-                    }
+            FlowLayout(spacing: 6) {
+                ForEach(result.items) { item in
+                    Text(verbatim: "\(item.name) · \(Int(item.quantityGrams.rounded())) g")
+                        .font(Tokens.Font.manrope(12, weight: 700))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                        .padding(.horizontal, 10)
+                        .frame(height: 30)
+                        .background(Capsule().fill(Tokens.Mono.track))
                 }
             }
+            MonoMacroRow(protein: result.totalProtein, carbs: result.totalCarbs, fat: result.totalFat)
         }
+        .monoCard(padding: 16)
     }
 
     private var headlineName: String {
         if let first = result.items.first {
             return result.items.count > 1 ? "\(first.name) + \(result.items.count - 1)" : first.name
         }
-        return "Your meal"
-    }
-
-    private func macroLine(label: LocalizedStringKey, grams: Double) -> some View {
-        HStack {
-            Text(label)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            Spacer()
-            Text("\(Int(grams.rounded())) g")
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-        }
+        return L("Your meal")
     }
 }
 
@@ -295,18 +281,19 @@ private struct DemoScanFailureCard: View {
     let onRetry: () -> Void
 
     var body: some View {
-        Card(elevation: Tokens.Shadow.card) {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
-                    Text(LocalizedStringKey(message))
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                SecondaryButton(title: "Try again", systemImage: "arrow.clockwise", action: onRetry)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.danger)
+                Text(LocalizedStringKey(message))
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            MonoButton(title: L("Try again"), kind: .outline, icon: "arrow.clockwise", height: 46, action: onRetry)
         }
+        .monoCard(padding: 16)
     }
 }
 

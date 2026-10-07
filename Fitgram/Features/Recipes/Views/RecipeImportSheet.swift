@@ -13,88 +13,112 @@ struct RecipeImportSheet: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
 
+    private var canImport: Bool {
+        !isLoading && !urlString.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        intro
-                        urlField
-                        if let errorMessage {
-                            Text(errorMessage)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.warning)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        PrimaryButton(
-                            title: isLoading ? "Pobieram…" : "Importuj",
-                            systemImage: "square.and.arrow.down",
-                            isEnabled: !isLoading && !urlString.trimmingCharacters(in: .whitespaces).isEmpty
-                        ) {
-                            Task { await runImport() }
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    MonoH1(
+                        text: L("Wklej link do przepisu"),
+                        sub: L("Działa z większością stron — m.in. kwestiasmaku.com, hreceptu.pl, allrecipes.com.")
+                    )
+                    .padding(.bottom, 6)
+                    urlCard
+                    if let errorMessage {
+                        errorCard(errorMessage)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
             }
-            .navigationTitle(Text("Importuj przepis"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Importuj przepis"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
                 }
             }
-        }
-    }
-
-    private var intro: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Wklej link do przepisu")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text("Działa z większością stron — m.in. kwestiasmaku.com, hreceptu.pl, allrecipes.com.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-
-    private var urlField: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: "link")
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            TextField("https://...", text: $urlString)
-                .textInputAutocapitalization(.never)
-                .keyboardType(.URL)
-                .autocorrectionDisabled()
-            if urlString.isEmpty, clipboardURL != nil {
-                Button {
-                    if let url = clipboardURL {
-                        urlString = url
-                        Haptics.light()
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    Button {
+                        Task { await runImport() }
+                    } label: {
+                        HStack(spacing: 8) {
+                            if isLoading {
+                                ProgressView()
+                                    .tint(Tokens.Mono.onHero)
+                            } else {
+                                Image(systemName: "square.and.arrow.down")
+                                    .font(.system(size: 15, weight: .bold))
+                            }
+                            Text(isLoading ? L("Pobieram…") : L("Importuj"))
+                        }
                     }
-                } label: {
-                    Text("Wklej")
-                        .font(Tokens.Font.footnote.bold())
-                        .foregroundStyle(Tokens.Palette.primary)
+                    .buttonStyle(MonoButtonStyle(kind: .dark))
+                    .disabled(!canImport)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Wklej link ze schowka"))
             }
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-        )
+    }
+
+    private var urlCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoField(label: TL(pl: "Link", en: "Link", uk: "Посилання", ru: "Ссылка", es: "Enlace")) {
+                HStack(spacing: 8) {
+                    TextField("https://...", text: $urlString)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.URL)
+                        .autocorrectionDisabled()
+                    if urlString.isEmpty, clipboardURL != nil {
+                        Button {
+                            pasteFromClipboard()
+                        } label: {
+                            Text("Wklej")
+                                .font(Tokens.Font.manrope(12, weight: 800))
+                                .foregroundStyle(Tokens.Palette.ink)
+                                .padding(.horizontal, 10)
+                                .frame(height: 32)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(Tokens.Mono.track)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Wklej link ze schowka"))
+                    }
+                }
+            }
+            MonoButton(title: L("Wklej link ze schowka"), kind: .outline, icon: "doc.on.clipboard", height: 44) {
+                pasteFromClipboard()
+            }
+            .disabled(clipboardURL == nil)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func errorCard(_ message: String) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.danger)
+            Text(message)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func pasteFromClipboard() {
+        if let url = clipboardURL {
+            urlString = url
+            Haptics.light()
+        }
     }
 
     /// Reads the clipboard once when the field is empty; returns the

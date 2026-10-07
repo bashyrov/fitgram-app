@@ -15,7 +15,15 @@ struct DayMealsSheet: View {
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
-        formatter.dateFormat = "EEEE, d MMMM yyyy"
+        formatter.dateFormat = "d MMMM"
+        return formatter
+
+    }
+    private static var headlineFormatter: DateFormatter {
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
+        formatter.dateFormat = "EEEE, d MMM"
         return formatter
 
     }
@@ -29,92 +37,95 @@ struct DayMealsSheet: View {
     }
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                        if meals.isEmpty {
-                            empty
-                        } else {
-                            summaryCard
-                            ForEach(meals) { meal in
-                                Button {
-                                    Haptics.light()
-                                    onSelectMeal?(meal)
-                                } label: {
-                                    row(meal)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(
+                        text: Self.headlineFormatter.string(from: day).capitalized,
+                        sub: meals.isEmpty ? nil : summaryText
+                    )
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    if meals.isEmpty {
+                        empty
+                            .padding(.top, 30)
+                    } else {
+                        mealsCard
+                            .padding(.horizontal, Tokens.Space.screenPadding)
+                            .padding(.top, 14)
+                    }
                 }
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text(Self.titleFormatter.string(from: day).capitalized))
-            .navigationBarTitleDisplayMode(.inline)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(Self.titleFormatter.string(from: day))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
             .task { await load() }
         }
     }
 
-    private var summaryCard: some View {
+    private var summaryText: String {
         let totalKcal = Int(meals.reduce(0.0) { $0 + $1.totalCaloriesKcal }.rounded())
-        return Card(elevation: Tokens.Shadow.card) {
-            HStack {
-                Text(String.localizedStringWithFormat(L("%lld posiłków"), meals.count))
-                    .font(Tokens.Font.subheadline)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld kcal"), totalKcal))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
+        return String.localizedStringWithFormat(L("%lld posiłków"), meals.count)
+            + " · "
+            + String.localizedStringWithFormat(L("%lld kcal"), totalKcal)
+    }
+
+    private var mealsCard: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(meals.enumerated()), id: \.element.id) { index, meal in
+                if index > 0 {
+                    MonoRowDivider(inset: 16)
+                }
+                Button {
+                    Haptics.light()
+                    onSelectMeal?(meal)
+                } label: {
+                    row(meal)
+                }
+                .buttonStyle(.plain)
             }
         }
+        .monoRowsCard()
     }
 
     private func row(_ meal: MealEntry) -> some View {
-        Card {
-            HStack(spacing: Tokens.Space.md) {
-                Text(Self.timeFormatter.string(from: meal.consumedAt))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .frame(width: 52, alignment: .leading)
-                Divider().frame(width: 1, height: 32).overlay(Tokens.Palette.separator)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(meal.items.first?.name ?? L("Posiłek"))
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                    Text(String.localizedStringWithFormat(L("%lld kcal"), Int(meal.totalCaloriesKcal)))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-            }
+        MonoRow(
+            title: meal.items.first?.name ?? L("Posiłek"),
+            sub: mealTypeTitle(meal.mealType) + " · " + Self.timeFormatter.string(from: meal.consumedAt)
+        ) {
+            Text("\(Int(meal.totalCaloriesKcal.rounded()))")
+                .font(Tokens.Font.monoNumber(18))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+        }
+    }
+
+    private func mealTypeTitle(_ type: MealType) -> String {
+        switch type {
+        case .breakfast: return L("Śniadanie")
+        case .lunch: return L("Obiad")
+        case .dinner: return L("Kolacja")
+        case .snack: return L("Przekąska")
         }
     }
 
     private var empty: some View {
-        VStack(spacing: Tokens.Space.md) {
-            Image(systemName: "fork.knife.circle")
-                .font(.system(size: 32))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
+        VStack(spacing: 6) {
+            MonoIconBox(systemName: "calendar", style: .track, size: 44)
             Text("Tu nic nie było zapisane")
-                .font(Tokens.Font.headline)
+                .font(Tokens.Font.manrope(15, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
+                .multilineTextAlignment(.center)
             Text("Spróbuj innego dnia z większą intensywnością koloru.")
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.xxxl)
+        .padding(.horizontal, 24)
     }
 
     @MainActor

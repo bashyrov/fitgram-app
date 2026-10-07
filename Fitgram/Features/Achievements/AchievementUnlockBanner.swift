@@ -41,7 +41,6 @@ struct AchievementUnlockBanner: View {
                 RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
                     .fill(Tokens.Mono.hero)
             )
-            .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
         }
         .buttonStyle(.plain)
         .padding(.horizontal, Tokens.Space.screenPadding)

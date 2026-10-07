@@ -9,10 +9,13 @@ extension FriendProfileView {
         if let events = snapshot.recentEvents, !events.isEmpty {
             VStack(spacing: 0) {
                 ForEach(Array(events.enumerated()), id: \.element.id) { idx, event in
+                    if idx > 0 {
+                        MonoRowDivider()
+                    }
                     timelineRow(event, isFirst: idx == 0, isLast: idx == events.count - 1)
                 }
             }
-            .padding(.horizontal, 2)
+            .monoRowsCard()
         } else {
             placeholder(
                 symbol: "bolt.fill",
@@ -23,57 +26,15 @@ extension FriendProfileView {
     }
 
     func timelineRow(_ event: FeedEvent, isFirst: Bool, isLast: Bool) -> some View {
-        let tint = eventTint(event.kind)
-        return HStack(alignment: .top, spacing: Tokens.Space.md) {
-            Text(event.createdAt.formatted(.relative(presentation: .named)))
-                .font(Tokens.Font.manrope(10, weight: 700))
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .textCase(.uppercase)
-                .tracking(0.4)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .frame(width: 64, alignment: .trailing)
-                .padding(.top, 14)
-
-            VStack(spacing: 0) {
-                Rectangle()
-                    .fill(isFirst ? Color.clear : Tokens.Palette.separator)
-                    .frame(width: 2, height: 14)
-                ZStack {
-                    Circle()
-                        .fill(
-                            tint
-                        )
-                        .frame(width: 32, height: 32)
-                    Image(systemName: eventSymbol(event.kind))
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                }
-                Rectangle()
-                    .fill(isLast ? Color.clear : Tokens.Palette.separator)
-                    .frame(width: 2)
-                    .frame(maxHeight: .infinity)
-            }
-            .frame(width: 32)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(eventTitle(event.kind))
-                    .font(Tokens.Font.manrope(10, weight: 700))
-                    .foregroundStyle(tint)
-                    .textCase(.uppercase)
-                    .tracking(0.4)
-                Text(event.payload)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-            }
-            .padding(Tokens.Space.md)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.72))
-            )
-            .padding(.bottom, Tokens.Space.md)
-            .padding(.top, Tokens.Space.xs)
+        MonoRow(
+            icon: eventSymbol(event.kind),
+            iconStyle: .dark,
+            title: event.payload,
+            sub: "\(eventTitle(event.kind)) · \(event.createdAt.formatted(.relative(presentation: .named)))"
+        ) {
+            EmptyView()
         }
+        .accessibilityElement(children: .combine)
     }
 
     func eventTint(_ kind: FeedEventKind) -> Color {

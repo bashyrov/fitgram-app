@@ -12,109 +12,98 @@ struct ConnectionsView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ScreenBackground(mood: .social)
-                ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        hero
-                        providerCard(.appleHealth)
-                        providerCard(.strava)
-                        providerCard(.oura)
-                        providerCard(.garmin)
-                        providerCard(.whoop)
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: heroTitle, sub: heroSubtitle)
+                    providerRows
+                        .padding(.top, 16)
+                    if let statusText {
+                        statusCard(statusText)
+                            .padding(.top, 10)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, Tokens.Space.lg)
             }
-            .navigationTitle(Text(title))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(title)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(closeTitle, action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: closeTitle, action: onDismiss)
                 }
             }
         }
     }
 
-    private var hero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Image(systemName: "point.3.connected.trianglepath.dotted")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(Tokens.Palette.onPrimary)
-                .frame(width: 58, height: 58)
-                .background(
-                    Circle().fill(
-                        Tokens.Palette.primary
-                    )
-                )
-            Text(heroTitle)
-                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(heroSubtitle)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+    private var providerRows: some View {
+        VStack(spacing: 0) {
+            providerRow(.appleHealth)
+            MonoRowDivider()
+            providerRow(.strava)
+            MonoRowDivider()
+            providerRow(.oura)
+            MonoRowDivider()
+            providerRow(.garmin)
+            MonoRowDivider()
+            providerRow(.whoop)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.lg)
-        .frostedGlass(cornerRadius: 28, fillOpacity: 0.80, borderOpacity: 0.06, glowOpacity: 0.05)
+        .monoRowsCard()
     }
 
-    private func providerCard(_ provider: Provider) -> some View {
-        Card {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: provider.symbol)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-                    .frame(width: 48, height: 48)
-                    .background(Circle().fill(provider.tint))
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(provider.title)
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Spacer()
-                        Text(provider == .appleHealth ? appleHealthBadge : soonLabel)
-                            .font(Tokens.Font.manrope(10, weight: 800))
-                            .foregroundStyle(
-                                provider == .appleHealth && healthWorkoutsEnabled
-                                    ? Tokens.Palette.primary : Tokens.Palette.inkMuted
-                            )
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background(
-                                Capsule().fill(
-                                    provider == .appleHealth
-                                        ? Tokens.Palette.primarySoft.opacity(healthWorkoutsEnabled ? 1 : 0.42)
-                                        : Tokens.Palette.surfaceMuted.opacity(0.14)
-                                )
-                            )
-                    }
-                    Text(provider.subtitle)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    if provider == .appleHealth {
-                        if healthWorkoutsEnabled {
-                            Text(autoSyncHint)
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                                .padding(.top, 2)
+    @ViewBuilder
+    private func providerRow(_ provider: Provider) -> some View {
+        if provider == .appleHealth {
+            MonoRow(
+                icon: provider.symbol,
+                iconStyle: .track,
+                title: provider.title,
+                sub: healthWorkoutsEnabled ? provider.subtitle + "\n" + autoSyncHint : provider.subtitle
+            ) {
+                Button {
+                    Task { await importHealth() }
+                } label: {
+                    HStack(spacing: 6) {
+                        if isImportingHealth {
+                            ProgressView()
+                                .controlSize(.small)
+                                .tint(Tokens.Mono.onHero)
                         }
-                        Button(isImportingHealth ? importingLabel : (statusText ?? connectHealthLabel)) {
-                            Task { await importHealth() }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(isImportingHealth || user == nil || (weightService == nil && workoutService == nil))
-                        .padding(.top, Tokens.Space.xs)
-                    } else {
-                        Button(connectLabel) {}
-                            .buttonStyle(.bordered)
-                            .disabled(true)
-                            .padding(.top, Tokens.Space.xs)
+                        Text(isImportingHealth ? importingLabel : connectHealthLabel)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            .minimumScaleFactor(0.8)
                     }
                 }
+                .buttonStyle(MonoButtonStyle(kind: .dark, height: 38, fullWidth: false))
+                .frame(maxWidth: 150)
+                .disabled(isImportingHealth || user == nil || (weightService == nil && workoutService == nil))
+            }
+        } else {
+            MonoRow(icon: provider.symbol, iconStyle: .track, title: provider.title, sub: provider.subtitle) {
+                Text(soonLabel)
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .padding(.horizontal, 9)
+                    .frame(height: 26)
+                    .background(Capsule().fill(Tokens.Mono.track))
             }
         }
+    }
+
+    private func statusCard(_ text: String) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: healthWorkoutsEnabled ? "checkmark" : "info.circle")
+                .font(.system(size: 16, weight: .heavy))
+                .foregroundStyle(healthWorkoutsEnabled ? Tokens.Palette.success : Tokens.Mono.muted)
+            Text(text)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .monoCard(padding: 16)
     }
 
     private func importHealth() async {
@@ -175,11 +164,11 @@ extension ConnectionsView {
 
         var symbol: String {
             switch self {
-            case .appleHealth: "applelogo"
+            case .appleHealth: "heart"
             case .strava: "figure.run"
-            case .oura: "ring"
-            case .garmin: "location.north.line.fill"
-            case .whoop: "waveform.path.ecg"
+            case .oura: "waveform.path.ecg"
+            case .garmin: "clock"
+            case .whoop: "bolt"
             }
         }
 

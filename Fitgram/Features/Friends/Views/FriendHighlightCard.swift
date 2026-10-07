@@ -14,35 +14,28 @@ struct FriendHighlightCard: View {
     let highlight: FriendHighlight
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: highlight.symbol)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(highlight.tint)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(highlight.tint.opacity(0.14)))
+                MonoIconBox(systemName: highlight.symbol, style: .track, size: 34)
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                MonoChevron()
             }
             Text(highlight.title)
-                .font(Tokens.Font.bodyEmphasized)
+                .font(Tokens.Font.manrope(14, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(highlight.value)
-                    .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
+                    .font(Tokens.Font.monoNumber(24))
                     .foregroundStyle(Tokens.Palette.ink)
-                Text(highlight.caption)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                MonoLabel(text: highlight.caption)
             }
         }
-        .frame(width: 156, alignment: .topLeading)
-        .frame(minHeight: 138, alignment: .topLeading)
-        .padding(Tokens.Space.md)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
+        .frame(width: 140, alignment: .topLeading)
+        .monoTile()
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
 

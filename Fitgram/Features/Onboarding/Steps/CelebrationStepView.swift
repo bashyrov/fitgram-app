@@ -6,6 +6,8 @@ import SwiftUI
 /// only animates while the screen is visible.
 struct CelebrationStepView: View {
     let displayName: String?
+    /// Daily kcal target shown in the plan card (mockup "1800 kcal").
+    var dailyKcal: Int?
     let onContinue: () -> Void
 
     @State private var animateBadge = false
@@ -16,18 +18,27 @@ struct CelebrationStepView: View {
             backdrop
             ConfettiCanvas()
                 .allowsHitTesting(false)
-            VStack(spacing: Tokens.Space.lg) {
-                Spacer()
-                heroBadge
-                headline
-                planCard
-                    .padding(.top, Tokens.Space.md)
-                Spacer()
-                PrimaryButton(title: "Zaczynamy", systemImage: "arrow.right") {
-                    onContinue()
+            ScrollView {
+                VStack(spacing: 0) {
+                    VStack(spacing: 16) {
+                        heroBadge
+                        headline
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 60)
+
+                    planCard
+                        .padding(.top, 24)
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.bottom, Tokens.Space.xl)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                MonoBottomBar {
+                    MonoButton(title: L("Zaczynamy"), kind: .dark) {
+                        onContinue()
+                    }
+                }
             }
         }
         .onAppear {
@@ -41,120 +52,81 @@ struct CelebrationStepView: View {
     }
 
     private var backdrop: some View {
-        ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
-            Circle()
-                .fill(Tokens.Palette.primary.opacity(0.16))
-                .frame(width: 360, height: 360)
-                .blur(radius: 80)
-                .offset(x: -160, y: -300)
-                .allowsHitTesting(false)
-            Circle()
-                .fill(Tokens.Palette.accent.opacity(0.12))
-                .frame(width: 280, height: 280)
-                .blur(radius: 80)
-                .offset(x: 170, y: 300)
-                .allowsHitTesting(false)
-        }
+        Tokens.Palette.background.ignoresSafeArea()
     }
 
+    /// 120 pt dark disc with the accent checkmark.
     private var heroBadge: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    AngularGradient(
-                        colors: [
-                            .white.opacity(0.92),
-                            Tokens.Palette.primary,
-                            Tokens.Palette.accent,
-                            Tokens.Palette.warning.opacity(0.86),
-                            .white.opacity(0.72),
-                            Tokens.Palette.primary,
-                        ],
-                        center: .center,
-                        angle: .degrees(-40)
-                    )
-                )
-                .frame(width: 160, height: 160)
-            Circle()
-                .fill(
-                    Tokens.Palette.primary
-                )
-                .frame(width: 126, height: 126)
-                .overlay(Circle().stroke(.white.opacity(0.10), lineWidth: 0.35))
-            Image(systemName: "checkmark.seal.fill")
-                .font(.system(size: 80, weight: .semibold))
-                .foregroundStyle(.white)
-                .scaleEffect(animateBadge ? 1.0 : 0.5)
-                .opacity(animateBadge ? 1 : 0)
-        }
+        Circle()
+            .fill(Tokens.Mono.hero)
+            .frame(width: 120, height: 120)
+            .overlay(
+                Image(systemName: "checkmark")
+                    .font(.system(size: 50, weight: .heavy))
+                    .foregroundStyle(Tokens.Mono.hi)
+                    .scaleEffect(animateBadge ? 1.0 : 0.5)
+                    .opacity(animateBadge ? 1 : 0)
+            )
+            .scaleEffect(animateBadge ? 1.0 : 0.85)
+            .accessibilityHidden(true)
     }
 
     private var headline: some View {
-        VStack(spacing: Tokens.Space.sm) {
+        VStack(spacing: 16) {
             Text(welcomeHeadline)
-                .font(Tokens.Font.title)
+                .font(Tokens.Font.monoDisplay(30))
+                .textCase(.uppercase)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
             Text("Zebraliśmy Twoje dane i przygotowaliśmy spokojny start: cel, makro, wodę i rytm dnia.")
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(15, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, Tokens.Space.xl)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var planCard: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Twój plan jest gotowy")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("Możesz zacząć od pierwszego posiłku.")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    MonoLabel(text: L("Twój plan jest gotowy"))
+                    Spacer(minLength: 8)
+                    if let dailyKcal, dailyKcal > 0 {
+                        Text(verbatim: "\(dailyKcal) kcal")
+                            .font(Tokens.Font.monoNumber(20))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .lineLimit(1)
+                    }
                 }
-                Spacer(minLength: 0)
-                Image(systemName: "sparkles")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.warning)
+                Text("Możesz zacząć od pierwszego posiłku.")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
-            Divider().opacity(0.42)
             checkRow("Cel kalorii i makro zapisane", delay: 0)
             checkRow("Ola przygotowała pierwsze wskazówki", delay: 0.1)
             checkRow("Przypomnienia i streak są gotowe", delay: 0.2)
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.82))
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .strokeBorder(.white.opacity(0.10), lineWidth: 0.35)
-        }
-        .padding(.horizontal, Tokens.Space.screenPadding)
+        .monoCard(padding: 16)
     }
 
     private func checkRow(_ text: LocalizedStringKey, delay: Double) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primary)
-                    .frame(width: 22, height: 22)
-                Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(.white)
-            }
-            .scaleEffect(animateCheckmarks ? 1 : 0)
-            .opacity(animateCheckmarks ? 1 : 0)
-            .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(delay), value: animateCheckmarks)
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark")
+                .font(.system(size: 11, weight: .heavy))
+                .foregroundStyle(Tokens.Mono.hi)
+                .frame(width: 22, height: 22)
+                .background(Circle().fill(Tokens.Mono.hero))
+                .scaleEffect(animateCheckmarks ? 1 : 0)
+                .opacity(animateCheckmarks ? 1 : 0)
+                .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(delay), value: animateCheckmarks)
 
             Text(text)
-                .font(Tokens.Font.body)
+                .font(Tokens.Font.manrope(14, weight: 700))
                 .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
+            Spacer(minLength: 0)
         }
     }
 
@@ -222,10 +194,10 @@ private struct ConfettiPiece: Identifiable {
 
     static func random<G: RandomNumberGenerator>(using generator: inout G) -> ConfettiPiece {
         let palette: [Color] = [
-            Tokens.Palette.primary,
-            Tokens.Palette.primarySoft,
-            Tokens.Palette.accent,
-            Tokens.Palette.warning,
+            Tokens.Mono.accent,
+            Tokens.Mono.fat,
+            Tokens.Mono.hi,
+            Tokens.Mono.strong,
         ]
         return ConfettiPiece(
             x: Double.random(in: 0.0...1.0, using: &generator),
@@ -234,7 +206,7 @@ private struct ConfettiPiece: Identifiable {
             wobbleAmplitude: Double.random(in: 12...28, using: &generator),
             rotationSpeed: Double.random(in: 60...180, using: &generator),
             rotationOffset: Double.random(in: 0...360, using: &generator),
-            color: palette.randomElement(using: &generator) ?? Tokens.Palette.primary,
+            color: palette.randomElement(using: &generator) ?? Tokens.Mono.accent,
             isCircle: Bool.random(using: &generator)
         )
     }
@@ -244,14 +216,10 @@ private struct ConfettiShape: View {
     let piece: ConfettiPiece
 
     var body: some View {
-        Group {
-            if piece.isCircle {
-                Circle().fill(piece.color)
-            } else {
-                RoundedRectangle(cornerRadius: 2, style: .continuous).fill(piece.color)
-            }
-        }
-        .frame(width: 8, height: 12)
-        .opacity(0.85)
+        // Design D confetti: small 10×16 slanted slips (no circles).
+        RoundedRectangle(cornerRadius: 2, style: .continuous)
+            .fill(piece.color)
+            .frame(width: piece.isCircle ? 8 : 10, height: piece.isCircle ? 12 : 16)
+            .opacity(0.9)
     }
 }

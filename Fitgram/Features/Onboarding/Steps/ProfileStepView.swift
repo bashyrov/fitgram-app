@@ -21,186 +21,109 @@ struct ProfileStepView: View {
                 onContinue()
             },
             content: {
-                VStack(alignment: .leading, spacing: Tokens.Space.xl) {
-                    section("Sex") {
-                        biologicalSexCards
-                    }
-                    section("Age") {
-                        ageCard
-                    }
-                    section("Height") {
-                        sliderCard(
-                            config: SliderConfig(
-                                symbol: "ruler",
-                                unit: "cm",
-                                range: 130...220,
-                                step: 1,
-                                integerDisplay: true,
-                                tint: Tokens.Palette.primary
-                            ),
-                            binding: $heightCm
-                        )
-                    }
-                    section("Weight") {
-                        sliderCard(
-                            config: SliderConfig(
-                                symbol: "scalemass",
-                                unit: "kg",
-                                range: 30...200,
-                                step: 0.5,
-                                integerDisplay: false,
-                                tint: Tokens.Palette.accent
-                            ),
-                            binding: $weightKg
-                        )
-                    }
-                    section("Activity level") {
-                        activityCards
-                    }
+                VStack(alignment: .leading, spacing: 10) {
+                    sexCard
+                    measurementsCard
+                    activityCard
                 }
             }
         )
         .onAppear { hydrate() }
     }
 
-    // MARK: - Sections
+    // MARK: - Cards
 
-    private func section<Content: View>(
-        _ title: LocalizedStringKey,
-        @ViewBuilder content: () -> Content
+    private var sexCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Sex"))
+            MonoSegmented(
+                selection: $profile.biologicalSex,
+                options: [
+                    (value: BiologicalSex.female, title: L("Female")),
+                    (value: BiologicalSex.male, title: L("Male")),
+                    (value: BiologicalSex.undisclosed, title: L("Prefer not to say")),
+                ]
+            )
+            Text(L("No impact on recommendations"))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private var measurementsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            stepperRow(
+                title: L("Age"),
+                value: Binding(
+                    get: { Double(ageYears) },
+                    set: { ageYears = Int($0.rounded()) }
+                ),
+                range: 13...100,
+                step: 1,
+                unit: L("lat"),
+                format: "%.0f"
+            )
+            stepperRow(title: L("Height"), value: $heightCm, range: 130...220, step: 1, unit: "cm", format: "%.0f")
+            stepperRow(title: L("Weight"), value: $weightKg, range: 30...200, step: 0.5, unit: "kg", format: "%.1f")
+        }
+        .monoCard(padding: 16)
+    }
+
+    // swiftlint:disable:next function_parameter_count
+    private func stepperRow(
+        title: String,
+        value: Binding<Double>,
+        range: ClosedRange<Double>,
+        step: Double,
+        unit: String,
+        format: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        HStack(spacing: 12) {
             Text(title)
-                .font(Tokens.Font.headline)
+                .font(Tokens.Font.manrope(15, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
-            content()
+                .frame(maxWidth: .infinity, alignment: .leading)
+            MonoStepper(value: value, range: range, step: step, unit: unit, format: format)
         }
     }
 
-    private var biologicalSexCards: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            OnboardingChoiceCard(
-                symbol: "figure.stand.dress",
-                title: "Female",
-                subtitle: "",
-                isSelected: profile.biologicalSex == .female,
-                action: { profile.biologicalSex = .female }
-            )
-            OnboardingChoiceCard(
-                symbol: "figure.stand",
-                title: "Male",
-                subtitle: "",
-                isSelected: profile.biologicalSex == .male,
-                action: { profile.biologicalSex = .male }
-            )
-            OnboardingChoiceCard(
-                symbol: "person.fill.questionmark",
-                title: "Prefer not to say",
-                subtitle: "No impact on recommendations",
-                isSelected: profile.biologicalSex == .undisclosed,
-                action: { profile.biologicalSex = .undisclosed }
-            )
-        }
-    }
+    private var activityLevels: [ActivityLevel] { ActivityLevel.allCases }
 
-    private var ageCard: some View {
-        HStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.primarySoft)
-                    .frame(width: 48, height: 48)
-                Image(systemName: "calendar")
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(ageYears)")
-                        .font(Tokens.Font.title2)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("lat")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+    /// Discrete slider over `ActivityLevel.allCases` (index-backed).
+    private var activityIndex: Binding<Double> {
+        Binding(
+            get: { Double(activityLevels.firstIndex(of: profile.activityLevel) ?? 0) },
+            set: { newValue in
+                let index = min(max(Int(newValue.rounded()), 0), activityLevels.count - 1)
+                if activityLevels[index] != profile.activityLevel {
+                    profile.activityLevel = activityLevels[index]
+                    Haptics.selection()
                 }
             }
-            Spacer()
-            Stepper("", value: $ageYears, in: 13...100)
-                .labelsHidden()
-        }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 3)
         )
     }
 
-    private var activityCards: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            ForEach(ActivityLevel.allCases, id: \.self) { level in
-                OnboardingChoiceCard(
-                    symbol: level.symbol,
-                    title: LocalizedStringKey(level.label),
-                    subtitle: LocalizedStringKey(level.subtitle),
-                    isSelected: profile.activityLevel == level,
-                    action: { profile.activityLevel = level }
-                )
-            }
-        }
-    }
-
-    // MARK: - Slider card
-
-    private struct SliderConfig {
-        let symbol: String
-        let unit: String
-        let range: ClosedRange<Double>
-        let step: Double
-        let integerDisplay: Bool
-        let tint: Color
-    }
-
-    private func sliderCard(
-        config: SliderConfig,
-        binding: Binding<Double>
-    ) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(config.tint.opacity(0.15))
-                        .frame(width: 48, height: 48)
-                    Image(systemName: config.symbol)
-                        .foregroundStyle(config.tint)
+    private var activityCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Activity level"))
+            VStack(spacing: 6) {
+                Slider(value: activityIndex, in: 0...Double(max(activityLevels.count - 1, 1)), step: 1)
+                    .tint(Tokens.Mono.strong)
+                HStack {
+                    Text(activityLevels.first?.label ?? "")
+                    Spacer()
+                    Text(activityLevels.last?.label ?? "")
                 }
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(formattedValue(binding.wrappedValue, integer: config.integerDisplay))
-                        .font(Tokens.Font.display)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(config.unit)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
             }
-            Slider(value: binding, in: config.range, step: config.step) {
-                EmptyView()
-            } minimumValueLabel: {
-                Text(formattedValue(config.range.lowerBound, integer: config.integerDisplay))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            } maximumValueLabel: {
-                Text(formattedValue(config.range.upperBound, integer: config.integerDisplay))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            .tint(config.tint)
+            Text("\(profile.activityLevel.label) · \(profile.activityLevel.subtitle)")
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-                .shadow(color: .black.opacity(0.05), radius: 10, y: 3)
-        )
+        .monoCard(padding: 16)
     }
 
     private func formattedValue(_ value: Double, integer: Bool) -> String {

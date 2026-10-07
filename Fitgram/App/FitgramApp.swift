@@ -64,6 +64,7 @@ struct FitgramApp: App {
 
     // swiftlint:disable function_body_length
     init() {
+        MonoAppearance.apply()
         let session = AuthSession()
         let providers: [any AuthProvider] = [
             AppleAuthProvider(),

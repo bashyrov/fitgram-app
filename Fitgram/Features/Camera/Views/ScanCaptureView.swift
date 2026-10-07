@@ -7,11 +7,13 @@ struct ScanCaptureView: View {
     @Bindable var state: ScanState
     let session: CameraCaptureSession
     let onCancel: () -> Void
+    /// Mockup top-right pill "✦ AI · 3 / 5 dziś"; hidden when the plan has no daily photo cap.
+    var quotaText: String?
     @State private var progressPhase = 0
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(red: 17 / 255, green: 18 / 255, blue: 20 / 255).ignoresSafeArea()
 
             CameraPreviewView(session: session.session)
                 .ignoresSafeArea()
@@ -21,27 +23,34 @@ struct ScanCaptureView: View {
             CameraOverlay()
                 .opacity(isProcessing ? 0.30 : 1)
 
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     Button(action: onCancel) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.white)
-                            .frame(width: 40, height: 40)
-                            .background(.ultraThinMaterial, in: Circle())
+                            .frame(width: 44, height: 44)
+                            .background(Circle().fill(Color.white.opacity(0.14)))
                     }
+                    .buttonStyle(.plain)
                     .accessibilityLabel(Text("Zamknij aparat"))
                     Spacer()
+                    if let quotaText {
+                        quotaPill(quotaText)
+                    }
                 }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.md)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
 
                 Spacer()
 
-                ShutterButton(isBusy: isBusy) {
-                    Task { await state.capturePhoto() }
+                VStack(spacing: 22) {
+                    stepPill(activePhase: isProcessing ? progressPhase : 0)
+                    ShutterButton(isBusy: isBusy) {
+                        Task { await state.capturePhoto() }
+                    }
                 }
-                .padding(.bottom, Tokens.Space.xxxl)
+                .padding(.bottom, 40)
             }
 
             if isProcessing {
@@ -51,6 +60,20 @@ struct ScanCaptureView: View {
             }
         }
         .animation(Tokens.Motion.gentle, value: isProcessing)
+    }
+
+    private func quotaPill(_ text: String) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 10, weight: .bold))
+            Text(text)
+                .font(Tokens.Font.manrope(11, weight: 800))
+                .lineLimit(1)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 9)
+        .frame(height: 24)
+        .background(Capsule().fill(Color.white.opacity(0.14)))
     }
 
     private var isProcessing: Bool {
@@ -67,85 +90,74 @@ struct ScanCaptureView: View {
 
     private var scanProgressOverlay: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color.black.opacity(0.42),
-                    Tokens.Palette.primary.opacity(0.20),
-                    Color.black.opacity(0.32),
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Color.black.opacity(0.45)
+                .ignoresSafeArea()
 
-            VStack(spacing: Tokens.Space.lg) {
+            VStack(spacing: 18) {
                 ZStack {
                     Circle()
-                        .stroke(.white.opacity(0.18), lineWidth: 12)
+                        .stroke(Tokens.Mono.heroLine, lineWidth: 10)
                         .frame(width: 92, height: 92)
                     Circle()
                         .trim(from: 0, to: CGFloat(progressValue))
-                        .stroke(
-                            LinearGradient(
-                                colors: [.white, Tokens.Palette.primary, Tokens.Palette.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            style: StrokeStyle(lineWidth: 12, lineCap: .round)
-                        )
+                        .stroke(Tokens.Mono.hi, style: StrokeStyle(lineWidth: 10, lineCap: .round))
                         .frame(width: 92, height: 92)
                         .rotationEffect(.degrees(-90))
                     Image(systemName: progressIcon)
                         .font(.system(size: 26, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Tokens.Mono.hi)
                         .contentTransition(.symbolEffect(.replace))
                 }
 
-                VStack(spacing: Tokens.Space.xs) {
+                VStack(spacing: 6) {
                     Text(progressTitle)
-                        .font(Tokens.Font.manrope(23, weight: 800))
-                        .foregroundStyle(.white)
+                        .font(Tokens.Font.monoDisplay(22))
+                        .textCase(.uppercase)
+                        .foregroundStyle(Tokens.Mono.onHero)
                         .multilineTextAlignment(.center)
                     Text(progressSubtitle)
-                        .font(Tokens.Font.manrope(14, weight: 700))
-                        .foregroundStyle(.white.opacity(0.78))
+                        .font(Tokens.Font.manrope(13, weight: 600))
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                         .multilineTextAlignment(.center)
                 }
 
-                HStack(spacing: Tokens.Space.sm) {
-                    progressStep(index: 0, title: "Photo")
-                    progressStep(index: 1, title: "Food")
-                    progressStep(index: 2, title: "Macros")
-                }
+                stepPill(activePhase: progressPhase)
             }
-            .padding(.horizontal, Tokens.Space.xl)
-            .padding(.vertical, Tokens.Space.xl)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 34, style: .continuous))
+            .padding(24)
+            .frame(maxWidth: .infinity)
             .background(
-                RoundedRectangle(cornerRadius: 34, style: .continuous)
-                    .fill(Tokens.Palette.ink.opacity(0.18))
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                    .fill(Tokens.Mono.hero)
             )
-            .overlay {
-                RoundedRectangle(cornerRadius: 34, style: .continuous)
-                    .strokeBorder(.white.opacity(0.10), lineWidth: 0.35)
-            }
-            .shadow(color: .black.opacity(0.28), radius: 32, y: 18)
             .padding(.horizontal, Tokens.Space.screenPadding)
         }
     }
 
-    private func progressStep(index: Int, title: LocalizedStringKey) -> some View {
-        HStack(spacing: 5) {
-            Circle()
-                .fill(index <= progressPhase ? .white : .white.opacity(0.24))
-                .frame(width: 7, height: 7)
-            Text(title)
-                .font(Tokens.Font.manrope(11, weight: 800))
-                .foregroundStyle(index <= progressPhase ? .white : .white.opacity(0.48))
+    /// Mockup step pill: "1 · Zdjęcie / 2 · Jedzenie / 3 · Makro" — the active step is a white capsule.
+    private func stepPill(activePhase: Int) -> some View {
+        HStack(spacing: 6) {
+            progressStep(index: 0, title: "Photo", activePhase: activePhase)
+            progressStep(index: 1, title: "Food", activePhase: activePhase)
+            progressStep(index: 2, title: "Macros", activePhase: activePhase)
         }
-        .padding(.horizontal, 9)
-        .padding(.vertical, 7)
-        .background(Capsule().fill(.white.opacity(index <= progressPhase ? 0.16 : 0.08)))
+        .padding(4)
+        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Color.white.opacity(0.12)))
+    }
+
+    private func progressStep(index: Int, title: LocalizedStringKey, activePhase: Int) -> some View {
+        let isActive = index == activePhase
+        return (Text(verbatim: "\(index + 1) · ") + Text(title))
+            .font(Tokens.Font.manrope(12, weight: isActive ? 800 : 700))
+            .foregroundStyle(
+                isActive ? Color(red: 17 / 255, green: 18 / 255, blue: 20 / 255) : Color.white.opacity(0.7)
+            )
+            .lineLimit(1)
+            .padding(.horizontal, 14)
+            .frame(height: 32)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(isActive ? Color.white : Color.clear)
+            )
     }
 
     private var progressValue: Double {

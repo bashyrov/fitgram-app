@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Pill-shaped, neutral-surface auth button used for Google + e-mail. Sign in
+/// Design D outline capsule auth button used for Google + e-mail. Sign in
 /// with Apple uses Apple's own `SignInWithAppleButton` (we don't restyle it
 /// — the guidelines require the system control).
 struct SocialAuthButton: View {
@@ -10,27 +10,17 @@ struct SocialAuthButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: Tokens.Space.sm) {
+            HStack(spacing: 8) {
                 if let systemImage {
                     Image(systemName: systemImage)
-                        .font(.system(size: 18, weight: .medium))
-                        .frame(width: 22, alignment: .center)
+                        .font(.system(size: 17, weight: .bold))
                 }
                 Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
-            .foregroundStyle(Tokens.Palette.ink)
-            .frame(maxWidth: .infinity)
-            .frame(height: 56)
-            .frostedGlass(
-                cornerRadius: Tokens.Radius.pill,
-                fillOpacity: 0.72,
-                borderOpacity: 0.00,
-                glowOpacity: 0.06
-            )
-            .contentShape(RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous))
         }
-        .buttonStyle(PressableButtonStyle())
+        .buttonStyle(MonoButtonStyle(kind: .outline, height: 54))
     }
 }
 

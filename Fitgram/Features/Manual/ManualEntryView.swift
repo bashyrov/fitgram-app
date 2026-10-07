@@ -41,61 +41,49 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        nameCard
-                        ManualMealTypeCard(mealType: $mealType)
-                        modePicker
-                        if portionMode == .overall {
-                            ManualPortionCard(quantityGrams: $quantityGrams, caloriesKcal: $caloriesKcal)
-                            ManualMacrosCard(
-                                proteinGrams: $proteinGrams,
-                                carbsGrams: $carbsGrams,
-                                fatGrams: $fatGrams,
-                                fiberGrams: $fiberGrams
-                            )
-                        } else {
-                            detailedIngredientsCard
-                        }
-                        if entitlementsStore?.current.canUseFavorites ?? false {
-                            ManualFavoriteToggleCard(isOn: $saveAsFavorite)
-                        } else if entitlementsStore != nil {
-                            ManualFavoritePromoCard {
-                                paywallCoordinator?.present(.favoritesUnavailable)
-                            }
-                        }
-                        if let error {
-                            Text(error)
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.error)
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(text: L("Wpisz posiłek"), sub: L("Wpisz danie i odśwież dane z AI"))
+                        .padding(.bottom, 4)
+                    nameCard
+                    ManualMealTypeCard(mealType: $mealType)
+                    modePicker
+                    if portionMode == .overall {
+                        ManualPortionCard(quantityGrams: $quantityGrams, caloriesKcal: $caloriesKcal)
+                        ManualMacrosCard(
+                            proteinGrams: $proteinGrams,
+                            carbsGrams: $carbsGrams,
+                            fatGrams: $fatGrams,
+                            fiberGrams: $fiberGrams
+                        )
+                    } else {
+                        detailedIngredientsCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    favoriteSection
+                    if let error {
+                        Text(error)
+                            .font(Tokens.Font.manrope(12, weight: 700))
+                            .foregroundStyle(Tokens.Mono.danger)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, 6)
+                    }
                 }
-                .scrollDismissesKeyboard(.interactively)
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
             }
-            .navigationTitle(Text("Wpisz posiłek"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Wpisz posiłek"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                    MonoNavPill(title: L("Save")) {
                         Task { await save() }
-                    } label: {
-                        if isCompletingNutrition {
-                            ProgressView()
-                                .controlSize(.mini)
-                        } else {
-                            Text("Save")
-                        }
                     }
                     .disabled(!canSave)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .opacity(canSave ? 1 : 0.45)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -105,33 +93,58 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
                     .font(Tokens.Font.bodyEmphasized)
                 }
             }
+            .safeAreaInset(edge: .bottom) { saveBar }
         }
         .toastSurface()
     }
 
     // MARK: - Cards
 
-    private var nameCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Nazwa")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                HStack(spacing: Tokens.Space.sm) {
-                    Text("Wpisz danie i odśwież dane z AI")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                    Spacer(minLength: 0)
-                    aiRefreshButton
+    /// `bottom(btn('Zapisz', 'dark', 'check'))`.
+    private var saveBar: some View {
+        MonoBottomBar {
+            Button {
+                Task { await save() }
+            } label: {
+                HStack(spacing: 8) {
+                    if isCompletingNutrition {
+                        ProgressView()
+                            .tint(Tokens.Mono.onHero)
+                    } else {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 15, weight: .bold))
+                    }
+                    Text(L("Save"))
                 }
-                AIRequestHint.mealRefresh
+            }
+            .buttonStyle(MonoButtonStyle(kind: .dark))
+            .disabled(!canSave)
+        }
+    }
+
+    /// `Nazwa` card: 48 pt input + dark "Odśwież AI" button.
+    private var nameCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            AddFlowNameCard(label: L("Nazwa")) {
                 TextField("np. Naleśniki z serem", text: $name)
-                    .font(Tokens.Font.body)
-                    .textFieldStyle(.roundedBorder)
                     .autocorrectionDisabled()
                     .focused($isTextInputFocused)
                     .submitLabel(.done)
                     .onSubmit { isTextInputFocused = false }
+            } action: {
+                aiRefreshButton
+            }
+            AIRequestHint.mealRefresh
+        }
+    }
+
+    @ViewBuilder
+    private var favoriteSection: some View {
+        if entitlementsStore?.current.canUseFavorites ?? false {
+            ManualFavoriteToggleCard(isOn: $saveAsFavorite)
+        } else if entitlementsStore != nil {
+            ManualFavoritePromoCard {
+                paywallCoordinator?.present(.favoritesUnavailable)
             }
         }
     }
@@ -145,85 +158,97 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         )
     }
 
+    /// `ingr_list(..., 'Składniki', 'Lista produktów, każdy z własną gramaturą.')`.
     private var detailedIngredientsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    Text("Składniki")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(String.localizedStringWithFormat(L("%lld g"), Int(detailTotalGrams.rounded())))
-                        .font(Tokens.Font.footnote.weight(.bold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Capsule().fill(Tokens.Palette.primarySoft))
+        VStack(alignment: .leading, spacing: 10) {
+            AddFlowIngredientsSection(
+                title: L("Składniki"),
+                count: detailDrafts.count,
+                sub: L("Lista produktów, każdy z własną gramaturą.")
+            ) {
+                ForEach(Array(detailDrafts.enumerated()), id: \.element.id) { index, draft in
+                    ingredientDraftRow(draftBinding(draft.id), showsDivider: index > 0)
                 }
-                AIRequestHint.productNutrition
-
-                ForEach($detailDrafts) { $draft in
-                    ingredientDraftRow($draft)
-                    if draft.id != detailDrafts.last?.id {
-                        Divider().background(Tokens.Palette.separator)
-                    }
-                }
-
-                Button {
+            } footer: {
+                MonoButton(title: L("Dodaj składnik"), kind: .outline, icon: "plus", height: 44) {
                     detailDrafts.append(ManualIngredientDraft())
                     Haptics.selection()
-                } label: {
-                    Label("Dodaj składnik", systemImage: "plus.circle.fill")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
                 }
-                .buttonStyle(.pressable)
+                AddFlowAIButton(
+                    title: AddFlowCopy.fillWithAI,
+                    isLoading: isAnalyzingText,
+                    remaining: mealAIRefreshRemaining,
+                    showsQuota: false,
+                    height: 44,
+                    fullWidth: true,
+                    isDisabled: isAnalyzingText || mealAnalyzer == nil
+                        || name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                ) {
+                    isTextInputFocused = false
+                    Task { await refreshFromAI() }
+                }
             }
+            AIRequestHint.productNutrition
         }
     }
 
     // MARK: - Helpers
 
-    private func ingredientDraftRow(_ draft: Binding<ManualIngredientDraft>) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
+    /// Binding to one draft looked up by id, so rows survive removals.
+    private func draftBinding(_ draftID: UUID) -> Binding<ManualIngredientDraft> {
+        Binding<ManualIngredientDraft>(
+            get: { detailDrafts.first(where: { $0.id == draftID }) ?? ManualIngredientDraft(id: draftID) },
+            set: { newValue in
+                guard let index = detailDrafts.firstIndex(where: { $0.id == draftID }) else { return }
+                detailDrafts[index] = newValue
+            }
+        )
+    }
+
+    /// `ingredient(...)` row (name, kcal, grams slider) followed by the draft's nutrition steppers.
+    private func ingredientDraftRow(_ draft: Binding<ManualIngredientDraft>, showsDivider: Bool) -> some View {
+        let draftID = draft.wrappedValue.id
+        var removeAction: (() -> Void)?
+        if detailDrafts.count > 1 {
+            removeAction = { detailDrafts.removeAll { $0.id == draftID } }
+        }
+        return VStack(spacing: 0) {
+            AddFlowIngredientRow(
+                showsDivider: showsDivider,
+                kcal: draft.wrappedValue.caloriesKcal,
+                grams: draft.quantityGrams,
+                range: 1...2000,
+                step: 5,
+                onRemove: removeAction
+            ) {
                 TextField("Składnik", text: draft.name)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .textFieldStyle(.roundedBorder)
                     .focused($isTextInputFocused)
                     .submitLabel(.done)
                     .onSubmit { isTextInputFocused = false }
+            } accessory: {
                 productAIButton(for: draft)
-                if detailDrafts.count > 1 {
-                    Button {
-                        detailDrafts.removeAll { $0.id == draft.wrappedValue.id }
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .foregroundStyle(Tokens.Palette.error)
-                    }
-                    .buttonStyle(.pressable)
-                }
             }
-            ManualNumericRow(
-                config: .init(symbol: "scalemass", label: "Porcja", range: 1...2000, step: 5, unit: "g"),
-                value: draft.quantityGrams
-            )
-            ManualNumericRow(
-                config: .init(symbol: "flame.fill", label: "Kalorie", range: 0...3000, step: 5, unit: "kcal"),
-                value: draft.caloriesKcal
-            )
-            ManualNumericRow(
-                config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
-                value: draft.proteinGrams
-            )
-            ManualNumericRow(
-                config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
-                value: draft.carbsGrams
-            )
-            ManualNumericRow(
-                config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
-                value: draft.fatGrams
-            )
+            VStack(spacing: 0) {
+                ManualNumericRow(
+                    config: .init(symbol: "flame.fill", label: "Kalorie", range: 0...3000, step: 5, unit: "kcal"),
+                    value: draft.caloriesKcal
+                )
+                ManualNumericRow(
+                    config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
+                    value: draft.proteinGrams
+                )
+                ManualNumericRow(
+                    config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
+                    value: draft.carbsGrams
+                )
+                ManualNumericRow(
+                    config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
+                    value: draft.fatGrams
+                )
+            }
+            .padding(.leading, removeAction == nil ? 14 : 56)
+            .padding(.trailing, 14)
+            .padding(.bottom, 8)
         }
         .onChange(of: draft.wrappedValue) { _, _ in
             syncOverallFromDetail()
@@ -245,32 +270,15 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
     }
 
     private var aiRefreshButton: some View {
-        Button {
+        AddFlowAIButton(
+            isLoading: isAnalyzingText,
+            remaining: mealAIRefreshRemaining,
+            isDisabled: isAnalyzingText || mealAnalyzer == nil
+                || name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        ) {
             isTextInputFocused = false
             Task { await refreshFromAI() }
-        } label: {
-            HStack(spacing: 5) {
-                if isAnalyzingText {
-                    ProgressView()
-                        .controlSize(.mini)
-                        .tint(Tokens.Palette.primary)
-                } else {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 11, weight: .bold))
-                }
-                Text("Odśwież AI")
-                    .font(Tokens.Font.caption.weight(.bold))
-                AIQuotaBadge(remaining: mealAIRefreshRemaining)
-            }
-            .foregroundStyle(Tokens.Palette.primary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Capsule().fill(Tokens.Palette.primarySoft))
         }
-        .buttonStyle(.pressable)
-        .disabled(
-            isAnalyzingText || mealAnalyzer == nil || name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        )
     }
 
     private var mealAIRefreshRemaining: Int? {

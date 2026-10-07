@@ -33,7 +33,7 @@ struct GoalsAndTargetsCard: View {
     }
 
     var body: some View {
-        VStack(spacing: Tokens.Space.md) {
+        VStack(spacing: 8) {
             switch section {
             case .plan: planCard
             case .mainGoal: mainGoalCard
@@ -66,156 +66,66 @@ struct GoalsAndTargetsCard: View {
 
     // MARK: - Main goal card
 
+    /// Design D: "Twoja dzienna norma" card — label + Edit, big italic kcal,
+    /// macro pills, fiber / water / pace line, then the goal row and hint.
     private var planCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                sectionHeader(
-                    title: TL(
-                        pl: "Plan celu i kalorii",
-                        en: "Goal and calorie plan",
-                        uk: "План цілі й калорій",
-                        ru: "План цели и калорий",
-                        es: "Plan de objetivo y calorías"
-                    ),
-                    symbol: "target",
-                    tint: Tokens.Palette.primary,
-                    editAction: { sheet = .plan }
-                )
-                heroGoalBlock
-                if user.goalKind.requiresPaceAndTarget {
-                    HStack(spacing: Tokens.Space.sm) {
-                        if let pace = user.goalPaceKgPerWeek {
-                            chip(
-                                symbol: "speedometer",
-                                label: paceText(pace)
-                                    .replacingOccurrences(of: ".", with: ","),
-                                tint: Tokens.Palette.warning
-                            )
-                        }
-                        if let end = user.goalEstimatedEndDate {
-                            chip(
-                                symbol: "calendar",
-                                label: end.formatted(.dateTime.day().month(.abbreviated).year()),
-                                tint: Tokens.Palette.accent
-                            )
-                        }
-                    }
-                }
-                caloriesHero
-                HStack(spacing: Tokens.Space.sm) {
-                    macroTile(
-                        MacroTileSpec(
-                            emoji: "💪",
-                            label: TL(pl: "Białko", en: "Protein", uk: "Білок", ru: "Белок", es: "Proteína"),
-                            value: user.proteinGoalGrams,
-                            overridden: user.macrosOverridden,
-                            tint: Tokens.Palette.primary
-                        ),
-                        action: { sheet = .macros }
-                    )
-                    macroTile(
-                        MacroTileSpec(
-                            emoji: "🥑",
-                            label: TL(pl: "Tłuszcz", en: "Fat", uk: "Жири", ru: "Жиры", es: "Grasa"),
-                            value: user.fatGoalGrams,
-                            overridden: user.macrosOverridden,
-                            tint: Tokens.Palette.accent
-                        ),
-                        action: { sheet = .macros }
-                    )
-                    macroTile(
-                        MacroTileSpec(
-                            emoji: "🍞",
-                            label: TL(pl: "Węgle", en: "Carbs", uk: "Вуглеводи", ru: "Углеводы", es: "Carbos"),
-                            value: user.carbsGoalGrams,
-                            overridden: user.macrosOverridden,
-                            tint: Tokens.Palette.warning
-                        ),
-                        action: { sheet = .macros }
-                    )
-                }
-                HStack(spacing: Tokens.Space.sm) {
-                    secondaryTargetTile(
-                        emoji: "🌾",
-                        label: TL(pl: "Błonnik", en: "Fiber", uk: "Клітковина", ru: "Клетчатка", es: "Fibra"),
-                        value: "\(user.fiberGoalGrams) g",
-                        overridden: user.fiberOverridden,
-                        action: { sheet = .macros }
-                    )
-                    secondaryTargetTile(
-                        emoji: "💧",
-                        label: TL(pl: "Woda", en: "Water", uk: "Вода", ru: "Вода", es: "Agua"),
-                        value: "\(user.waterGoalMl) ml",
-                        overridden: user.waterOverridden,
-                        action: { sheet = .water }
-                    )
-                }
-                planExplanationStrip
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader(title: dailyTargetTitle, editAction: { sheet = .plan })
+            kcalBlock
+            macroBlock
+            secondaryLine
+            Rectangle()
+                .fill(Tokens.Mono.line)
+                .frame(height: 1)
+            heroGoalBlock
+            planExplanationStrip
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 
     private var mainGoalCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                sectionHeader(
-                    title: TL(
-                        pl: "Twoje cele", en: "Your goals", uk: "Твої цілі", ru: "Твои цели", es: "Tus objetivos"),
-                    symbol: "target",
-                    tint: Tokens.Palette.primary,
-                    editAction: { sheet = .plan }
-                )
-                heroGoalBlock
-                if user.goalKind.requiresPaceAndTarget {
-                    HStack(spacing: Tokens.Space.sm) {
-                        if let pace = user.goalPaceKgPerWeek {
-                            chip(
-                                symbol: "speedometer",
-                                label: paceText(pace)
-                                    .replacingOccurrences(of: ".", with: ","),
-                                tint: Tokens.Palette.warning
-                            )
-                        }
-                        if let end = user.goalEstimatedEndDate {
-                            chip(
-                                symbol: "calendar",
-                                label: end.formatted(.dateTime.day().month(.abbreviated).year()),
-                                tint: Tokens.Palette.accent
-                            )
-                        }
-                    }
-                }
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader(
+                title: TL(
+                    pl: "Twoje cele", en: "Your goals", uk: "Твої цілі", ru: "Твои цели", es: "Tus objetivos"),
+                editAction: { sheet = .plan }
+            )
+            heroGoalBlock
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 
     private var heroGoalBlock: some View {
-        HStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(
-                        Tokens.Palette.primary.opacity(0.85)
-                    )
-                    .frame(width: 56, height: 56)
-                Image(systemName: goalGlyph)
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: goalGlyph, style: .dark, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(goalDescription)
-                    .font(Tokens.Font.title3)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(1)
-                if let current = user.goalStartWeightKg ?? user.weightKg {
-                    Text(
-                        String(format: startWeightFormat, current).replacingOccurrences(of: ".", with: ",")
-                    )
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .minimumScaleFactor(0.8)
+                if let detail = goalDetailLine {
+                    Text(detail)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .lineLimit(2)
                 }
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
+    }
+
+    private var goalDetailLine: String? {
+        var parts: [String] = []
+        if let current = user.goalStartWeightKg ?? user.weightKg {
+            parts.append(String(format: startWeightFormat, current).replacingOccurrences(of: ".", with: ","))
+        }
+        if user.goalKind.requiresPaceAndTarget, let end = user.goalEstimatedEndDate {
+            parts.append(end.formatted(.dateTime.day().month(.abbreviated).year()))
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
     private var goalGlyph: String {
@@ -316,127 +226,129 @@ struct GoalsAndTargetsCard: View {
     // MARK: - Daily targets card
 
     private var dailyTargetsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                sectionHeader(
-                    title: TL(
-                        pl: "Twoja dzienna norma",
-                        en: "Your daily target",
-                        uk: "Твоя денна ціль",
-                        ru: "Твоя дневная цель",
-                        es: "Tu objetivo diario"
-                    ),
-                    symbol: "flame.fill",
-                    tint: Tokens.Palette.warning,
-                    editAction: nil
-                )
-                caloriesHero
-                HStack(spacing: Tokens.Space.sm) {
-                    macroTile(
-                        MacroTileSpec(
-                            emoji: "💪",
-                            label: TL(pl: "Białko", en: "Protein", uk: "Білок", ru: "Белок", es: "Proteína"),
-                            value: user.proteinGoalGrams,
-                            overridden: user.macrosOverridden,
-                            tint: Tokens.Palette.primary
-                        ),
-                        action: { sheet = .macros }
-                    )
-                    macroTile(
-                        MacroTileSpec(
-                            emoji: "🥑",
-                            label: TL(pl: "Tłuszcz", en: "Fat", uk: "Жири", ru: "Жиры", es: "Grasa"),
-                            value: user.fatGoalGrams,
-                            overridden: user.macrosOverridden,
-                            tint: Tokens.Palette.accent
-                        ),
-                        action: { sheet = .macros }
-                    )
-                    macroTile(
-                        MacroTileSpec(
-                            emoji: "🍞",
-                            label: TL(pl: "Węgle", en: "Carbs", uk: "Вуглеводи", ru: "Углеводы", es: "Carbos"),
-                            value: user.carbsGoalGrams,
-                            overridden: user.macrosOverridden,
-                            tint: Tokens.Palette.warning
-                        ),
-                        action: { sheet = .macros }
-                    )
-                }
-                HStack(spacing: Tokens.Space.sm) {
-                    secondaryTargetTile(
-                        emoji: "🌾",
-                        label: TL(pl: "Błonnik", en: "Fiber", uk: "Клітковина", ru: "Клетчатка", es: "Fibra"),
-                        value: "\(user.fiberGoalGrams) g",
-                        overridden: user.fiberOverridden,
-                        action: { sheet = .macros }
-                    )
-                    secondaryTargetTile(
-                        emoji: "💧",
-                        label: TL(pl: "Woda", en: "Water", uk: "Вода", ru: "Вода", es: "Agua"),
-                        value: "\(user.waterGoalMl) ml",
-                        overridden: user.waterOverridden,
-                        action: { sheet = .water }
-                    )
-                }
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader(title: dailyTargetTitle, editAction: nil)
+            kcalBlock
+            macroBlock
+            secondaryLine
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 
-    private var caloriesHero: some View {
+    private var dailyTargetTitle: String {
+        TL(
+            pl: "Twoja dzienna norma",
+            en: "Your daily target",
+            uk: "Твоя денна ціль",
+            ru: "Твоя дневная цель",
+            es: "Tu objetivo diario"
+        )
+    }
+
+    private var kcalBlock: some View {
         Button {
             sheet = .plan
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            Tokens.Palette.warning
-                        )
-                        .frame(width: 64, height: 64)
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 26, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(alignment: .firstTextBaseline, spacing: 4) {
-                        Text("\(user.dailyCalorieGoalKcal)")
-                            .font(Tokens.Font.display)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text("kcal")
-                            .font(Tokens.Font.body)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Text(
-                        TL(
-                            pl: "Dzienna norma kalorii",
-                            en: "Daily calorie target",
-                            uk: "Денна норма калорій",
-                            ru: "Дневная норма калорий",
-                            es: "Objetivo diario de calorías"
-                        )
-                    )
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-                Image(systemName: "sparkles")
-                    .foregroundStyle(Tokens.Palette.primary)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("\(user.dailyCalorieGoalKcal)")
+                    .font(Tokens.Font.monoNumber(40))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Text("kcal")
+                    .font(Tokens.Font.manrope(14, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+                Spacer(minLength: 0)
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.primarySoft)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(
+            Text(
+                TL(
+                    pl: "Dzienna norma kalorii",
+                    en: "Daily calorie target",
+                    uk: "Денна норма калорій",
+                    ru: "Дневная норма калорий",
+                    es: "Objetivo diario de calorías"
+                )
             )
+        )
+        .accessibilityValue(Text("\(user.dailyCalorieGoalKcal) kcal"))
+    }
+
+    private var macroBlock: some View {
+        Button {
+            sheet = .macros
+        } label: {
+            MonoMacroRow(
+                protein: Double(user.proteinGoalGrams),
+                carbs: Double(user.carbsGoalGrams),
+                fat: Double(user.fatGoalGrams)
+            )
+            .overlay(alignment: .topTrailing) {
+                if user.macrosOverridden {
+                    lockGlyph
+                        .padding(8)
+                }
+            }
         }
         .buttonStyle(.plain)
     }
 
+    private var secondaryLine: some View {
+        HStack(spacing: 8) {
+            Button {
+                sheet = .macros
+            } label: {
+                secondaryItem(
+                    label: TL(pl: "Błonnik", en: "Fiber", uk: "Клітковина", ru: "Клетчатка", es: "Fibra"),
+                    value: "\(user.fiberGoalGrams) g",
+                    overridden: user.fiberOverridden
+                )
+            }
+            .buttonStyle(.plain)
+            Spacer(minLength: 0)
+            Button {
+                sheet = .water
+            } label: {
+                secondaryItem(
+                    label: TL(pl: "Woda", en: "Water", uk: "Вода", ru: "Вода", es: "Agua"),
+                    value: "\(user.waterGoalMl) ml",
+                    overridden: user.waterOverridden
+                )
+            }
+            .buttonStyle(.plain)
+            if user.goalKind.requiresPaceAndTarget, let pace = user.goalPaceKgPerWeek {
+                Spacer(minLength: 0)
+                Text(paceText(pace).replacingOccurrences(of: ".", with: ","))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+        }
+        .font(Tokens.Font.manrope(13, weight: 700))
+        .foregroundStyle(Tokens.Palette.ink)
+    }
+
+    private func secondaryItem(label: String, value: String, overridden: Bool) -> some View {
+        HStack(spacing: 4) {
+            Text("\(label) \(value)")
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            if overridden {
+                lockGlyph
+            }
+        }
+        .contentShape(Rectangle())
+    }
+
     private var planExplanationStrip: some View {
-        HStack(alignment: .top, spacing: Tokens.Space.sm) {
+        HStack(alignment: .top, spacing: 8) {
             Image(systemName: "sparkles")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(Tokens.Palette.primary)
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(Tokens.Mono.muted)
+                .padding(.top, 2)
             Text(
                 TL(
                     pl:
@@ -455,228 +367,73 @@ struct GoalsAndTargetsCard: View {
                         """
                 )
             )
-            .font(Tokens.Font.caption)
-            .foregroundStyle(Tokens.Palette.inkMuted)
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .lineSpacing(2)
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.primarySoft.opacity(0.82))
-        )
-    }
-
-    private struct MacroTileSpec {
-        let emoji: String
-        let label: String
-        let value: Int
-        let overridden: Bool
-        let tint: Color
-    }
-
-    private func macroTile(_ spec: MacroTileSpec, action: @escaping () -> Void) -> some View {
-        let emoji = spec.emoji
-        let label = spec.label
-        let value = spec.value
-        let overridden = spec.overridden
-        let tint = spec.tint
-        return Button(action: action) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 4) {
-                    Text(emoji)
-                    if overridden {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 9))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
-                }
-                HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text("\(value)")
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("g")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Text(label)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            .padding(Tokens.Space.sm)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(tint.opacity(0.12))
-            )
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func secondaryTargetTile(
-        emoji: String,
-        label: String,
-        value: String,
-        overridden: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack(spacing: Tokens.Space.sm) {
-                Text(emoji)
-                    .font(.system(size: 20))
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(label)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                    HStack(spacing: 4) {
-                        Text(value)
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        if overridden {
-                            Image(systemName: "lock.fill")
-                                .font(.system(size: 9))
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                    }
-                }
-                Spacer()
-                Image(systemName: "pencil")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            .padding(Tokens.Space.sm)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(Tokens.Palette.surfaceMuted)
-            )
-        }
-        .buttonStyle(.plain)
     }
 
     // MARK: - Profile data card
 
-    /// Profile-data card now reads as a 2×3 stat grid (sex / age /
-    /// height / weight / activity / BMI) with tinted icon chips per
-    /// metric instead of a vertical list of label-value rows.
+    /// Design D: "Twoje dane" — label + Edit, 3-column grid of italic stats.
     private var profileDataCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                sectionHeader(
-                    title: L("Your data"),
-                    symbol: "person.fill",
-                    tint: Tokens.Palette.inkMuted,
-                    editAction: { sheet = .profileData }
-                )
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: Tokens.Space.sm),
-                        GridItem(.flexible(), spacing: Tokens.Space.sm),
-                    ],
-                    spacing: Tokens.Space.sm
-                ) {
-                    statTile(
-                        symbol: sexSymbol,
-                        label: L("Sex"),
-                        value: sexLabelText,
-                        tint: Tokens.Palette.lime
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader(title: L("Your data"), editAction: { sheet = .profileData })
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 12),
+                    GridItem(.flexible(), spacing: 12),
+                    GridItem(.flexible(), spacing: 12),
+                ],
+                alignment: .leading,
+                spacing: 12
+            ) {
+                dataStat(label: L("Sex"), value: sexLabelText)
+                if let age = ageString {
+                    dataStat(label: L("Age"), value: age)
+                }
+                if let height = user.heightCm {
+                    dataStat(label: L("Height"), value: "\(height)", unit: "cm")
+                }
+                if let weight = user.weightKg {
+                    dataStat(
+                        label: L("Weight"),
+                        value: String(format: "%.1f", weight).replacingOccurrences(of: ".", with: ","),
+                        unit: "kg",
+                        action: { sheet = .weight }
                     )
-                    if let age = ageString {
-                        statTile(
-                            symbol: "calendar",
-                            label: L("Age"),
-                            value: age,
-                            tint: Tokens.Palette.accent
-                        )
-                    }
-                    if let height = user.heightCm {
-                        statTile(
-                            symbol: "ruler",
-                            label: L("Height"),
-                            value: "\(height) cm",
-                            tint: Tokens.Palette.mutedGreen
-                        )
-                    }
-                    if let weight = user.weightKg {
-                        statTile(
-                            symbol: "scalemass.fill",
-                            label: L("Weight"),
-                            value: String(format: "%.1f kg", weight)
-                                .replacingOccurrences(of: ".", with: ","),
-                            tint: Tokens.Palette.success,
-                            action: { sheet = .weight }
-                        )
-                    }
-                    statTile(
-                        symbol: activitySymbol,
-                        label: L("Activity"),
-                        value: activityShortLabel,
-                        tint: Tokens.Palette.warning,
-                        action: { sheet = .plan }
+                }
+                dataStat(label: L("Activity"), value: activityShortLabel, action: { sheet = .plan })
+                if let bmi = bmiValue {
+                    dataStat(
+                        label: "BMI",
+                        value: String(format: "%.1f", bmi).replacingOccurrences(of: ".", with: ",")
                     )
-                    if let bmi = bmiValue {
-                        statTile(
-                            symbol: "heart.fill",
-                            label: "BMI",
-                            value: String(format: "%.1f", bmi).replacingOccurrences(of: ".", with: ","),
-                            tint: bmiTint(bmi)
-                        )
-                    }
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 
-    private func statTile(
-        symbol: String,
+    @ViewBuilder
+    private func dataStat(
         label: String,
         value: String,
-        tint: Color,
+        unit: String = "",
         action: (() -> Void)? = nil
     ) -> some View {
-        let content = VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                ZStack {
-                    Circle()
-                        .fill(
-                            tint
-                        )
-                        .frame(width: 30, height: 30)
-                    Image(systemName: symbol)
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                Spacer()
-                if action != nil {
-                    Image(systemName: "pencil")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(tint.opacity(0.7))
-                }
-            }
-            Text(value)
-                .font(Tokens.Font.manrope(17, weight: 800))
-                .foregroundStyle(Tokens.Palette.ink)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-            Text(label)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .textCase(.uppercase)
-                .tracking(0.5)
-        }
-        .padding(Tokens.Space.sm)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(tint.opacity(0.10))
-        )
         if let action {
-            return AnyView(
-                Button(action: action) { content }.buttonStyle(.plain)
-            )
+            Button(action: action) {
+                MonoStat(label: label, value: value, unit: unit)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        } else {
+            MonoStat(label: label, value: value, unit: unit)
         }
-        return AnyView(content)
     }
 
     private var sexSymbol: String {
@@ -733,53 +490,28 @@ struct GoalsAndTargetsCard: View {
 
     // MARK: - Shared chrome
 
-    private func sectionHeader(
-        title: String,
-        symbol: String,
-        tint: Color,
-        editAction: (() -> Void)?
-    ) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            ZStack {
-                Circle()
-                    .fill(tint.opacity(0.18))
-                    .frame(width: 32, height: 32)
-                Image(systemName: symbol)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(tint)
-            }
-            Text(title)
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
+    private func cardHeader(title: String, editAction: (() -> Void)?) -> some View {
+        HStack(spacing: 8) {
+            MonoLabel(text: title)
+            Spacer(minLength: 8)
             if let editAction {
                 Button(action: editAction) {
-                    Image(systemName: "pencil")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .frame(width: 30, height: 30)
-                        .background(
-                            Circle().fill(Tokens.Palette.primarySoft)
-                        )
+                    Text(L("Edit"))
+                        .font(Tokens.Font.manrope(13, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .frame(height: 32)
+                        .contentShape(Rectangle())
                 }
-                .accessibilityLabel(Text(L("Edit")))
+                .buttonStyle(.plain)
             }
         }
+        .frame(minHeight: 32)
     }
 
-    private func chip(symbol: String, label: String, tint: Color) -> some View {
-        HStack(spacing: 4) {
-            Image(systemName: symbol)
-                .font(.system(size: 11, weight: .semibold))
-            Text(label)
-                .font(Tokens.Font.caption)
-        }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(
-            Capsule().fill(tint.opacity(0.15))
-        )
-        .foregroundStyle(tint)
+    private var lockGlyph: some View {
+        Image(systemName: "lock.fill")
+            .font(.system(size: 9, weight: .bold))
+            .foregroundStyle(Tokens.Mono.muted)
     }
 
     // MARK: - Helpers

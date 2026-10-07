@@ -16,15 +16,18 @@ struct AuthView: View {
             Tokens.Palette.background
                 .ignoresSafeArea()
 
-            VStack(spacing: Tokens.Space.xxl) {
-                Spacer()
+            VStack(spacing: 0) {
                 header
-                Spacer()
-                buttonStack
-                footer
+                    .padding(.top, 40)
+                Spacer(minLength: 20)
+                VStack(spacing: 8) {
+                    buttonStack
+                    footer
+                }
+                .padding(.top, 20)
+                .padding(.bottom, Tokens.Space.lg)
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
-            .padding(.bottom, Tokens.Space.xl)
         }
         .overlay(alignment: .top) { errorBanner }
         .animation(Tokens.Motion.gentle, value: session.lastError)
@@ -41,28 +44,37 @@ struct AuthView: View {
 
     // MARK: - Sections
 
+    /// Dark hero: Fitgram mark, display wordmark and the tagline.
     private var header: some View {
-        VStack(spacing: Tokens.Space.md) {
-            Image("FitgramLogoCitrus")
-                .resizable()
-                .interpolation(.high)
-                .scaledToFit()
-                .frame(width: 172, height: 112)
-                .fitgramShadow(Tokens.Shadow.float)
+        VStack(alignment: .leading, spacing: 16) {
+            FitgramLogoMark(color: Tokens.Mono.hi)
+                .frame(width: 120, height: 56)
 
-            Text("Fitgram")
-                .font(Tokens.Font.display)
-                .foregroundStyle(Tokens.Palette.ink)
+            Text(verbatim: "Fitgram")
+                .font(Tokens.Font.monoDisplay(44))
+                .textCase(.uppercase)
+                .foregroundStyle(Tokens.Mono.onHero)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
 
             Text("Twój spokojny tracker kalorii.")
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .multilineTextAlignment(.center)
+                .font(Tokens.Font.manrope(16, weight: 600))
+                .foregroundStyle(Tokens.Mono.heroMuted)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding(.horizontal, 24)
+        .padding(.top, 28)
+        .padding(.bottom, 32)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
+        .accessibilityElement(children: .combine)
     }
 
     private var buttonStack: some View {
-        VStack(spacing: Tokens.Space.md) {
+        VStack(spacing: 8) {
             SignInWithAppleButton(.continue) { request in
                 request.requestedScopes = [.fullName, .email]
             } onCompletion: { _ in
@@ -71,8 +83,8 @@ struct AuthView: View {
                 // provider's continuation already resolved, so it's a no-op.
             }
             .signInWithAppleButtonStyle(.black)
-            .frame(height: 56)
-            .clipShape(.rect(cornerRadius: Tokens.Radius.pill, style: .continuous))
+            .frame(height: 54)
+            .clipShape(Capsule())
             .overlay(
                 Button {
                     Task { await authService.signIn(with: .apple) }
@@ -84,7 +96,7 @@ struct AuthView: View {
 
             SocialAuthButton(
                 title: "Kontynuuj z Google",
-                systemImage: "g.circle.fill"
+                systemImage: "globe"
             ) {
                 Task { await authService.signIn(with: .google) }
             }
@@ -92,7 +104,7 @@ struct AuthView: View {
 
             SocialAuthButton(
                 title: "Kontynuuj e-mailem",
-                systemImage: "envelope.fill"
+                systemImage: "envelope"
             ) {
                 isEmailSheetPresented = true
             }
@@ -102,51 +114,51 @@ struct AuthView: View {
         .opacity(session.isWorking ? 0.6 : 1)
     }
 
+    /// One centred paragraph like the mockup: muted policy line with bold inline links.
     private var footer: some View {
-        VStack(spacing: Tokens.Space.sm) {
-            Text(
-                TL(
-                    pl: "Rejestrując się, akceptujesz nasze zasady.",
-                    en: "By signing up, you accept our policies.",
-                    uk: "Реєструючись, ти приймаєш наші правила.",
-                    ru: "Регистрируясь, ты принимаешь наши правила.",
-                    es: "Al registrarte, aceptas nuestras políticas."
-                )
-            )
-            .font(Tokens.Font.caption)
-            .foregroundStyle(Tokens.Palette.inkSubtle)
+        Text(footerText)
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .lineSpacing(2)
             .multilineTextAlignment(.center)
+            .tint(Tokens.Palette.ink)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 6)
+    }
 
-            HStack(spacing: Tokens.Space.md) {
-                if let termsURL {
-                    Link(
-                        TL(
-                            pl: "Warunki",
-                            en: "Terms",
-                            uk: "Умови",
-                            ru: "Условия",
-                            es: "Términos"
-                        ),
-                        destination: termsURL
-                    )
-                }
-                if let privacyURL {
-                    Link(
-                        TL(
-                            pl: "Prywatność",
-                            en: "Privacy",
-                            uk: "Приватність",
-                            ru: "Конфиденциальность",
-                            es: "Privacidad"
-                        ),
-                        destination: privacyURL
-                    )
-                }
-            }
-            .font(Tokens.Font.caption.weight(.semibold))
-            .foregroundStyle(Tokens.Palette.primary)
-        }
-        .padding(.top, Tokens.Space.sm)
+    private var footerText: AttributedString {
+        var text = AttributedString(
+            TL(
+                pl: "Rejestrując się, akceptujesz nasze zasady.",
+                en: "By signing up, you accept our policies.",
+                uk: "Реєструючись, ти приймаєш наші правила.",
+                ru: "Регистрируясь, ты принимаешь наши правила.",
+                es: "Al registrarte, aceptas nuestras políticas."
+            ) + " "
+        )
+        text.append(
+            footerLink(
+                TL(pl: "Warunki", en: "Terms", uk: "Умови", ru: "Условия", es: "Términos"),
+                url: termsURL
+            )
+        )
+        text.append(AttributedString(" · "))
+        text.append(
+            footerLink(
+                TL(pl: "Prywatność", en: "Privacy", uk: "Приватність", ru: "Конфиденциальность", es: "Privacidad"),
+                url: privacyURL
+            )
+        )
+        return text
+    }
+
+    private func footerLink(_ title: String, url: URL?) -> AttributedString {
+        var link = AttributedString(title)
+        link.link = url
+        link.swiftUI.font = Tokens.Font.manrope(12, weight: 800)
+        link.swiftUI.foregroundColor = Tokens.Palette.ink
+        return link
     }
 
     private var termsURL: URL? {
@@ -172,9 +184,8 @@ struct AuthView: View {
             .padding(.vertical, Tokens.Space.md)
             .background(
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.accentSoft)
+                    .fill(Tokens.Mono.track)
             )
-            .fitgramShadow(Tokens.Shadow.card)
             .padding(.horizontal, Tokens.Space.screenPadding)
             .padding(.top, Tokens.Space.lg)
             .transition(.move(edge: .top).combined(with: .opacity))

@@ -17,20 +17,26 @@ struct MyCodeSheet: View {
             ZStack {
                 codeBackground
                 ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
+                    VStack(alignment: .leading, spacing: 0) {
                         intro
+                        Color.clear.frame(height: 18)
                         qrTile
+                        Color.clear.frame(height: 10)
                         codeRow
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .padding(.bottom, 24)
                 }
             }
-            .navigationTitle(Text(L("Mój kod")))
-            .navigationBarTitleDisplayMode(.inline)
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    shareButton
+                }
+            }
+            .monoNavigationTitle(L("Mój kod"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(L("Zamknij"), action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
         }
@@ -40,91 +46,62 @@ struct MyCodeSheet: View {
     }
 
     private var codeBackground: some View {
-        ScreenBackground(mood: .social)
+        Tokens.Palette.background.ignoresSafeArea()
     }
 
     private var intro: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            Image(systemName: "qrcode.viewfinder")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(Tokens.Palette.onPrimary)
-                .frame(width: 58, height: 58)
-                .background(
-                    Circle().fill(
-                        Tokens.Palette.primary
-                    )
-                )
-            VStack(alignment: .leading, spacing: 5) {
-                if let displayName, !displayName.isEmpty {
-                    Text(displayName)
-                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                Text(L("Pokaż kod znajomemu. Może go zeskanować albo przepisać identyfikator poniżej."))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
+        MonoH1(
+            text: (displayName?.isEmpty == false ? displayName : nil) ?? L("Mój kod"),
+            sub: L("Pokaż kod znajomemu. Może go zeskanować albo przepisać identyfikator poniżej.")
         )
     }
 
     private var qrTile: some View {
-        VStack(spacing: Tokens.Space.md) {
+        VStack(spacing: 12) {
             ZStack {
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                // QR stays dark-on-white in every theme so cameras can read it.
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color.white)
-                    .aspectRatio(1, contentMode: .fit)
                 if let qrImage {
                     Image(uiImage: qrImage)
                         .resizable()
                         .interpolation(.none)
                         .scaledToFit()
-                        .padding(Tokens.Space.lg)
+                        .padding(10)
                 } else {
-                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted)
-                        .padding(Tokens.Space.lg)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Tokens.Mono.track)
+                        .padding(10)
                 }
             }
+            .frame(width: 220, height: 220)
+            .accessibilityLabel(Text(L("Mój kod")))
             Text("fitgram://friend")
-                .font(Tokens.Font.manrope(12, weight: 700))
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
         }
-        .padding(Tokens.Space.md)
-        .background(RoundedRectangle(cornerRadius: 30, style: .continuous).fill(Tokens.Palette.surface.opacity(0.86)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 30, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
-        )
+        .frame(maxWidth: .infinity)
+        .monoCard(padding: 24)
     }
 
     private var codeRow: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            Text(L("Twój identyfikator"))
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(userID)
-                .font(.system(.body, design: .monospaced))
-                .foregroundStyle(Tokens.Palette.ink)
-                .lineLimit(2)
-                .minimumScaleFactor(0.72)
-                .padding(Tokens.Space.md)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted.opacity(0.78))
-                )
-            HStack(spacing: Tokens.Space.sm) {
-                actionButton(
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Twój identyfikator"))
+            HStack(spacing: 8) {
+                Text(userID)
+                    .font(Tokens.Font.monoNumber(18))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .truncationMode(.middle)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                MonoButton(
                     title: copied ? L("Skopiowane") : L("Skopiuj"),
-                    symbol: copied ? "checkmark" : "doc.on.doc"
+                    kind: .outline,
+                    icon: copied ? "checkmark" : "doc.on.doc",
+                    height: 40,
+                    fullWidth: false
                 ) {
                     UIPasteboard.general.string = userID
                     copied = true
@@ -133,48 +110,28 @@ struct MyCodeSheet: View {
                         copied = false
                     }
                 }
-
-                ShareLink(
-                    item: inviteMessage,
-                    subject: Text(L("Dodaj mnie na Fitgram")),
-                    preview: SharePreview(
-                        "Fitgram",
-                        icon: Image(systemName: "leaf.fill")
-                    )
-                ) {
-                    HStack(spacing: 7) {
-                        Image(systemName: "square.and.arrow.up")
-                        Text(L("Udostępnij"))
-                            .font(Tokens.Font.bodyEmphasized)
-                    }
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 13)
-                    .background(Capsule().fill(Tokens.Palette.primary))
-                }
-                .buttonStyle(.pressable)
+                .fixedSize()
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.84)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55))
+        .monoCard(padding: 16)
     }
 
-    private func actionButton(title: String, symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 7) {
-                Image(systemName: symbol)
-                Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+    private var shareButton: some View {
+        ShareLink(
+            item: inviteMessage,
+            subject: Text(L("Dodaj mnie na Fitgram")),
+            preview: SharePreview(
+                "Fitgram",
+                icon: Image(systemName: "leaf.fill")
+            )
+        ) {
+            HStack(spacing: 8) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 15, weight: .bold))
+                Text(L("Udostępnij"))
             }
-            .foregroundStyle(Tokens.Palette.primary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .background(Capsule().fill(Tokens.Palette.primarySoft))
         }
-        .buttonStyle(.pressable)
+        .buttonStyle(MonoButtonStyle(kind: .dark))
     }
 
     /// Plain-text invite the user can paste anywhere. Includes the deep

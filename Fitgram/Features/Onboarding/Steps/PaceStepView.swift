@@ -16,13 +16,13 @@ struct PaceStepView: View {
 
     private let paceOptions: [PaceOption] = [
         .init(
-            value: 0.25, label: L("Relaxed"), subtitle: L("0.25 kg / week"), symbol: "tortoise.fill",
+            value: 0.25, label: L("Relaxed"), subtitle: L("0.25 kg / week"), symbol: "clock",
             severity: .gentle),
         .init(
-            value: 0.5, label: L("Moderate"), subtitle: L("0.5 kg / week"), symbol: "figure.walk", severity: .gentle),
-        .init(value: 0.75, label: L("Fast"), subtitle: L("0.75 kg / week"), symbol: "figure.run", severity: .warn),
+            value: 0.5, label: L("Moderate"), subtitle: L("0.5 kg / week"), symbol: "chart.bar", severity: .gentle),
+        .init(value: 0.75, label: L("Fast"), subtitle: L("0.75 kg / week"), symbol: "bolt", severity: .warn),
         .init(
-            value: 1.0, label: L("Very fast"), subtitle: L("1 kg / week"), symbol: "exclamationmark.triangle",
+            value: 1.0, label: L("Very fast"), subtitle: L("1 kg / week"), symbol: "flame",
             severity: .danger),
     ]
 
@@ -59,21 +59,17 @@ struct PaceStepView: View {
                 onContinue()
             },
             content: {
-                VStack(spacing: Tokens.Space.lg) {
+                VStack(spacing: 10) {
                     targetSection
                     paceSection
                     if let estimatedDate {
-                        Card(background: Tokens.Palette.primarySoft) {
-                            VStack(spacing: 4) {
-                                Text("Reach your goal")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.primary)
-                                Text(estimatedDate.formatted(date: .long, time: .omitted))
-                                    .font(Tokens.Font.title3)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                            }
-                            .frame(maxWidth: .infinity)
+                        VStack(alignment: .leading, spacing: 6) {
+                            MonoLabel(text: L("Reach your goal"))
+                            Text(estimatedDate.formatted(date: .long, time: .omitted))
+                                .font(Tokens.Font.manrope(15, weight: 800))
+                                .foregroundStyle(Tokens.Palette.ink)
                         }
+                        .monoCard(padding: 16)
                     }
                     if pace.severity == .danger {
                         warningCard
@@ -84,88 +80,67 @@ struct PaceStepView: View {
     }
 
     private var targetSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text("Docelowa waga")
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text(String.localizedStringWithFormat("%.1f %@", targetWeightKg, L("kg")))
-                    .font(Tokens.Font.title2)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("current %.1f kg"), currentWeightKg))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                MonoLabel(text: L("Docelowa waga"))
+                Spacer(minLength: 8)
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text(String(format: "%.1f", targetWeightKg))
+                        .font(Tokens.Font.monoNumber(30))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .contentTransition(.numericText())
+                    Text(L("kg"))
+                        .font(Tokens.Font.manrope(13, weight: 700))
+                        .foregroundStyle(Tokens.Mono.muted)
+                }
             }
-            Slider(
-                value: $targetWeightKg,
-                in: max(40, currentWeightKg - 25)...min(180, currentWeightKg + 25),
-                step: 0.5
-            )
+            VStack(spacing: 6) {
+                Slider(value: $targetWeightKg, in: targetRange, step: 0.5)
+                    .tint(Tokens.Mono.strong)
+                HStack {
+                    Text(String(format: "%.0f", targetRange.lowerBound))
+                    Spacer()
+                    Text(String(format: "%.0f", targetRange.upperBound))
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+            Text(String.localizedStringWithFormat(L("current %.1f kg"), currentWeightKg))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
+        .monoCard(padding: 16)
+    }
+
+    private var targetRange: ClosedRange<Double> {
+        max(40, currentWeightKg - 25)...min(180, currentWeightKg + 25)
     }
 
     private var paceSection: some View {
-        VStack(spacing: Tokens.Space.sm) {
+        VStack(spacing: 8) {
             ForEach(Array(paceOptions.enumerated()), id: \.element.value) { index, option in
-                Button {
-                    paceIndex = index
-                } label: {
-                    HStack(spacing: Tokens.Space.md) {
-                        Image(systemName: option.symbol)
-                            .font(.system(size: 24))
-                            .foregroundStyle(option.severity.tint)
-                            .frame(width: 28)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(option.label)
-                                .font(Tokens.Font.body)
-                                .foregroundStyle(Tokens.Palette.ink)
-                            Text(option.subtitle)
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                        Spacer()
-                        if paceIndex == index {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(Tokens.Palette.primary)
-                        }
-                    }
-                    .padding(Tokens.Space.md)
-                    .background(
-                        RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                            .fill(Tokens.Palette.surface)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                                    .strokeBorder(
-                                        paceIndex == index ? Tokens.Palette.primary : .clear,
-                                        lineWidth: 2
-                                    )
-                            )
-                    )
-                }
-                .buttonStyle(.plain)
+                OnboardingChoiceCard(
+                    symbol: option.symbol,
+                    title: LocalizedStringKey(option.label),
+                    subtitle: LocalizedStringKey(option.subtitle),
+                    isSelected: paceIndex == index,
+                    action: { paceIndex = index }
+                )
             }
         }
     }
 
     private var warningCard: some View {
-        HStack(alignment: .top, spacing: Tokens.Space.sm) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Tokens.Palette.warning)
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Tokens.Mono.fat)
             Text("That's an intense pace. Sustainable results come at 0.25-0.5 kg/week. Consult a dietician.")
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.ink)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(Tokens.Space.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.warning.opacity(0.15))
-        )
+        .monoCard(padding: 16)
     }
 }
 
