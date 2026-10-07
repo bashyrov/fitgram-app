@@ -3,343 +3,279 @@ import SwiftUI
 
 extension WeekProgressView {
     var progressBackground: some View {
-        ScreenBackground(mood: .progress)
+        Tokens.Palette.background.ignoresSafeArea()
     }
+
+    // MARK: - Header (h1)
+
+    var weekHeader: some View {
+        MonoH1(text: TL(pl: "Tydzień", en: "Week", uk: "Тиждень", ru: "Неделя", es: "Semana"), sub: weekRangeSubtitle)
+    }
+
+    private var weekRangeSubtitle: String {
+        guard let first = state.lastSevenDays.first?.date, let last = state.lastSevenDays.last?.date else {
+            return L("Ostatnie 7 dni")
+        }
+        let style = Date.FormatStyle().day().month(.abbreviated).locale(locale)
+        return "\(L("Ostatnie 7 dni")) · \(first.formatted(style)) – \(last.formatted(style))"
+    }
+
+    // MARK: - Hero
 
     var weeklyHero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-            HStack(alignment: .top, spacing: Tokens.Space.md) {
-                VStack(alignment: .leading, spacing: 7) {
-                    Text(L("Ostatnie 7 dni"))
-                        .font(Tokens.Font.manrope(12, weight: 800))
-                        .tracking(1.3)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Tokens.Mono.hi)
-                    Text(weeklyHeadline)
-                        .font(Tokens.Font.archivo(size: 30, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Mono.onHero)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.72)
-                    Text(weeklySubheadline)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Mono.heroMuted)
-                        .lineLimit(2)
-                }
-                Spacer(minLength: 0)
-                ZStack {
-                    Circle()
-                        .fill(
-                            Tokens.Mono.hi
-                        )
-                        .frame(width: 58, height: 58)
-                        .shadow(color: heroTint.opacity(0.28), radius: 16, y: 8)
-                    Image(systemName: heroSymbol)
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(Tokens.Mono.onHi)
-                }
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(weeklyHeadline)
+                    .font(Tokens.Font.monoDisplay(26))
+                    .textCase(.uppercase)
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.72)
+                Text(weeklySubheadline)
+                    .font(Tokens.Font.manrope(14, weight: 600))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-
-            HStack(spacing: Tokens.Space.sm) {
-                heroMiniMetric(
-                    value: "\(activeDayCount)/7",
-                    label: L("dni z wpisami"),
-                    tint: Tokens.Mono.heroMuted
+            HStack(alignment: .top, spacing: 10) {
+                MonoStat(label: L("dni z wpisami"), value: "\(activeDayCount)", unit: "/ 7", dark: true)
+                MonoStat(
+                    label: L("celu tygodnia"), value: "\(safeWhole(weeklyGoalHitRatio * 100))", unit: "%", dark: true
                 )
-                heroMiniMetric(
-                    value: "\(safeWhole(weeklyGoalHitRatio * 100))%",
-                    label: L("celu tygodnia"),
-                    tint: Tokens.Mono.hi
-                )
-                heroMiniMetric(
-                    value: "\(safeWhole(state.averageCalories))",
-                    label: L("średnio kcal"),
-                    tint: Tokens.Mono.heroMuted
-                )
+                MonoStat(label: L("średnio kcal"), value: "\(safeWhole(state.averageCalories))", dark: true)
+            }
+            .padding(.top, 14)
+            .overlay(alignment: .top) {
+                Rectangle().fill(Tokens.Mono.heroLine).frame(height: 1)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background {
-            ZStack {
-                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
-                    .fill(Tokens.Mono.hero)
-            }
-        }
-    }
-
-    private func heroMiniMetric(value: String, label: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(value)
-                .font(Tokens.Font.monoNumber(20))
-                .foregroundStyle(Tokens.Mono.onHero)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            Text(label)
-                .font(Tokens.Font.manrope(10, weight: 800))
-                .tracking(0.45)
-                .textCase(.uppercase)
-                .foregroundStyle(tint)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-        }
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Tokens.Space.sm)
-        .frame(height: 70)
         .background(
-            Tokens.Mono.heroLine, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
     }
+
+    // MARK: - Section header (sec)
+
+    func weekSection<Trailing: View>(
+        _ number: String, _ title: String, @ViewBuilder trailing: @escaping () -> Trailing
+    ) -> some View {
+        MonoSectionHeader(number: number, title: title, trailing: trailing)
+            .padding(.horizontal, 6)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
+    }
+
+    func weekSection(_ number: String, _ title: String) -> some View {
+        weekSection(number, title) { EmptyView() }
+    }
+
+    var chartSectionHeader: some View {
+        weekSection("01", L("Kalorie dzień po dniu")) {
+            MonoLabel(text: String.localizedStringWithFormat(L("Cel: %lld kcal dziennie"), state.goalKcal))
+        }
+    }
+
+    // MARK: - 01 Chart
 
     var chartCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(L("Kalorie dzień po dniu"))
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(String.localizedStringWithFormat(L("Cel: %lld kcal dziennie"), state.goalKcal))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-                Image(systemName: "chart.bar.xaxis")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .frame(width: 36, height: 36)
-                    .background(Circle().fill(Tokens.Palette.primarySoft))
-            }
-            if state.lastSevenDays.isEmpty {
-                emptyState(
-                    title: L("Nie ma jeszcze danych"),
-                    body: L("Dodaj pierwszy posiłek, a tydzień zacznie żyć.")
+        Chart {
+            ForEach(state.lastSevenDays) { day in
+                BarMark(
+                    x: .value("Day", day.date, unit: .day),
+                    y: .value("kcal", day.calories)
                 )
-            } else {
-                Chart {
-                    ForEach(state.lastSevenDays) { day in
-                        BarMark(
-                            x: .value("Day", day.date, unit: .day),
-                            y: .value("kcal", day.calories)
-                        )
-                        .foregroundStyle(barColor(for: day))
-                        .cornerRadius(9)
-                    }
-                    RuleMark(y: .value("Target", state.goalKcal))
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 5]))
-                        .annotation(position: .topTrailing, alignment: .trailing) {
-                            Text(L("cel"))
-                                .font(Tokens.Font.caption2)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                        }
-                }
-                .frame(height: 218)
-                .chartXAxis {
-                    AxisMarks(values: .stride(by: .day)) { _ in
-                        AxisValueLabel(format: .dateTime.weekday(.abbreviated).locale(locale))
-                            .font(Tokens.Font.caption2)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        AxisGridLine().foregroundStyle(.clear)
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks(position: .trailing) { _ in
-                        AxisGridLine().foregroundStyle(Tokens.Palette.separator.opacity(0.65))
-                        AxisValueLabel()
-                            .font(Tokens.Font.caption2)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                }
-                .chartYScale(domain: 0...chartUpperBound)
+                .foregroundStyle(barColor(for: day))
+                .cornerRadius(6)
+            }
+            RuleMark(y: .value("Target", state.goalKcal))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
+        }
+        .frame(height: 160)
+        .chartXAxis {
+            AxisMarks(values: .stride(by: .day)) { _ in
+                AxisValueLabel(format: .dateTime.weekday(.abbreviated).locale(locale))
+                    .font(Tokens.Font.manrope(11, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.9))
-        )
-        .fitgramShadow(Tokens.Shadow.card)
+        .chartYAxis(.hidden)
+        .chartYScale(domain: 0...chartUpperBound)
+        .padding(.top, 18)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 14)
+        .monoCard(padding: 0)
     }
 
     var metricsGrid: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
-            ],
-            spacing: Tokens.Space.sm
-        ) {
-            metricTile(
-                title: L("Średnia"),
-                value: "\(safeWhole(state.averageCalories)) kcal",
-                symbol: "chart.line.uptrend.xyaxis",
-                tint: Tokens.Palette.primary
-            )
-            metricTile(
-                title: L("Suma"),
-                value: "\(safeWhole(state.totalKcalThisWeek)) kcal",
-                symbol: "sum",
-                tint: Tokens.Palette.accent
-            )
-            metricTile(
-                title: L("Najlepszy dzień"),
-                value: bestDayValue,
-                symbol: "sparkles",
-                tint: Tokens.Palette.warning
-            )
-            metricTile(
-                title: L("Makro"),
-                value: weeklyMacroSummary,
-                symbol: "chart.pie.fill",
-                tint: Tokens.Palette.success
-            )
+        HStack(spacing: 8) {
+            metricTile(title: L("Średnia"), value: "\(safeWhole(state.averageCalories))")
+            metricTile(title: L("Suma"), value: "\(safeWhole(state.totalKcalThisWeek))")
+            metricTile(title: L("Najlepszy dzień"), value: bestDayValue)
         }
     }
 
-    private func metricTile(title: String, value: String, symbol: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(tint)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(tint.opacity(0.14)))
-                Spacer()
-            }
+    private func metricTile(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: title)
+                .minimumScaleFactor(0.7)
             Text(value)
-                .font(Tokens.Font.manrope(20, weight: 800))
+                .font(Tokens.Font.monoNumber(22))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
-                .minimumScaleFactor(0.62)
-            Text(title)
-                .font(Tokens.Font.manrope(11, weight: 800))
-                .tracking(0.5)
-                .textCase(.uppercase)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .minimumScaleFactor(0.6)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.md)
-        .frame(height: 128)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.88))
-        )
-        .fitgramShadow(Tokens.Shadow.card)
+        .monoTile()
     }
 
-    private func emptyState(title: String, body: String) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            Image(systemName: "fork.knife.circle.fill")
-                .font(.system(size: 32, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(body)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+    // MARK: - 02 Macro
+
+    var macroCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            GeometryReader { proxy in
+                HStack(spacing: 0) {
+                    Rectangle().fill(Tokens.Mono.strong)
+                        .frame(width: proxy.size.width * macroShares.protein)
+                    Rectangle().fill(Tokens.Mono.accent)
+                        .frame(width: proxy.size.width * macroShares.carbs)
+                    Rectangle().fill(Tokens.Mono.fat)
+                        .frame(width: proxy.size.width * macroShares.fat)
+                    if macroShares.protein + macroShares.carbs + macroShares.fat < 0.001 {
+                        Rectangle().fill(Tokens.Mono.track)
+                    }
+                }
             }
-            Spacer(minLength: 0)
+            .frame(height: 18)
+            .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+            HStack {
+                Text("\(L("Białko")) \(percent(macroShares.protein))% · \(safeWhole(weeklyProtein)) g")
+                Spacer(minLength: 6)
+                Text("\(L("Węgle")) \(percent(macroShares.carbs))%")
+                Spacer(minLength: 6)
+                Text("\(L("Tłuszcz")) \(percent(macroShares.fat))%")
+            }
+            .font(Tokens.Font.manrope(13, weight: 700))
+            .foregroundStyle(Tokens.Palette.ink)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            Text(weeklyMacroSummary)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
         }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Tokens.Palette.surfaceMuted.opacity(0.74))
-        )
+        .monoCard(padding: 16)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var weeklyProtein: Double { state.lastSevenDays.reduce(0) { $0 + $1.protein } }
+
+    // swiftlint:disable:next large_tuple
+    private var macroShares: (protein: Double, carbs: Double, fat: Double) {
+        let protein = state.lastSevenDays.reduce(0) { $0 + $1.protein } * 4
+        let carbs = state.lastSevenDays.reduce(0) { $0 + $1.carbs } * 4
+        let fat = state.lastSevenDays.reduce(0) { $0 + $1.fat } * 9
+        let total = protein + carbs + fat
+        guard total.isFinite, total > 0 else { return (0, 0, 0) }
+        return (protein / total, carbs / total, fat / total)
+    }
+
+    private func percent(_ share: Double) -> Int {
+        safeWhole((share * 100).rounded())
+    }
+
+    // MARK: - 03 Days
+
+    var breakdownSectionHeader: some View {
+        weekSection("03", L("Dni tygodnia")) {
+            MonoLabel(text: String.localizedStringWithFormat(L("%lld wpisów"), totalMealCount))
+        }
     }
 
     var breakdownCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(L("Dni tygodnia"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld wpisów"), totalMealCount))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            VStack(spacing: Tokens.Space.sm) {
-                ForEach(state.lastSevenDays.reversed()) { day in
-                    breakdownRow(day)
+        let days = Array(state.lastSevenDays.reversed())
+        return VStack(spacing: 0) {
+            ForEach(Array(days.enumerated()), id: \.element.id) { index, day in
+                if index > 0 {
+                    MonoRowDivider(inset: 16)
                 }
+                breakdownRow(day)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.9))
-        )
-        .fitgramShadow(Tokens.Shadow.card)
+        .monoRowsCard()
     }
 
     private func breakdownRow(_ day: ProgressState.DayTotal) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            weekdayDateChip(day)
+        HStack(spacing: 12) {
+            VStack(spacing: 0) {
+                Text("\(Calendar.current.component(.day, from: day.date))")
+                    .font(Tokens.Font.monoNumber(20))
+                    .foregroundStyle(Tokens.Palette.ink)
+                MonoLabel(text: compactWeekdayTitle(for: day.date))
+            }
+            .frame(width: 40)
 
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(spacing: Tokens.Space.xs) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
                     Text("\(day.caloriesInt) kcal")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(day.calories > 0 ? Tokens.Palette.ink : Tokens.Palette.inkSubtle)
+                        .foregroundStyle(day.calories > 0 ? Tokens.Palette.ink : Tokens.Mono.muted)
+                    Spacer(minLength: 6)
                     Text(
                         day.mealCount == 1
                             ? L("1 posiłek")
                             : String.localizedStringWithFormat(L("%lld posiłków"), day.mealCount)
                     )
-                    .font(Tokens.Font.caption2)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .foregroundStyle(Tokens.Mono.muted)
                 }
-                GeometryReader { proxy in
-                    ZStack(alignment: .leading) {
-                        Capsule()
-                            .fill(Tokens.Palette.surfaceMuted)
-                        Capsule()
-                            .fill(barColor(for: day))
-                            .frame(width: proxy.size.width * min(1, dayGoalRatio(day)))
-                    }
-                }
-                .frame(height: 6)
-            }
-
-            Spacer(minLength: 0)
-            HStack(spacing: Tokens.Space.xs) {
-                macroPill(amount: day.protein, color: Tokens.Palette.primary)
-                macroPill(amount: day.carbs, color: Tokens.Palette.warning)
-                macroPill(amount: day.fat, color: Tokens.Palette.accent)
-            }
-        }
-        .padding(Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Tokens.Palette.surfaceMuted.opacity(0.64))
-        )
-    }
-
-    private func weekdayDateChip(_ day: ProgressState.DayTotal) -> some View {
-        let tint = barColor(for: day)
-        let hasEntry = day.mealCount > 0
-
-        return VStack(spacing: 0) {
-            Text(compactWeekdayTitle(for: day.date))
-                .font(Tokens.Font.manrope(10, weight: 800))
-                .tracking(0.4)
-                .foregroundStyle(hasEntry ? Tokens.Palette.onPrimary : Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(13, weight: 700))
                 .lineLimit(1)
-                .minimumScaleFactor(0.55)
-                .frame(maxWidth: .infinity)
-                .frame(height: 24)
-                .background(hasEntry ? tint : Tokens.Palette.surfaceMuted.opacity(0.72))
-
-            Text("\(Calendar.current.component(.day, from: day.date))")
-                .font(Tokens.Font.manrope(18, weight: 800))
-                .foregroundStyle(hasEntry ? tint : Tokens.Palette.inkSubtle)
-                .monospacedDigit()
-                .frame(maxWidth: .infinity)
-                .frame(height: 30)
-                .background(Tokens.Palette.surface.opacity(hasEntry ? 0.82 : 0.52))
+                MonoBar(
+                    progress: min(1, dayGoalRatio(day)),
+                    color: dayGoalRatio(day) > 1 ? Tokens.Mono.fat : Tokens.Mono.strong,
+                    height: 6
+                )
+            }
         }
-        .frame(width: 54, height: 54)
-        .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .accessibilityElement(children: .combine)
     }
+
+    // MARK: - 04 Coach
+
+    func coachRows(onOpen: @escaping () -> Void) -> some View {
+        Button(action: onOpen) {
+            MonoRow(
+                icon: "slider.horizontal.3",
+                iconStyle: .dark,
+                title: L("How you're doing"),
+                sub: L("Weekly summary from Ola")
+            )
+        }
+        .buttonStyle(.plain)
+        .monoRowsCard()
+    }
+
+    // MARK: - Empty state card
+
+    var emptyWeekCard: some View {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "chart.bar.fill", style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(L("Zacznij swój tydzień"))
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(L("Dodaj pierwszy posiłek, a tydzień zacznie żyć."))
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .monoCard(padding: 16)
+    }
+
+    var hasWeekEntries: Bool { totalMealCount > 0 }
 
     private func compactWeekdayTitle(for date: Date) -> String {
         let raw = date.formatted(.dateTime.weekday(.abbreviated).locale(locale))
@@ -425,23 +361,11 @@ extension WeekProgressView {
         return day.calories / Double(state.goalKcal)
     }
 
-    private func macroPill(amount: Double, color: Color) -> some View {
-        Text("\(safeWhole(amount))g")
-            .font(Tokens.Font.caption2)
-            .foregroundStyle(color)
-            .padding(.horizontal, Tokens.Space.xs)
-            .padding(.vertical, 2)
-            .background(Capsule().fill(color.opacity(0.15)))
-    }
-
     private func barColor(for day: ProgressState.DayTotal) -> Color {
         let ratio = state.goalKcal > 0 ? day.calories / Double(state.goalKcal) : 0
-        switch ratio {
-        case 0: return Tokens.Palette.surfaceMuted
-        case 0..<0.8: return Tokens.Palette.primary.opacity(0.55)
-        case 0.8...1.1: return Tokens.Palette.primary
-        default: return Tokens.Palette.warning
-        }
+        if ratio <= 0 { return Tokens.Mono.track }
+        if Calendar.current.isDateInToday(day.date) { return Tokens.Mono.hi }
+        return ratio > 1 ? Tokens.Mono.fat : Tokens.Mono.strong
     }
 
     private func safeWhole(_ value: Double) -> Int {

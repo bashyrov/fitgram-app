@@ -79,7 +79,7 @@ struct AvatarPicker: View {
         } else {
             ZStack {
                 Circle()
-                    .fill(Tokens.Palette.primarySoft)
+                    .fill(Tokens.Mono.track)
                     .frame(width: size, height: size)
                 Text(initial)
                     .font(size > 50 ? Tokens.Font.title2 : Tokens.Font.bodyEmphasized)

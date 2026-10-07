@@ -10,6 +10,8 @@ struct TodayDashboardHero: View {
     let viewingDate: Date
     let isViewingToday: Bool
     let consumed: Double
+    /// Workout kcal for the "Ruch" stat next to "Zjedzone" (mockup hero).
+    var burned: Double = 0
     let calorieGoal: Int
     let calorieProgress: Double
     let protein: Double
@@ -205,14 +207,25 @@ extension TodayDashboardHero {
                     .padding(.vertical, 14)
 
                 HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        MonoLabel(
-                            text: TL(pl: "Zjedzone", en: "Eaten", uk: "Зʼїдено", ru: "Съедено", es: "Consumido"),
-                            onHero: true)
-                        Text("\(Int(consumed))")
-                            .font(Tokens.Font.archivo(size: 18, weight: 800, width: 112))
-                            .foregroundStyle(Tokens.Mono.onHero)
-                            .contentTransition(.numericText())
+                    HStack(spacing: 22) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            MonoLabel(
+                                text: TL(pl: "Zjedzone", en: "Eaten", uk: "Зʼїдено", ru: "Съедено", es: "Consumido"),
+                                onHero: true)
+                            Text(verbatim: "\(Int(consumed))")
+                                .font(Tokens.Font.archivo(size: 18, weight: 800, width: 112))
+                                .foregroundStyle(Tokens.Mono.onHero)
+                                .contentTransition(.numericText())
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            MonoLabel(
+                                text: TL(pl: "Ruch", en: "Movement", uk: "Рух", ru: "Движение", es: "Movimiento"),
+                                onHero: true)
+                            Text(verbatim: "+\(Int(burned.rounded()))")
+                                .font(Tokens.Font.archivo(size: 18, weight: 800, width: 112))
+                                .foregroundStyle(Tokens.Mono.onHero)
+                                .contentTransition(.numericText())
+                        }
                     }
                     Spacer()
                     if let onTapGoal {
@@ -236,14 +249,14 @@ extension TodayDashboardHero {
                 }
             }
             .padding(.horizontal, 12)
-            .padding(.top, 6)
+            .padding(.top, 10)
         }
         .padding(.horizontal, 8)
-        .padding(.top, 6)
+        .padding(.top, 8)
         .padding(.bottom, 20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .fill(Tokens.Mono.hero)
         )
         .accessibilityElement(children: .contain)
@@ -272,7 +285,7 @@ extension TodayDashboardHero {
             Button(action: onPickDate) {
                 HStack(spacing: 8) {
                     Circle().fill(ringColor).frame(width: 6, height: 6)
-                    Text(isViewingToday ? L("Today") : Self.dayLabel(viewingDate))
+                    Text(isViewingToday ? L("Dziś") + " · " + Self.dayLabel(viewingDate) : Self.dayLabel(viewingDate))
                         .font(Tokens.Font.manrope(11, weight: 800))
                         .tracking(1.6)
                         .textCase(.uppercase)
@@ -436,7 +449,7 @@ extension TodayDashboardHero {
     private static func dayLabel(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
-        formatter.dateFormat = "EEEE, d MMM"
-        return formatter.string(from: date).capitalized
+        formatter.dateFormat = "EEE d MMM"
+        return formatter.string(from: date)
     }
 }

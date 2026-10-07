@@ -32,23 +32,22 @@ struct EmailSignInSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    form
-                        .padding(.horizontal, Tokens.Space.screenPadding)
-                        .padding(.top, Tokens.Space.xl)
+            ScrollView {
+                form
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.bottom, Tokens.Space.lg)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                MonoBottomBar {
+                    submitButton
                 }
-                .scrollDismissesKeyboard(.interactively)
             }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij")) {
                         onDismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                            .font(.title3)
                     }
                     .accessibilityLabel(Text(L("Close")))
                 }
@@ -59,104 +58,97 @@ struct EmailSignInSheet: View {
     }
 
     private var form: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(mode == .signIn ? L("Zaloguj się e-mailem") : L("Załóż konto"))
-                    .font(Tokens.Font.title)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(
-                    mode == .signIn
-                        ? L("Wpisz e-mail i hasło do swojego konta Fitgram.")
-                        : L("Wystarczy e-mail i hasło. Bez potwierdzania skrzynki.")
-                )
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            MonoH1(
+                text: mode == .signIn ? L("Zaloguj się e-mailem") : L("Załóż konto"),
+                sub: mode == .signIn
+                    ? L("Wpisz e-mail i hasło do swojego konta Fitgram.")
+                    : L("Wystarczy e-mail i hasło. Bez potwierdzania skrzynki.")
+            )
 
-            Picker("", selection: $mode) {
-                Text(L("Logowanie")).tag(Mode.signIn)
-                Text(L("Nowe konto")).tag(Mode.createAccount)
-            }
-            .pickerStyle(.segmented)
+            MonoSegmented(
+                selection: $mode,
+                options: [
+                    (value: Mode.signIn, title: L("Logowanie")),
+                    (value: Mode.createAccount, title: L("Nowe konto")),
+                ]
+            )
+            .padding(.top, 16)
             .onChange(of: mode) { _, _ in errorMessage = nil }
 
-            fieldLabel(L("Adres e-mail"))
-            TextField("ty@example.com", text: $email)
-                .textContentType(.emailAddress)
-                .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .focused($focusedField, equals: .email)
-                .submitLabel(.next)
-                .onSubmit { focusedField = .password }
-                .modifier(AuthFieldStyle())
-                .accessibilityIdentifier(A11yID.Auth.emailField)
+            VStack(alignment: .leading, spacing: 12) {
+                MonoField(label: L("Adres e-mail")) {
+                    TextField("ty@example.com", text: $email)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .focused($focusedField, equals: .email)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .password }
+                        .accessibilityIdentifier(A11yID.Auth.emailField)
+                }
 
-            fieldLabel(L("Hasło"))
-            HStack {
-                Group {
-                    if isPasswordVisible {
-                        TextField(L("Hasło"), text: $password)
-                    } else {
-                        SecureField(L("Hasło"), text: $password)
+                MonoField(label: L("Hasło")) {
+                    HStack(spacing: 8) {
+                        Group {
+                            if isPasswordVisible {
+                                TextField(L("Hasło"), text: $password)
+                            } else {
+                                SecureField(L("Hasło"), text: $password)
+                            }
+                        }
+                        .textContentType(mode == .signIn ? .password : .newPassword)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .focused($focusedField, equals: .password)
+                        .submitLabel(.go)
+                        .onSubmit(submit)
+                        .accessibilityIdentifier(A11yID.Auth.passwordField)
+                        Button {
+                            isPasswordVisible.toggle()
+                        } label: {
+                            Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(Tokens.Mono.muted)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(isPasswordVisible ? L("Ukryj hasło") : L("Pokaż hasło")))
                     }
                 }
-                .textContentType(mode == .signIn ? .password : .newPassword)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .focused($focusedField, equals: .password)
-                .submitLabel(.go)
-                .onSubmit(submit)
-                .accessibilityIdentifier(A11yID.Auth.passwordField)
-                Button {
-                    isPasswordVisible.toggle()
-                } label: {
-                    Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                }
-                .accessibilityLabel(Text(isPasswordVisible ? L("Ukryj hasło") : L("Pokaż hasło")))
-            }
-            .modifier(AuthFieldStyle())
-            if mode == .createAccount {
-                Text(L("Hasło musi mieć co najmniej 6 znaków."))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
 
-            if let errorMessage {
-                Text(errorMessage)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.error)
-                    .accessibilityIdentifier(A11yID.Auth.emailError)
-            }
-
-            Button(action: submit) {
-                HStack {
-                    if isSubmitting {
-                        ProgressView()
-                            .tint(.white)
-                    }
-                    Text(mode == .signIn ? L("Zaloguj się") : L("Załóż konto"))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(.white)
+                if mode == .createAccount {
+                    Text(L("Hasło musi mieć co najmniej 6 znaków."))
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                        .fill(Tokens.Palette.primary)
-                )
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(Tokens.Font.manrope(12, weight: 700))
+                        .foregroundStyle(Tokens.Mono.danger)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier(A11yID.Auth.emailError)
+                }
             }
-            .disabled(!canSubmit)
-            .opacity(canSubmit ? 1 : 0.6)
-            .accessibilityIdentifier(A11yID.Auth.emailSubmit)
+            .monoCard(padding: 16)
+            .padding(.top, 12)
         }
     }
 
-    private func fieldLabel(_ text: String) -> some View {
-        Text(text)
-            .font(Tokens.Font.caption)
-            .foregroundStyle(Tokens.Palette.inkMuted)
+    private var submitButton: some View {
+        Button(action: submit) {
+            HStack(spacing: 8) {
+                if isSubmitting {
+                    ProgressView()
+                        .tint(Tokens.Mono.onHero)
+                }
+                Text(mode == .signIn ? L("Zaloguj się") : L("Załóż konto"))
+            }
+        }
+        .buttonStyle(MonoButtonStyle(kind: .dark))
+        .disabled(!canSubmit)
+        .accessibilityIdentifier(A11yID.Auth.emailSubmit)
     }
 
     private func submit() {
@@ -177,21 +169,5 @@ struct EmailSignInSheet: View {
                 }
             }
         }
-    }
-}
-
-private struct AuthFieldStyle: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .padding(.vertical, Tokens.Space.md)
-            .padding(.horizontal, Tokens.Space.lg)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .stroke(Tokens.Palette.inkSubtle.opacity(0.2), lineWidth: 1)
-            )
     }
 }

@@ -14,17 +14,19 @@ struct ProfileStatsCard: View {
 
     }
     var body: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text("Razem")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Tokens.Mono.muted)
                 LazyVGrid(
                     columns: [
-                        GridItem(.flexible(), spacing: Tokens.Space.md),
-                        GridItem(.flexible(), spacing: Tokens.Space.md),
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8),
                     ],
-                    spacing: Tokens.Space.md
+                    spacing: 8
                 ) {
                     tile(symbol: "fork.knife", value: summary.totalMeals, caption: "posiłków")
                     tile(symbol: "book.fill", value: summary.totalRecipes, caption: "przepisów")
@@ -36,31 +38,31 @@ struct ProfileStatsCard: View {
                         String.localizedStringWithFormat(
                             L("Total: %@ kcal"), Self.kcalString(summary.totalCaloriesKcal))
                     )
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                 }
                 if summary.totalRecipeCooks > 0 {
                     Text(String.localizedStringWithFormat(L("Cooked: %lld×"), summary.totalRecipeCooks))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
                 if let avg = summary.averageMealRating {
                     Text(String.localizedStringWithFormat(L("Average meal rating: ⭐ %.1f / 5"), avg))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.warning)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
                 if summary.longestStreakLength > 0 {
                     Text(String.localizedStringWithFormat(L("Streak record: 🔥 %lld days"), summary.longestStreakLength))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.warning)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
                 if summary.totalWaterMilliliters > 0 {
                     Text(
                         String.localizedStringWithFormat(
                             L("Water drunk: 💧 %@ L"), Self.litersString(summary.totalWaterMilliliters))
                     )
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                 }
                 if let memberSince = summary.memberSince {
                     VStack(alignment: .leading, spacing: 2) {
@@ -68,17 +70,19 @@ struct ProfileStatsCard: View {
                             String.localizedStringWithFormat(
                                 L("With us since %@"), Self.memberFormatter.string(from: memberSince).capitalized)
                         )
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                         if let daysWithUs = Self.daysSince(memberSince) {
                             Text(daysWithUsLabel(daysWithUs))
                                 .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.primary)
+                                .foregroundStyle(Tokens.Mono.muted)
                         }
                     }
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 
     /// Day count from a stored date — nil if Calendar can't resolve, or
@@ -130,24 +134,19 @@ struct ProfileStatsCard: View {
     }
 
     private func tile(symbol: String, value: Int, caption: LocalizedStringKey) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 6) {
-                Image(systemName: symbol)
-                    .foregroundStyle(Tokens.Palette.primary)
-                Text(caption)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+        VStack(alignment: .leading, spacing: 6) {
+            Text(caption)
+                .font(Tokens.Font.manrope(11, weight: 800))
+                .tracking(1.5)
+                .textCase(.uppercase)
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineLimit(1)
             Text("\(value)")
-                .font(Tokens.Font.counter)
+                .font(Tokens.Font.monoNumber(24))
                 .foregroundStyle(Tokens.Palette.ink)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.primarySoft.opacity(0.5))
-        )
+        .monoTile()
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(caption))
         .accessibilityValue(Text("\(value)"))

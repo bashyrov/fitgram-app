@@ -32,104 +32,108 @@ struct PreferencesView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                preferencesBackground
-                ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text(remindersTitle)
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Toggle(morningReminderTitle, isOn: $morningEnabled)
-                                Toggle(streakRiskTitle, isOn: $streakRiskEnabled)
-                                Toggle(eveningSummaryTitle, isOn: $eveningEnabled)
-                                Toggle(goalWeightToggleLabel, isOn: $goalWeightEnabled)
-                                if goalWeightEnabled {
-                                    DatePicker(
-                                        reminderTimeTitle,
-                                        selection: Binding(
-                                            get: { goalReminderDate },
-                                            set: { newValue in
-                                                let comps = Calendar.current.dateComponents(
-                                                    [.hour, .minute], from: newValue
-                                                )
-                                                goalWeightHour = comps.hour ?? 9
-                                                goalWeightMinute = comps.minute ?? 0
-                                            }
-                                        ),
-                                        displayedComponents: .hourAndMinute
-                                    )
-                                    .datePickerStyle(.compact)
-                                }
-                            }
-                        }
-
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text(friendsTitle)
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Toggle(newInvitationTitle, isOn: $friendRequestEnabled)
-                                Toggle(acceptedInvitationTitle, isOn: $friendAcceptedEnabled)
-                                Toggle(friendAchievementTitle, isOn: $friendAchievementEnabled)
-                                Toggle(reactionTitle, isOn: $friendReactionEnabled)
-                                Toggle(friendChallengeTitle, isOn: $friendChallengeEnabled)
-                                Text(friendPushHint)
-                                    .font(Tokens.Font.caption)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                            }
-                        }
-
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text(appearanceTitle)
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Picker(
-                                    themePickerTitle,
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: preferencesTitle)
+                    sectionHeader(number: "01", title: remindersTitle, top: 6)
+                    VStack(spacing: 0) {
+                        toggleRow(morningReminderTitle, isOn: $morningEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(streakRiskTitle, isOn: $streakRiskEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(eveningSummaryTitle, isOn: $eveningEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(goalWeightToggleLabel, isOn: $goalWeightEnabled)
+                        if goalWeightEnabled {
+                            MonoRowDivider()
+                            MonoRow(icon: "clock", title: reminderTimeTitle) {
+                                DatePicker(
+                                    reminderTimeTitle,
                                     selection: Binding(
-                                        get: { ThemePreference(rawValue: themeRaw) ?? .auto },
-                                        set: { themeRaw = $0.rawValue }
-                                    )
-                                ) {
-                                    ForEach(ThemePreference.allCases) { option in
-                                        Text(option.label).tag(option)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                            }
-                        }
-
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text(unitsTitle)
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Picker(unitsTitle, selection: $usesMetric) {
-                                    Text(metricTitle).tag(true)
-                                    Text(imperialTitle).tag(false)
-                                }
-                                .pickerStyle(.segmented)
+                                        get: { goalReminderDate },
+                                        set: { newValue in
+                                            let comps = Calendar.current.dateComponents(
+                                                [.hour, .minute], from: newValue
+                                            )
+                                            goalWeightHour = comps.hour ?? 9
+                                            goalWeightMinute = comps.minute ?? 0
+                                        }
+                                    ),
+                                    displayedComponents: .hourAndMinute
+                                )
+                                .datePickerStyle(.compact)
+                                .labelsHidden()
+                                .tint(Tokens.Palette.ink)
                             }
                         }
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .monoRowsCard()
+
+                    sectionHeader(number: "02", title: friendsTitle, top: 12)
+                    VStack(spacing: 0) {
+                        toggleRow(newInvitationTitle, isOn: $friendRequestEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(acceptedInvitationTitle, isOn: $friendAcceptedEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(friendAchievementTitle, isOn: $friendAchievementEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(reactionTitle, isOn: $friendReactionEnabled)
+                        MonoRowDivider(inset: 16)
+                        toggleRow(friendChallengeTitle, isOn: $friendChallengeEnabled)
+                    }
+                    .monoRowsCard()
+                    MonoHint(text: friendPushHint)
+                        .padding(.top, 8)
+
+                    sectionHeader(number: "03", title: appearanceTitle, top: 12)
+                    VStack(alignment: .leading, spacing: 12) {
+                        MonoLabel(text: themePickerTitle)
+                        MonoSegmented(
+                            selection: Binding(
+                                get: { ThemePreference(rawValue: themeRaw) ?? .auto },
+                                set: { themeRaw = $0.rawValue }
+                            ),
+                            options: ThemePreference.allCases.map { (value: $0, title: $0.label) }
+                        )
+                        MonoLabel(text: unitsTitle)
+                        MonoSegmented(
+                            selection: $usesMetric,
+                            options: [(value: true, title: metricTitle), (value: false, title: imperialTitle)]
+                        )
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .monoCard(padding: 16)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text(preferencesTitle))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(preferencesTitle)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(closeTitle, action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: closeTitle, action: onDismiss)
                 }
             }
         }
     }
 
-    private var preferencesBackground: some View {
-        ScreenBackground(mood: .calm)
+    /// `sec(n, title)` with the mockup's top margin (16 built in + `top`).
+    private func sectionHeader(number: String, title: String, top: CGFloat) -> some View {
+        MonoSectionHeader(number: number, title: title)
+            .padding(.horizontal, 6)
+            .padding(.top, top)
+            .padding(.bottom, 12)
+    }
+
+    /// `toggle_row(title)` — title + Mono switch, no icon.
+    private func toggleRow(_ title: String, isOn: Binding<Bool>) -> some View {
+        MonoRow(title: title) {
+            Toggle("", isOn: isOn)
+                .labelsHidden()
+                .toggleStyle(MonoToggleStyle())
+                .fixedSize()
+        }
     }
 
     private var preferencesTitle: String {

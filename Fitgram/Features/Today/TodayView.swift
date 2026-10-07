@@ -1,5 +1,7 @@
 import SwiftUI
 
+// swiftlint:disable file_length
+
 /// Main "Today" screen — what the user sees after sign-in once
 /// onboarding is done. Plays the role the master prompt assigns to the
 /// Today tab.
@@ -69,6 +71,7 @@ struct TodayView: View {
                             viewingDate: state.viewingDate,
                             isViewingToday: state.isViewingToday,
                             consumed: state.totals.calories,
+                            burned: state.workoutCaloriesBurned,
                             calorieGoal: state.calorieGoal,
                             calorieProgress: state.calorieProgress,
                             protein: state.totals.protein,
@@ -96,7 +99,7 @@ struct TodayView: View {
                             onTapGoal: state.user.map { _ in
                                 {
                                     calorieGoalDraft = state.calorieGoal
-                                    isCalorieGoalAlertPresented = true
+                                    setGoalDialog(calorie: true)
                                 }
                             },
                             onAddWater: {
@@ -109,7 +112,7 @@ struct TodayView: View {
                             },
                             onEditWaterGoal: {
                                 waterGoalDraft = waterGoalStored
-                                isWaterGoalAlertPresented = true
+                                setGoalDialog(water: true)
                             },
                             onEditMacroGoals: {
                                 proteinGoalDraft = state.proteinGoal
@@ -227,17 +230,26 @@ struct TodayView: View {
             )
             .presentationDetents([.large])
         }
-        .alert("Dzienny cel wody", isPresented: $isWaterGoalAlertPresented) {
-            TextField("ml", value: $waterGoalDraft, format: .number)
-                .keyboardType(.numberPad)
-            Button("Save") {
-                waterGoalStored = max(250, min(8000, waterGoalDraft))
-                Haptics.light()
-            }
-            Button("Default") { waterGoalStored = WaterService.defaultDailyGoalMilliliters }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("250–8000 ml. Standard to 2000 ml.")
+        .fullScreenCover(isPresented: $isWaterGoalAlertPresented) {
+            TodayGoalDialog(
+                icon: "drop",
+                title: L("Dzienny cel wody"),
+                message: L("250–8000 ml. Standard to 2000 ml."),
+                value: $waterGoalDraft,
+                unit: "ml",
+                layout: .stacked,
+                onSave: {
+                    waterGoalStored = max(250, min(8000, waterGoalDraft))
+                    Haptics.light()
+                    setGoalDialog(water: false)
+                },
+                onDefault: {
+                    waterGoalStored = WaterService.defaultDailyGoalMilliliters
+                    setGoalDialog(water: false)
+                },
+                onCancel: { setGoalDialog(water: false) }
+            )
+            .presentationBackground(.clear)
         }
         .sheet(isPresented: $isOlaTipsPresented) {
             OlaTipsView(
@@ -269,31 +281,35 @@ struct TodayView: View {
             )
             .presentationDetents([.medium, .large])
         }
-        .alert(
-            TL(
-                pl: "Cel kalorii na ten dzień",
-                en: "Calorie goal for this day",
-                uk: "Ціль калорій на цей день",
-                ru: "Цель калорий на этот день",
-                es: "Objetivo de calorías de este día"
-            ),
-            isPresented: $isCalorieGoalAlertPresented
-        ) {
-            TextField("kcal", value: $calorieGoalDraft, format: .number)
-                .keyboardType(.numberPad)
-            Button(L("Save")) { applyCalorieGoal(calorieGoalDraft) }
-            Button(L("Cancel"), role: .cancel) {}
-        } message: {
-            Text(
-                TL(
+        .fullScreenCover(isPresented: $isCalorieGoalAlertPresented) {
+            TodayGoalDialog(
+                icon: nil,
+                title: TL(
+                    pl: "Cel kalorii na ten dzień",
+                    en: "Calorie goal for this day",
+                    uk: "Ціль калорій на цей день",
+                    ru: "Цель калорий на этот день",
+                    es: "Objetivo de calorías de este día"
+                ),
+                message: TL(
                     pl: "1000–4500 kcal. Ta zmiana działa tylko dla tego dnia. Przyszłe normy zmienisz w Profilu.",
                     en: "1000–4500 kcal. This change applies only to this day. Future targets are edited in Profile.",
                     uk: "1000–4500 ккал. Ця зміна діє лише для цього дня. Майбутні цілі змінюються в профілі.",
                     ru:
                         "1000–4500 ккал. Это изменение действует только для этого дня. Будущие цели меняются в профиле.",
                     es: "1000–4500 kcal. Este cambio solo aplica a este día. Los objetivos futuros se editan en Perfil."
-                )
+                ),
+                value: $calorieGoalDraft,
+                unit: "kcal",
+                layout: .inline,
+                onSave: {
+                    applyCalorieGoal(calorieGoalDraft)
+                    setGoalDialog(calorie: false)
+                },
+                onDefault: nil,
+                onCancel: { setGoalDialog(calorie: false) }
             )
+            .presentationBackground(.clear)
         }
         .sheet(isPresented: $isMacroGoalAlertPresented) {
             DailyMacroGoalEditorSheet(
@@ -344,11 +360,11 @@ struct EmptyMealsCallout: View {
         Button(action: onTap) {
             HStack(spacing: Tokens.Space.md) {
                 ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                        .fill(Tokens.Mono.track)
                         .frame(width: 44, height: 44)
                     Image(systemName: "camera.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .foregroundStyle(Tokens.Palette.ink)
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("No meals today")
@@ -378,68 +394,76 @@ private struct DailyMacroGoalEditorSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ScreenBackground(mood: .calm)
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-                        header
-                        MacroTargetEditorRow(
-                            title: L("Protein"),
-                            subtitle: TL(
-                                pl: "Sytość i ochrona mięśni",
-                                en: "Satiety and muscle support",
-                                uk: "Ситість і підтримка мʼязів",
-                                ru: "Сытость и поддержка мышц",
-                                es: "Saciedad y soporte muscular"
-                            ),
-                            symbol: "figure.strengthtraining.traditional",
-                            color: Tokens.Palette.primary,
-                            value: $protein,
-                            range: 40...260
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(
+                        text: title,
+                        sub: TL(
+                            pl: "Zmieniasz tylko wybrany dzień. Przyszłe cele zostają w Profilu.",
+                            en: "You are changing only the selected day. Future targets stay in Profile.",
+                            uk: "Ти змінюєш лише вибраний день. Майбутні цілі залишаються в профілі.",
+                            ru: "Ты меняешь только выбранный день. Будущие цели остаются в профиле.",
+                            es: "Solo cambias el día elegido. Los objetivos futuros quedan en Perfil."
                         )
-                        MacroTargetEditorRow(
-                            title: L("Carbs"),
-                            subtitle: TL(
-                                pl: "Energia na dzień i trening",
-                                en: "Energy for the day and training",
-                                uk: "Енергія на день і тренування",
-                                ru: "Энергия на день и тренировки",
-                                es: "Energía para el día y entrenar"
-                            ),
-                            symbol: "bolt.fill",
-                            color: Tokens.Palette.mutedGreen,
-                            value: $carbs,
-                            range: 40...520
-                        )
-                        MacroTargetEditorRow(
-                            title: L("Fat"),
-                            subtitle: TL(
-                                pl: "Hormony, smak i stabilność",
-                                en: "Hormones, flavor and steadiness",
-                                uk: "Гормони, смак і стабільність",
-                                ru: "Гормоны, вкус и стабильность",
-                                es: "Hormonas, sabor y estabilidad"
-                            ),
-                            symbol: "drop.fill",
-                            color: Tokens.Palette.warning,
-                            value: $fat,
-                            range: 20...180
-                        )
-                        summaryCard
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    )
+                    .padding(.bottom, 8)
+                    TodayMacroEditorRow(
+                        title: L("Protein"),
+                        subtitle: TL(
+                            pl: "Sytość i ochrona mięśni",
+                            en: "Satiety and muscle support",
+                            uk: "Ситість і підтримка мʼязів",
+                            ru: "Сытость и поддержка мышц",
+                            es: "Saciedad y soporte muscular"
+                        ),
+                        symbol: "bolt",
+                        color: Tokens.Mono.strong,
+                        value: $protein,
+                        range: 40...260
+                    )
+                    TodayMacroEditorRow(
+                        title: L("Carbs"),
+                        subtitle: TL(
+                            pl: "Energia na dzień i trening",
+                            en: "Energy for the day and training",
+                            uk: "Енергія на день і тренування",
+                            ru: "Энергия на день и тренировки",
+                            es: "Energía para el día y entrenar"
+                        ),
+                        symbol: "flame",
+                        color: Tokens.Mono.accent,
+                        value: $carbs,
+                        range: 40...520
+                    )
+                    TodayMacroEditorRow(
+                        title: L("Fat"),
+                        subtitle: TL(
+                            pl: "Hormony, smak i stabilność",
+                            en: "Hormones, flavor and steadiness",
+                            uk: "Гормони, смак і стабільність",
+                            ru: "Гормоны, вкус и стабильность",
+                            es: "Hormonas, sabor y estabilidad"
+                        ),
+                        symbol: "drop",
+                        color: Tokens.Mono.fat,
+                        value: $fat,
+                        range: 20...180
+                    )
+                    summaryCard
+                        .padding(.top, 4)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, Tokens.Space.xl)
             }
-            .navigationTitle(Text(title))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(L("Cancel"), action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(L("Save"), action: onSave)
-                        .fontWeight(.bold)
+                    MonoNavPill(title: L("Save"), action: onSave)
                 }
             }
         }
@@ -449,46 +473,253 @@ private struct DailyMacroGoalEditorSheet: View {
         TL(pl: "Makro dnia", en: "Daily macros", uk: "Макро дня", ru: "Макро дня", es: "Macros del día")
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text(title)
-                .font(Tokens.Font.archivo(size: 34, weight: 800, width: 115))
-                .foregroundStyle(Tokens.Palette.ink)
+    // Mockup: dark hero strip with a hi chart icon and the B/W/T total.
+    private var summaryCard: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "chart.bar.fill")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Tokens.Mono.hi)
             Text(
-                TL(
-                    pl: "Zmieniasz tylko wybrany dzień. Przyszłe cele zostają w Profilu.",
-                    en: "You are changing only the selected day. Future targets stay in Profile.",
-                    uk: "Ти змінюєш лише вибраний день. Майбутні цілі залишаються в профілі.",
-                    ru: "Ты меняешь только выбранный день. Будущие цели остаются в профиле.",
-                    es: "Solo cambias el día elegido. Los objetivos futuros quedan en Perfil."
+                String.localizedStringWithFormat(
+                    TL(
+                        pl: "Razem: B/W/T %lld/%lld/%lld g",
+                        en: "Total: P/C/F %lld/%lld/%lld g",
+                        uk: "Разом: Б/В/Ж %lld/%lld/%lld г",
+                        ru: "Итого: Б/У/Ж %lld/%lld/%lld г",
+                        es: "Total: P/C/G %lld/%lld/%lld g"
+                    ),
+                    protein,
+                    carbs,
+                    fat
                 )
             )
-            .font(Tokens.Font.body)
-            .foregroundStyle(Tokens.Palette.inkMuted)
+            .font(Tokens.Font.manrope(15, weight: 800))
+            .foregroundStyle(Tokens.Mono.onHero)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
+        }
+        .monoHero(padding: 16)
+    }
+}
+
+/// Mockup `macro_editor_row`: card with track icon box, title + muted subtitle,
+/// − value + stepper (5 g) and a coloured slider with range captions.
+private struct TodayMacroEditorRow: View {
+    let title: String
+    let subtitle: String
+    let symbol: String
+    let color: Color
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: symbol, style: .track, size: 40)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(Tokens.Font.manrope(16, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                    Text(subtitle)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 10) {
+                    stepButton(symbol: "minus") {
+                        value = max(range.lowerBound, value - 5)
+                    }
+                    HStack(alignment: .firstTextBaseline, spacing: 3) {
+                        TextField("0", value: $value, format: .number)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.center)
+                            .font(Tokens.Font.monoNumber(20))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .fixedSize()
+                        Text(verbatim: "g")
+                            .font(Tokens.Font.manrope(12, weight: 700))
+                            .foregroundStyle(Tokens.Mono.muted)
+                    }
+                    .frame(minWidth: 56)
+                    stepButton(symbol: "plus") {
+                        value = min(range.upperBound, value + 5)
+                    }
+                }
+            }
+
+            VStack(spacing: 6) {
+                Slider(
+                    value: Binding(
+                        get: { Double(value) },
+                        set: { value = Int($0.rounded()) }
+                    ),
+                    in: Double(range.lowerBound)...Double(range.upperBound),
+                    step: 1
+                )
+                .tint(color)
+                HStack {
+                    Text(verbatim: "\(range.lowerBound) g")
+                    Spacer()
+                    Text(verbatim: "\(range.upperBound) g")
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func stepButton(symbol: String, action: @escaping () -> Void) -> some View {
+        Button {
+            Haptics.light()
+            action()
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 40, height: 40)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+extension TodayView {
+    /// Goal dialogs are presented as a clear full-screen cover so the dim covers the
+    /// floating tab bar too; the slide animation is disabled so they appear like alerts.
+    func setGoalDialog(water: Bool? = nil, calorie: Bool? = nil) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            if let water {
+                isWaterGoalAlertPresented = water
+            }
+            if let calorie {
+                isCalorieGoalAlertPresented = calorie
+            }
+        }
+    }
+}
+
+/// Design D "DialogCalorieGoal" / "DialogWaterGoal": centred card over a dim,
+/// bordered numeric field and capsule buttons.
+private struct TodayGoalDialog: View {
+    enum Layout {
+        /// Cancel + Save side by side (calorie goal).
+        case inline
+        /// Save full width, then Default + Cancel (water goal).
+        case stacked
+    }
+
+    let icon: String?
+    let title: String
+    let message: String
+    @Binding var value: Int
+    let unit: String
+    let layout: Layout
+    let onSave: () -> Void
+    let onDefault: (() -> Void)?
+    let onCancel: () -> Void
+
+    @FocusState private var isFieldFocused: Bool
+    @State private var isVisible = false
+
+    var body: some View {
+        ZStack {
+            Color(red: 10 / 255, green: 11 / 255, blue: 12 / 255)
+                .opacity(isVisible ? 0.45 : 0)
+                .ignoresSafeArea()
+                .onTapGesture { onCancel() }
+                .accessibilityHidden(true)
+
+            card
+                .padding(.horizontal, 34)
+                .opacity(isVisible ? 1 : 0)
+                .scaleEffect(isVisible ? 1 : 0.94)
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.2)) {
+                isVisible = true
+            }
+            isFieldFocused = true
         }
     }
 
-    private var summaryCard: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            HStack {
-                Label(
-                    String.localizedStringWithFormat(
-                        TL(
-                            pl: "Razem: B/W/T %lld/%lld/%lld g",
-                            en: "Total: P/C/F %lld/%lld/%lld g",
-                            uk: "Разом: Б/В/Ж %lld/%lld/%lld г",
-                            ru: "Итого: Б/У/Ж %lld/%lld/%lld г",
-                            es: "Total: P/C/G %lld/%lld/%lld g"
-                        ),
-                        protein,
-                        carbs,
-                        fat
-                    ),
-                    systemImage: "chart.bar.fill"
-                )
-                .font(Tokens.Font.bodyEmphasized)
+    private var card: some View {
+        VStack(spacing: 12) {
+            if let icon {
+                MonoIconBox(systemName: icon, style: .track, size: 44)
+            }
+            Text(title)
+                .font(Tokens.Font.manrope(17, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(message)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .multilineTextAlignment(.center)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+            valueField
+            actions
+                .padding(.top, 4)
+        }
+        .padding(.top, 22)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 16)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                .fill(Tokens.Palette.surface)
+        )
+        .shadow(color: .black.opacity(0.35), radius: 30, y: 30)
+    }
+
+    private var valueField: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            TextField("0", value: $value, format: .number)
+                .keyboardType(.numberPad)
+                .multilineTextAlignment(.center)
+                .font(Tokens.Font.monoNumber(30))
+                .foregroundStyle(Tokens.Palette.ink)
+                .focused($isFieldFocused)
+                .fixedSize()
+            Text(verbatim: unit)
+                .font(Tokens.Font.manrope(14, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 56)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Tokens.Palette.ink, lineWidth: 2)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture { isFieldFocused = true }
+    }
+
+    @ViewBuilder
+    private var actions: some View {
+        switch layout {
+        case .inline:
+            HStack(spacing: 8) {
+                MonoButton(title: L("Cancel"), kind: .outline, height: 48, action: onCancel)
+                MonoButton(title: L("Save"), kind: .dark, height: 48, action: onSave)
+            }
+        case .stacked:
+            VStack(spacing: 8) {
+                MonoButton(title: L("Save"), kind: .dark, height: 48, action: onSave)
+                HStack(spacing: 8) {
+                    if let onDefault {
+                        MonoButton(title: L("Default"), kind: .outline, height: 44, action: onDefault)
+                    }
+                    MonoButton(title: L("Cancel"), kind: .ghost, height: 44, action: onCancel)
+                }
             }
         }
     }

@@ -26,62 +26,103 @@ struct AddGoalWeightSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        Card(elevation: Tokens.Shadow.float) {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text("Waga (kg)")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                                HStack(spacing: Tokens.Space.md) {
-                                    stepperButton(symbol: "minus") {
-                                        adjust(by: -0.1)
-                                    }
-                                    TextField("70.5", text: $weightText)
-                                        .keyboardType(.decimalPad)
-                                        .multilineTextAlignment(.center)
-                                        .font(Tokens.Font.counter)
-                                        .foregroundStyle(Tokens.Palette.ink)
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, Tokens.Space.sm)
-                                        .background(
-                                            RoundedRectangle(
-                                                cornerRadius: Tokens.Radius.md,
-                                                style: .continuous
-                                            )
-                                            .fill(Tokens.Palette.surfaceMuted)
-                                        )
-                                    stepperButton(symbol: "plus") {
-                                        adjust(by: 0.1)
-                                    }
-                                }
-                                Text(
-                                    L("We'll update your weight in the profile too.")
-                                )
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.inkSubtle)
-                            }
-                        }
-                        PrimaryButton(
-                            title: "Save",
-                            systemImage: "checkmark",
-                            isEnabled: parsed != nil,
-                            action: commit
-                        )
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    bigValue
+                        .padding(.top, 40)
+                    weightSlider
+                        .monoCard(padding: 16)
+                        .padding(.top, 20)
+                    MonoHint(text: L("We'll update your weight in the profile too."))
+                        .padding(.top, 12)
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Save"), kind: .dark, icon: "checkmark", action: commit)
+                        .disabled(parsed == nil)
                 }
             }
-            .navigationTitle(Text("Dzisiejsza waga"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Dzisiejsza waga")
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: L("Save"), action: commit)
+                        .disabled(parsed == nil)
+                        .opacity(parsed == nil ? 0.45 : 1)
                 }
             }
+        }
+    }
+
+    /// Mockup AddWeight: − 72 pt italic value kg + with 56 pt outline round buttons (±0.1 kg).
+    private var bigValue: some View {
+        HStack(spacing: 18) {
+            stepperButton(symbol: "minus") {
+                adjust(by: -0.1)
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                TextField("70.5", text: $weightText)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.center)
+                    .font(Tokens.Font.monoNumber(72))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize()
+                Text(verbatim: "kg")
+                    .font(Tokens.Font.manrope(20, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            stepperButton(symbol: "plus") {
+                adjust(by: 0.1)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    /// Slider window: ±20 kg around the starting weight.
+    private var sliderCenter: Double {
+        (initialWeight ?? 70).rounded()
+    }
+
+    private var sliderRange: ClosedRange<Double> {
+        let lower = max(21, sliderCenter - 20)
+        let upper = min(399, sliderCenter + 20)
+        return lower...upper
+    }
+
+    private var weightSlider: some View {
+        VStack(spacing: 6) {
+            Slider(
+                value: Binding(
+                    get: { (parsed ?? sliderCenter).clamped(to: sliderRange) },
+                    set: { newValue in
+                        weightText = String(format: "%.1f", (newValue * 10).rounded() / 10)
+                    }
+                ),
+                in: sliderRange,
+                step: 0.1
+            )
+            .tint(Tokens.Mono.strong)
+            HStack {
+                Text(verbatim: "\(Int(sliderRange.lowerBound)) kg")
+                Spacer()
+                Text(verbatim: "\(Int(sliderRange.upperBound)) kg")
+            }
+            .font(Tokens.Font.manrope(11, weight: 700))
+            .foregroundStyle(Tokens.Mono.muted)
         }
     }
 
@@ -112,12 +153,11 @@ struct AddGoalWeightSheet: View {
     private func stepperButton(symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
-                .frame(width: 44, height: 44)
-                .background(
-                    Circle().fill(Tokens.Palette.primarySoft)
-                )
+                .font(.system(size: 18, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 56, height: 56)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                .contentShape(Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(symbol == "plus" ? Text("Zwiększ o 0,1 kg") : Text("Zmniejsz o 0,1 kg"))

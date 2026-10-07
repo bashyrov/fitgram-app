@@ -26,78 +26,49 @@ struct RecipeDetailView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-                        header
-                        if let summary = recipe.summary, !summary.isEmpty {
-                            summaryCard(summary)
-                        }
-                        nutritionCard
-                        ratingCard
-                        servingsCard
-                        if !recipe.ingredients.isEmpty {
-                            ingredientsCard
-                        }
-                        if !recipe.instructions.isEmpty {
-                            instructionsCard
-                        }
-                        if let minutes = recipe.cookMinutes, minutes > 0 {
-                            CookTimerCard(cookMinutes: minutes)
-                        }
-                        if !similarRecipes.isEmpty, let onSelectSimilar {
-                            similarCard(onSelectSimilar)
-                        }
-                        PrimaryButton(title: "Ugotuj i dodaj do dziennika", systemImage: "checkmark") {
-                            isPortionSheetPresented = true
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(text: recipe.title, sub: headerSubtitle, kicker: L("Przepis"))
+                        .padding(.bottom, 4)
+                    if let summary = recipe.summary, !summary.isEmpty {
+                        summaryCard(summary)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    nutritionCard
+                    servingsCard
+                    ratingCard
+                    if !recipe.ingredients.isEmpty {
+                        ingredientsSection
+                    }
+                    if !recipe.instructions.isEmpty {
+                        instructionsSection
+                    }
+                    if let minutes = recipe.cookMinutes, minutes > 0 {
+                        CookTimerCard(cookMinutes: minutes)
+                    }
+                    if !recipe.ingredients.isEmpty {
+                        modificationsRow
+                    }
+                    if !similarRecipes.isEmpty, let onSelectSimilar {
+                        similarSection(onSelectSimilar)
+                    }
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
             }
-            .navigationTitle(Text(recipe.title))
-            .navigationBarTitleDisplayMode(.inline)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle("")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Close", action: onDismiss)
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: Tokens.Space.sm) {
-                        if !recipe.ingredients.isEmpty {
-                            ShareLink(
-                                item: shoppingListText,
-                                subject: Text(String.localizedStringWithFormat(L("Shopping list — %@"), recipe.title)),
-                                preview: SharePreview(
-                                    String.localizedStringWithFormat(L("Shopping list — %@"), recipe.title),
-                                    icon: Image(systemName: "cart")
-                                )
-                            ) {
-                                Image(systemName: "cart")
-                            }
-                            .accessibilityLabel(Text("Lista zakupów"))
-                        }
-                        if !recipe.ingredients.isEmpty {
-                            Menu {
-                                ForEach(RecipeModificationEngine.Intent.allCases, id: \.self) { intent in
-                                    Button {
-                                        activeModIntent = intent
-                                    } label: {
-                                        Label(intent.label, systemImage: intent.symbol)
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "wand.and.stars")
-                            }
-                            .accessibilityLabel(Text("Modyfikacje przepisu"))
-                        }
-                        Button {
-                            onEdit()
-                        } label: {
-                            Image(systemName: "pencil")
-                        }
-                        .accessibilityLabel(Text("Edit"))
+                    MonoNavText(title: L("Edit"), emphasized: true, action: onEdit)
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Ugotuj i dodaj do dziennika"), kind: .dark, icon: "fork.knife") {
+                        isPortionSheetPresented = true
                     }
                 }
             }
@@ -128,76 +99,74 @@ struct RecipeDetailView: View {
 
     // MARK: - Sections
 
-    private var header: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(String.localizedStringWithFormat(L("%lld porcje"), recipe.servings))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                if recipe.cookCount > 0 {
-                    Text(String.localizedStringWithFormat(L("Cooked %lld times"), recipe.cookCount))
-                        .font(Tokens.Font.subheadline)
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-            }
+    private var headerSubtitle: String {
+        var parts = [String.localizedStringWithFormat(L("%lld porcje"), recipe.servings)]
+        if recipe.cookCount > 0 {
+            parts.append(String.localizedStringWithFormat(L("Cooked %lld times"), recipe.cookCount))
         }
+        return parts.joined(separator: " · ")
     }
 
     private func summaryCard(_ text: String) -> some View {
-        Card {
-            Text(text)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink)
-        }
+        Text(text)
+            .font(Tokens.Font.manrope(14, weight: 600))
+            .foregroundStyle(Tokens.Palette.ink)
+            .lineSpacing(3)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .monoCard(padding: 16)
     }
 
     private var nutritionCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text(servingsLabel)
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    if servings != 1 {
-                        Text(String(format: "×%.1f", servings))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .padding(.horizontal, Tokens.Space.sm)
-                            .padding(.vertical, 2)
-                            .background(Capsule().fill(Tokens.Palette.primarySoft))
-                    }
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(servingsLabel)
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+                Spacer()
+                Text(String(format: "× %@", servingsText))
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .padding(.horizontal, 8)
+                    .frame(height: 24)
+                    .background(Capsule().fill(Tokens.Mono.heroLine))
+            }
+            if (recipe.caloriesPerServing ?? 0) > 0 {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text("\(Int(((recipe.caloriesPerServing ?? 0) * servings).rounded()))")
+                        .font(Tokens.Font.monoNumber(52))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .contentTransition(.numericText())
+                    Text("kcal")
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                 }
-                if (recipe.caloriesPerServing ?? 0) > 0 {
-                    HStack(spacing: Tokens.Space.lg) {
-                        macroPill(
-                            label: "kcal",
-                            grams: (recipe.caloriesPerServing ?? 0) * servings,
-                            color: Tokens.Palette.primary
-                        )
-                        macroPill(
-                            label: "B",
-                            grams: (recipe.proteinPerServing ?? 0) * servings,
-                            color: Tokens.Palette.primary
-                        )
-                        macroPill(
-                            label: "W",
-                            grams: (recipe.carbsPerServing ?? 0) * servings,
-                            color: Tokens.Palette.warning
-                        )
-                        macroPill(
-                            label: "T",
-                            grams: (recipe.fatPerServing ?? 0) * servings,
-                            color: Tokens.Palette.accent
-                        )
-                    }
-                } else {
-                    Text("Brak danych — dodasz je przez Edytuj.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
+                MonoMacroRow(
+                    protein: (recipe.proteinPerServing ?? 0) * servings,
+                    carbs: (recipe.carbsPerServing ?? 0) * servings,
+                    fat: (recipe.fatPerServing ?? 0) * servings,
+                    dark: true
+                )
+            } else {
+                Text("Brak danych — dodasz je przez Edytuj.")
+                    .font(Tokens.Font.manrope(13, weight: 600))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
             }
         }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
+    }
+
+    private var servingsText: String {
+        String(format: "%g", servings)
     }
 
     private var servingsLabel: LocalizedStringKey {
@@ -205,92 +174,128 @@ struct RecipeDetailView: View {
     }
 
     private var ratingCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Twoja ocena")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    if recipe.rating != nil {
-                        Button("Clear") {
-                            onRate(nil)
-                            Haptics.light()
-                        }
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                MonoLabel(text: L("Twoja ocena"))
+                Spacer()
+                if recipe.rating != nil {
+                    Button {
+                        onRate(nil)
+                        Haptics.light()
+                    } label: {
+                        Text("Clear")
+                            .font(Tokens.Font.manrope(12, weight: 700))
+                            .foregroundStyle(Tokens.Mono.muted)
                     }
-                }
-                HStack(spacing: Tokens.Space.xs) {
-                    ForEach(1...5, id: \.self) { star in
-                        Button {
-                            onRate(Double(star))
-                            Haptics.light()
-                        } label: {
-                            let filled = Double(star) <= (recipe.rating ?? 0)
-                            Image(systemName: filled ? "star.fill" : "star")
-                                .font(.title3)
-                                .foregroundStyle(filled ? Tokens.Palette.warning : Tokens.Palette.inkSubtle)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Text(String.localizedStringWithFormat(L("Oceń %lld gwiazdek"), star)))
-                    }
-                    Spacer()
+                    .buttonStyle(.plain)
                 }
             }
+            HStack(spacing: 10) {
+                ForEach(1...5, id: \.self) { star in
+                    Button {
+                        onRate(Double(star))
+                        Haptics.light()
+                    } label: {
+                        let filled = Double(star) <= (recipe.rating ?? 0)
+                        Image(systemName: filled ? "star.fill" : "star")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(filled ? Tokens.Mono.fat : Tokens.Mono.line2)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(String.localizedStringWithFormat(L("Oceń %lld gwiazdek"), star)))
+                }
+                Spacer()
+            }
         }
+        .monoCard(padding: 16)
     }
 
     private var servingsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: L("Ile porcji teraz?"))
+                Spacer()
+                Text(servingsText)
+                    .font(Tokens.Font.monoNumber(20))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+            }
+            VStack(spacing: 6) {
+                Slider(value: $servings, in: 0.25...Double(max(1, recipe.servings * 2)), step: 0.25)
+                    .tint(Tokens.Mono.strong)
                 HStack {
-                    Text("Ile porcji teraz?")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
+                    Text("0.25")
                     Spacer()
-                    Text(String(format: "%.1f", servings))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
+                    Text("\(max(1, recipe.servings * 2))")
                 }
-                Slider(value: $servings, in: 0.25...Double(recipe.servings * 2), step: 0.25)
-                    .tint(Tokens.Palette.primary)
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
             }
         }
+        .monoCard(padding: 16)
     }
 
-    private var ingredientsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Ingredients")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
+    private var ingredientsSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Ingredients")) {
+                HStack(spacing: 6) {
+                    if !checkedIngredients.isEmpty {
+                        Button {
+                            checkedIngredients.removeAll()
+                            Haptics.light()
+                        } label: {
+                            Text("Clear")
+                                .font(Tokens.Font.manrope(12, weight: 700))
+                                .foregroundStyle(Tokens.Mono.muted)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     Button {
                         copyIngredients()
                     } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: didCopyIngredients ? "checkmark" : "doc.on.doc")
-                            Text(didCopyIngredients ? "Skopiowane" : "Kopiuj")
-                        }
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.primary)
+                        Image(systemName: didCopyIngredients ? "checkmark" : "doc.on.doc")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .frame(width: 34, height: 34)
+                            .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
                     }
                     .buttonStyle(.plain)
-                    if !checkedIngredients.isEmpty {
-                        Button("Clear") {
-                            checkedIngredients.removeAll()
-                            Haptics.light()
+                    .accessibilityLabel(Text(didCopyIngredients ? L("Skopiowane") : L("Kopiuj")))
+                    ShareLink(
+                        item: shoppingListText,
+                        subject: Text(String.localizedStringWithFormat(L("Shopping list — %@"), recipe.title)),
+                        preview: SharePreview(
+                            String.localizedStringWithFormat(L("Shopping list — %@"), recipe.title),
+                            icon: Image(systemName: "cart")
+                        )
+                    ) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "cart")
+                                .font(.system(size: 12, weight: .bold))
+                            Text("Lista zakupów")
+                                .lineLimit(1)
                         }
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .font(Tokens.Font.manrope(12, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .padding(.horizontal, 10)
+                        .frame(height: 34)
+                        .overlay(Capsule().stroke(Tokens.Mono.line2, lineWidth: 1))
                     }
+                    .accessibilityLabel(Text("Lista zakupów"))
                 }
-                ForEach(recipe.ingredients) { ingredient in
+            }
+            .padding(.horizontal, 6)
+            .padding(.top, 6)
+            .padding(.bottom, 12)
+            VStack(spacing: 0) {
+                ForEach(Array(recipe.ingredients.enumerated()), id: \.element.id) { index, ingredient in
+                    if index > 0 {
+                        MonoRowDivider(inset: 16)
+                    }
                     ingredientRow(ingredient)
                 }
             }
+            .monoRowsCard()
         }
     }
 
@@ -304,78 +309,114 @@ struct RecipeDetailView: View {
             }
             Haptics.light()
         } label: {
-            HStack(spacing: Tokens.Space.sm) {
-                Image(systemName: isChecked ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(isChecked ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
+            HStack(spacing: 12) {
                 Text(ingredient.name)
-                    .font(Tokens.Font.body)
-                    .strikethrough(isChecked, color: Tokens.Palette.inkMuted)
-                    .foregroundStyle(isChecked ? Tokens.Palette.inkMuted : Tokens.Palette.ink)
-                Spacer()
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .strikethrough(isChecked, color: Tokens.Mono.muted)
+                    .foregroundStyle(isChecked ? Tokens.Mono.muted : Tokens.Palette.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(isChecked ? Tokens.Palette.ink : Color.clear)
+                    .frame(width: 26, height: 26)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Tokens.Palette.ink, lineWidth: 2)
+                    )
+                    .overlay(
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 12, weight: .heavy))
+                            .foregroundStyle(Tokens.Mono.onHero)
+                            .opacity(isChecked ? 1 : 0)
+                    )
             }
+            .padding(.vertical, 13)
+            .padding(.horizontal, 16)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isChecked ? .isSelected : [])
     }
 
-    private var instructionsCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text("Instructions")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
+    private var instructionsSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Instructions"))
+                .padding(.horizontal, 6)
+                .padding(.top, 6)
+                .padding(.bottom, 12)
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in
-                    HStack(alignment: .top, spacing: Tokens.Space.sm) {
-                        Text(String.localizedStringWithFormat(L("%lld."), index + 1))
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .frame(width: 24, alignment: .leading)
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Text("\(index + 1).")
+                            .font(Tokens.Font.monoNumber(18))
+                            .foregroundStyle(Tokens.Mono.muted)
                         Text(step)
-                            .font(Tokens.Font.body)
+                            .font(Tokens.Font.manrope(14, weight: 600))
                             .foregroundStyle(Tokens.Palette.ink)
+                            .lineSpacing(4)
                             .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
+            .monoCard(padding: 16)
         }
     }
 
-    private func similarCard(_ onTap: @escaping (Recipe) -> Void) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Co podobnego?")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: Tokens.Space.sm) {
-                        ForEach(similarRecipes) { peer in
-                            Button {
-                                onTap(peer)
-                                Haptics.light()
-                            } label: {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(peer.title)
-                                        .font(Tokens.Font.bodyEmphasized)
-                                        .foregroundStyle(Tokens.Palette.ink)
-                                        .lineLimit(1)
-                                    Text(String.localizedStringWithFormat(L("%lld składn."), peer.ingredients.count))
-                                        .font(Tokens.Font.caption)
-                                        .foregroundStyle(Tokens.Palette.inkMuted)
-                                }
-                                .padding(.vertical, Tokens.Space.sm)
-                                .padding(.horizontal, Tokens.Space.md)
-                                .frame(maxWidth: 220, alignment: .leading)
-                                .background(
-                                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                                        .fill(Tokens.Palette.primarySoft)
-                                )
+    private var modificationsRow: some View {
+        Menu {
+            ForEach(RecipeModificationEngine.Intent.allCases, id: \.self) { intent in
+                Button {
+                    activeModIntent = intent
+                } label: {
+                    Label(intent.label, systemImage: intent.symbol)
+                }
+            }
+        } label: {
+            VStack(spacing: 0) {
+                MonoRow(
+                    icon: "sparkles",
+                    title: L("Modyfikacje przepisu"),
+                    sub: RecipeModificationEngine.Intent.allCases.map(\.label).joined(separator: ", ")
+                )
+            }
+            .monoRowsCard()
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Modyfikacje przepisu"))
+    }
+
+    private func similarSection(_ onTap: @escaping (Recipe) -> Void) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Co podobnego?"))
+                .padding(.horizontal, 6)
+                .padding(.top, 6)
+                .padding(.bottom, 12)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(similarRecipes) { peer in
+                        Button {
+                            onTap(peer)
+                            Haptics.light()
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(peer.title)
+                                    .font(Tokens.Font.manrope(14, weight: 800))
+                                    .foregroundStyle(Tokens.Palette.ink)
+                                    .lineLimit(2)
+                                    .multilineTextAlignment(.leading)
+                                Text(String.localizedStringWithFormat(L("%lld składn."), peer.ingredients.count))
+                                    .font(Tokens.Font.manrope(12, weight: 600))
+                                    .foregroundStyle(Tokens.Mono.muted)
                             }
-                            .buttonStyle(.plain)
+                            .padding(12)
+                            .frame(width: 150, alignment: .leading)
+                            .monoCard(radius: 18, padding: nil)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
             }
+            .scrollClipDisabled()
         }
     }
 
@@ -414,17 +455,6 @@ struct RecipeDetailView: View {
         return lines.joined(separator: "\n")
     }
 
-    private func macroPill(label: LocalizedStringKey, grams: Double, color: Color) -> some View {
-        VStack(spacing: 2) {
-            Text(String.localizedStringWithFormat(L("%lld"), Int(grams)))
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(color)
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-        }
-        .frame(maxWidth: .infinity)
-    }
 }
 
 // swiftlint:enable type_body_length

@@ -11,50 +11,40 @@ struct OnboardingChoiceCard: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: Tokens.Space.lg) {
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Tokens.Palette.primary : Tokens.Palette.primarySoft)
-                        .frame(width: 52, height: 52)
-                    Image(systemName: symbol)
-                        .font(.system(size: 22, weight: .medium))
-                        .foregroundStyle(isSelected ? Color.white : Tokens.Palette.primary)
-                }
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: symbol, style: isSelected ? .dark : .outline, size: 40)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(Tokens.Font.bodyEmphasized)
+                        .font(Tokens.Font.manrope(15, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(subtitle)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                         .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer(minLength: 0)
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 22))
-                    .foregroundStyle(isSelected ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 16, weight: .heavy))
+                        .foregroundStyle(Tokens.Palette.ink)
+                }
             }
-            .padding(Tokens.Space.lg)
+            .padding(.vertical, 14)
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(isSelected ? Tokens.Palette.primarySoft : Tokens.Palette.surface)
-                    .shadow(
-                        color: isSelected
-                            ? Tokens.Palette.primary.opacity(0.18)
-                            : .black.opacity(0.04),
-                        radius: isSelected ? 12 : 8,
-                        x: 0,
-                        y: isSelected ? 5 : 2
-                    )
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                    .fill(Tokens.Palette.surface)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .stroke(
-                        isSelected ? Tokens.Palette.primary : Color.clear,
-                        lineWidth: isSelected ? 2 : 0
-                    )
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                    .strokeBorder(isSelected ? Tokens.Palette.ink : Tokens.Mono.line, lineWidth: isSelected ? 2 : 1)
             )
+            .contentShape(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous))
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityAddTraits(isSelected ? .isSelected : [])

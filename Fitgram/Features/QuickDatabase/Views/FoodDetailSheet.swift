@@ -81,41 +81,33 @@ struct FoodDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                portionBackground
-                ScrollView(showsIndicators: false) {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        summaryHero
-                        favoriteButton
-                        modePicker
-                        if portionMode == .overall {
-                            FoodDetailPortionCard(grams: $grams)
-                        } else {
-                            detailedIngredientsCard
-                        }
-                        FoodDetailMacroCard(protein: currentProtein, carbs: currentCarbs, fat: currentFat)
-                        PrimaryButton(title: "Dodaj do dziennika", systemImage: "checkmark") {
-                            commit()
-                        }
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 10) {
+                    summaryHero
+                    modePicker
+                    if portionMode == .overall {
+                        FoodDetailPortionCard(grams: $grams)
+                        MonoHint(text: L("Jedna pozycja z bazy produktów."))
+                    } else {
+                        detailedIngredientsCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    favoriteButton
                 }
-                .scrollDismissesKeyboard(.interactively)
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
             }
-            .navigationTitle(Text(food.localizedName))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(food.localizedName)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
+                        .accessibilityLabel(Text(L("Close")))
+                }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: onDismiss) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Tokens.Palette.surface.opacity(0.72)))
+                    MonoNavPill(title: L("Gotowe")) {
+                        commit()
                     }
-                    .buttonStyle(.pressable)
-                    .accessibilityLabel(L("Close"))
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -125,16 +117,19 @@ struct FoodDetailSheet: View {
                     .font(Tokens.Font.bodyEmphasized)
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: L("Dodaj do dziennika"), kind: .dark, icon: "checkmark") {
+                        commit()
+                    }
+                }
+            }
         }
     }
 }
 
 // MARK: - Chrome
 extension FoodDetailSheet {
-    private var portionBackground: some View {
-        ScreenBackground(mood: .calm)
-    }
-
     @ViewBuilder
     private var favoriteButton: some View {
         if let context = favoriteContext {
@@ -174,44 +169,23 @@ extension FoodDetailSheet {
 
 // MARK: - Sections
 extension FoodDetailSheet {
+    /// `total_hero(kcal, 'Baza · 250 g · Dania główne', p, c, f, 'books')`.
     private var summaryHero: some View {
-        HStack(spacing: Tokens.Space.lg) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(.white.opacity(0.18))
-                    .frame(width: 74, height: 74)
-                Image(systemName: "scalemass.fill")
-                    .font(.system(size: 30, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            VStack(alignment: .leading, spacing: 6) {
-                Text(heroSubtitle ?? food.brand ?? food.restaurantName ?? "Fitgram")
-                    .font(Tokens.Font.manrope(12, weight: 800))
-                    .foregroundStyle(.white.opacity(0.78))
-                    .lineLimit(1)
-                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(currentCalories.rounded())))
-                    .font(Tokens.Font.archivo(size: 36, weight: 800, width: 115))
-                    .foregroundStyle(.white)
-                    .contentTransition(.numericText())
-                Text(String.localizedStringWithFormat(L("%lld g · %@"), Int(grams.rounded()), food.localizedName))
-                    .font(Tokens.Font.manrope(13, weight: 700))
-                    .foregroundStyle(.white.opacity(0.82))
-                    .lineLimit(1)
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(Tokens.Space.lg)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(
-                    Tokens.Mono.hero
-                )
+        AddFlowTotalHero(
+            icon: "books.vertical",
+            caption: heroCaption,
+            kcal: currentCalories,
+            protein: currentProtein,
+            carbs: currentCarbs,
+            fat: currentFat
         )
-        .overlay {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .stroke(.white.opacity(0.10), lineWidth: 0.35)
-        }
+    }
+
+    private var heroCaption: String {
+        let candidates = [food.restaurantName, food.brand].compactMap { $0 }.filter { !$0.isEmpty }
+        let source = candidates.first ?? food.category.localizedLabel
+        let gramsText = String.localizedStringWithFormat(L("%lld g"), Int(grams.rounded()))
+        return [heroSubtitle ?? L("Baza"), gramsText, source].joined(separator: " · ")
     }
 
     private var modePicker: some View {
@@ -230,95 +204,63 @@ extension FoodDetailSheet {
         }
     }
 
+    /// `ingr_list(..., 'Składniki', 'Rozbij produkt lub danie na składniki.')`.
     private var detailedIngredientsCard: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(L("Składniki"))
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Edytuj gramaturę produktu przed zapisem"))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 10) {
+            AddFlowIngredientsSection(
+                title: L("Składniki"),
+                count: detailDrafts.count,
+                sub: L("Rozbij produkt lub danie na składniki.")
+            ) {
+                ForEach(Array(detailDrafts.enumerated()), id: \.element.id) { index, draft in
+                    ingredientRow(draftBinding(draft.id), showsDivider: index > 0)
                 }
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld g"), Int(detailTotalGrams.rounded())))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(Capsule().fill(Tokens.Palette.primarySoft))
+            } footer: {
+                MonoButton(title: L("Dodaj składnik"), kind: .outline, icon: "plus", height: 44) {
+                    detailDrafts.append(QuickFoodIngredientDraft(name: "", quantityGrams: 100))
+                    Haptics.selection()
+                }
             }
             AIRequestHint.productNutrition
-
-            ForEach($detailDrafts) { $draft in
-                VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                    HStack {
-                        TextField(L("Produkt"), text: $draft.name)
-                            .font(Tokens.Font.bodyEmphasized)
-                            .textFieldStyle(.roundedBorder)
-                            .focused($isTextInputFocused)
-                            .submitLabel(.done)
-                            .onSubmit { isTextInputFocused = false }
-                        productAIButton(for: $draft)
-                        if detailDrafts.count > 1 {
-                            Button {
-                                detailDrafts.removeAll { $0.id == draft.id }
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundStyle(Tokens.Palette.error)
-                            }
-                            .buttonStyle(.pressable)
-                        }
-                    }
-                    HStack {
-                        Text(String.localizedStringWithFormat(L("%lld g"), Int(draft.quantityGrams.rounded())))
-                            .font(Tokens.Font.title3)
-                            .foregroundStyle(Tokens.Palette.primary)
-                            .contentTransition(.numericText())
-                        Spacer()
-                        Text(String.localizedStringWithFormat(L("%lld kcal"), Int(draft.caloriesKcal.rounded())))
-                            .font(Tokens.Font.footnote.weight(.bold))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Slider(value: $draft.quantityGrams, in: 10...1200, step: 5)
-                        .tint(Tokens.Palette.primary)
-                    HStack(spacing: Tokens.Space.sm) {
-                        FoodDetailMacroPill(
-                            label: L("Protein"),
-                            grams: draft.proteinGrams,
-                            color: Tokens.Palette.primary
-                        )
-                        FoodDetailMacroPill(
-                            label: L("Węgle"),
-                            grams: draft.carbsGrams,
-                            color: Tokens.Palette.warning
-                        )
-                        FoodDetailMacroPill(
-                            label: L("Tłuszcz"),
-                            grams: draft.fatGrams,
-                            color: Tokens.Palette.accent
-                        )
-                    }
-                }
-            }
-
-            Button {
-                detailDrafts.append(QuickFoodIngredientDraft(name: "", quantityGrams: 100))
-                Haptics.selection()
-            } label: {
-                Label(L("Dodaj składnik"), systemImage: "plus.circle.fill")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
-            }
-            .buttonStyle(.pressable)
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
         .onChange(of: detailDrafts) { _, _ in syncOverallFromDetail() }
+    }
+
+    /// Binding to one draft looked up by id, so rows survive removals.
+    private func draftBinding(_ draftID: UUID) -> Binding<QuickFoodIngredientDraft> {
+        Binding<QuickFoodIngredientDraft>(
+            get: {
+                detailDrafts.first(where: { $0.id == draftID })
+                    ?? QuickFoodIngredientDraft(name: "", quantityGrams: 100)
+            },
+            set: { newValue in
+                guard let index = detailDrafts.firstIndex(where: { $0.id == draftID }) else { return }
+                detailDrafts[index] = newValue
+            }
+        )
+    }
+
+    private func ingredientRow(_ draft: Binding<QuickFoodIngredientDraft>, showsDivider: Bool) -> some View {
+        let draftID = draft.wrappedValue.id
+        var removeAction: (() -> Void)?
+        if detailDrafts.count > 1 {
+            removeAction = { detailDrafts.removeAll { $0.id == draftID } }
+        }
+        return AddFlowIngredientRow(
+            showsDivider: showsDivider,
+            kcal: draft.wrappedValue.caloriesKcal,
+            grams: draft.quantityGrams,
+            range: 10...1200,
+            step: 5,
+            onRemove: removeAction
+        ) {
+            TextField(L("Produkt"), text: draft.name)
+                .focused($isTextInputFocused)
+                .submitLabel(.done)
+                .onSubmit { isTextInputFocused = false }
+        } accessory: {
+            productAIButton(for: draft)
+        }
     }
 
     private func productAIButton(for draft: Binding<QuickFoodIngredientDraft>) -> some View {

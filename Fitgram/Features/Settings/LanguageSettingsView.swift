@@ -9,126 +9,59 @@ struct LanguageSettingsView: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        ZStack {
-            languageBackground
-            ScrollView {
-                LazyVStack(spacing: Tokens.Space.lg) {
-                    headerCard
-                    languageList
-                    helpHint
-                }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                MonoH1(text: languageHeaderTitle, sub: languageHeaderSubtitle, kicker: languageTitle)
+                languageList
+                    .padding(.top, 16)
+                helpHint
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.bottom, Tokens.Space.lg)
         }
-        .navigationTitle(Text(languageTitle))
-        .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private var headerCard: some View {
-        Card(elevation: Tokens.Shadow.float) {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            Tokens.Palette.primary
-                        )
-                        .frame(width: 52, height: 52)
-                    Image(systemName: "globe")
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(languageHeaderTitle)
-                        .font(Tokens.Font.title3)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(languageHeaderSubtitle)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: 0)
-            }
-        }
-    }
-
-    private var languageBackground: some View {
-        ScreenBackground(mood: .calm)
+        .scrollIndicators(.hidden)
+        .background(Tokens.Palette.background.ignoresSafeArea())
+        .monoNavigationTitle(languageTitle)
     }
 
     private var languageList: some View {
-        Card {
-            VStack(spacing: 0) {
-                ForEach(Array(LocalizationStore.supportedLanguages.enumerated()), id: \.element.id) { idx, lang in
-                    Button {
-                        Haptics.selection()
-                        store.setLanguage(lang.code)
-                    } label: {
-                        languageRow(lang)
-                    }
-                    .buttonStyle(.plain)
-                    if idx < LocalizationStore.supportedLanguages.count - 1 {
-                        Rectangle()
-                            .fill(Tokens.Palette.separator)
-                            .frame(height: 0.5)
-                            .padding(.leading, 56)
-                    }
+        VStack(spacing: 0) {
+            ForEach(Array(LocalizationStore.supportedLanguages.enumerated()), id: \.element.id) { idx, lang in
+                Button {
+                    Haptics.selection()
+                    store.setLanguage(lang.code)
+                } label: {
+                    languageRow(lang)
+                }
+                .buttonStyle(.plain)
+                if idx < LocalizationStore.supportedLanguages.count - 1 {
+                    MonoRowDivider(inset: 16)
                 }
             }
         }
+        .monoRowsCard()
     }
 
     private func languageRow(_ lang: LocalizationStore.SupportedLanguage) -> some View {
         let isActive = store.locale.identifier.hasPrefix(lang.code)
-        return HStack(spacing: Tokens.Space.md) {
-            Text(lang.flag)
-                .font(.system(size: 30))
-                .frame(width: 40, height: 40)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(lang.nativeName)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(lang.code.uppercased())
-                    .font(.system(size: 11, weight: .semibold))
-                    .tracking(0.8)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer()
+        return MonoRow(title: "\(lang.flag)  \(lang.nativeName)") {
             if isActive {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primary)
-                        .frame(width: 22, height: 22)
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-            } else {
-                Circle()
-                    .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-                    .frame(width: 22, height: 22)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 16, weight: .heavy))
+                    .foregroundStyle(Tokens.Palette.ink)
             }
         }
-        .padding(.vertical, Tokens.Space.sm)
-        .padding(.horizontal, Tokens.Space.sm)
-        .contentShape(Rectangle())
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 
     private var helpHint: some View {
-        HStack(alignment: .top, spacing: Tokens.Space.sm) {
-            Image(systemName: "info.circle.fill")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.primary)
-            Text(languageHelpHint)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-        }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.primarySoft)
-        )
+        Text(languageHelpHint)
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .lineSpacing(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 6)
+            .padding(.top, 10)
     }
 
     private var languageTitle: String {

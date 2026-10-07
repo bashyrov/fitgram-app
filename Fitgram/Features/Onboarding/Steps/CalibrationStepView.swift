@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// Last "review your plan" screen before the user lands in the app.
-/// Combines: hero calorie target, macro split tiles, secondary metrics,
-/// Ola's per-user advice, photo-scan reference picker.
+/// Design D "Twój plan": hero calorie target with macro pills, photo-scan
+/// reference picker, Ola's per-user advice.
 struct CalibrationStepView: View {
     @Binding var profile: OnboardingProfile
     var computedTargets: GoalCalculator.Targets?
@@ -20,14 +20,13 @@ struct CalibrationStepView: View {
             primarySystemImage: "checkmark",
             onPrimary: onContinue,
             content: {
-                VStack(spacing: Tokens.Space.lg) {
+                VStack(alignment: .leading, spacing: 0) {
                     if let computedTargets {
                         DailyTargetHeroCard(targets: computedTargets)
-                        MacroSplitRow(targets: computedTargets)
-                        SecondaryMetricsRow(targets: computedTargets)
                     }
-                    recommendationsCard
                     referenceSection
+                    recommendationsCard
+                        .padding(.top, 10)
                 }
             }
         )
@@ -43,215 +42,85 @@ struct CalibrationStepView: View {
     }
 
     private var referenceSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text("Reference for photo scans")
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            OnboardingChoiceCard(
-                symbol: "creditcard.fill",
-                title: "Credit card",
-                subtitle: "Most commonly used reference",
-                isSelected: reference == .creditCard,
-                action: { reference = .creditCard }
-            )
-            OnboardingChoiceCard(
-                symbol: "hand.raised.fill",
-                title: "Your hand",
-                subtitle: "Always with you",
-                isSelected: reference == .eatingHand,
-                action: { reference = .eatingHand }
-            )
-            OnboardingChoiceCard(
-                symbol: "fork.knife",
-                title: "Cutlery",
-                subtitle: "Spoon, fork — compared with the plate",
-                isSelected: reference == .fork,
-                action: { reference = .fork }
-            )
+        VStack(alignment: .leading, spacing: 0) {
+            MonoSectionHeader(title: L("Reference for photo scans"))
+                .padding(.horizontal, 6)
+                .padding(.top, 6)
+                .padding(.bottom, 12)
+            VStack(spacing: 8) {
+                OnboardingChoiceCard(
+                    symbol: "creditcard",
+                    title: "Credit card",
+                    subtitle: "Most commonly used reference",
+                    isSelected: reference == .creditCard,
+                    action: { reference = .creditCard }
+                )
+                OnboardingChoiceCard(
+                    symbol: "hand.raised",
+                    title: "Your hand",
+                    subtitle: "Always with you",
+                    isSelected: reference == .eatingHand,
+                    action: { reference = .eatingHand }
+                )
+                OnboardingChoiceCard(
+                    symbol: "fork.knife",
+                    title: "Cutlery",
+                    subtitle: "Spoon, fork — compared with the plate",
+                    isSelected: reference == .fork,
+                    action: { reference = .fork }
+                )
+            }
         }
     }
 }
 
 // MARK: - Hero calorie card
 
+/// Dark hero: daily kcal, macro pills and water / fiber / safety line.
 private struct DailyTargetHeroCard: View {
     let targets: GoalCalculator.Targets
 
+    private var footnote: String {
+        var parts = [
+            "\(L("Woda")) \(targets.waterGoalMl) \(L("ml"))",
+            "\(L("Fiber")) \(targets.fiberGoalGrams) \(L("g"))",
+        ]
+        if targets.hitSafetyFloor {
+            parts.append(L("Tempo dostosowane do bezpiecznego minimum"))
+        }
+        return parts.joined(separator: " · ")
+    }
+
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                .fill(
-                    Tokens.Palette.primary
-                )
-            VStack(spacing: Tokens.Space.xs) {
-                HStack(spacing: 4) {
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 14, weight: .semibold))
-                    Text("Your daily target")
-                        .font(Tokens.Font.footnote.weight(.medium))
-                }
-                .foregroundStyle(.white.opacity(0.85))
-
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("\(targets.dailyCalorieGoalKcal)")
-                        .font(Tokens.Font.archivo(size: 56, weight: 800, width: 115))
-                    Text("kcal")
-                        .font(Tokens.Font.body.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.85))
-                }
-                .foregroundStyle(.white)
-
-                if targets.hitSafetyFloor {
-                    HStack(spacing: 6) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                        Text("Tempo dostosowane do bezpiecznego minimum")
-                    }
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(.white.opacity(0.9))
-                    .padding(.top, 4)
-                }
+        VStack(alignment: .leading, spacing: 14) {
+            MonoLabel(text: L("Your daily target"), onHero: true)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(verbatim: "\(targets.dailyCalorieGoalKcal)")
+                    .font(Tokens.Font.monoNumber(64))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Text(verbatim: "kcal")
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
             }
-            .padding(.vertical, Tokens.Space.lg)
-            .padding(.horizontal, Tokens.Space.lg)
-        }
-        .fitgramShadow(Tokens.Shadow.float)
-    }
-}
-
-// MARK: - Macro split row (3 colored tiles)
-
-private struct MacroSplitRow: View {
-    let targets: GoalCalculator.Targets
-
-    private var totalMacroKcal: Double {
-        let proteinKcal = Double(targets.proteinGoalGrams) * 4
-        let carbsKcal = Double(targets.carbsGoalGrams) * 4
-        let fatKcal = Double(targets.fatGoalGrams) * 9
-        return max(proteinKcal + carbsKcal + fatKcal, 1)
-    }
-
-    private var proteinPct: Int {
-        Int((Double(targets.proteinGoalGrams) * 4 / totalMacroKcal * 100).rounded())
-    }
-    private var carbsPct: Int {
-        Int((Double(targets.carbsGoalGrams) * 4 / totalMacroKcal * 100).rounded())
-    }
-    private var fatPct: Int {
-        Int((Double(targets.fatGoalGrams) * 9 / totalMacroKcal * 100).rounded())
-    }
-
-    var body: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            MacroTile(
-                color: Tokens.Palette.accent,
-                label: "Protein",
-                grams: targets.proteinGoalGrams,
-                percent: proteinPct
+            MonoMacroRow(
+                protein: Double(targets.proteinGoalGrams),
+                carbs: Double(targets.carbsGoalGrams),
+                fat: Double(targets.fatGoalGrams),
+                dark: true
             )
-            MacroTile(
-                color: Tokens.Palette.primary,
-                label: "Carbs",
-                grams: targets.carbsGoalGrams,
-                percent: carbsPct
-            )
-            MacroTile(
-                color: Tokens.Palette.warning,
-                label: "Fat",
-                grams: targets.fatGoalGrams,
-                percent: fatPct
-            )
+            Text(footnote)
+                .font(Tokens.Font.manrope(13, weight: 700))
+                .foregroundStyle(targets.hitSafetyFloor ? Tokens.Mono.hi : Tokens.Mono.heroMuted)
+                .fixedSize(horizontal: false, vertical: true)
         }
-    }
-}
-
-private struct MacroTile: View {
-    let color: Color
-    let label: LocalizedStringKey
-    let grams: Int
-    let percent: Int
-
-    var body: some View {
-        VStack(spacing: Tokens.Space.xs) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(0.12))
-                    .frame(width: 44, height: 44)
-                Text("\(percent)%")
-                    .font(Tokens.Font.footnote.weight(.bold))
-                    .foregroundStyle(color)
-            }
-            Text("\(grams) g")
-                .font(Tokens.Font.body.weight(.semibold))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(label)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.md)
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
         )
-        .fitgramShadow(Tokens.Shadow.card)
-    }
-}
-
-// MARK: - Secondary metrics row (water + fiber)
-
-private struct SecondaryMetricsRow: View {
-    let targets: GoalCalculator.Targets
-
-    var body: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            SecondaryChip(
-                symbol: "drop.fill",
-                color: Tokens.Palette.lime,
-                value: "\(targets.waterGoalMl) \(L("ml"))",
-                label: "Woda"
-            )
-            SecondaryChip(
-                symbol: "leaf.fill",
-                color: Tokens.Palette.success,
-                value: "\(targets.fiberGoalGrams) \(L("g"))",
-                label: "Fiber"
-            )
-        }
-    }
-}
-
-private struct SecondaryChip: View {
-    let symbol: String
-    let color: Color
-    let value: String
-    let label: LocalizedStringKey
-
-    var body: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(0.12))
-                    .frame(width: 36, height: 36)
-                Image(systemName: symbol)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(color)
-            }
-            VStack(alignment: .leading, spacing: 0) {
-                Text(value)
-                    .font(Tokens.Font.body.weight(.semibold))
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(label)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Spacer()
-        }
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .fitgramShadow(Tokens.Shadow.card)
     }
 }
 
@@ -265,7 +134,7 @@ private struct OlaPlanCard: View {
             OlaHeader()
 
             Text(L(recommendations.summary))
-                .font(Tokens.Font.body)
+                .font(Tokens.Font.manrope(14, weight: 600))
                 .foregroundStyle(Tokens.Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -274,7 +143,7 @@ private struct OlaPlanCard: View {
                     ForEach(recommendations.warnings, id: \.self) { warning in
                         HStack(alignment: .top, spacing: 8) {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(Tokens.Palette.warning)
+                                .foregroundStyle(Tokens.Mono.fat)
                                 .frame(width: 16)
                             Text(L(warning))
                                 .font(Tokens.Font.footnote)
@@ -282,10 +151,10 @@ private struct OlaPlanCard: View {
                         }
                     }
                 }
-                .padding(Tokens.Space.sm)
+                .padding(12)
                 .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                        .fill(Tokens.Palette.warning.opacity(0.08))
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Tokens.Mono.track)
                 )
             }
 
@@ -298,7 +167,7 @@ private struct OlaPlanCard: View {
             if !recommendations.nextSteps.isEmpty {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "arrow.right.circle.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .foregroundStyle(Tokens.Mono.strong)
                         .frame(width: 16)
                     Text(L(recommendations.nextSteps))
                         .font(Tokens.Font.footnote)
@@ -308,35 +177,21 @@ private struct OlaPlanCard: View {
                 .padding(.top, 2)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .fitgramShadow(Tokens.Shadow.card)
+        .monoCard(padding: 16)
     }
 }
 
 private struct OlaHeader: View {
     var body: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            ZStack {
-                Circle()
-                    .fill(
-                        Tokens.Palette.accent
-                    )
-                    .frame(width: 32, height: 32)
-                Image(systemName: "sparkles")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
+        HStack(spacing: 10) {
+            MonoIconBox(systemName: "sparkles", style: .dark, size: 36)
             VStack(alignment: .leading, spacing: 0) {
                 Text("Your plan from Ola")
-                    .font(Tokens.Font.body.weight(.semibold))
+                    .font(Tokens.Font.manrope(14, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text("Personalised tips")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
             Spacer()
         }
@@ -352,16 +207,16 @@ private struct OlaTipRow: View {
                 .font(.system(size: 22))
                 .frame(width: 36, height: 36)
                 .background(
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                        .fill(Tokens.Mono.track)
                 )
             VStack(alignment: .leading, spacing: 2) {
                 Text(L(tip.title))
-                    .font(Tokens.Font.body.weight(.semibold))
+                    .font(Tokens.Font.manrope(14, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(L(tip.description))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
@@ -391,11 +246,6 @@ private struct OlaPlanLoadingCard: View {
                 }
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .fitgramShadow(Tokens.Shadow.card)
+        .monoCard(padding: 16)
     }
 }

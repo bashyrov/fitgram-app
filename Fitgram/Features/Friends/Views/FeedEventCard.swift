@@ -15,36 +15,30 @@ struct FeedEventCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(spacing: Tokens.Space.sm) {
-                avatar
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                FriendInitialAvatar(name: event.actorDisplayName, size: 40)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(event.actorDisplayName)
-                        .font(Tokens.Font.bodyEmphasized)
+                        .font(Tokens.Font.manrope(14, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
+                    Text(event.payload)
+                        .font(Tokens.Font.manrope(14, weight: 600))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(relative.localizedString(for: event.createdAt, relativeTo: Date()))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
-                Spacer(minLength: 0)
-                Image(systemName: symbol)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(iconTint)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(iconTint.opacity(0.13)))
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            Text(event.payload)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink)
-                .fixedSize(horizontal: false, vertical: true)
             reactionsRow
         }
-        .padding(Tokens.Space.md)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.78)))
+        .monoCard(padding: 16)
     }
 
     private var reactionsRow: some View {
-        HStack(spacing: Tokens.Space.sm) {
+        HStack(spacing: 6) {
             ForEach(ReactionKind.allCases) { kind in
                 let count = event.reactions[kind] ?? 0
                 let selected = event.myReaction == kind
@@ -53,25 +47,20 @@ struct FeedEventCard: View {
                 } label: {
                     HStack(spacing: 4) {
                         Text(kind.emoji)
+                            .font(.system(size: 14))
                         if count > 0 {
                             Text("\(count)")
-                                .font(Tokens.Font.caption)
+                                .font(Tokens.Font.manrope(12, weight: 800))
                                 .foregroundStyle(Tokens.Palette.ink)
                         }
                     }
-                    .padding(.horizontal, Tokens.Space.sm)
-                    .padding(.vertical, 7)
-                    .background(
-                        Capsule()
-                            .fill(selected ? Tokens.Palette.primarySoft : Tokens.Palette.surface.opacity(0.82))
-                    )
+                    .padding(.horizontal, 12)
+                    .frame(height: 34)
+                    .background(Capsule().fill(selected ? Tokens.Mono.track : Color.clear))
                     .overlay(
-                        Capsule()
-                            .stroke(
-                                selected ? Tokens.Palette.primary : .clear,
-                                lineWidth: selected ? 1 : 0
-                            )
+                        Capsule().stroke(selected ? Tokens.Mono.hero : Tokens.Mono.line2, lineWidth: 1)
                     )
+                    .contentShape(Capsule())
                 }
                 .buttonStyle(PressableButtonStyle())
                 .accessibilityLabel(Text(kind.label))
@@ -83,18 +72,6 @@ struct FeedEventCard: View {
 
     private var initial: String {
         event.actorDisplayName.first.map { String($0).uppercased() } ?? "?"
-    }
-
-    private var avatar: some View {
-        Text(initial)
-            .font(Tokens.Font.manrope(16, weight: 800))
-            .foregroundStyle(Tokens.Palette.onPrimary)
-            .frame(width: 42, height: 42)
-            .background(
-                Circle().fill(
-                    Tokens.Palette.primary
-                )
-            )
     }
 
     private var iconTint: Color {

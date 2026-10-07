@@ -14,20 +14,35 @@ struct AchievementDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                VStack(spacing: Tokens.Space.lg) {
-                    badge
+            ScrollView {
+                VStack(spacing: 14) {
+                    MonoAchievementGlyph(
+                        definition: definition, isEarned: isEarned, size: 140, radius: 44, symbolSize: 60
+                    )
                     Text(definition.title)
-                        .font(Tokens.Font.title3)
+                        .font(Tokens.Font.monoDisplay(30))
+                        .textCase(.uppercase)
                         .foregroundStyle(Tokens.Palette.ink)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(definition.summary)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .font(Tokens.Font.manrope(14, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .lineSpacing(3)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                     statusLine
-                    if isEarned, let renderedImage {
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 24)
+                .padding(.top, 30)
+                .padding(.bottom, 20)
+            }
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if isEarned, let renderedImage {
+                    MonoBottomBar {
                         ShareLink(
                             item: renderedImage,
                             preview: SharePreview(
@@ -35,23 +50,16 @@ struct AchievementDetailSheet: View {
                                 image: renderedImage
                             )
                         ) {
-                            HStack(spacing: Tokens.Space.sm) {
+                            HStack(spacing: 8) {
                                 Image(systemName: "square.and.arrow.up")
+                                    .font(.system(size: 15, weight: .bold))
                                 Text("Udostępnij odznakę")
-                                    .font(Tokens.Font.bodyEmphasized)
+                                    .lineLimit(1)
                             }
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, Tokens.Space.md)
-                            .background(Capsule().fill(Tokens.Palette.primary))
                         }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, Tokens.Space.lg)
+                        .buttonStyle(MonoButtonStyle(kind: .dark))
                     }
-                    Spacer(minLength: 0)
                 }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
             }
             .task(id: definition.id) {
                 guard isEarned else { return }
@@ -65,28 +73,29 @@ struct AchievementDetailSheet: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Close"), action: onDismiss)
                 }
             }
         }
     }
 
-    private var badge: some View {
-        AchievementMedallion(definition: definition, isEarned: isEarned, size: 136)
-    }
-
-    @ViewBuilder
+    /// 30 pt track pill: "Zdobyte <date>" or "Jeszcze niezdobyte".
     private var statusLine: some View {
-        if let earnedAt {
-            Text(String.localizedStringWithFormat(L("Zdobyte %@"), Self.dateFormatter.string(from: earnedAt)))
-                .font(Tokens.Font.subheadline)
-                .foregroundStyle(Tokens.Palette.primary)
-        } else {
-            Text("Jeszcze niezdobyte")
-                .font(Tokens.Font.subheadline)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+        Group {
+            if let earnedAt {
+                Text(String.localizedStringWithFormat(L("Zdobyte %@"), Self.dateFormatter.string(from: earnedAt)))
+                    .foregroundStyle(Tokens.Palette.ink)
+            } else {
+                Text("Jeszcze niezdobyte")
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
         }
+        .font(Tokens.Font.manrope(13, weight: 800))
+        .lineLimit(1)
+        .padding(.horizontal, 12)
+        .frame(height: 30)
+        .background(Capsule().fill(Tokens.Mono.track))
     }
 
     private static var dateFormatter: DateFormatter {

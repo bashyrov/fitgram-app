@@ -62,88 +62,59 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                backgroundOrnament
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: Tokens.Space.lg) {
-                            identityCard
-                            profilePulseSection
-                            subscriptionStatusCard
-                            if let statsSummary {
-                                journeyHero(summary: statsSummary)
-                                    .id("journey-anchor")
-                            }
-                            if let user {
-                                goalsGroupedSystem(user: user)
-                            }
-                            if !earnedAchievements.isEmpty {
-                                achievementsRail
-                            }
-                            if let heatmapSnapshot {
-                                ActivityHeatmapCard(snapshot: heatmapSnapshot) { day in
-                                    selectedHeatmapDay = HeatmapDay(date: day)
-                                }
-                            }
-                            footer
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        profileHeader
+                        identityCard
+                            .padding(.top, 14)
+                        profilePulseSection
+                        subscriptionStatusCard
+                        if let user {
+                            goalsGroupedSystem(user: user)
                         }
-                        .padding(.horizontal, Tokens.Space.screenPadding)
-                        .padding(.vertical, Tokens.Space.lg)
-                        .id(accentRaw)
+                        if !earnedAchievements.isEmpty {
+                            achievementsRail
+                        }
+                        if let heatmapSnapshot {
+                            heatmapSection(snapshot: heatmapSnapshot)
+                        }
+                        if let statsSummary {
+                            journeyHero(summary: statsSummary)
+                                .id("journey-anchor")
+                        }
+                        shortcutsSection
+                        footer
                     }
-                    .task(id: user?.remoteID) {
-                        await loadAchievements()
-                        heatmapSnapshot = heatmapService.snapshot()
-                        refreshChallenges()
-                        if let remoteID = user?.remoteID {
-                            statsSummary = statsService.summary(for: remoteID)
-                        }
-                        #if DEBUG
-                        if DebugBypass.initialScroll == "journey" {
-                            try? await Task.sleep(nanoseconds: 600_000_000)
-                            withAnimation { proxy.scrollTo("journey-anchor", anchor: .top) }
-                        }
-                        try? await Task.sleep(nanoseconds: 800_000_000)
-                        switch DebugBypass.initialSheet {
-                        case "streak-share": isShareStreakPresented = true
-                        case "weight-log": isWeightLogPresented = true
-                        default: break
-                        }
-                        #endif
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.bottom, Tokens.Space.xl)
+                    .id(accentRaw)
+                }
+                .scrollIndicators(.hidden)
+                .task(id: user?.remoteID) {
+                    await loadAchievements()
+                    heatmapSnapshot = heatmapService.snapshot()
+                    refreshChallenges()
+                    if let remoteID = user?.remoteID {
+                        statsSummary = statsService.summary(for: remoteID)
                     }
+                    #if DEBUG
+                    if DebugBypass.initialScroll == "journey" {
+                        try? await Task.sleep(nanoseconds: 600_000_000)
+                        withAnimation { proxy.scrollTo("journey-anchor", anchor: .top) }
+                    }
+                    try? await Task.sleep(nanoseconds: 800_000_000)
+                    switch DebugBypass.initialSheet {
+                    case "streak-share": isShareStreakPresented = true
+                    case "weight-log": isWeightLogPresented = true
+                    default: break
+                    }
+                    #endif
                 }
             }
+            .background(Tokens.Palette.background.ignoresSafeArea())
             .navigationTitle(Text(L("Profil")))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        SettingsView(
-                            user: user,
-                            streak: streak,
-                            exportService: exportService,
-                            csvExportService: csvExportService,
-                            bundleExportService: bundleExportService,
-                            mealSearchService: mealSearchService,
-                            mealRepository: mealRepository,
-                            photoStore: photoStore,
-                            streakCalendarService: streakCalendarService,
-                            calibrationService: calibrationService,
-                            privacyStore: privacyStore,
-                            weightService: weightService,
-                            workoutService: workoutService,
-                            onSignOut: onSignOut,
-                            onDeleteAccount: onDeleteAccount,
-                            onRestartOnboarding: onRestartOnboarding
-                        )
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.ink)
-                    }
-                    .accessibilityLabel(Text(L("Ustawienia")))
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $isWeightLogPresented) {
                 if let user {
                     WeightLogView(
@@ -201,6 +172,67 @@ struct ProfileView: View {
         }
     }
 
+    // MARK: - Header + shared chrome
+
+    /// Mockup header: big italic "PROFIL" with an outlined gear button.
+    private var profileHeader: some View {
+        HStack(alignment: .center, spacing: 10) {
+            Text(L("Profil"))
+                .font(Tokens.Font.monoDisplay(30))
+                .textCase(.uppercase)
+                .foregroundStyle(Tokens.Palette.ink)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 8)
+            NavigationLink {
+                settingsDestination
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .frame(width: 44, height: 44)
+                    .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text(L("Ustawienia")))
+        }
+        .padding(.horizontal, 6)
+        .padding(.top, 10)
+    }
+
+    private var settingsDestination: some View {
+        SettingsView(
+            user: user,
+            streak: streak,
+            exportService: exportService,
+            csvExportService: csvExportService,
+            bundleExportService: bundleExportService,
+            mealSearchService: mealSearchService,
+            mealRepository: mealRepository,
+            photoStore: photoStore,
+            streakCalendarService: streakCalendarService,
+            calibrationService: calibrationService,
+            privacyStore: privacyStore,
+            weightService: weightService,
+            workoutService: workoutService,
+            onSignOut: onSignOut,
+            onDeleteAccount: onDeleteAccount,
+            onRestartOnboarding: onRestartOnboarding
+        )
+    }
+
+    /// `sec(n, title, trailing)` — 28 pt above, 12 pt below the hairline, +6 pt text inset.
+    private func profileSectionHeader(number: String, title: String, caption: String? = nil) -> some View {
+        MonoSectionHeader(number: number, title: title) {
+            if let caption {
+                MonoLabel(text: caption)
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.top, 12)
+        .padding(.bottom, 12)
+    }
+
     // MARK: - Background ornament
 
     private var backgroundOrnament: some View {
@@ -210,222 +242,123 @@ struct ProfileView: View {
     // MARK: - Identity hero
 
     private var identityCard: some View {
-        ZStack(alignment: .topTrailing) {
-            identityCardBackground
-            VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-                HStack(alignment: .center, spacing: Tokens.Space.md) {
-                    avatarHero
-                    VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                        Text(displayName)
-                            .font(Tokens.Font.archivo(size: 31, weight: 800, width: 115))
-                            .foregroundStyle(Tokens.Mono.onHero)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.68)
-                        profileIdentityPills
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .center, spacing: 14) {
+                avatarHero
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(displayName)
+                        .font(Tokens.Font.monoDisplay(26))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                    if entitlementsStore.current.isPremium {
+                        premiumBadge
                     }
-                    Spacer(minLength: 0)
+                    Text(vibeLine)
+                        .font(Tokens.Font.manrope(13, weight: 600))
+                        .foregroundStyle(Tokens.Mono.heroMuted)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-
-                Text(vibeLine)
-                    .font(Tokens.Font.manrope(14, weight: 700))
-                    .foregroundStyle(Tokens.Mono.onHero)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, Tokens.Space.md)
-                    .padding(.vertical, 11)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(Tokens.Mono.heroLine)
-                    )
-
-                profileHeroStats
+                Spacer(minLength: 0)
             }
-            .padding(Tokens.Space.lg)
+            profileHeroStats
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
     }
 
-    private var identityCardBackground: some View {
-        RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
-            .fill(Tokens.Mono.hero)
-    }
-
-    private var profileIdentityPills: some View {
-        HStack(spacing: Tokens.Space.xs) {
-            profileIdentityPill(symbol: "envelope.fill", text: emailLine, tint: Tokens.Mono.heroMuted)
-            if entitlementsStore.current.isPremium {
-                profileIdentityPill(symbol: "checkmark.seal.fill", text: L("PREMIUM"), tint: Tokens.Mono.hi)
-            }
-        }
-    }
-
-    private func profileIdentityPill(symbol: String, text: String, tint: Color) -> some View {
-        HStack(spacing: 5) {
-            Image(systemName: symbol)
-                .font(.system(size: 10, weight: .bold))
-            Text(text)
-                .font(Tokens.Font.manrope(12, weight: 700))
-                .lineLimit(1)
-                .minimumScaleFactor(0.72)
-        }
-        .foregroundStyle(tint)
-        .padding(.horizontal, 9)
-        .frame(height: 28)
-        .background(Capsule().fill(Tokens.Mono.heroLine))
+    private var premiumBadge: some View {
+        Text(L("PREMIUM"))
+            .font(Tokens.Font.manrope(10, weight: 800))
+            .tracking(1)
+            .foregroundStyle(Tokens.Mono.onHi)
+            .padding(.horizontal, 8)
+            .frame(height: 22)
+            .background(Capsule().fill(Tokens.Mono.hi))
     }
 
     private var profileHeroStats: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            profileHeroStat(
-                title: L("Seria"),
-                value: "\(streak?.currentLength ?? 0)",
-                symbol: "flame.fill",
-                tint: Tokens.Mono.heroMuted
-            )
-            profileHeroStat(
-                title: L("Odznaki"),
+        HStack(alignment: .top, spacing: 10) {
+            MonoStat(label: L("Seria"), value: "\(streak?.currentLength ?? 0)", unit: L("dni"), dark: true)
+            MonoStat(
+                label: L("Odznaki"),
                 value: "\(earnedAchievements.count)",
-                symbol: "trophy.fill",
-                tint: Tokens.Mono.heroMuted
+                unit: "/ \(AchievementCatalog.all.count)",
+                dark: true
             )
-            profileHeroStat(
-                title: L("Waga"),
-                value: weightAuxiliary ?? "—",
-                symbol: "scalemass.fill",
-                tint: Tokens.Mono.heroMuted
-            )
+            MonoStat(label: L("Waga"), value: heroWeightValue, unit: user?.weightKg == nil ? "" : "kg", dark: true)
+        }
+        .padding(.top, 14)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Tokens.Mono.heroLine)
+                .frame(height: 1)
         }
     }
 
-    private func profileHeroStat(title: String, value: String, symbol: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack(spacing: 5) {
-                Image(systemName: symbol)
-                    .font(.system(size: 10, weight: .bold))
-                Text(title)
-                    .font(Tokens.Font.manrope(10, weight: 800))
-                    .textCase(.uppercase)
-                    .tracking(0.5)
-            }
-            .foregroundStyle(tint)
-            Text(value)
-                .font(Tokens.Font.monoNumber(24))
-                .foregroundStyle(Tokens.Mono.onHero)
-                .lineLimit(1)
-                .minimumScaleFactor(0.68)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Tokens.Space.sm)
-        .frame(height: 74)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Tokens.Mono.heroLine)
-        )
+    private var heroWeightValue: String {
+        guard let weight = user?.weightKg else { return "—" }
+        return String(format: "%.1f", weight).replacingOccurrences(of: ".", with: ",")
     }
 
     private var avatarHero: some View {
-        ZStack(alignment: .topTrailing) {
+        ZStack(alignment: .bottomTrailing) {
             ZStack {
                 Circle()
                     .fill(Tokens.Mono.hi)
-                    .frame(width: 88, height: 88)
+                    .frame(width: 68, height: 68)
                 if let user, user.avatarFilename != nil {
-                    AvatarPicker(user: user, store: AvatarStore(), size: 80)
+                    AvatarPicker(user: user, store: AvatarStore(), size: 68)
                 } else {
-                    Circle()
-                        .fill(Tokens.Palette.surface)
-                        .frame(width: 80, height: 80)
-                        .overlay(avatarPlaceholder)
+                    Text(initial)
+                        .font(Tokens.Font.monoNumber(28))
+                        .foregroundStyle(Tokens.Mono.onHi)
                 }
             }
-            if let current = streak?.currentLength, current > 0 {
-                streakBadge(count: current)
-                    .offset(x: 6, y: -3)
+            if user?.avatarFilename != nil {
+                Image(systemName: "camera")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.hero)
+                    .frame(width: 26, height: 26)
+                    .background(Circle().fill(Tokens.Mono.onHero))
+                    .offset(x: 2, y: 2)
+                    .allowsHitTesting(false)
             }
         }
-        .frame(width: 78, height: 78)
+        .frame(width: 68, height: 68)
     }
 
-    /// Avatar placeholder — uses an SF Symbol matched to the user's
-    /// biological sex when set, otherwise falls back to the display-name
-    /// initial. Keeps the screen friendly even before the user uploads
-    /// a photo.
-    @ViewBuilder
-    private var avatarPlaceholder: some View {
-        Text(initial)
-            .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-            .foregroundStyle(
-                Tokens.Palette.primary
-            )
-    }
-
-    private func streakBadge(count: Int) -> some View {
-        HStack(spacing: 3) {
-            Image(systemName: "flame.fill")
-                .font(.system(size: 10, weight: .bold))
-            Text(String.localizedStringWithFormat(L("%lld"), count))
-                .font(Tokens.Font.manrope(12, weight: 800))
-                .monospacedDigit()
-        }
-        .foregroundStyle(.white)
-        .padding(.horizontal, 7)
-        .padding(.vertical, 3)
-        .background(
-            Capsule()
-                .fill(
-                    Tokens.Palette.warning
-                )
-        )
-        .overlay(
-            Capsule()
-                .stroke(Tokens.Palette.surface, lineWidth: 2)
-        )
-        .accessibilityLabel(Text(String.localizedStringWithFormat(L("Seria %lld dni"), count)))
-    }
-
-    private var identityBackdrop: some View {
-        ZStack {
-            Circle()
-                .fill(Tokens.Palette.primary.opacity(0.18))
-                .frame(width: 160, height: 160)
-                .blur(radius: 50)
-                .offset(x: -120, y: -40)
-            Circle()
-                .fill(Tokens.Palette.accent.opacity(0.20))
-                .frame(width: 180, height: 180)
-                .blur(radius: 60)
-                .offset(x: 130, y: 50)
-        }
-        .allowsHitTesting(false)
-    }
+    // MARK: - 01 Centrum profilu
 
     private var profilePulseSection: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(L("Centrum profilu"))
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Najważniejsze skróty i status konta"))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-                accountBadge
-            }
-
+        VStack(alignment: .leading, spacing: 0) {
+            profileSectionHeader(
+                number: "01",
+                title: L("Centrum profilu"),
+                caption: TL(
+                    pl: "Najważniejsze skróty",
+                    en: "Key shortcuts",
+                    uk: "Головні ярлики",
+                    ru: "Главные ярлыки",
+                    es: "Atajos clave"
+                )
+            )
             LazyVGrid(
                 columns: [
-                    GridItem(.flexible(), spacing: Tokens.Space.sm),
-                    GridItem(.flexible(), spacing: Tokens.Space.sm),
+                    GridItem(.flexible(), spacing: 8),
+                    GridItem(.flexible(), spacing: 8),
                 ],
-                spacing: Tokens.Space.sm
+                spacing: 8
             ) {
                 pulseTile(
                     title: L("Waga"),
                     value: weightAuxiliary ?? L("Dodaj"),
-                    symbol: "scalemass.fill",
-                    tint: Tokens.Palette.success,
+                    symbol: "scalemass",
                     action: { isWeightLogPresented = true }
                 )
                 .disabled(user == nil)
@@ -433,8 +366,7 @@ struct ProfileView: View {
                 pulseTile(
                     title: L("Wyzwania"),
                     value: challengesAuxiliary ?? L("Start"),
-                    symbol: "flag.checkered",
-                    tint: Tokens.Palette.accent,
+                    symbol: "trophy",
                     action: {
                         refreshChallenges()
                         isChallengesPresented = true
@@ -447,111 +379,49 @@ struct ProfileView: View {
                         title: L("Seria"),
                         value: String.localizedStringWithFormat(L("%lld dni"), streak?.currentLength ?? 0),
                         symbol: "square.and.arrow.up",
-                        tint: Tokens.Palette.warning,
                         action: { isShareStreakPresented = true }
                     )
                 }
 
                 NavigationLink {
-                    SettingsView(
-                        user: user,
-                        streak: streak,
-                        exportService: exportService,
-                        csvExportService: csvExportService,
-                        bundleExportService: bundleExportService,
-                        mealSearchService: mealSearchService,
-                        mealRepository: mealRepository,
-                        photoStore: photoStore,
-                        streakCalendarService: streakCalendarService,
-                        calibrationService: calibrationService,
-                        privacyStore: privacyStore,
-                        weightService: weightService,
-                        workoutService: workoutService,
-                        onSignOut: onSignOut,
-                        onDeleteAccount: onDeleteAccount,
-                        onRestartOnboarding: onRestartOnboarding
-                    )
+                    settingsDestination
                 } label: {
-                    pulseTileContent(
-                        title: L("Ustawienia"),
-                        value: L("Konto"),
-                        symbol: "gearshape.fill",
-                        tint: Tokens.Palette.primary
-                    )
+                    pulseTileContent(title: L("Ustawienia"), value: L("Konto"), symbol: "gearshape")
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.86))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(.white.opacity(0.10), lineWidth: 0.35)
-        )
-        .fitgramShadow(Tokens.Shadow.card)
-    }
-
-    private var accountBadge: some View {
-        Text(entitlementsStore.current.isPremium ? "PRO" : "FREE")
-            .font(Tokens.Font.manrope(11, weight: 800))
-            .tracking(1.2)
-            .foregroundStyle(entitlementsStore.current.isPremium ? Tokens.Palette.primary : Tokens.Palette.inkMuted)
-            .padding(.horizontal, 10)
-            .frame(height: 28)
-            .background(
-                Capsule()
-                    .fill(
-                        entitlementsStore.current.isPremium ? Tokens.Palette.primarySoft : Tokens.Palette.surfaceMuted)
-            )
     }
 
     private func pulseTile(
         title: String,
         value: String,
         symbol: String,
-        tint: Color,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            pulseTileContent(title: title, value: value, symbol: symbol, tint: tint)
+            pulseTileContent(title: title, value: value, symbol: symbol)
         }
         .buttonStyle(.plain)
     }
 
-    private func pulseTileContent(title: String, value: String, symbol: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(tint)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(tint.opacity(0.14)))
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            Text(value)
-                .font(Tokens.Font.manrope(20, weight: 800))
+    private func pulseTileContent(title: String, value: String, symbol: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoIconBox(systemName: symbol, style: .track, size: 36)
+            Text(title)
+                .font(Tokens.Font.manrope(14, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
-                .minimumScaleFactor(0.72)
-            Text(title)
-                .font(Tokens.Font.manrope(11, weight: 800))
-                .tracking(0.5)
-                .textCase(.uppercase)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .minimumScaleFactor(0.8)
+            Text(value)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.md)
-        .frame(height: 132)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Tokens.Palette.surfaceMuted.opacity(0.72))
-        )
+        .monoTile()
+        .contentShape(Rectangle())
     }
 
     /// "Current vibe" line under name + email. Reads the user's main
@@ -601,151 +471,82 @@ struct ProfileView: View {
 
     // MARK: - Subscription card
 
-    /// Premium → "passport stamp" feel with rounded primary-soft canvas,
-    /// stamp-style border and seal glyph.
-    /// Free → gradient-canvas teaser with sparkle particles + a tappable
-    /// CTA into the paywall. With payments disabled the whole subscription
-    /// surface is hidden — Premium branding only shows when there is
-    /// actually something to sell.
+    /// Mockup: one light card — accent star box, "Fitgram Premium", status line.
+    /// Free users get the same row as a tappable paywall entry. With payments
+    /// disabled the whole subscription surface is hidden.
     @ViewBuilder
     private var subscriptionStatusCard: some View {
         if AppConfig.isPaymentsEnabled {
-            if entitlementsStore.current.isPremium {
-                premiumPassportCard
-            } else {
-                freePremiumTeaser
+            Group {
+                if entitlementsStore.current.isPremium {
+                    premiumPassportCard
+                } else {
+                    freePremiumTeaser
+                }
             }
+            .padding(.top, 10)
         }
     }
 
     private var premiumPassportCard: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            ZStack {
-                // Tilted "stamp" outline
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .stroke(
-                        Tokens.Palette.primary.opacity(0.35),
-                        style: StrokeStyle(lineWidth: 1.5, dash: [4, 3])
-                    )
-                    .rotationEffect(.degrees(-2))
-                    .padding(-4)
-                    .allowsHitTesting(false)
-                HStack(spacing: Tokens.Space.md) {
-                    ZStack {
-                        Circle()
-                            .stroke(Tokens.Palette.primary.opacity(0.5), lineWidth: 2)
-                            .frame(width: 56, height: 56)
-                        Circle()
-                            .fill(Tokens.Palette.primary.opacity(0.15))
-                            .frame(width: 50, height: 50)
-                        Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 26, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    .rotationEffect(.degrees(-6))
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(L("PREMIUM"))
-                            .font(Tokens.Font.manrope(10, weight: 800))
-                            .tracking(2.0)
-                            .foregroundStyle(Tokens.Palette.primary)
-                        Text(L("Fitgram Premium"))
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text(L("Active · full access"))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
-                }
-            }
-        }
+        subscriptionRow(
+            symbol: "star",
+            title: L("Fitgram Premium"),
+            subtitle: L("Active · full access"),
+            showsChevron: false
+        )
     }
 
     private var freePremiumTeaser: some View {
         Button {
             paywallCoordinator.present(.manual)
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(
-                        Tokens.Palette.primarySoft
-                    )
-                sparkleParticles
-                HStack(spacing: Tokens.Space.md) {
-                    ZStack {
-                        Circle()
-                            .fill(
-                                Tokens.Palette.primary
-                            )
-                            .frame(width: 48, height: 48)
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(L("Odblokuj pełną Olę"))
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text(L("7 dni za darmo · bez limitów · Ola AI"))
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                .padding(Tokens.Space.lg)
-            }
-            .fitgramShadow(Tokens.Shadow.card)
+            subscriptionRow(
+                symbol: "sparkles",
+                title: L("Odblokuj pełną Olę"),
+                subtitle: L("7 dni za darmo · bez limitów · Ola AI"),
+                showsChevron: true
+            )
         }
         .buttonStyle(.plain)
     }
 
-    /// Static sparkle scatter — 8 SF Symbol "sparkle" glyphs at decorative
-    /// offsets and opacities. Cheap, plays well with screenshot capture.
-    private var sparkleParticles: some View {
-        ZStack {
-            sparkle(size: 10, x: -120, y: -16, opacity: 0.45)
-            sparkle(size: 8, x: 96, y: -22, opacity: 0.35)
-            sparkle(size: 14, x: 140, y: 6, opacity: 0.55)
-            sparkle(size: 7, x: -86, y: 24, opacity: 0.30)
-            sparkle(size: 9, x: 40, y: -28, opacity: 0.40)
-            sparkle(size: 11, x: -20, y: 28, opacity: 0.45)
-            sparkle(size: 6, x: 130, y: -32, opacity: 0.30)
-            sparkle(size: 10, x: -140, y: 14, opacity: 0.35)
+    private func subscriptionRow(symbol: String, title: String, subtitle: String, showsChevron: Bool) -> some View {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: symbol, style: .accent, size: 40)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(title)
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(subtitle)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            if showsChevron {
+                MonoChevron()
+            }
         }
-        .allowsHitTesting(false)
-    }
-
-    private func sparkle(size: CGFloat, x: CGFloat, y: CGFloat, opacity: Double) -> some View {
-        Image(systemName: "sparkle")
-            .font(.system(size: size, weight: .bold))
-            .foregroundStyle(Tokens.Palette.primary.opacity(opacity))
-            .offset(x: x, y: y)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
+        .contentShape(Rectangle())
     }
 
     // MARK: - Achievements rail
 
-    /// Horizontal rail of the user's most-recently-unlocked badges. Each
-    /// tile is 100pt square + 80pt symbol disc + title. Tap → existing
-    /// `AchievementDetailSheet`. Caps at 5 latest.
+    /// 03 — row of 76 pt badge tiles: earned (dark, newest first) then a few
+    /// locked ones (track). Tap → existing `AchievementDetailSheet`.
     private var achievementsRail: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(L("Twoje odznaki"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                Text(
-                    String.localizedStringWithFormat(
-                        L("%lld / %lld"), earnedAchievements.count, AchievementCatalog.all.count)
-                )
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            profileSectionHeader(
+                number: "03",
+                title: L("Twoje odznaki"),
+                caption: String.localizedStringWithFormat(
+                    L("%lld / %lld"), earnedAchievements.count, AchievementCatalog.all.count)
+            )
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: Tokens.Space.md) {
+                HStack(spacing: 8) {
                     ForEach(latestAchievements, id: \.id) { item in
                         Button {
                             selectedAchievement = AchievementSelection(
@@ -755,20 +556,26 @@ struct ProfileView: View {
                             )
                             Haptics.light()
                         } label: {
-                            achievementRailTile(definition: item.definition, earnedAt: item.earnedAt)
+                            achievementRailTile(definition: item.definition, isEarned: true)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    ForEach(lockedAchievementsPreview, id: \.id) { definition in
+                        Button {
+                            selectedAchievement = AchievementSelection(
+                                id: definition.id,
+                                definition: definition,
+                                earnedAt: nil
+                            )
+                            Haptics.light()
+                        } label: {
+                            achievementRailTile(definition: definition, isEarned: false)
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.vertical, 2)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .fill(Tokens.Palette.surface)
-        )
-        .fitgramShadow(Tokens.Shadow.card)
     }
 
     private struct LatestAchievement: Identifiable {
@@ -792,135 +599,117 @@ struct ProfileView: View {
             .map { $0 }
     }
 
-    private func achievementRailTile(definition: AchievementDefinition, earnedAt: Date) -> some View {
-        VStack(spacing: 8) {
-            AchievementMedallion(definition: definition, isEarned: true, size: 82, showsLock: false)
-            Text(definition.title)
-                .font(Tokens.Font.manrope(11, weight: 700))
-                .foregroundStyle(Tokens.Palette.ink)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .frame(width: 100, alignment: .center)
+    private var lockedAchievementsPreview: [AchievementDefinition] {
+        let earnedIDs = Set(earnedAchievements.map(\.kind))
+        let remaining = max(0, 5 - latestAchievements.count)
+        guard remaining > 0 else { return [] }
+        let locked = AchievementCatalog.all
+            .filter { !earnedIDs.contains($0.id) }
+            .sorted { $0.order < $1.order }
+        return Array(locked.prefix(remaining))
+    }
+
+    private func achievementRailTile(definition: AchievementDefinition, isEarned: Bool) -> some View {
+        Image(systemName: definition.symbol)
+            .font(.system(size: 26, weight: .semibold))
+            .foregroundStyle(isEarned ? Tokens.Mono.hi : Tokens.Mono.muted)
+            .frame(width: 76, height: 76)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.card, style: .continuous)
+                    .fill(isEarned ? Tokens.Mono.hero : Tokens.Mono.track)
+            )
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(definition.title))
+            .accessibilityHint(Text(definition.summary))
+    }
+
+    // MARK: - 04 Aktywność 90 dni
+
+    private func heatmapSection(snapshot: ActivityHeatmap.Snapshot) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            profileSectionHeader(
+                number: "04",
+                title: TL(
+                    pl: "Aktywność 90 dni",
+                    en: "90-day activity",
+                    uk: "Активність за 90 днів",
+                    ru: "Активность за 90 дней",
+                    es: "Actividad de 90 días"
+                ),
+                caption: snapshot.longestActiveRun >= 2
+                    ? String.localizedStringWithFormat(L("Best: %lld days in a row"), snapshot.longestActiveRun)
+                    : nil
+            )
+            ActivityHeatmapCard(snapshot: snapshot) { day in
+                selectedHeatmapDay = HeatmapDay(date: day)
+            }
         }
-        .frame(width: 100, height: 130)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(definition.title))
-        .accessibilityHint(Text(definition.summary))
     }
 
     // MARK: - Twoja podróż (journey hero)
 
-    /// "Your journey" lifetime block. Combines the old statsRow trio and
-    /// ProfileStatsCard into a single section with a 2×2 stat grid and
-    /// gradient icon chips.
+    /// 05 — 2×2 lifetime tiles (label + italic number) and a muted footnote.
     private func journeyHero(summary: ProfileStatsService.Summary) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                journeyHeader(summary: summary)
-                journeyGrid(summary: summary)
+        VStack(alignment: .leading, spacing: 0) {
+            profileSectionHeader(
+                number: "05",
+                title: L("Twoja podróż"),
+                caption: summary.longestStreakLength > 0
+                    ? String.localizedStringWithFormat(L("%lld days record"), summary.longestStreakLength)
+                    : nil
+            )
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 8),
+                    GridItem(.flexible(), spacing: 8),
+                ],
+                spacing: 8
+            ) {
+                journeyTile(value: "\(summary.totalMeals)", caption: L("posiłków"))
+                journeyTile(value: Self.kcalString(summary.totalCaloriesKcal), caption: L("kcal łącznie"))
+                journeyTile(value: "\(summary.longestStreakLength)", caption: L("najdłuższa seria"))
+                journeyTile(value: "\(summary.totalRecipeCooks)", caption: L("ugotowanych przepisów"))
+            }
+            if let footnote = journeyFootnote(summary: summary) {
+                Text(footnote)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 6)
+                    .padding(.top, 10)
             }
         }
     }
 
-    private func journeyHeader(summary: ProfileStatsService.Summary) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(L("Twoja podróż"))
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-            if summary.longestStreakLength > 0 {
-                HStack(spacing: 4) {
-                    Image(systemName: "trophy.fill")
-                        .font(.system(size: 10, weight: .bold))
-                    Text(String.localizedStringWithFormat(L("%lld days record"), summary.longestStreakLength))
-                        .font(Tokens.Font.manrope(11, weight: 700))
-                }
-                .foregroundStyle(Tokens.Palette.warning)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(
-                    Capsule().fill(Tokens.Palette.warning.opacity(0.15))
-                )
-            }
+    private func journeyFootnote(summary: ProfileStatsService.Summary) -> String? {
+        var parts: [String] = []
+        if let memberSince = summary.memberSince, let days = ProfileStatsCard.daysSince(memberSince) {
+            parts.append(ProfileStatsCard.daysWithUsLabel(days))
         }
-    }
-
-    private func journeyGrid(summary: ProfileStatsService.Summary) -> some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
-            ],
-            spacing: Tokens.Space.sm
-        ) {
-            journeyTile(
-                symbol: "fork.knife",
-                value: "\(summary.totalMeals)",
-                caption: L("posiłków"),
-                gradient: [Tokens.Palette.primary, Tokens.Palette.accent]
-            )
-            journeyTile(
-                symbol: "flame.fill",
-                value: Self.kcalString(summary.totalCaloriesKcal),
-                caption: L("kcal łącznie"),
-                gradient: [Tokens.Palette.warning, Tokens.Palette.error]
-            )
-            journeyTile(
-                symbol: "trophy.fill",
-                value: "\(summary.longestStreakLength)",
-                caption: L("najdłuższa seria"),
-                gradient: [Tokens.Palette.warning, Tokens.Palette.accent]
-            )
-            journeyTile(
-                symbol: "book.fill",
-                value: "\(summary.totalRecipeCooks)",
-                caption: L("ugotowanych przepisów"),
-                gradient: [Tokens.Palette.success, Tokens.Palette.primary]
+        if let avg = summary.averageMealRating {
+            parts.append(String.localizedStringWithFormat(L("Average meal rating: ⭐ %.1f / 5"), avg))
+        }
+        if summary.totalWaterMilliliters > 0 {
+            parts.append(
+                String.localizedStringWithFormat(
+                    L("Water drunk: 💧 %@ L"), ProfileStatsCard.litersString(summary.totalWaterMilliliters))
             )
         }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
-    private func journeyTile(
-        symbol: String,
-        value: String,
-        caption: String,
-        gradient: [Color]
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: gradient,
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 34, height: 34)
-                    .shadow(color: gradient.first?.opacity(0.35) ?? .clear, radius: 6, y: 2)
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(.white)
-            }
+    private func journeyTile(value: String, caption: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: caption)
             Text(value)
-                .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
+                .font(Tokens.Font.monoNumber(24))
                 .foregroundStyle(Tokens.Palette.ink)
-                .minimumScaleFactor(0.6)
                 .lineLimit(1)
-            Text(caption)
-                .font(Tokens.Font.manrope(11, weight: 700))
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .textCase(.uppercase)
-                .tracking(0.4)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
+                .minimumScaleFactor(0.6)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.surfaceMuted)
-        )
+        .monoTile()
     }
 
     /// Formats large kcal totals with thousands separators so "172000"
@@ -934,29 +723,11 @@ struct ProfileView: View {
 
     // MARK: - Goals grouped system
 
-    /// Three GoalsAndTargetsCard sections wrapped in a tight VStack with
-    /// a shared header strip so the three cards read as one connected
-    /// system instead of three separate islands.
+    /// 02 — plan card + profile-data card (each with its own Edit action).
     private func goalsGroupedSystem(user: User) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack(spacing: Tokens.Space.sm) {
-                ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primary.opacity(0.15))
-                        .frame(width: 24, height: 24)
-                    Image(systemName: "target")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-                Text(L("Cele i targety"))
-                    .font(Tokens.Font.manrope(12, weight: 800))
-                    .tracking(1.3)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Tokens.Palette.primary)
-                Spacer()
-            }
-            .padding(.leading, 4)
-            VStack(spacing: Tokens.Space.sm) {
+        VStack(alignment: .leading, spacing: 0) {
+            profileSectionHeader(number: "02", title: L("Cele i targety"))
+            VStack(spacing: 8) {
                 GoalsAndTargetsCard(
                     user: user,
                     userProfileService: userProfileService,
@@ -979,48 +750,53 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: - Quick actions
+    // MARK: - 06 Skróty
 
-    /// Slim "what I want to do" strip. Each row: tinted icon chip on the
-    /// left, title, optional auxiliary value on the right (e.g. current
-    /// weight beside "Waga i trend"), chevron. Higher information density
-    /// than the old layout without feeling cluttered.
-    private var quickActionsSection: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-                sectionHeader("Szybkie akcje", symbol: "bolt.fill", tint: Tokens.Palette.primary)
-                separator
-                quickActionRow(
-                    symbol: "scalemass.fill",
-                    title: L("Waga i trend"),
-                    auxiliary: weightAuxiliary,
-                    tint: Tokens.Palette.success,
-                    action: { isWeightLogPresented = true }
-                )
+    private var shortcutsSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            profileSectionHeader(
+                number: "06",
+                title: TL(pl: "Skróty", en: "Shortcuts", uk: "Ярлики", ru: "Ярлыки", es: "Atajos")
+            )
+            VStack(spacing: 0) {
+                Button {
+                    isWeightLogPresented = true
+                } label: {
+                    MonoRow(icon: "scalemass", title: L("Waga i trend"), sub: weightAuxiliary)
+                }
+                .buttonStyle(.plain)
                 .disabled(user == nil)
-                separator
-                quickActionRow(
-                    symbol: "flag.checkered",
-                    title: L("Wyzwania tygodnia"),
-                    auxiliary: challengesAuxiliary,
-                    tint: Tokens.Palette.accent,
-                    action: {
-                        refreshChallenges()
-                        isChallengesPresented = true
-                    }
-                )
+                MonoRowDivider()
+                Button {
+                    refreshChallenges()
+                    isChallengesPresented = true
+                } label: {
+                    MonoRow(icon: "trophy", title: L("Wyzwania tygodnia"), sub: challengesAuxiliary)
+                }
+                .buttonStyle(.plain)
                 .disabled(user == nil)
                 if (streak?.currentLength ?? 0) > 0 {
-                    separator
-                    quickActionRow(
-                        symbol: "square.and.arrow.up",
-                        title: L("Udostępnij serię"),
-                        auxiliary: "🔥 \(streak?.currentLength ?? 0)",
-                        tint: Tokens.Palette.warning,
-                        action: { isShareStreakPresented = true }
-                    )
+                    MonoRowDivider()
+                    Button {
+                        isShareStreakPresented = true
+                    } label: {
+                        MonoRow(
+                            icon: "square.and.arrow.up",
+                            title: L("Udostępnij serię"),
+                            sub: "🔥 \(streak?.currentLength ?? 0)"
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
+                MonoRowDivider()
+                NavigationLink {
+                    settingsDestination
+                } label: {
+                    MonoRow(icon: "envelope", title: L("Konto Fitgram"), sub: emailLine)
+                }
+                .buttonStyle(.plain)
             }
+            .monoRowsCard()
         }
     }
 
@@ -1037,42 +813,6 @@ struct ProfileView: View {
         return "\(completed) / \(total)"
     }
 
-    private func quickActionRow(
-        symbol: String,
-        title: String,
-        auxiliary: String?,
-        tint: Color,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(tint.opacity(0.15))
-                        .frame(width: 36, height: 36)
-                    Image(systemName: symbol)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(tint)
-                }
-                Text(title)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-                if let auxiliary {
-                    Text(auxiliary)
-                        .font(Tokens.Font.manrope(13, weight: 700))
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .monospacedDigit()
-                }
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            .padding(.vertical, 6)
-        }
-        .buttonStyle(.plain)
-    }
-
     // MARK: - Footer
 
     /// Small centred footer at the bottom of the scroll. App version +
@@ -1080,10 +820,11 @@ struct ProfileView: View {
     /// Bundle.main.infoDictionary so it stays accurate.
     private var footer: some View {
         Text(Self.versionFooterString)
-            .font(Tokens.Font.manrope(11, weight: 500))
-            .foregroundStyle(Tokens.Palette.inkSubtle)
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
-            .padding(.top, Tokens.Space.md)
+            .padding(.top, 22)
     }
 
     private static var versionFooterString: String {
@@ -1100,39 +841,6 @@ struct ProfileView: View {
             calorieGoal: user?.dailyCalorieGoalKcal ?? 2100,
             proteinGoal: user?.proteinGoalGrams ?? 120
         )
-    }
-
-    /// Subtle inset divider — softer than full-bleed `Divider` since
-    /// the tinted icon chips create their own visual breaks.
-    private var separator: some View {
-        Rectangle()
-            .fill(Tokens.Palette.separator)
-            .frame(height: 0.5)
-            .padding(.leading, 48)
-    }
-
-    private func sectionHeader(
-        _ text: LocalizedStringKey,
-        symbol: String? = nil,
-        tint: Color = Tokens.Palette.primary
-    ) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            if let symbol {
-                ZStack {
-                    Circle()
-                        .fill(tint.opacity(0.18))
-                        .frame(width: 28, height: 28)
-                    Image(systemName: symbol)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(tint)
-                }
-            }
-            Text(text)
-                .font(Tokens.Font.headline)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-        }
-        .padding(.bottom, 2)
     }
 
     private var displayName: String {

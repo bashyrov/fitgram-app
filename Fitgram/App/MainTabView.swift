@@ -1048,7 +1048,6 @@ private struct MonoTabBar: View {
         .padding(.horizontal, 6)
         .frame(height: 68)
         .background(Capsule(style: .continuous).fill(Tokens.Mono.hero))
-        .shadow(color: .black.opacity(0.18), radius: 16, y: 8)
         .animation(Tokens.Motion.gentle, value: selection)
     }
 }

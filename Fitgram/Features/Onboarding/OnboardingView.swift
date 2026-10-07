@@ -10,7 +10,7 @@ struct OnboardingView: View {
     var body: some View {
         ZStack {
             Tokens.Palette.background.ignoresSafeArea()
-            VStack(spacing: Tokens.Space.lg) {
+            VStack(spacing: 0) {
                 if flow.currentStep != .celebration {
                     header
                 }
@@ -20,30 +20,32 @@ struct OnboardingView: View {
         }
     }
 
+    /// Design D progress row: round back button, 6 pt bar and "N / M" label.
     private var header: some View {
-        HStack(spacing: Tokens.Space.md) {
-            Button {
-                flow.goBack()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .frame(width: 32, height: 32)
-                    .background(
-                        Circle().fill(Tokens.Palette.surfaceMuted)
-                    )
+        HStack(spacing: 12) {
+            if flow.canGoBack {
+                Button {
+                    flow.goBack()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 14, weight: .heavy))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .frame(width: 40, height: 40)
+                        .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Back"))
             }
-            .opacity(flow.canGoBack ? 1 : 0)
-            .disabled(!flow.canGoBack)
-            .accessibilityLabel(Text("Back"))
 
             OnboardingProgressBar(
                 index: flow.currentStep.progressIndex,
                 total: flow.currentStep.progressTotal
             )
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.top, Tokens.Space.lg)
+        .frame(minHeight: 40)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
     }
 
     @ViewBuilder
@@ -97,6 +99,7 @@ struct OnboardingView: View {
             case .celebration:
                 CelebrationStepView(
                     displayName: flow.displayName,
+                    dailyKcal: flow.computedTargets?.dailyCalorieGoalKcal,
                     onContinue: { Task { await flow.complete() } }
                 )
             }

@@ -7,6 +7,11 @@ import SwiftUI
 
 private struct GoalSheetScaffold<Content: View>: View {
     let title: String
+    let headline: String?
+    let sub: String?
+    let showsHeadline: Bool
+    let bottomTitle: String?
+    let bottomIcon: String?
     let onCancel: () -> Void
     let onSave: () -> Void
     let saveDisabled: Bool
@@ -15,6 +20,11 @@ private struct GoalSheetScaffold<Content: View>: View {
 
     init(
         title: String,
+        headline: String? = nil,
+        sub: String? = nil,
+        showsHeadline: Bool = true,
+        bottomTitle: String? = nil,
+        bottomIcon: String? = nil,
         onCancel: @escaping () -> Void,
         onSave: @escaping () -> Void,
         saveDisabled: Bool = false,
@@ -22,6 +32,11 @@ private struct GoalSheetScaffold<Content: View>: View {
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
+        self.headline = headline
+        self.sub = sub
+        self.showsHeadline = showsHeadline
+        self.bottomTitle = bottomTitle
+        self.bottomIcon = bottomIcon
         self.onCancel = onCancel
         self.onSave = onSave
         self.saveDisabled = saveDisabled
@@ -29,26 +44,41 @@ private struct GoalSheetScaffold<Content: View>: View {
         self.content = content
     }
 
+    /// Design D sheet chrome: muted "Anuluj" + dark "Zapisz" pill, h1, cards 10 pt apart,
+    /// optional `bottom(btn(...))` action bar.
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        content()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    if showsHeadline {
+                        MonoH1(text: headline ?? title, sub: sub)
+                            .padding(.bottom, 4)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    content()
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
+            }
+            .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                if let bottomTitle {
+                    MonoBottomBar {
+                        MonoButton(title: bottomTitle, kind: .dark, icon: bottomIcon, action: onSave)
+                            .disabled(saveDisabled)
+                    }
                 }
             }
-            .navigationTitle(Text(title))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onCancel)
+                    MonoNavText(title: L("Cancel"), action: onCancel)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save", action: onSave).disabled(saveDisabled)
+                    MonoNavPill(title: L("Save"), action: onSave)
+                        .disabled(saveDisabled)
+                        .opacity(saveDisabled ? 0.45 : 1)
                 }
             }
             .alert(
@@ -62,6 +92,93 @@ private struct GoalSheetScaffold<Content: View>: View {
             } message: {
                 Text(errorMessage ?? L("Couldn't save. Try again."))
             }
+        }
+    }
+}
+
+/// Mockup option row (EditPlan "Aktywność"): 14/800 title, muted subtitle, check when selected,
+/// hairline above every row but the first.
+private struct GoalOptionRow: View {
+    let title: String
+    let subtitle: String
+    let isSelected: Bool
+    var showsDivider = true
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(Tokens.Font.manrope(14, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(subtitle)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 15, weight: .heavy))
+                        .foregroundStyle(Tokens.Palette.ink)
+                }
+            }
+            .padding(.vertical, 8)
+            .overlay(alignment: .top) {
+                if showsDivider {
+                    Rectangle().fill(Tokens.Mono.line).frame(height: 1)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+/// 56 pt outline round − / + button (mockup AddWeight).
+private struct GoalRoundStepButton: View {
+    let symbol: String
+    let accessibilityLabel: String
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            Haptics.light()
+            action()
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 18, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 56, height: 56)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: accessibilityLabel))
+    }
+}
+
+/// Slider with the mockup's muted min / max captions underneath.
+private struct GoalRangeSlider: View {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+    let step: Double
+    let minLabel: String
+    let maxLabel: String
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Slider(value: $value, in: range, step: step)
+                .tint(Tokens.Mono.strong)
+            HStack {
+                Text(minLabel)
+                Spacer()
+                Text(maxLabel)
+            }
+            .font(Tokens.Font.manrope(11, weight: 700))
+            .foregroundStyle(Tokens.Mono.muted)
         }
     }
 }
@@ -87,26 +204,66 @@ struct QuickWeightUpdateSheet: View {
     var body: some View {
         GoalSheetScaffold(
             title: L("Update weight"),
+            showsHeadline: false,
+            bottomTitle: L("Save"),
+            bottomIcon: "checkmark",
             onCancel: onDismiss,
             onSave: save,
             errorMessage: $errorMessage
         ) {
-            Card {
-                VStack(spacing: Tokens.Space.md) {
-                    Text(String(format: "%.1f kg", weightKg).replacingOccurrences(of: ".", with: ","))
-                        .font(Tokens.Font.title)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Slider(value: $weightKg, in: 30...250, step: 0.1)
+            weightValue
+                .padding(.top, 40)
+                .padding(.bottom, 10)
+            VStack(alignment: .leading, spacing: 12) {
+                GoalRangeSlider(
+                    value: $weightKg,
+                    range: 30...250,
+                    step: 0.1,
+                    minLabel: "30 kg",
+                    maxLabel: "250 kg"
+                )
+                MonoField(
+                    label: TL(pl: "Notatka", en: "Note", uk: "Нотатка", ru: "Заметка", es: "Nota"),
+                    multiline: true
+                ) {
+                    TextField("Notatka (opcjonalnie)", text: $note, axis: .vertical)
+                        .lineLimit(2...4)
                 }
             }
-            Card {
-                TextField("Notatka (opcjonalnie)", text: $note, axis: .vertical)
-                    .lineLimit(2...4)
-            }
+            .monoCard(padding: 16)
             Text("Twoja waga zaktualizuje się w profilu, a my przeliczymy normy dzienne (jeśli nie są zablokowane).")
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 6)
+                .padding(.top, 2)
         }
+    }
+
+    /// Mockup: − 72 pt italic value kg + (±0.1 kg).
+    private var weightValue: some View {
+        HStack(spacing: 18) {
+            GoalRoundStepButton(symbol: "minus", accessibilityLabel: "−0.1 kg") { adjustWeight(by: -0.1) }
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(String(format: "%.1f", weightKg).replacingOccurrences(of: ".", with: ","))
+                    .font(Tokens.Font.monoNumber(72))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .contentTransition(.numericText())
+                Text(verbatim: "kg")
+                    .font(Tokens.Font.manrope(20, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            GoalRoundStepButton(symbol: "plus", accessibilityLabel: "+0.1 kg") { adjustWeight(by: 0.1) }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func adjustWeight(by delta: Double) {
+        let next = ((weightKg + delta) * 10).rounded() / 10
+        weightKg = min(250, max(30, next))
     }
 
     private func save() {
@@ -163,30 +320,31 @@ struct EditActivitySheet: View {
             onSave: save,
             errorMessage: $errorMessage
         ) {
-            VStack(spacing: Tokens.Space.md) {
+            VStack(spacing: 0) {
                 ForEach(ActivityLevel.allCases, id: \.self) { level in
-                    OnboardingChoiceCard(
-                        symbol: symbol(for: level),
-                        title: LocalizedStringKey(title(for: level)),
-                        subtitle: LocalizedStringKey(subtitle(for: level)),
+                    GoalOptionRow(
+                        title: title(for: level),
+                        subtitle: subtitle(for: level),
                         isSelected: selected == level,
+                        showsDivider: level != ActivityLevel.allCases.first,
                         action: { selected = level }
                     )
                 }
             }
+            .monoCard(padding: 16)
             if !user.caloriesOverridden {
-                Card(background: Tokens.Palette.primarySoft) {
-                    HStack {
-                        Image(systemName: "flame.fill")
-                            .foregroundStyle(Tokens.Palette.primary)
-                        Text(
-                            String.localizedStringWithFormat(
-                                L("Norma zmieni się: %lld → %lld kcal"), user.dailyCalorieGoalKcal, previewKcal)
-                        )
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    }
+                HStack(spacing: 12) {
+                    MonoIconBox(systemName: "flame", style: .track, size: 40)
+                    Text(
+                        String.localizedStringWithFormat(
+                            L("Norma zmieni się: %lld → %lld kcal"), user.dailyCalorieGoalKcal, previewKcal)
+                    )
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
                 }
+                .monoCard(padding: 16)
             }
         }
     }
@@ -396,36 +554,53 @@ private struct OlaCalorieRecalculationSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ScreenBackground(mood: .calm)
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-                        header
-                        profileCard
-                        activityCard
-                        goalCard
-                        if goal.requiresPaceAndTarget {
-                            goalJourneyCard
-                            paceCard
-                        }
-                        dietCard
-                        previewCard
-                        PrimaryButton(
-                            title: LocalizedStringKey(saveTitle),
-                            systemImage: "sparkles",
-                            isLoading: isSaving,
-                            action: save
-                        )
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    header
+                        .padding(.bottom, 4)
+                    profileCard
+                    activityCard
+                    goalCard
+                    if goal.requiresPaceAndTarget {
+                        goalJourneyCard
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    dietCard
+                    previewCard
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
+            }
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    Button(action: save) {
+                        HStack(spacing: 8) {
+                            if isSaving {
+                                ProgressView()
+                                    .tint(Tokens.Mono.onHero)
+                            } else {
+                                Image(systemName: "sparkles")
+                                    .font(.system(size: 15, weight: .bold))
+                            }
+                            Text(saveTitle)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
+                        }
+                    }
+                    .buttonStyle(MonoButtonStyle(kind: .dark))
+                    .disabled(isSaving)
                 }
             }
-            .navigationTitle(Text(L("Recalculate with Ola")))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Recalculate with Ola"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(L("Cancel"), action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: L("Save"), action: save)
+                        .disabled(isSaving)
+                        .opacity(isSaving ? 0.45 : 1)
                 }
             }
         }
@@ -435,96 +610,109 @@ private struct OlaCalorieRecalculationSheet: View {
 // MARK: - Cards
 extension OlaCalorieRecalculationSheet {
     private var header: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text(
-                TL(
-                    pl: "Ola przeliczy plan", en: "Ola will rebuild your plan", uk: "Оля перерахує план",
-                    ru: "Оля пересчитает план", es: "Ola recalculará tu plan")
+        MonoH1(
+            text: TL(
+                pl: "Ola przeliczy plan", en: "Ola will rebuild your plan", uk: "Оля перерахує план",
+                ru: "Оля пересчитает план", es: "Ola recalculará tu plan"),
+            sub: TL(
+                pl: "Sprawdź dane jak w onboardingu. Po zapisie odświeżymy kalorie, makro, wodę i porady.",
+                en: "Review the same inputs as onboarding. We will refresh calories, macros, water and tips.",
+                uk: "Перевір дані як в онбордингу. Ми оновимо калорії, макро, воду і поради.",
+                ru: "Проверь данные как в онбординге. Мы обновим калории, макро, воду и советы.",
+                es: "Revisa los datos como en onboarding. Actualizaremos calorías, macros, agua y consejos."
             )
-            .font(Tokens.Font.archivo(size: 32, weight: 800, width: 115))
-            .foregroundStyle(Tokens.Palette.ink)
-            Text(
-                TL(
-                    pl: "Sprawdź dane jak w onboardingu. Po zapisie odświeżymy kalorie, makro, wodę i porady.",
-                    en: "Review the same inputs as onboarding. We will refresh calories, macros, water and tips.",
-                    uk: "Перевір дані як в онбордингу. Ми оновимо калорії, макро, воду і поради.",
-                    ru: "Проверь данные как в онбординге. Мы обновим калории, макро, воду и советы.",
-                    es: "Revisa los datos como en onboarding. Actualizaremos calorías, macros, agua y consejos."
-                )
-            )
-            .font(Tokens.Font.body)
-            .foregroundStyle(Tokens.Palette.inkMuted)
-        }
+        )
     }
 
+    private var birthDateTitle: String {
+        TL(
+            pl: "Data urodzenia", en: "Birth date", uk: "Дата народження", ru: "Дата рождения",
+            es: "Fecha de nacimiento")
+    }
+
+    /// Mockup: weight + height steppers, birth date field, gender segmented control.
     private var profileCard: some View {
-        Card {
-            VStack(spacing: Tokens.Space.md) {
-                valueSlider(
-                    title: L("Weight"),
-                    value: $weightKg,
-                    range: 35...220,
-                    step: 0.1,
-                    formatted: String(format: "%.1f kg", weightKg).replacingOccurrences(of: ".", with: ",")
-                )
-                HStack {
-                    Text(L("Height")).foregroundStyle(Tokens.Palette.inkMuted)
-                    Spacer()
-                    Stepper(value: $heightCm, in: 130...220) {
-                        Text(String.localizedStringWithFormat(L("%lld cm"), heightCm))
-                            .font(Tokens.Font.bodyEmphasized)
-                    }
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            stepperRow(
+                title: L("Weight"),
+                value: $weightKg,
+                range: 35...220,
+                step: 0.1,
+                unit: "kg",
+                format: "%.1f"
+            )
+            stepperRow(
+                title: L("Height"),
+                value: Binding(
+                    get: { Double(heightCm) },
+                    set: { heightCm = Int($0.rounded()) }
+                ),
+                range: 130...220,
+                step: 1,
+                unit: "cm",
+                format: "%.0f"
+            )
+            MonoField(label: birthDateTitle) {
                 DatePicker(
-                    TL(
-                        pl: "Data urodzenia", en: "Birth date", uk: "Дата народження", ru: "Дата рождения",
-                        es: "Fecha de nacimiento"),
+                    birthDateTitle,
                     selection: $birthDate,
                     in: ...Date(),
                     displayedComponents: .date
                 )
-                Picker(L("Gender"), selection: $sex) {
-                    Text(TL(pl: "Kobieta", en: "Female", uk: "Жінка", ru: "Женщина", es: "Mujer")).tag(
-                        BiologicalSex.female)
-                    Text(TL(pl: "Mężczyzna", en: "Male", uk: "Чоловік", ru: "Мужчина", es: "Hombre")).tag(
-                        BiologicalSex.male)
-                    Text(
-                        TL(
+                .labelsHidden()
+                .tint(Tokens.Palette.ink)
+            }
+            MonoLabel(text: L("Gender"))
+            MonoSegmented(
+                selection: $sex,
+                options: [
+                    (
+                        value: BiologicalSex.female,
+                        title: TL(pl: "Kobieta", en: "Female", uk: "Жінка", ru: "Женщина", es: "Mujer")
+                    ),
+                    (
+                        value: BiologicalSex.male,
+                        title: TL(pl: "Mężczyzna", en: "Male", uk: "Чоловік", ru: "Мужчина", es: "Hombre")
+                    ),
+                    (
+                        value: BiologicalSex.undisclosed,
+                        title: TL(
                             pl: "Nie podaję", en: "Prefer not to say", uk: "Не вказую", ru: "Не указываю",
                             es: "Prefiero no decirlo")
-                    ).tag(BiologicalSex.undisclosed)
-                }
-                .pickerStyle(.segmented)
-            }
+                    ),
+                ]
+            )
         }
+        .monoCard(padding: 16)
     }
 
     private var activityCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(L("Activity")).font(Tokens.Font.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Activity"))
+            VStack(spacing: 0) {
                 ForEach(ActivityLevel.allCases, id: \.self) { level in
                     selectableRow(
                         title: activityTitle(level),
                         subtitle: activitySubtitle(level),
-                        symbol: "figure.walk",
-                        isSelected: activity == level
+                        isSelected: activity == level,
+                        showsDivider: level != ActivityLevel.allCases.first
                     ) { activity = level }
                 }
             }
         }
+        .monoCard(padding: 16)
     }
 
     private var goalCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(L("Your goal")).font(Tokens.Font.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Your goal"))
+            VStack(spacing: 0) {
                 ForEach(GoalKind.allCases, id: \.self) { kind in
                     selectableRow(
                         title: goalTitle(kind),
                         subtitle: goalSubtitle(kind),
-                        symbol: kind == .lose ? "arrow.down.right" : kind == .gain ? "arrow.up.right" : "target",
-                        isSelected: goal == kind
+                        isSelected: goal == kind,
+                        showsDivider: kind != GoalKind.allCases.first
                     ) {
                         goal = kind
                         normalizeGoalWeights()
@@ -532,256 +720,242 @@ extension OlaCalorieRecalculationSheet {
                 }
             }
         }
+        .monoCard(padding: 16)
     }
 
+    /// Mockup "Droga celu": start / target columns, then the pace row, slider and safety hint.
     private var goalJourneyCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(
-                    TL(
-                        pl: "Droga celu",
-                        en: "Goal journey",
-                        uk: "Шлях цілі",
-                        ru: "Путь цели",
-                        es: "Ruta del objetivo"
-                    )
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(
+                text: TL(
+                    pl: "Droga celu",
+                    en: "Goal journey",
+                    uk: "Шлях цілі",
+                    ru: "Путь цели",
+                    es: "Ruta del objetivo"
                 )
-                .font(Tokens.Font.headline)
-                HStack(spacing: Tokens.Space.md) {
-                    planWeightPillar(
-                        title: TL(pl: "Start", en: "Start", uk: "Старт", ru: "Старт", es: "Inicio"),
-                        value: goalStartWeightKg,
-                        tint: Tokens.Palette.inkMuted
-                    )
-                    Image(systemName: "arrow.right")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                    planWeightPillar(
-                        title: TL(pl: "Cel", en: "Target", uk: "Ціль", ru: "Цель", es: "Objetivo"),
-                        value: goalTargetWeightKg,
-                        tint: Tokens.Palette.primary
-                    )
-                }
-                valueSlider(
-                    title: TL(
-                        pl: "Waga startowa", en: "Starting weight", uk: "Стартова вага", ru: "Стартовый вес",
-                        es: "Peso inicial"),
-                    value: $goalStartWeightKg,
-                    range: 35...220,
-                    step: 0.1,
-                    formatted: String(format: "%.1f kg", goalStartWeightKg).replacingOccurrences(of: ".", with: ",")
+            )
+            HStack(alignment: .bottom, spacing: 8) {
+                planWeightPillar(
+                    title: TL(pl: "Start", en: "Start", uk: "Старт", ru: "Старт", es: "Inicio"),
+                    value: goalStartWeightKg,
+                    alignment: .leading
                 )
-                valueSlider(
-                    title: TL(
-                        pl: "Waga celu", en: "Target weight", uk: "Цільова вага", ru: "Целевой вес",
-                        es: "Peso objetivo"),
-                    value: $goalTargetWeightKg,
-                    range: 35...220,
-                    step: 0.1,
-                    formatted: String(format: "%.1f kg", goalTargetWeightKg).replacingOccurrences(of: ".", with: ",")
+                Spacer(minLength: 8)
+                planWeightPillar(
+                    title: TL(pl: "Cel", en: "Target", uk: "Ціль", ru: "Цель", es: "Objetivo"),
+                    value: goalTargetWeightKg,
+                    alignment: .trailing
                 )
             }
+            captionSlider(
+                title: TL(
+                    pl: "Waga startowa", en: "Starting weight", uk: "Стартова вага", ru: "Стартовый вес",
+                    es: "Peso inicial"),
+                value: $goalStartWeightKg
+            )
+            captionSlider(
+                title: TL(
+                    pl: "Waga celu", en: "Target weight", uk: "Цільова вага", ru: "Целевой вес",
+                    es: "Peso objetivo"),
+                value: $goalTargetWeightKg
+            )
+            paceSection
         }
+        .monoCard(padding: 16)
     }
 
-    private var paceCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack {
-                    Text(
-                        TL(
-                            pl: "Tempo", en: "Pace", uk: "Темп", ru: "Темп", es: "Ritmo")
+    private var paceSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: TL(pl: "Tempo", en: "Pace", uk: "Темп", ru: "Темп", es: "Ritmo"))
+                Spacer()
+                Text(
+                    String(
+                        format: TL(
+                            pl: "%.2f kg / tydz.",
+                            en: "%.2f kg / week",
+                            uk: "%.2f кг / тиж.",
+                            ru: "%.2f кг / нед.",
+                            es: "%.2f kg / sem."
+                        ),
+                        goalPaceKgPerWeek
                     )
-                    .font(Tokens.Font.headline)
-                    Spacer()
+                    .replacingOccurrences(of: ".", with: ",")
+                )
+                .font(Tokens.Font.monoNumber(16))
+                .foregroundStyle(Tokens.Palette.ink)
+            }
+            GoalRangeSlider(
+                value: $goalPaceKgPerWeek,
+                range: 0.25...1.0,
+                step: 0.25,
+                minLabel: "0,25",
+                maxLabel: "1,0"
+            )
+            if goalPaceKgPerWeek >= 0.75 {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(paceTint)
                     Text(
-                        String(
-                            format: TL(
-                                pl: "%.2f kg / tydz.",
-                                en: "%.2f kg / week",
-                                uk: "%.2f кг / тиж.",
-                                ru: "%.2f кг / нед.",
-                                es: "%.2f kg / sem."
-                            ),
-                            goalPaceKgPerWeek
-                        )
-                        .replacingOccurrences(of: ".", with: ",")
-                    )
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(paceTint)
-                }
-                Slider(value: $goalPaceKgPerWeek, in: 0.25...1.0, step: 0.25)
-                    .tint(paceTint)
-                if goalPaceKgPerWeek >= 0.75 {
-                    Label(
                         TL(
                             pl: "Szybkie tempo może obniżyć kalorie do bezpiecznego minimum.",
                             en: "A fast pace can push calories down to the protected minimum.",
                             uk: "Швидкий темп може знизити калорії до безпечного мінімуму.",
                             ru: "Быстрый темп может снизить калории до безопасного минимума.",
                             es: "Un ritmo rápido puede bajar las calorías al mínimo protegido."
-                        ),
-                        systemImage: "exclamationmark.triangle.fill"
+                        )
                     )
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.warning)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
     }
 
+    /// Mockup hero: "NOWY PLAN PO ZAPISIE", 44 pt kcal, dark macro pills, "Norma zmieni się: a → b kcal".
     private var previewCard: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Label(
-                    TL(
-                        pl: "Nowy plan po zapisie",
-                        en: "New plan after saving",
-                        uk: "Новий план після збереження",
-                        ru: "Новый план после сохранения",
-                        es: "Nuevo plan al guardar"
-                    ),
-                    systemImage: "sparkles"
-                )
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-                if let targets = previewTargets {
-                    HStack(alignment: .firstTextBaseline, spacing: 4) {
-                        Text("\(targets.dailyCalorieGoalKcal)")
-                            .font(Tokens.Font.title)
-                            .foregroundStyle(Tokens.Palette.ink)
-                        Text("kcal")
-                            .font(Tokens.Font.footnote)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                    }
-                    HStack(spacing: Tokens.Space.sm) {
-                        previewTile(label: L("Protein"), value: "\(targets.proteinGoalGrams) g")
-                        previewTile(label: L("Carbs"), value: "\(targets.carbsGoalGrams) g")
-                        previewTile(label: L("Fat"), value: "\(targets.fatGoalGrams) g")
-                    }
-                    if targets.hitSafetyFloor {
-                        Text(L("Your requested pace is aggressive, so Fitgram protects the minimum calorie level."))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.warning)
-                    }
-                } else {
-                    Text(L("Fill in profile data to calculate your plan."))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 14) {
+            MonoLabel(
+                text: TL(
+                    pl: "Nowy plan po zapisie",
+                    en: "New plan after saving",
+                    uk: "Новий план після збереження",
+                    ru: "Новый план после сохранения",
+                    es: "Nuevo plan al guardar"
+                ),
+                onHero: true
+            )
+            if let targets = previewTargets {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text("\(targets.dailyCalorieGoalKcal)")
+                        .font(Tokens.Font.monoNumber(44))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .contentTransition(.numericText())
+                    Text(verbatim: "kcal")
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                 }
+                MonoMacroRow(
+                    protein: Double(targets.proteinGoalGrams),
+                    carbs: Double(targets.carbsGoalGrams),
+                    fat: Double(targets.fatGoalGrams),
+                    dark: true
+                )
+                Text(
+                    String.localizedStringWithFormat(
+                        L("Norma zmieni się: %lld → %lld kcal"),
+                        user.dailyCalorieGoalKcal,
+                        targets.dailyCalorieGoalKcal
+                    )
+                )
+                .font(Tokens.Font.manrope(13, weight: 600))
+                .foregroundStyle(Tokens.Mono.heroMuted)
+                if targets.hitSafetyFloor {
+                    Text(L("Your requested pace is aggressive, so Fitgram protects the minimum calorie level."))
+                        .font(Tokens.Font.manrope(12, weight: 700))
+                        .foregroundStyle(Tokens.Mono.hi)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } else {
+                Text(L("Fill in profile data to calculate your plan."))
+                    .font(Tokens.Font.manrope(13, weight: 600))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
             }
         }
+        .monoHero(padding: 18)
     }
 
     private var dietCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                Text(
-                    TL(
-                        pl: "Dieta i makro", en: "Diet and macros", uk: "Дієта і макро", ru: "Диета и макро",
-                        es: "Dieta y macros")
-                )
-                .font(Tokens.Font.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(
+                text: TL(
+                    pl: "Dieta i makro", en: "Diet and macros", uk: "Дієта і макро", ru: "Диета и макро",
+                    es: "Dieta y macros")
+            )
+            VStack(spacing: 0) {
                 ForEach(DietMacroPreset.allCases) { preset in
                     selectableRow(
                         title: preset.title,
                         subtitle: "\(preset.splitLabel) · \(preset.subtitle)",
-                        symbol: preset.symbol,
-                        isSelected: diet == preset
+                        isSelected: diet == preset,
+                        showsDivider: preset != DietMacroPreset.allCases.first
                     ) { diet = preset }
                 }
             }
         }
+        .monoCard(padding: 16)
     }
 }
 
 // MARK: - Controls
 extension OlaCalorieRecalculationSheet {
-    private func valueSlider(
+    // Mockup row: 15/800 label left, − value unit + stepper right.
+    // swiftlint:disable:next function_parameter_count
+    private func stepperRow(
         title: String,
         value: Binding<Double>,
         range: ClosedRange<Double>,
         step: Double,
-        formatted: String
+        unit: String,
+        format: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Text(title).foregroundStyle(Tokens.Palette.inkMuted)
-                Spacer()
-                Text(formatted).font(Tokens.Font.bodyEmphasized)
-            }
-            Slider(value: value, in: range, step: step)
-        }
-    }
-
-    private func planWeightPillar(title: String, value: Double, tint: Color) -> some View {
-        VStack(spacing: 2) {
+        HStack(spacing: 12) {
             Text(title)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            Text(String(format: "%.1f", value).replacingOccurrences(of: ".", with: ","))
-                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                .foregroundStyle(tint)
-            Text("kg")
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(15, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 8)
+            MonoStepper(value: value, range: range, step: step, unit: unit, format: format)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(tint.opacity(0.10))
-        )
+        .padding(.vertical, 4)
     }
 
-    private func previewTile(label: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            Text(value)
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
+    private func captionSlider(title: String, value: Binding<Double>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+            Slider(value: value, in: 35...220, step: 0.1)
+                .tint(Tokens.Mono.strong)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Mockup column: muted caption over a 24 pt italic number.
+    private func planWeightPillar(title: String, value: Double, alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 2) {
+            Text(title)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(String(format: "%.1f", value).replacingOccurrences(of: ".", with: ","))
+                    .font(Tokens.Font.monoNumber(24))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+                Text(verbatim: "kg")
+                    .font(Tokens.Font.manrope(12, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+        }
     }
 
     private func selectableRow(
         title: String,
         subtitle: String,
-        symbol: String,
         isSelected: Bool,
+        showsDivider: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(isSelected ? Tokens.Palette.onPrimary : Tokens.Palette.primary)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(isSelected ? Tokens.Palette.primary : Tokens.Palette.primarySoft))
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(subtitle)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer()
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
-            }
-            .padding(Tokens.Space.sm)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(isSelected ? Tokens.Palette.primarySoft : Tokens.Palette.surfaceMuted.opacity(0.55))
-            )
-        }
-        .buttonStyle(.plain)
+        GoalOptionRow(
+            title: title,
+            subtitle: subtitle,
+            isSelected: isSelected,
+            showsDivider: showsDivider,
+            action: action
+        )
     }
 }
 
@@ -981,12 +1155,13 @@ struct EditMacrosSheet: View {
     var body: some View {
         GoalSheetScaffold(
             title: L("Makroskładniki"),
+            headline: macroHeaderTitle,
+            sub: macroHeaderSubtitle,
             onCancel: onDismiss,
             onSave: save,
             errorMessage: $errorMessage
         ) {
-            macroEditorHeader
-            MacroTargetEditorRow(
+            ProfileMacroEditorRow(
                 title: L("Protein"),
                 subtitle: TL(
                     pl: "Sytość i ochrona mięśni",
@@ -995,12 +1170,12 @@ struct EditMacrosSheet: View {
                     ru: "Сытость и поддержка мышц",
                     es: "Saciedad y soporte muscular"
                 ),
-                symbol: "figure.strengthtraining.traditional",
-                color: Tokens.Palette.primary,
+                symbol: "bolt",
+                color: Tokens.Mono.strong,
                 value: $proteinGrams,
                 range: 40...260
             )
-            MacroTargetEditorRow(
+            ProfileMacroEditorRow(
                 title: L("Carbs"),
                 subtitle: TL(
                     pl: "Energia na dzień i trening",
@@ -1009,12 +1184,12 @@ struct EditMacrosSheet: View {
                     ru: "Энергия на день и тренировки",
                     es: "Energía para el día y entrenar"
                 ),
-                symbol: "bolt.fill",
-                color: Tokens.Palette.mutedGreen,
+                symbol: "flame",
+                color: Tokens.Mono.accent,
                 value: $carbsGrams,
                 range: 40...520
             )
-            MacroTargetEditorRow(
+            ProfileMacroEditorRow(
                 title: L("Fat"),
                 subtitle: TL(
                     pl: "Hormony, smak i stabilność",
@@ -1023,64 +1198,47 @@ struct EditMacrosSheet: View {
                     ru: "Гормоны, вкус и стабильность",
                     es: "Hormonas, sabor y estabilidad"
                 ),
-                symbol: "drop.fill",
-                color: Tokens.Palette.warning,
+                symbol: "drop",
+                color: Tokens.Mono.fat,
                 value: $fatGrams,
                 range: 20...180
             )
             profileMacroSummaryCard
-            Button {
+            MonoButton(title: resetTitle, kind: .outline, icon: "arrow.clockwise") {
                 resetTargetsToRecommended()
-            } label: {
-                Label(resetTitle, systemImage: "arrow.clockwise")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.pressable)
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(Tokens.Palette.primarySoft.opacity(0.84))
-            )
-            .foregroundStyle(Tokens.Palette.primary)
+            .padding(.top, 4)
         }
     }
 
-    private var macroEditorHeader: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.xs) {
-            Text(macroHeaderTitle)
-                .font(Tokens.Font.archivo(size: 24, weight: 800, width: 115))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(macroHeaderSubtitle)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
+    /// Mockup SheetMacros total strip: dark hero, hi chart icon, B/W/T total.
     private var profileMacroSummaryCard: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            HStack {
-                Label(
-                    String.localizedStringWithFormat(
-                        TL(
-                            pl: "Nowy plan: B/W/T %lld/%lld/%lld g",
-                            en: "New plan: P/C/F %lld/%lld/%lld g",
-                            uk: "Новий план: Б/В/Ж %lld/%lld/%lld г",
-                            ru: "Новый план: Б/У/Ж %lld/%lld/%lld г",
-                            es: "Nuevo plan: P/C/G %lld/%lld/%lld g"
-                        ),
-                        proteinGrams,
-                        carbsGrams,
-                        fatGrams
+        HStack(spacing: 10) {
+            Image(systemName: "chart.bar.fill")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Tokens.Mono.hi)
+            Text(
+                String.localizedStringWithFormat(
+                    TL(
+                        pl: "Nowy plan: B/W/T %lld/%lld/%lld g",
+                        en: "New plan: P/C/F %lld/%lld/%lld g",
+                        uk: "Новий план: Б/В/Ж %lld/%lld/%lld г",
+                        ru: "Новый план: Б/У/Ж %lld/%lld/%lld г",
+                        es: "Nuevo plan: P/C/G %lld/%lld/%lld g"
                     ),
-                    systemImage: "chart.bar.fill"
+                    proteinGrams,
+                    carbsGrams,
+                    fatGrams
                 )
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-            }
+            )
+            .font(Tokens.Font.manrope(15, weight: 800))
+            .foregroundStyle(Tokens.Mono.onHero)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
         }
+        .monoHero(padding: 16)
+        .padding(.top, 4)
     }
 
     private var macroHeaderTitle: String {
@@ -1153,6 +1311,13 @@ struct EditWaterSheet: View {
         }
     }
 
+    private var waterBinding: Binding<Double> {
+        Binding(
+            get: { Double(waterMl) },
+            set: { waterMl = Int(($0 / 50).rounded()) * 50 }
+        )
+    }
+
     var body: some View {
         GoalSheetScaffold(
             title: L("Water goal"),
@@ -1160,24 +1325,25 @@ struct EditWaterSheet: View {
             onSave: save,
             errorMessage: $errorMessage
         ) {
-            Card {
-                VStack(spacing: Tokens.Space.md) {
-                    Text(String.localizedStringWithFormat(L("%lld ml"), waterMl))
-                        .font(Tokens.Font.title)
-                    Slider(
-                        value: Binding(
-                            get: { Double(waterMl) },
-                            set: { waterMl = Int(($0 / 50).rounded()) * 50 }
-                        ),
-                        in: 1000...5000, step: 50
-                    )
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) {
+                    MonoLabel(text: TL(pl: "Woda", en: "Water", uk: "Вода", ru: "Вода", es: "Agua"))
+                    Spacer(minLength: 8)
+                    MonoStepper(value: waterBinding, range: 1000...5000, step: 50, unit: "ml")
                 }
+                GoalRangeSlider(
+                    value: waterBinding,
+                    range: 1000...5000,
+                    step: 50,
+                    minLabel: "1000 ml",
+                    maxLabel: "5000 ml"
+                )
             }
-            Button("Wróć do zalecanych") {
+            .monoCard(padding: 16)
+            MonoButton(title: L("Wróć do zalecanych"), kind: .outline, icon: "arrow.clockwise") {
                 resetTargetsToRecommended()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Tokens.Palette.primary)
+            .padding(.top, 4)
         }
     }
 }
@@ -1228,25 +1394,14 @@ struct EditMainGoalSheet: View {
     var body: some View {
         GoalSheetScaffold(
             title: goalSheetTitle,
+            showsHeadline: false,
             onCancel: onDismiss,
             onSave: save,
             errorMessage: $errorMessage
         ) {
             goalHero
-            VStack(spacing: Tokens.Space.md) {
-                ForEach(GoalKind.allCases, id: \.self) { option in
-                    OnboardingChoiceCard(
-                        symbol: symbol(for: option),
-                        title: LocalizedStringKey(title(for: option)),
-                        subtitle: LocalizedStringKey(subtitle(for: option)),
-                        isSelected: kind == option,
-                        action: {
-                            Haptics.selection()
-                            kind = option
-                        }
-                    )
-                }
-            }
+                .padding(.top, 8)
+            goalOptionsCard
             if kind.requiresPaceAndTarget {
                 journeyCard
                 paceCard
@@ -1263,44 +1418,70 @@ extension EditMainGoalSheet {
     /// Big gradient header showing the chosen goal's icon + label so the
     /// sheet doesn't open with a wall of generic-looking selection rows.
     private var goalHero: some View {
-        let tint = heroTint(for: kind)
-        return Card(elevation: Tokens.Shadow.float) {
-            HStack(spacing: Tokens.Space.lg) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            tint
-                        )
-                        .frame(width: 64, height: 64)
-                    Image(systemName: symbol(for: kind))
-                        .font(.system(size: 26, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(goalSheetTitle)
-                        .font(Tokens.Font.caption)
-                        .textCase(.uppercase)
-                        .tracking(1.2)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        MonoHeroCard {
+            HStack(alignment: .top, spacing: Tokens.Space.lg) {
+                VStack(alignment: .leading, spacing: 6) {
+                    MonoLabel(text: goalSheetTitle, onHero: true)
                     Text(title(for: kind))
-                        .font(Tokens.Font.title2)
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.monoDisplay(26))
+                        .textCase(.uppercase)
+                        .foregroundStyle(Tokens.Mono.onHero)
                     Text(subtitle(for: kind))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .font(Tokens.Font.manrope(13, weight: 600))
+                        .foregroundStyle(Tokens.Mono.heroMuted)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
+                Image(systemName: symbol(for: kind))
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.onHi)
+                    .frame(width: 52, height: 52)
+                    .background(
+                        RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                            .fill(Tokens.Mono.hi)
+                    )
             }
         }
+    }
+
+    /// Goal options as one rows card (icon box, title, subtitle, check).
+    private var goalOptionsCard: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(GoalKind.allCases.enumerated()), id: \.element) { index, option in
+                if index > 0 {
+                    MonoRowDivider()
+                }
+                Button {
+                    Haptics.selection()
+                    kind = option
+                } label: {
+                    MonoRow(
+                        icon: symbol(for: option),
+                        iconStyle: kind == option ? .dark : .track,
+                        title: title(for: option),
+                        sub: subtitle(for: option)
+                    ) {
+                        if kind == option {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 15, weight: .heavy))
+                                .foregroundStyle(Tokens.Palette.ink)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(kind == option ? .isSelected : [])
+            }
+        }
+        .monoRowsCard()
     }
 
     private func heroTint(for kind: GoalKind) -> Color {
         switch kind {
         case .lose: return Tokens.Palette.primary
-        case .gain: return Tokens.Palette.warning
-        case .maintain: return Tokens.Palette.success
-        case .healthCondition: return Tokens.Palette.accent
-        case .justTracking: return Tokens.Palette.inkMuted
+        case .gain: return Tokens.Mono.fat
+        case .maintain: return Tokens.Mono.strong
+        case .healthCondition: return Tokens.Mono.accent
+        case .justTracking: return Tokens.Mono.muted
         }
     }
 }
@@ -1313,100 +1494,67 @@ extension EditMainGoalSheet {
     /// much weight is being lost/gained.
     private var journeyCard: some View {
         let delta = abs(targetWeightKg - startWeightKg)
-        return Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                HStack(spacing: 4) {
-                    Image(systemName: "scalemass.fill")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                    Text(journeyTitle)
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(String(format: "%@%.1f kg", deltaSign(), delta))
-                        .font(.system(size: 13, weight: .heavy))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(
-                            Capsule().fill(heroTint(for: kind))
-                        )
-                }
-                HStack(alignment: .center, spacing: Tokens.Space.md) {
-                    journeyPillar(label: startWeightLabel, value: startWeightKg, tint: Tokens.Palette.inkMuted)
-                    Image(systemName: "arrow.right")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                    journeyPillar(label: targetWeightLabel, value: targetWeightKg, tint: heroTint(for: kind))
-                }
-                weightControl(
-                    title: startWeightTitle,
-                    value: $startWeightKg,
-                    range: 35...250,
-                    tint: Tokens.Palette.inkMuted
-                )
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(targetWeightTitle)
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                        Spacer()
-                        Text(String(format: "%.1f kg", targetWeightKg))
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .contentTransition(.numericText())
-                    }
-                    Slider(value: $targetWeightKg, in: 40...180, step: 0.5) { editing in
-                        if editing { Haptics.selection() }
-                    }
-                    .tint(heroTint(for: kind))
-                }
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                MonoLabel(text: journeyTitle)
+                Spacer()
+                Text(String(format: "%@%.1f kg", deltaSign(), delta))
+                    .font(Tokens.Font.manrope(13, weight: 800))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .padding(.horizontal, 10)
+                    .frame(height: 26)
+                    .background(Capsule().fill(Tokens.Mono.hero))
             }
+            HStack(alignment: .bottom, spacing: 8) {
+                journeyPillar(label: startWeightLabel, value: startWeightKg, alignment: .leading)
+                Spacer(minLength: 8)
+                journeyPillar(label: targetWeightLabel, value: targetWeightKg, alignment: .trailing)
+            }
+            weightControl(title: startWeightTitle, value: $startWeightKg, range: 35...250)
+            weightControl(title: targetWeightTitle, value: $targetWeightKg, range: 40...180)
         }
+        .monoCard(padding: 16)
     }
 
     private func weightControl(
         title: String,
         value: Binding<Double>,
-        range: ClosedRange<Double>,
-        tint: Color
+        range: ClosedRange<Double>
     ) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
+            HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                 Spacer()
                 Text(String(format: "%.1f kg", value.wrappedValue))
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.monoNumber(16))
                     .foregroundStyle(Tokens.Palette.ink)
                     .contentTransition(.numericText())
             }
             Slider(value: value, in: range, step: 0.5) { editing in
                 if editing { Haptics.selection() }
             }
-            .tint(tint)
+            .tint(Tokens.Mono.strong)
         }
     }
 
-    private func journeyPillar(label: String, value: Double, tint: Color) -> some View {
-        VStack(spacing: 2) {
+    /// Mockup column: muted caption over a 24 pt italic number.
+    private func journeyPillar(label: String, value: Double, alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 2) {
             Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-            Text(String(format: "%.1f", value))
-                .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                .foregroundStyle(tint)
-            Text("kg")
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(String(format: "%.1f", value))
+                    .font(Tokens.Font.monoNumber(24))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+                Text(verbatim: "kg")
+                    .font(Tokens.Font.manrope(12, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(tint.opacity(0.10))
-        )
     }
 
     private func deltaSign() -> String {
@@ -1421,50 +1569,43 @@ extension EditMainGoalSheet {
 // MARK: - Pace card
 extension EditMainGoalSheet {
     private var paceCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack(spacing: 6) {
-                    Image(systemName: "speedometer")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.warning)
-                    Text(paceTitle)
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(paceText(paceKgPerWeek))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .contentTransition(.numericText())
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                MonoLabel(text: paceTitle)
+                Spacer()
+                Text(paceText(paceKgPerWeek))
+                    .font(Tokens.Font.monoNumber(16))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .contentTransition(.numericText())
+            }
+            VStack(spacing: 6) {
                 Slider(value: $paceKgPerWeek, in: 0.25...1.0, step: 0.25) { editing in
                     if editing { Haptics.selection() }
                 }
-                .tint(paceTint)
+                .tint(Tokens.Mono.strong)
                 HStack(spacing: 6) {
                     Text(slowerPaceLabel)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
                     Spacer()
                     Text(fasterPaceLabel)
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
                 }
-                if let estimatedEnd = estimatedEndDate {
-                    HStack(spacing: 4) {
-                        Image(systemName: "calendar")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Tokens.Palette.primary)
-                        Text(estimatedEndPrefix)
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                            + Text(estimatedEnd.formatted(.dateTime.day().month(.wide).year()))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.ink)
-                    }
-                    .padding(.top, 2)
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+            if let estimatedEnd = estimatedEndDate {
+                HStack(spacing: 6) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(Tokens.Mono.muted)
+                    Text(estimatedEndPrefix)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        + Text(estimatedEnd.formatted(.dateTime.day().month(.wide).year()))
+                        .font(Tokens.Font.manrope(12, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
                 }
             }
         }
+        .monoCard(padding: 16)
     }
 
     private var paceTint: Color {
@@ -1485,20 +1626,25 @@ extension EditMainGoalSheet {
     }
 
     private var paceWarningStrip: some View {
-        HStack(alignment: .top, spacing: Tokens.Space.sm) {
+        HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.error)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(Tokens.Mono.danger)
             Text(paceWarningText)
-                .font(Tokens.Font.footnote)
+                .font(Tokens.Font.manrope(12, weight: 600))
                 .foregroundStyle(Tokens.Palette.ink)
+                .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(Tokens.Space.md)
+        .padding(14)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.error.opacity(0.10))
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                .fill(Tokens.Mono.danger.opacity(0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                .stroke(Tokens.Mono.danger.opacity(0.35), lineWidth: 1)
         )
     }
 }
@@ -1718,51 +1864,70 @@ struct EditProfileDataSheet: View {
             onSave: save,
             errorMessage: $errorMessage
         ) {
-            Card {
-                VStack(spacing: Tokens.Space.md) {
-                    HStack {
-                        Text(L("Sex")).foregroundStyle(Tokens.Palette.inkMuted)
-                        Spacer()
-                        Picker(L("Sex"), selection: $sex) {
-                            Text(TL(pl: "Kobieta", en: "Female", uk: "Жінка", ru: "Женщина", es: "Mujer"))
-                                .tag(BiologicalSex.female)
-                            Text(TL(pl: "Mężczyzna", en: "Male", uk: "Чоловік", ru: "Мужчина", es: "Hombre"))
-                                .tag(BiologicalSex.male)
-                            Text(
-                                TL(
-                                    pl: "Wolę nie podawać",
-                                    en: "Prefer not to say",
-                                    uk: "Не хочу вказувати",
-                                    ru: "Предпочитаю не указывать",
-                                    es: "Prefiero no decirlo"
-                                )
-                            )
-                            .tag(BiologicalSex.undisclosed)
-                        }
-                        .pickerStyle(.menu)
-                    }
-                    HStack {
-                        Text(L("Height")).foregroundStyle(Tokens.Palette.inkMuted)
-                        Spacer()
-                        Stepper(value: $heightCm, in: 130...220, step: 1) {
-                            Text(String.localizedStringWithFormat(L("%lld cm"), heightCm))
-                        }
-                    }
-                    DatePicker(
-                        TL(
-                            pl: "Data urodzenia",
-                            en: "Birth date",
-                            uk: "Дата народження",
-                            ru: "Дата рождения",
-                            es: "Fecha de nacimiento"
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) {
+                    Text(L("Height"))
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Spacer(minLength: 8)
+                    MonoStepper(
+                        value: Binding(
+                            get: { Double(heightCm) },
+                            set: { heightCm = Int($0.rounded()) }
                         ),
+                        range: 130...220,
+                        step: 1,
+                        unit: "cm"
+                    )
+                }
+                .padding(.vertical, 4)
+                MonoField(label: birthDateTitle) {
+                    DatePicker(
+                        birthDateTitle,
                         selection: $birthDate,
                         in: ...Date(),
                         displayedComponents: .date
                     )
+                    .labelsHidden()
+                    .tint(Tokens.Palette.ink)
                 }
+                MonoLabel(text: L("Sex"))
+                MonoSegmented(
+                    selection: $sex,
+                    options: [
+                        (
+                            value: BiologicalSex.female,
+                            title: TL(pl: "Kobieta", en: "Female", uk: "Жінка", ru: "Женщина", es: "Mujer")
+                        ),
+                        (
+                            value: BiologicalSex.male,
+                            title: TL(pl: "Mężczyzna", en: "Male", uk: "Чоловік", ru: "Мужчина", es: "Hombre")
+                        ),
+                        (
+                            value: BiologicalSex.undisclosed,
+                            title: TL(
+                                pl: "Wolę nie podawać",
+                                en: "Prefer not to say",
+                                uk: "Не хочу вказувати",
+                                ru: "Предпочитаю не указывать",
+                                es: "Prefiero no decirlo"
+                            )
+                        ),
+                    ]
+                )
             }
+            .monoCard(padding: 16)
         }
+    }
+
+    private var birthDateTitle: String {
+        TL(
+            pl: "Data urodzenia",
+            en: "Birth date",
+            uk: "Дата народження",
+            ru: "Дата рождения",
+            es: "Fecha de nacimiento"
+        )
     }
 
     private func save() {
@@ -1788,5 +1953,89 @@ struct EditProfileDataSheet: View {
             Haptics.warning()
             errorMessage = L("Couldn't save. Try again.")
         }
+    }
+}
+
+/// Mockup `macro_editor_row`: card with track icon box, title + muted subtitle,
+/// − value g + stepper (5 g) and a coloured slider with range captions.
+private struct ProfileMacroEditorRow: View {
+    let title: String
+    let subtitle: String
+    let symbol: String
+    let color: Color
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: symbol, style: .track, size: 40)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(Tokens.Font.manrope(16, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                    Text(subtitle)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 10) {
+                    stepButton(symbol: "minus") {
+                        value = max(range.lowerBound, value - 5)
+                    }
+                    HStack(alignment: .firstTextBaseline, spacing: 3) {
+                        TextField("0", value: $value, format: .number)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.center)
+                            .font(Tokens.Font.monoNumber(20))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .fixedSize()
+                        Text(verbatim: "g")
+                            .font(Tokens.Font.manrope(12, weight: 700))
+                            .foregroundStyle(Tokens.Mono.muted)
+                    }
+                    .frame(minWidth: 56)
+                    stepButton(symbol: "plus") {
+                        value = min(range.upperBound, value + 5)
+                    }
+                }
+            }
+            VStack(spacing: 6) {
+                Slider(
+                    value: Binding(
+                        get: { Double(value) },
+                        set: { value = Int($0.rounded()) }
+                    ),
+                    in: Double(range.lowerBound)...Double(range.upperBound),
+                    step: 1
+                )
+                .tint(color)
+                HStack {
+                    Text(verbatim: "\(range.lowerBound) g")
+                    Spacer()
+                    Text(verbatim: "\(range.upperBound) g")
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func stepButton(symbol: String, action: @escaping () -> Void) -> some View {
+        Button {
+            Haptics.light()
+            action()
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 40, height: 40)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
     }
 }

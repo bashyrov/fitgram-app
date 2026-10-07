@@ -26,88 +26,58 @@ struct FactsLibraryView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                factsBackground
-                ScrollView {
-                    LazyVStack(spacing: Tokens.Space.md) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    OlaFactsHeader(count: filteredFacts.count)
+                    categoryFilterStrip
+                        .padding(.top, 14)
+                    VStack(spacing: 8) {
                         if let highlightedFact {
-                            dailyFactHero(highlightedFact)
+                            FactCard(fact: highlightedFact, highlighted: true)
                         }
-                        OlaFactsHeader(count: filteredFacts.count)
-                        categoryFilterStrip
                         ForEach(filteredFacts) { fact in
                             factRow(fact)
                         }
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.top, Tokens.Space.md)
-                    .padding(.bottom, Tokens.Space.xxl)
+                    .padding(.top, 16)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 30)
             }
-            .navigationTitle(Text(factsTitle))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(factsTitle)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(L("Close"), action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Close"), action: onDismiss)
                 }
             }
         }
     }
 
-    private var factsBackground: some View {
-        ScreenBackground(mood: .warm)
-    }
-
-    private func dailyFactHero(_ fact: NutritionFact) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            HStack {
-                Label(factOfDayTitle, systemImage: "lightbulb.fill")
-                    .font(Tokens.Font.manrope(13, weight: 800))
-                    .foregroundStyle(Tokens.Palette.primary)
-                Spacer()
-                Text(FactCard.localizedCategory(fact.category))
-                    .font(Tokens.Font.caption.weight(.bold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            FactCard(fact: fact, highlighted: true)
-        }
-    }
-
+    /// Wrapping chip cloud (lib `chips(…, wrapit=True)`).
     private var categoryFilterStrip: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Tokens.Space.sm) {
-                filterChip(label: L("All"), isSelected: categoryFilter == nil) {
+        FlowLayout(spacing: 6) {
+            MonoChip(title: L("All"), isSelected: categoryFilter == nil) {
+                select {
                     categoryFilter = nil
                     expandedFactID = highlightedFact?.id
                 }
-                ForEach(NutritionFact.Category.allCases) { category in
-                    filterChip(
-                        label: FactCard.localizedCategory(category),
-                        isSelected: categoryFilter == category
-                    ) {
+            }
+            ForEach(NutritionFact.Category.allCases) { category in
+                MonoChip(title: FactCard.localizedCategory(category), isSelected: categoryFilter == category) {
+                    select {
                         categoryFilter = (categoryFilter == category) ? nil : category
                         expandedFactID = categoryFilter == nil ? highlightedFact?.id : nil
                     }
                 }
             }
-            .padding(4)
         }
-        .background(Capsule().fill(Tokens.Palette.surface.opacity(0.72)))
     }
 
-    private func filterChip(label: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button {
-            Haptics.light()
-            withAnimation(Tokens.Motion.gentle) { action() }
-        } label: {
-            Text(label)
-                .font(Tokens.Font.manrope(13, weight: 700))
-                .foregroundStyle(isSelected ? .white : Tokens.Palette.ink)
-                .padding(.horizontal, Tokens.Space.md)
-                .padding(.vertical, 8)
-                .background(Capsule().fill(isSelected ? Tokens.Palette.primary : Color.clear))
-        }
-        .buttonStyle(.plain)
+    private func select(_ action: () -> Void) {
+        Haptics.light()
+        withAnimation(Tokens.Motion.gentle) { action() }
     }
 
     private var filteredFacts: [NutritionFact] {
@@ -117,10 +87,6 @@ struct FactsLibraryView: View {
 
     private var factsTitle: String {
         TL(pl: "Fakty", en: "Facts", uk: "Факти", ru: "Факты", es: "Datos")
-    }
-
-    private var factOfDayTitle: String {
-        TL(pl: "Fakt dnia", en: "Fact of the day", uk: "Факт дня", ru: "Факт дня", es: "Dato del día")
     }
 
     private func factRow(_ fact: NutritionFact) -> some View {

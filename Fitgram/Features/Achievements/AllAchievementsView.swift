@@ -14,8 +14,9 @@ struct AllAchievementsView: View {
     }
 
     private let columns = [
-        GridItem(.flexible(), spacing: Tokens.Space.md),
-        GridItem(.flexible(), spacing: Tokens.Space.md),
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8),
     ]
 
     private var definitions: [AchievementDefinition] {
@@ -25,24 +26,30 @@ struct AllAchievementsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-                    header
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(
+                        text: "\(earnedKindsToDate.count) / \(AchievementCatalog.all.count)",
+                        sub: L("Twoja kolekcja rośnie z każdym realnym nawykiem."),
+                        kicker: L("Odznaki")
+                    )
                     categoryRail
-                    LazyVGrid(columns: columns, spacing: Tokens.Space.md) {
+                        .padding(.top, 14)
+                    LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(definitions, id: \.id) { definition in
                             achievementCard(definition)
                         }
                     }
+                    .padding(.top, 12)
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.vertical, Tokens.Space.lg)
+                .padding(.bottom, 34)
             }
+            .scrollIndicators(.hidden)
             .background(Tokens.Palette.background.ignoresSafeArea())
-            .navigationTitle(Text("Wszystkie odznaki"))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Wszystkie odznaki"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Zamknij") { dismiss() }
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij")) { dismiss() }
                 }
             }
         }
@@ -56,48 +63,25 @@ struct AllAchievementsView: View {
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Text("\(earnedKindsToDate.count) / \(AchievementCatalog.all.count)")
-                .font(Tokens.Font.archivo(size: 42, weight: 800, width: 115))
-                .foregroundStyle(Tokens.Palette.primary)
-            Text("Twoja kolekcja rośnie z każdym realnym nawykiem.")
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-    }
-
+    /// chips(): categories, dark when selected, scrolls horizontally.
     private var categoryRail: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Tokens.Space.sm) {
+            HStack(spacing: 6) {
                 ForEach(AchievementCollectionCategory.allCases) { category in
-                    Button {
+                    MonoChip(title: category.title, isSelected: selectedCategory == category) {
                         withAnimation(Tokens.Motion.gentle) {
                             selectedCategory = category
                         }
-                    } label: {
-                        Label(category.title, systemImage: category.symbol)
-                            .font(Tokens.Font.caption.weight(.bold))
-                            .foregroundStyle(selectedCategory == category ? .white : Tokens.Palette.ink)
-                            .padding(.horizontal, Tokens.Space.md)
-                            .padding(.vertical, 10)
-                            .background(
-                                Capsule()
-                                    .fill(selectedCategory == category ? category.tint : Tokens.Palette.surface)
-                            )
+                        Haptics.selection()
                     }
-                    .buttonStyle(.pressable)
                 }
             }
         }
+        .scrollClipDisabled()
     }
 
     private func achievementCard(_ definition: AchievementDefinition) -> some View {
-        let isEarned = earnedKindsToDate[definition.id] != nil
-        return Button {
+        Button {
             selected = AchievementSelection(
                 id: definition.id,
                 definition: definition,
@@ -105,37 +89,59 @@ struct AllAchievementsView: View {
             )
             Haptics.light()
         } label: {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack(alignment: .top) {
-                    AchievementMedallion(definition: definition, isEarned: isEarned, size: 58)
-                    Spacer(minLength: 0)
-                    Text(definition.rarity.title)
-                        .font(Tokens.Font.manrope(10, weight: 800))
-                        .foregroundStyle(definition.rarity.tint)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
-                        .background(Capsule().fill(definition.rarity.tint.opacity(0.12)))
-                }
-                Text(definition.title)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .lineLimit(2)
-                Text(definition.summary)
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .lineLimit(3)
-            }
-            .frame(maxWidth: .infinity, minHeight: 180, alignment: .topLeading)
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(isEarned ? Tokens.Palette.surface.opacity(0.88) : Tokens.Palette.surfaceMuted.opacity(0.72))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(.clear, lineWidth: 0)
-            )
+            MonoAchievementTile(definition: definition, isEarned: earnedKindsToDate[definition.id] != nil)
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Design D badge pieces (shared with AchievementsSection / AchievementDetailSheet)
+
+/// Rounded-square glyph: hero fill + hi symbol when earned, track + muted symbol when locked.
+struct MonoAchievementGlyph: View {
+    let definition: AchievementDefinition
+    let isEarned: Bool
+    var size: CGFloat = 56
+    var radius: CGFloat = 20
+    var symbolSize: CGFloat = 24
+
+    var body: some View {
+        Image(systemName: definition.symbol)
+            .font(.system(size: symbolSize, weight: .semibold))
+            .foregroundStyle(isEarned ? Tokens.Mono.hi : Tokens.Mono.muted)
+            .frame(width: size, height: size)
+            .background(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(isEarned ? Tokens.Mono.hero : Tokens.Mono.track)
+            )
+            .accessibilityHidden(true)
+    }
+}
+
+/// Mockup `badge()` tile: 20 pt card, 14×8 padding, 56 pt glyph, 12/800 centred title.
+struct MonoAchievementTile: View {
+    let definition: AchievementDefinition
+    let isEarned: Bool
+
+    var body: some View {
+        VStack(spacing: 8) {
+            MonoAchievementGlyph(definition: definition, isEarned: isEarned)
+            Text(definition.title)
+                .font(Tokens.Font.manrope(12, weight: 800))
+                .foregroundStyle(isEarned ? Tokens.Palette.ink : Tokens.Mono.muted)
+                .multilineTextAlignment(.center)
+                .lineSpacing(1)
+                .lineLimit(2, reservesSpace: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .top)
+        .padding(.vertical, 14)
+        .padding(.horizontal, 8)
+        .monoSurface(radius: Tokens.Mono.Radius.tile)
+        .contentShape(RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(definition.title))
+        .accessibilityValue(Text(isEarned ? L("Zdobyte") : L("Zablokowane")))
+        .accessibilityHint(Text(definition.summary))
+        .accessibilityAddTraits(.isButton)
     }
 }

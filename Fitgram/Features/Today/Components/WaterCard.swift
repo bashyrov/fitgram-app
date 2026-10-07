@@ -23,7 +23,8 @@ struct WaterCard: View {
             VStack(alignment: .leading, spacing: Tokens.Space.sm) {
                 HStack {
                     Text("Woda")
-                        .font(Tokens.Font.headline)
+                        .font(Tokens.Font.monoDisplay(18))
+                        .textCase(.uppercase)
                         .foregroundStyle(Tokens.Palette.ink)
                     Spacer()
                     if let onEditGoal {
@@ -52,11 +53,11 @@ struct WaterCard: View {
                             Text("Dolej 250 ml")
                                 .font(Tokens.Font.footnote.bold())
                         }
-                        .foregroundStyle(Tokens.Palette.onPrimary)
+                        .foregroundStyle(Tokens.Mono.hi)
                         .padding(.horizontal, Tokens.Space.md)
                         .padding(.vertical, Tokens.Space.sm)
                         .background(
-                            Capsule().fill(Tokens.Palette.primary)
+                            Capsule().fill(Tokens.Mono.hero)
                         )
                     }
                     .buttonStyle(.plain)
@@ -69,7 +70,8 @@ struct WaterCard: View {
                                 .foregroundStyle(Tokens.Palette.inkMuted)
                                 .frame(width: 36, height: 36)
                                 .background(
-                                    Circle().fill(Tokens.Palette.surfaceMuted)
+                                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous).fill(
+                                        Tokens.Mono.track)
                                 )
                         }
                         .accessibilityLabel(Text("Undo last glass"))
@@ -94,6 +96,6 @@ struct WaterCard: View {
     }
 
     private func glassColor(for index: Int) -> Color {
-        Double(index) < glassesConsumed ? Tokens.Palette.primary : Tokens.Palette.inkSubtle
+        Double(index) < glassesConsumed ? Tokens.Mono.accent : Tokens.Mono.line2
     }
 }

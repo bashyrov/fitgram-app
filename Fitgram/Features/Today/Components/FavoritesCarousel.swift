@@ -99,11 +99,11 @@ struct FavoritesCarousel: View {
         } label: {
             HStack(spacing: Tokens.Space.md) {
                 ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.warning.opacity(0.18))
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                        .fill(Tokens.Mono.track)
                         .frame(width: 40, height: 40)
                     Image(systemName: "star.fill")
-                        .foregroundStyle(Tokens.Palette.warning)
+                        .foregroundStyle(Tokens.Palette.ink)
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Moje przepisy — szybkie dodawanie")
@@ -115,12 +115,12 @@ struct FavoritesCarousel: View {
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .foregroundStyle(Tokens.Palette.ink)
             }
             .padding(Tokens.Space.md)
             .background(
                 RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.primarySoft)
+                    .fill(Tokens.Mono.track)
             )
             .padding(.horizontal, Tokens.Space.screenPadding)
         }
@@ -189,7 +189,7 @@ private struct FavoriteMiniCard: View {
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text("\(Int(favorite.caloriesKcal))")
-                        .font(Tokens.Font.title3)
+                        .font(Tokens.Font.monoNumber(28))
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("kcal")
                         .font(Tokens.Font.caption)
@@ -201,11 +201,7 @@ private struct FavoriteMiniCard: View {
             }
             .padding(Tokens.Space.md)
             .frame(width: 180, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-                    .shadow(color: .black.opacity(0.06), radius: 8, y: 3)
-            )
+            .monoSurface(radius: Tokens.Radius.lg)
         }
         .buttonStyle(PressableButtonStyle())
         .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })

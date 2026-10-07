@@ -15,7 +15,15 @@ struct MealSearchSheet: View {
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
-        formatter.dateFormat = "EEEE, d MMMM yyyy"
+        formatter.dateFormat = "d MMMM"
+        return formatter
+
+    }
+    private static var dayWithYearFormatter: DateFormatter {
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: LocalizationStore.currentLanguageCode())
+        formatter.dateFormat = "d MMMM yyyy"
         return formatter
 
     }
@@ -29,28 +37,27 @@ struct MealSearchSheet: View {
     }
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                VStack(spacing: Tokens.Space.md) {
-                    searchField
-                    body(for: results)
-                }
-                .padding(.top, Tokens.Space.md)
+            VStack(spacing: 0) {
+                searchField
+                    .padding(.top, 6)
+                body(for: results)
             }
-            .navigationTitle(Text("Search a meal"))
-            .navigationBarTitleDisplayMode(.inline)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(L("Search a meal"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
         }
     }
 
     private var searchField: some View {
-        HStack(spacing: Tokens.Space.sm) {
+        HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Tokens.Palette.ink)
             TextField(
                 "Nazwa składnika lub potrawy",
                 text: Binding(
@@ -61,6 +68,8 @@ struct MealSearchSheet: View {
                     }
                 )
             )
+            .font(Tokens.Font.manrope(15, weight: 700))
+            .foregroundStyle(Tokens.Palette.ink)
             .textInputAutocapitalization(.never)
             .submitLabel(.search)
             if !query.isEmpty {
@@ -69,18 +78,20 @@ struct MealSearchSheet: View {
                     results = []
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
+                .buttonStyle(.plain)
             }
         }
-        .padding(Tokens.Space.md)
+        .padding(.horizontal, 14)
+        .frame(height: 50)
         .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Tokens.Palette.surface)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(query.isEmpty ? Tokens.Mono.line2 : Tokens.Palette.ink, lineWidth: query.isEmpty ? 1 : 2)
         )
         .padding(.horizontal, Tokens.Space.screenPadding)
     }
@@ -88,39 +99,29 @@ struct MealSearchSheet: View {
     @ViewBuilder
     private func body(for results: [MealEntry]) -> some View {
         if query.isEmpty {
-            VStack(spacing: Tokens.Space.md) {
-                Spacer()
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 32))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-                Text("Szukaj wśród wszystkich zapisanych posiłków.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
-                Spacer()
-            }
-            .padding(.horizontal, Tokens.Space.lg)
+            stateMessage(icon: "magnifyingglass", text: L("Szukaj wśród wszystkich zapisanych posiłków."))
         } else if results.isEmpty {
-            VStack(spacing: Tokens.Space.md) {
-                Spacer()
-                Text(String.localizedStringWithFormat(L("Nic nie znaleziono dla \"%@\"."), query))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
-                Spacer()
-            }
-            .padding(.horizontal, Tokens.Space.lg)
+            stateMessage(
+                icon: "magnifyingglass",
+                text: String.localizedStringWithFormat(L("Nic nie znaleziono dla \"%@\"."), query)
+            )
         } else {
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: Tokens.Space.sm) {
+                LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(grouped(), id: \.0) { day, meals in
-                        Text(Self.dayFormatter.string(from: day).capitalized)
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkSubtle)
-                            .padding(.top, Tokens.Space.sm)
-                        ForEach(meals) { meal in
-                            row(meal)
+                        MonoSectionHeader(title: dayTitle(day))
+                            .padding(.horizontal, 6)
+                            .padding(.top, 4)
+                            .padding(.bottom, 12)
+                        VStack(spacing: 0) {
+                            ForEach(Array(meals.enumerated()), id: \.element.id) { index, meal in
+                                if index > 0 {
+                                    MonoRowDivider(inset: 16)
+                                }
+                                row(meal)
+                            }
                         }
+                        .monoRowsCard()
                     }
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
@@ -129,34 +130,57 @@ struct MealSearchSheet: View {
         }
     }
 
+    private func stateMessage(icon: String, text: String) -> some View {
+        VStack(spacing: 8) {
+            MonoIconBox(systemName: icon, style: .track, size: 44)
+            Text(text)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 24)
+        .padding(.top, 30)
+    }
+
+    private func dayTitle(_ day: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(day) {
+            return L("Dziś")
+        }
+        if calendar.component(.year, from: day) == calendar.component(.year, from: Date()) {
+            return Self.dayFormatter.string(from: day)
+        }
+        return Self.dayWithYearFormatter.string(from: day)
+    }
+
+    private func subtitle(for meal: MealEntry) -> String {
+        var parts: [String] = [mealTypeTitle(meal.mealType), Self.timeFormatter.string(from: meal.consumedAt)]
+        if !meal.tags.isEmpty {
+            parts.append("#" + meal.tags.joined(separator: " #"))
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    private func mealTypeTitle(_ type: MealType) -> String {
+        switch type {
+        case .breakfast: return L("Śniadanie")
+        case .lunch: return L("Obiad")
+        case .dinner: return L("Kolacja")
+        case .snack: return L("Przekąska")
+        }
+    }
+
     private func row(_ meal: MealEntry) -> some View {
         Button {
             onSelect(meal)
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(meal.items.first?.name ?? L("Posiłek"))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                    Text(Self.timeFormatter.string(from: meal.consumedAt))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: 0)
-                Text(String.localizedStringWithFormat(L("%lld kcal"), Int(meal.totalCaloriesKcal)))
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.primary)
+            MonoRow(title: meal.items.first?.name ?? L("Posiłek"), sub: subtitle(for: meal)) {
+                Text("\(Int(meal.totalCaloriesKcal.rounded()))")
+                    .font(Tokens.Font.monoNumber(18))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .fill(Tokens.Palette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                    .stroke(Tokens.Palette.separator, lineWidth: 0.35)
-            )
         }
         .buttonStyle(.plain)
     }

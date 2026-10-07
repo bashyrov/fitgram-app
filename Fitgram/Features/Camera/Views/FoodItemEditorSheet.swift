@@ -55,51 +55,60 @@ struct FoodItemEditorSheet: View {
         }
     }
 
+    private var screenTitle: String {
+        mode == .adding ? L("Add ingredient") : L("Edit ingredient")
+    }
+
+    private var commitTitle: String {
+        mode == .adding ? L("Add") : L("Save")
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                field(label: "Nazwa", placeholder: "Kanapka z serem", text: $name, keyboard: .default)
-                                field(label: "Porcja (g)", placeholder: "100", text: $grams, keyboard: .decimalPad)
-                            }
-                        }
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                Text("Nutrition values")
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text(
-                                    "Możesz wpisać tylko gramaturę. Brakujące kcal i makro uzupełni baza lub AI przy zapisie."
-                                )
-                                .font(Tokens.Font.caption)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
-                                field(
-                                    label: "Kalorie (kcal)", placeholder: "250", text: $calories, keyboard: .decimalPad)
-                                field(label: "Protein (g)", placeholder: "15", text: $protein, keyboard: .decimalPad)
-                                field(label: "Carbs (g)", placeholder: "30", text: $carbs, keyboard: .decimalPad)
-                                field(label: "Fat (g)", placeholder: "8", text: $fat, keyboard: .decimalPad)
-                            }
-                        }
-                        PrimaryButton(
-                            title: mode == .adding ? "Add" : "Save",
-                            systemImage: "checkmark",
-                            isEnabled: isValid,
-                            action: commit
-                        )
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(text: screenTitle)
+                        .padding(.bottom, 4)
+                    VStack(alignment: .leading, spacing: 12) {
+                        field(label: L("Nazwa"), placeholder: "Kanapka z serem", text: $name, keyboard: .default)
+                        field(label: L("Porcja (g)"), placeholder: "100", text: $grams, keyboard: .decimalPad)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .monoCard(padding: 16)
+                    VStack(alignment: .leading, spacing: 12) {
+                        MonoLabel(text: L("Nutrition values"))
+                        Text(
+                            "Możesz wpisać tylko gramaturę. Brakujące kcal i makro uzupełni baza lub AI przy zapisie."
+                        )
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                        field(label: L("Kalorie (kcal)"), placeholder: "250", text: $calories, keyboard: .decimalPad)
+                        field(label: L("Protein (g)"), placeholder: "15", text: $protein, keyboard: .decimalPad)
+                        field(label: L("Carbs (g)"), placeholder: "30", text: $carbs, keyboard: .decimalPad)
+                        field(label: L("Fat (g)"), placeholder: "8", text: $fat, keyboard: .decimalPad)
+                    }
+                    .monoCard(padding: 16)
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
+            }
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: commitTitle, kind: .dark, icon: "checkmark", action: commit)
+                        .disabled(!isValid)
+                        .opacity(isValid ? 1 : 0.5)
                 }
             }
-            .navigationTitle(Text(mode == .adding ? "Add ingredient" : "Edit ingredient"))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(screenTitle)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: commitTitle, action: commit)
+                        .disabled(!isValid)
+                        .opacity(isValid ? 1 : 0.5)
                 }
             }
         }
@@ -127,26 +136,15 @@ struct FoodItemEditorSheet: View {
     }
 
     private func field(
-        label: LocalizedStringKey,
+        label: String,
         placeholder: LocalizedStringKey,
         text: Binding<String>,
         keyboard: UIKeyboardType
     ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+        MonoField(label: label) {
             TextField(placeholder, text: text)
                 .keyboardType(keyboard)
                 .textInputAutocapitalization(keyboard == .default ? .sentences : .never)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink)
-                .padding(.vertical, Tokens.Space.sm)
-                .padding(.horizontal, Tokens.Space.md)
-                .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted)
-                )
         }
     }
 

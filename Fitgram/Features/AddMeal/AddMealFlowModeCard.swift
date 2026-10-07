@@ -7,26 +7,21 @@ struct AddMealFlowModeCard: View {
     let tint: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: symbol)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(tint)
-                .frame(width: 34, height: 34)
-                .background(Circle().fill(tint.opacity(0.14)))
-            Text(title)
-                .font(Tokens.Font.manrope(15, weight: 800))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(subtitle)
-                .font(Tokens.Font.caption2)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .lineLimit(3)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 14) {
+            MonoIconBox(systemName: symbol, style: .outline, size: 38)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title)
+                    .font(Tokens.Font.archivo(size: 16, weight: 800, width: 115))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(subtitle)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .frame(maxWidth: .infinity, minHeight: 120, alignment: .topLeading)
-        .padding(Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(tint.opacity(0.08))
-        )
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .padding(14)
+        .monoCard(radius: 22, padding: nil)
     }
 }

@@ -25,26 +25,26 @@ struct StreakSharePreviewSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        preview
-                        backgroundPicker
-                        if backgroundChoice == .photo {
-                            photoPickerControl
-                        }
-                        actions
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(spacing: 0) {
+                    preview
+                        .padding(.horizontal, 48)
+                        .padding(.top, 10)
+                    backgroundCard
+                        .padding(.top, 14)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
             }
-            .navigationTitle(Text("Share streak"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                actions
+            }
+            .monoNavigationTitle(titleText)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: closeText, action: onDismiss)
                 }
             }
         }
@@ -56,15 +56,11 @@ struct StreakSharePreviewSheet: View {
 
     // MARK: - Sections
 
-    @ViewBuilder
+    /// 9:16 story preview, radius 28 like the mockup card.
     private var preview: some View {
-        let backgroundContent: Color =
-            backgroundChoice == .transparent
-            ? Tokens.Palette.surfaceMuted
-            : .clear
         ZStack {
             Rectangle()
-                .fill(backgroundContent)
+                .fill(backgroundChoice == .transparent ? Tokens.Mono.track : Tokens.Mono.hero)
             if let renderedImage {
                 renderedImage
                     .resizable()
@@ -72,96 +68,93 @@ struct StreakSharePreviewSheet: View {
             } else {
                 ProgressView()
                     .progressViewStyle(.circular)
+                    .tint(Tokens.Mono.onHero)
             }
         }
         .aspectRatio(9.0 / 16.0, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous))
-        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
-        .padding(.horizontal, Tokens.Space.lg)
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
     }
 
-    private var backgroundPicker: some View {
-        Picker(selection: $backgroundChoice) {
-            Text("Gradient").tag(BackgroundChoice.gradient)
-            Text("Transparent").tag(BackgroundChoice.transparent)
-            Text("Photo").tag(BackgroundChoice.photo)
-        } label: {
-            Text("Background")
+    /// card: LBL "Tło" + seg(Gradient / Transparent / Photo) (+ photo picker when needed).
+    private var backgroundCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Background"))
+            MonoSegmented(
+                selection: $backgroundChoice,
+                options: [
+                    (value: BackgroundChoice.gradient, title: L("Gradient")),
+                    (value: BackgroundChoice.transparent, title: L("Transparent")),
+                    (value: BackgroundChoice.photo, title: L("Photo")),
+                ]
+            )
+            if backgroundChoice == .photo {
+                photoPickerControl
+            }
         }
-        .pickerStyle(.segmented)
-        .padding(.horizontal, Tokens.Space.lg)
+        .monoCard(padding: 16)
     }
 
     private var photoPickerControl: some View {
         let title = pickedPhoto == nil ? L("Choose photo") : L("Change photo")
         return PhotosPicker(selection: $pickedPhotoItem, matching: .images, photoLibrary: .shared()) {
-            HStack(spacing: Tokens.Space.sm) {
+            HStack(spacing: 8) {
                 Image(systemName: "photo.on.rectangle.angled")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.system(size: 15, weight: .bold))
                 Text(title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .lineLimit(1)
             }
-            .foregroundStyle(Tokens.Palette.primary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Tokens.Space.md)
-            .background(
-                Capsule().fill(Tokens.Palette.primarySoft)
-            )
-            .padding(.horizontal, Tokens.Space.lg)
         }
+        .buttonStyle(MonoButtonStyle(kind: .outline, height: 44))
     }
 
+    /// bottom(): Share (dark) + Save to photos (outline), side by side, 50 pt.
     @ViewBuilder
     private var actions: some View {
         if let renderedImage, let renderedUIImage {
-            VStack(spacing: Tokens.Space.sm) {
-                ShareLink(
-                    item: renderedImage,
-                    preview: SharePreview(
-                        String.localizedStringWithFormat(L("Fitgram — %lld days"), streakLength),
-                        image: renderedImage
-                    )
-                ) {
-                    primaryButton(title: L("Share"), symbol: "square.and.arrow.up")
-                }
-                .buttonStyle(.plain)
+            MonoBottomBar {
+                HStack(spacing: 8) {
+                    ShareLink(
+                        item: renderedImage,
+                        preview: SharePreview(
+                            String.localizedStringWithFormat(L("Fitgram — %lld days"), streakLength),
+                            image: renderedImage
+                        )
+                    ) {
+                        buttonLabel(title: L("Share"), symbol: "square.and.arrow.up")
+                    }
+                    .buttonStyle(MonoButtonStyle(kind: .dark, height: 50))
 
-                Button {
-                    UIImageWriteToSavedPhotosAlbum(renderedUIImage, nil, nil, nil)
-                    Haptics.success()
-                } label: {
-                    secondaryButton(title: L("Save to photos"), symbol: "square.and.arrow.down")
+                    Button {
+                        UIImageWriteToSavedPhotosAlbum(renderedUIImage, nil, nil, nil)
+                        Haptics.success()
+                    } label: {
+                        buttonLabel(title: L("Save to photos"), symbol: "square.and.arrow.down")
+                    }
+                    .buttonStyle(MonoButtonStyle(kind: .outline, height: 50))
                 }
-                .buttonStyle(.plain)
             }
-            .padding(.horizontal, Tokens.Space.lg)
         }
     }
 
-    private func primaryButton(title: String, symbol: String) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
+    private func buttonLabel(title: String, symbol: String) -> some View {
+        HStack(spacing: 8) {
             Image(systemName: symbol)
-                .font(.system(size: 17, weight: .semibold))
-            Text(title).font(Tokens.Font.bodyEmphasized)
+                .font(.system(size: 15, weight: .bold))
+            Text(title)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
         }
-        .foregroundStyle(.white)
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.md)
-        .background(Capsule().fill(Tokens.Palette.primary))
     }
 
-    private func secondaryButton(title: String, symbol: String) -> some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
-            Text(title).font(Tokens.Font.callout)
-        }
-        .foregroundStyle(Tokens.Palette.primary)
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.sm)
-        .background(
-            Capsule().strokeBorder(Tokens.Palette.primary, lineWidth: 1.5)
+    private var titleText: String {
+        TL(
+            pl: "Udostępnij serię", en: "Share streak", uk: "Поділитися серією", ru: "Поделиться серией",
+            es: "Compartir racha"
         )
+    }
+
+    private var closeText: String {
+        TL(pl: "Zamknij", en: "Close", uk: "Закрити", ru: "Закрыть", es: "Cerrar")
     }
 
     // MARK: - Helpers

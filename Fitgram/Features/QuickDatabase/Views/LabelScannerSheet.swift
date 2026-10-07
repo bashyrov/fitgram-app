@@ -18,50 +18,139 @@ struct LabelScannerSheet: View {
     }
 
     @State private var stage: Stage = .capturing
+    @State private var capturedImage: UIImage?
 
     var body: some View {
-        ZStack {
-            Tokens.Palette.background.ignoresSafeArea()
-            switch stage {
-            case .capturing:
-                CameraImagePicker(
-                    onPicked: { image in run(image: image) },
-                    onDismiss: onDismiss
-                )
-                .ignoresSafeArea()
-            case .scanning:
-                VStack(spacing: Tokens.Space.md) {
-                    ProgressView().tint(Tokens.Palette.primary)
-                    Text("Odczytuję etykietę…")
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+        switch stage {
+        case .capturing:
+            CameraImagePicker(
+                onPicked: { image in run(image: image) },
+                onDismiss: onDismiss
+            )
+            .ignoresSafeArea()
+        case .confirm(let prefilled, let raw):
+            CustomFoodFormSheet(
+                prefilled: prefilled,
+                rawOCR: raw,
+                onSave: onSave,
+                onDismiss: onDismiss
+            )
+        case .scanning:
+            statusScreen { scanningCard }
+        case .failed(let message):
+            statusScreen { failedCard(message) }
+        }
+    }
+
+    /// `nav('Skan etykiety', 'Zamknij')` + label photo (300 pt) + one state card.
+    private func statusScreen<CardContent: View>(@ViewBuilder card: () -> CardContent) -> some View {
+        let content = card()
+        return NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    labelPhoto
+                    content
                 }
-            case .confirm(let prefilled, let raw):
-                CustomFoodFormSheet(
-                    prefilled: prefilled,
-                    rawOCR: raw,
-                    onSave: onSave,
-                    onDismiss: onDismiss
-                )
-            case .failed(let message):
-                VStack(spacing: Tokens.Space.lg) {
-                    Spacer()
-                    EmptyState(
-                        symbol: "exclamationmark.triangle.fill",
-                        title: "Nie udało się odczytać",
-                        message: LocalizedStringKey(message),
-                        action: .init(title: "Try again", perform: { stage = .capturing })
-                    )
-                    Spacer()
-                    SecondaryButton(title: "Close", systemImage: "xmark", action: onDismiss)
-                        .padding(.horizontal, Tokens.Space.screenPadding)
-                        .padding(.bottom, Tokens.Space.xl)
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, 20)
+                .padding(.bottom, 24)
+            }
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(
+                TL(
+                    pl: "Skan etykiety", en: "Label scan", uk: "Скан етикетки", ru: "Скан этикетки",
+                    es: "Escaneo de etiqueta")
+            )
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
         }
     }
 
+    /// The captured photo when we have it, otherwise the striped placeholder.
+    @ViewBuilder
+    private var labelPhoto: some View {
+        if let capturedImage {
+            Color.clear
+                .frame(height: 300)
+                .frame(maxWidth: .infinity)
+                .overlay(
+                    Image(uiImage: capturedImage)
+                        .resizable()
+                        .scaledToFill()
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(Tokens.Mono.line, lineWidth: 1)
+                )
+                .accessibilityHidden(true)
+        } else {
+            MonoImagePlaceholder(
+                height: 300,
+                label: TL(
+                    pl: "Zdjęcie etykiety", en: "Label photo", uk: "Фото етикетки", ru: "Фото этикетки",
+                    es: "Foto de la etiqueta"
+                )
+            )
+        }
+    }
+
+    private var scanningCard: some View {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "doc.text", style: .dark, size: 40)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Odczytuję etykietę…")
+                    .font(Tokens.Font.manrope(16, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(
+                    TL(
+                        pl: "Tekst rozpoznawany lokalnie na telefonie.",
+                        en: "Text is recognised locally on your phone.",
+                        uk: "Текст розпізнається локально на телефоні.", ru: "Текст распознаётся локально на телефоне.",
+                        es: "El texto se reconoce localmente en tu teléfono."
+                    )
+                )
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+            ProgressView()
+                .tint(Tokens.Mono.muted)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func failedCard(_ message: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: "exclamationmark.triangle", style: .track, size: 40)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Nie udało się odczytać")
+                        .font(Tokens.Font.manrope(16, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(message)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            HStack(spacing: 8) {
+                MonoButton(title: L("Try again"), kind: .dark, icon: "arrow.clockwise", height: 44) {
+                    stage = .capturing
+                }
+                MonoButton(title: L("Close"), kind: .outline, height: 44, action: onDismiss)
+            }
+        }
+        .monoCard(padding: 16)
+    }
+
     private func run(image: UIImage) {
+        capturedImage = image
         stage = .scanning
         Task {
             do {

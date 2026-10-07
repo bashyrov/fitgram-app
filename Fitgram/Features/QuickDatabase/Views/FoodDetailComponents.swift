@@ -1,105 +1,86 @@
 import SwiftUI
 
-/// Grams slider with quick presets for the overall portion.
+/// `portion_card(g, pct)`: "PORCJA" label + italic grams, slider with range labels,
+/// quick preset chips and the "Dopasuj wagę przed dodaniem" hint.
 struct FoodDetailPortionCard: View {
     @Binding var grams: Double
+    var range: ClosedRange<Double> = 10...1500
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(L("Porcja"))
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Dopasuj wagę przed dodaniem"))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                MonoLabel(text: L("Porcja"))
+                Spacer(minLength: 0)
                 Text(String.localizedStringWithFormat(L("%lld g"), Int(grams.rounded())))
-                    .font(Tokens.Font.archivo(size: 25, weight: 800, width: 115))
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .font(Tokens.Font.monoNumber(22))
+                    .foregroundStyle(Tokens.Palette.ink)
                     .contentTransition(.numericText())
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
             }
-
-            Slider(value: $grams, in: 10...600, step: 5)
-                .tint(Tokens.Palette.primary)
-                .padding(.vertical, Tokens.Space.xs)
-
-            HStack(spacing: Tokens.Space.sm) {
+            VStack(spacing: 6) {
+                Slider(value: $grams, in: range, step: 5)
+                    .tint(Tokens.Mono.strong)
+                HStack {
+                    Text(String.localizedStringWithFormat(L("%lld g"), Int(range.lowerBound)))
+                    Spacer()
+                    Text(String.localizedStringWithFormat(L("%lld g"), Int(range.upperBound)))
+                }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
+            }
+            HStack(spacing: 6) {
                 ForEach([100, 150, 250, 400], id: \.self) { preset in
                     portionPresetButton(preset)
                 }
             }
-
-            HStack {
-                Text(String.localizedStringWithFormat(L("%lld g"), 10))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-                Spacer()
-                Text(String.localizedStringWithFormat(L("%lld g"), 600))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
+            Text(L("Dopasuj wagę przed dodaniem"))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
+        .monoCard(padding: 16)
     }
 
     private func portionPresetButton(_ preset: Int) -> some View {
-        Button {
+        let isSelected = Int(grams.rounded()) == preset
+        return Button {
             withAnimation(Tokens.Motion.quick) {
                 grams = Double(preset)
             }
             Haptics.selection()
         } label: {
             Text(String.localizedStringWithFormat(L("%lld g"), preset))
-                .font(Tokens.Font.caption.weight(.bold))
-                .foregroundStyle(Int(grams.rounded()) == preset ? .white : Tokens.Palette.ink)
+                .font(Tokens.Font.manrope(13, weight: isSelected ? 800 : 700))
+                .foregroundStyle(isSelected ? Tokens.Mono.onHero : Tokens.Palette.ink)
+                .lineLimit(1)
                 .frame(maxWidth: .infinity)
-                .frame(height: 34)
-                .background(
-                    Capsule()
-                        .fill(Int(grams.rounded()) == preset ? Tokens.Palette.primary : Tokens.Palette.surfaceMuted)
-                )
+                .frame(height: 36)
+                .background(Capsule().fill(isSelected ? Tokens.Mono.hero : Color.clear))
+                .overlay(Capsule().stroke(isSelected ? Color.clear : Tokens.Mono.line2, lineWidth: 1))
         }
-        .buttonStyle(.pressable)
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
-/// Protein / carbs / fat for the chosen portion.
+/// Protein / carbs / fat for the chosen portion (light macro chips).
 struct FoodDetailMacroCard: View {
     let protein: Double
     let carbs: Double
     let fat: Double
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                Text(L("Makro"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: L("Makro"))
+                Spacer(minLength: 8)
                 Text(L("na wybraną porcję"))
-                    .font(Tokens.Font.caption)
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
             }
-            HStack(spacing: Tokens.Space.sm) {
-                FoodDetailMacroPill(label: L("Protein"), grams: protein, color: Tokens.Palette.primary)
-                FoodDetailMacroPill(label: L("Węgle"), grams: carbs, color: Tokens.Palette.warning)
-                FoodDetailMacroPill(label: L("Tłuszcz"), grams: fat, color: Tokens.Palette.accent)
-            }
+            MonoMacroRow(protein: protein, carbs: carbs, fat: fat)
         }
-        .padding(Tokens.Space.lg)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.78))
-        )
+        .monoCard(padding: 16)
     }
 }
 
@@ -109,23 +90,7 @@ struct FoodDetailMacroPill: View {
     let color: Color
 
     var body: some View {
-        VStack(spacing: 5) {
-            Text(String(format: "%.1f g", grams))
-                .font(Tokens.Font.bodyEmphasized)
-                .foregroundStyle(color)
-                .contentTransition(.numericText())
-            Text(label)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.md)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(color.opacity(0.11))
-        )
+        MonoMacroChip(label: label, grams: grams, dot: color)
     }
 }
 

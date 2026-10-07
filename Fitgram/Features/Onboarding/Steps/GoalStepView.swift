@@ -12,37 +12,37 @@ struct GoalStepView: View {
             primarySystemImage: "arrow.right",
             onPrimary: onContinue,
             content: {
-                VStack(spacing: Tokens.Space.md) {
+                VStack(spacing: 8) {
                     OnboardingChoiceCard(
-                        symbol: "arrow.down.right",
+                        symbol: "chart.bar",
                         title: "Lose weight",
                         subtitle: "Gentle deficit, long-term",
                         isSelected: goal == .lose,
                         action: { goal = .lose }
                     )
                     OnboardingChoiceCard(
-                        symbol: "arrow.up.right",
+                        symbol: "bolt",
                         title: "Gain weight",
                         subtitle: "More energy and protein",
                         isSelected: goal == .gain,
                         action: { goal = .gain }
                     )
                     OnboardingChoiceCard(
-                        symbol: "equal",
+                        symbol: "scalemass",
                         title: "Maintain weight",
                         subtitle: "Zdrowe nawyki bez zmiany masy",
                         isSelected: goal == .maintain,
                         action: { goal = .maintain }
                     )
                     OnboardingChoiceCard(
-                        symbol: "heart.text.square",
+                        symbol: "heart",
                         title: "Konkretny cel zdrowotny",
                         subtitle: "E.g. working with a dietician, medical condition",
                         isSelected: goal == .healthCondition,
                         action: { goal = .healthCondition }
                     )
                     OnboardingChoiceCard(
-                        symbol: "magnifyingglass",
+                        symbol: "eye",
                         title: "No goal, just tracking",
                         subtitle: "I just want to see what I eat",
                         isSelected: goal == .justTracking,

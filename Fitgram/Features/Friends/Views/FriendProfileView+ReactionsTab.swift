@@ -6,7 +6,7 @@ import SwiftUI
 extension FriendProfileView {
     @ViewBuilder
     func reactionsTab(_ snapshot: FriendProfileSnapshot) -> some View {
-        VStack(spacing: Tokens.Space.md) {
+        VStack(spacing: 0) {
             reactionCard(
                 intent: .encourage,
                 title: L("Zachęć"),
@@ -14,6 +14,7 @@ extension FriendProfileView {
                 symbol: "hand.thumbsup.fill",
                 tint: Tokens.Palette.primary
             )
+            MonoRowDivider()
             reactionCard(
                 intent: .celebrate,
                 title: L("Pogratuluj"),
@@ -21,6 +22,7 @@ extension FriendProfileView {
                 symbol: "party.popper.fill",
                 tint: Tokens.Palette.accent
             )
+            MonoRowDivider()
             reactionCard(
                 intent: .congratulate,
                 title: L("Brawo"),
@@ -29,6 +31,7 @@ extension FriendProfileView {
                 tint: Tokens.Palette.warning
             )
         }
+        .monoRowsCard()
     }
 
     func reactionCard(
@@ -41,42 +44,13 @@ extension FriendProfileView {
         Button {
             Task { await send(intent: intent) }
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            tint
-                        )
-                        .frame(width: 48, height: 48)
-                    Image(systemName: symbol)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(subtitle)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .multilineTextAlignment(.leading)
-                }
-                Spacer()
+            MonoRow(icon: symbol, iconStyle: .dark, title: title, sub: subtitle) {
                 Image(systemName: "paperplane.fill")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(tint)
+                    .foregroundStyle(Tokens.Mono.muted)
             }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(Tokens.Palette.surface.opacity(0.82))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(tint.opacity(0.24).opacity(0.55), lineWidth: 0.55)
-            )
         }
-        .buttonStyle(.pressable)
+        .buttonStyle(.plain)
         .accessibilityLabel(Text(title))
     }
 }

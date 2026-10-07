@@ -104,7 +104,7 @@ struct DailyOlaPlanCard: View {
                 .padding(.vertical, Tokens.Space.sm)
                 .background(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted.opacity(0.68))
+                        .fill(Tokens.Mono.track)
                 )
             }
         }
@@ -123,7 +123,7 @@ struct DailyOlaPlanCard: View {
         .padding(Tokens.Space.sm)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Tokens.Palette.warning.opacity(0.12))
+                .fill(Tokens.Mono.track)
         )
     }
 

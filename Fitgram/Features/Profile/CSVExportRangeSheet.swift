@@ -20,83 +20,149 @@ struct CSVExportRangeSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        presetCard
-                        if preset == .custom {
-                            customCard
-                        }
-                        PrimaryButton(title: "Eksportuj", systemImage: "tablecells") {
-                            commit()
-                        }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: titleText)
+                    presetCard
+                        .padding(.top, 14)
+                    if preset == .custom {
+                        customCard
+                            .padding(.top, 10)
+                    } else {
+                        MonoHint(text: presetNote)
+                            .padding(.top, 10)
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
+            }
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                MonoBottomBar {
+                    MonoButton(title: exportCSVText, kind: .dark, icon: "arrow.down.to.line") {
+                        commit()
+                    }
                 }
             }
-            .navigationTitle(Text("Zakres eksportu"))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(titleText)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: cancelText, action: onDismiss)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavPill(title: exportText) { commit() }
                 }
             }
         }
     }
 
+    /// card: LBL "Co eksportować?" + segmented presets.
     private var presetCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("What to export?")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                presetRow(.all, label: "Full history", note: "Wszystkie wpisy.")
-                Divider().background(Tokens.Palette.separator)
-                presetRow(.last30, label: "Last 30 days", note: "Świetne na miesięczny przegląd.")
-                Divider().background(Tokens.Palette.separator)
-                presetRow(.last7, label: "Last 7 days", note: "Short week.")
-                Divider().background(Tokens.Palette.separator)
-                presetRow(.custom, label: "Własny zakres", note: "Wybierz daty Od i Do.")
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: whatToExportText)
+            MonoSegmented(
+                selection: $preset,
+                options: [
+                    (value: Preset.all, title: allText),
+                    (value: Preset.last30, title: last30Text),
+                    (value: Preset.last7, title: last7Text),
+                    (value: Preset.custom, title: customText),
+                ]
+            )
         }
+        .monoCard(padding: 16)
     }
 
-    private func presetRow(_ option: Preset, label: LocalizedStringKey, note: LocalizedStringKey) -> some View {
-        Button {
-            preset = option
-        } label: {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: preset == option ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(preset == option ? Tokens.Palette.primary : Tokens.Palette.inkSubtle)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(label)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(note)
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer()
-            }
-            .padding(.vertical, 4)
-        }
-        .buttonStyle(.plain)
-    }
-
+    /// rows: Od / Do with calendar icon boxes; the compact date picker is the trailing control.
     private var customCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Zakres dat")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                DatePicker("Od", selection: $fromDate, in: ...toDate, displayedComponents: .date)
-                    .tint(Tokens.Palette.primary)
-                DatePicker("Do", selection: $toDate, in: fromDate...Date(), displayedComponents: .date)
-                    .tint(Tokens.Palette.primary)
+        VStack(spacing: 0) {
+            MonoRow(icon: "calendar", title: fromText) {
+                DatePicker(fromText, selection: $fromDate, in: ...toDate, displayedComponents: .date)
+                    .labelsHidden()
+                    .datePickerStyle(.compact)
+                    .tint(Tokens.Palette.ink)
+            }
+            MonoRowDivider()
+            MonoRow(icon: "calendar", title: toText) {
+                DatePicker(toText, selection: $toDate, in: fromDate...Date(), displayedComponents: .date)
+                    .labelsHidden()
+                    .datePickerStyle(.compact)
+                    .tint(Tokens.Palette.ink)
             }
         }
+        .monoRowsCard()
+    }
+
+    // MARK: - Copy
+
+    private var presetNote: String {
+        switch preset {
+        case .all:
+            return TL(
+                pl: "Wszystkie wpisy.", en: "All entries.", uk: "Усі записи.", ru: "Все записи.",
+                es: "Todas las entradas.")
+        case .last30:
+            return TL(
+                pl: "Świetne na miesięczny przegląd.", en: "Great for a monthly review.",
+                uk: "Чудово для місячного огляду.", ru: "Отлично для месячного обзора.",
+                es: "Ideal para un repaso mensual."
+            )
+        case .last7:
+            return TL(
+                pl: "Krótki tydzień.", en: "Short week.", uk: "Короткий тиждень.", ru: "Короткая неделя.",
+                es: "Semana corta.")
+        case .custom:
+            return ""
+        }
+    }
+
+    private var titleText: String {
+        TL(
+            pl: "Zakres eksportu", en: "Export range", uk: "Діапазон експорту", ru: "Диапазон экспорта",
+            es: "Rango de exportación")
+    }
+
+    private var whatToExportText: String {
+        TL(
+            pl: "Co eksportować?", en: "What to export?", uk: "Що експортувати?", ru: "Что экспортировать?",
+            es: "¿Qué exportar?")
+    }
+
+    private var allText: String {
+        TL(pl: "Wszystko", en: "All", uk: "Усе", ru: "Всё", es: "Todo")
+    }
+
+    private var last30Text: String {
+        TL(pl: "30 dni", en: "30 days", uk: "30 днів", ru: "30 дней", es: "30 días")
+    }
+
+    private var last7Text: String {
+        TL(pl: "7 dni", en: "7 days", uk: "7 днів", ru: "7 дней", es: "7 días")
+    }
+
+    private var customText: String {
+        TL(pl: "Zakres dat", en: "Date range", uk: "Діапазон", ru: "Диапазон", es: "Fechas")
+    }
+
+    private var fromText: String {
+        TL(pl: "Od", en: "From", uk: "Від", ru: "С", es: "Desde")
+    }
+
+    private var toText: String {
+        TL(pl: "Do", en: "To", uk: "До", ru: "По", es: "Hasta")
+    }
+
+    private var cancelText: String {
+        TL(pl: "Anuluj", en: "Cancel", uk: "Скасувати", ru: "Отмена", es: "Cancelar")
+    }
+
+    private var exportText: String {
+        TL(pl: "Eksportuj", en: "Export", uk: "Експорт", ru: "Экспорт", es: "Exportar")
+    }
+
+    private var exportCSVText: String {
+        TL(pl: "Eksportuj CSV", en: "Export CSV", uk: "Експортувати CSV", ru: "Экспорт CSV", es: "Exportar CSV")
     }
 
     private func commit() {

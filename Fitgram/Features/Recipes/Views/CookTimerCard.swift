@@ -11,39 +11,40 @@ struct CookTimerCard: View {
     @State private var isFinishedAck = false
 
     var body: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Minutnik kuchenny")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    body(at: context.date)
-                }
-            }
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            content(at: context.date)
         }
+        .monoCard(padding: 16)
     }
 
     @ViewBuilder
-    private func body(at now: Date) -> some View {
-        if let endsAt {
-            let remaining = max(0, Int(endsAt.timeIntervalSince(now).rounded()))
-            HStack(spacing: Tokens.Space.md) {
-                Text(format(remaining))
-                    .font(Tokens.Font.counter)
-                    .foregroundStyle(
-                        remaining == 0 ? Tokens.Palette.warning : Tokens.Palette.primary
-                    )
-                Spacer()
-                Button(role: .destructive) {
-                    self.endsAt = nil
+    private func content(at now: Date) -> some View {
+        let remaining = endsAt.map { max(0, Int($0.timeIntervalSince(now).rounded())) }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .center, spacing: 10) {
+                MonoIconBox(systemName: "timer", style: .track, size: 36)
+                Text("Minutnik kuchenny")
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 8)
+                Text(format(remaining ?? cookMinutes * 60))
+                    .font(Tokens.Font.monoNumber(26))
+                    .foregroundStyle(remaining == 0 ? Tokens.Palette.warning : Tokens.Palette.ink)
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+            }
+            HStack(spacing: 8) {
+                MonoButton(title: L("Start"), kind: .dark, icon: "play.fill", height: 44) {
+                    start()
+                }
+                MonoButton(title: L("Stop"), kind: .outline, icon: "stop.fill", height: 44) {
+                    endsAt = nil
                     isFinishedAck = false
                     Haptics.light()
-                } label: {
-                    Label("Stop", systemImage: "stop.fill")
-                        .font(Tokens.Font.bodyEmphasized)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(Tokens.Palette.warning)
+                .disabled(endsAt == nil)
             }
             if remaining == 0 {
                 finishedRow
@@ -54,31 +55,16 @@ struct CookTimerCard: View {
                         }
                     }
             }
-        } else {
-            HStack(spacing: Tokens.Space.md) {
-                Text("\(cookMinutes) min")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Spacer()
-                Button {
-                    start()
-                } label: {
-                    Label("Start", systemImage: "play.fill")
-                        .font(Tokens.Font.bodyEmphasized)
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(Tokens.Palette.primary)
-            }
         }
     }
 
     private var finishedRow: some View {
-        HStack(spacing: Tokens.Space.sm) {
+        HStack(spacing: 8) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(Tokens.Palette.warning)
             Text("Done — review the dish")
-                .font(Tokens.Font.subheadline)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
         }
     }
 

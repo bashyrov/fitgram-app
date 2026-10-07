@@ -260,11 +260,11 @@ extension TodayView {
                     HStack(spacing: Tokens.Space.md) {
                         Image(systemName: "figure.walk.motion")
                             .font(.system(size: 20, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.accent)
+                            .foregroundStyle(Tokens.Palette.ink)
                             .frame(width: 48, height: 48)
                             .background(
                                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .fill(Tokens.Palette.accentSoft.opacity(0.72))
+                                    .fill(Tokens.Mono.track)
                             )
                         VStack(alignment: .leading, spacing: 3) {
                             Text(
@@ -293,10 +293,7 @@ extension TodayView {
                             .foregroundStyle(Tokens.Palette.inkSubtle)
                     }
                     .padding(Tokens.Space.md)
-                    .background(
-                        RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .fill(Tokens.Palette.surface.opacity(0.72))
-                    )
+                    .monoSurface(radius: 24)
                 }
                 .buttonStyle(PressableButtonStyle())
             } else {

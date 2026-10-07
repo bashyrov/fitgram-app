@@ -63,7 +63,7 @@ struct AchievementMedallion: View {
                 }
 
             Image(systemName: definition.symbol)
-                .font(.system(size: size * 0.38, weight: .heavy, design: .rounded))
+                .font(Tokens.Font.archivo(size: size * 0.38, weight: 800, width: 115))
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(isEarned ? .white : Tokens.Palette.inkSubtle.opacity(0.72))
                 .shadow(color: .black.opacity(isEarned ? 0.18 : 0.04), radius: size * 0.05, y: size * 0.025)
@@ -110,7 +110,7 @@ struct AchievementMedallion: View {
                 )
             )
         }
-        return AnyShapeStyle(Tokens.Palette.surfaceMuted.opacity(0.82))
+        return AnyShapeStyle(Tokens.Mono.track)
     }
 
     private var innerFill: some ShapeStyle {
@@ -127,7 +127,7 @@ struct AchievementMedallion: View {
             LinearGradient(
                 colors: [
                     Tokens.Palette.surface.opacity(0.78),
-                    Tokens.Palette.surfaceMuted.opacity(0.92),
+                    Tokens.Mono.track,
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing

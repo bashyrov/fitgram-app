@@ -63,55 +63,116 @@ struct HelpFAQSheet: View {
         ),
     ]
 
+    @State private var expanded: Set<Int> = []
+    @Environment(\.openURL) private var openURL
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.md) {
-                        ForEach(items) { item in
-                            qaCard(item)
-                        }
-                        contactCard
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: headlineText)
+                    faqCard
+                        .padding(.top, 14)
+                    contactCard
+                        .padding(.top, 12)
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 34)
             }
-            .navigationTitle(Text("Help"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(titleText)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: closeText, action: onDismiss)
                 }
             }
         }
     }
 
-    private func qaCard(_ item: FAQItem) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text(item.question)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(item.answer)
-                    .font(Tokens.Font.body)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
+    /// rows(): one question per row with a chevron-down; tapping reveals the answer.
+    private var faqCard: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                if index > 0 {
+                    MonoRowDivider(inset: 16)
+                }
+                qaRow(item, index: index)
             }
         }
+        .monoRowsCard()
     }
 
+    private func qaRow(_ item: FAQItem, index: Int) -> some View {
+        let isOpen = expanded.contains(index)
+        return Button {
+            Haptics.selection()
+            withAnimation(Tokens.Motion.quick) {
+                if isOpen {
+                    expanded.remove(index)
+                } else {
+                    expanded.insert(index)
+                }
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 0) {
+                MonoRow(title: item.question) {
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .rotationEffect(.degrees(isOpen ? 180 : 0))
+                }
+                if isOpen {
+                    Text(item.answer)
+                        .font(Tokens.Font.manrope(14, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .lineSpacing(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 14)
+                        .padding(.top, -4)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isOpen ? .isSelected : [])
+    }
+
+    /// card: "Coś jeszcze?" + muted line + outline "Napisz do nas" (mail) 44 pt.
     private var contactCard: some View {
-        Card(background: Tokens.Palette.primarySoft) {
+        VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Anything else?")
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text("Napisz na onefitgram@gmail.com — odpowiadamy w 24 h.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            MonoButton(title: writeToUsText, kind: .outline, icon: "envelope", height: 44) {
+                if let url = URL(string: "mailto:onefitgram@gmail.com") {
+                    openURL(url)
+                }
             }
         }
+        .monoCard(padding: 16)
+    }
+
+    private var titleText: String {
+        TL(pl: "Pomoc", en: "Help", uk: "Допомога", ru: "Помощь", es: "Ayuda")
+    }
+
+    private var headlineText: String {
+        TL(pl: "Pomoc / FAQ", en: "Help / FAQ", uk: "Допомога / FAQ", ru: "Помощь / FAQ", es: "Ayuda / FAQ")
+    }
+
+    private var closeText: String {
+        TL(pl: "Zamknij", en: "Close", uk: "Закрити", ru: "Закрыть", es: "Cerrar")
+    }
+
+    private var writeToUsText: String {
+        TL(pl: "Napisz do nas", en: "Write to us", uk: "Напишіть нам", ru: "Напишите нам", es: "Escríbenos")
     }
 }

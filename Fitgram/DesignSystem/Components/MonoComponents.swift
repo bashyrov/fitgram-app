@@ -37,7 +37,7 @@ struct MonoSectionHeader<Trailing: View>: View {
                     .foregroundStyle(Tokens.Mono.muted)
             }
             Text(title)
-                .font(Tokens.Font.monoDisplay(22))
+                .font(Tokens.Font.monoDisplay(20))
                 .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
@@ -133,7 +133,7 @@ struct MonoTicks: View {
 
 /// Square icon tile used at the start of list rows.
 struct MonoIconBox: View {
-    enum Style { case outline, dark, accent, track }
+    enum Style { case outline, dark, accent, track, onHero, hi }
 
     let systemName: String
     var style: Style = .outline
@@ -145,11 +145,11 @@ struct MonoIconBox: View {
             .frame(width: size, height: size)
             .foregroundStyle(foreground)
             .background(
-                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                RoundedRectangle(cornerRadius: (size / 3.3).rounded(.down), style: .continuous)
                     .fill(background)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                RoundedRectangle(cornerRadius: (size / 3.3).rounded(.down), style: .continuous)
                     .stroke(style == .outline ? Tokens.Mono.line2 : .clear, lineWidth: 1)
             )
     }
@@ -159,6 +159,8 @@ struct MonoIconBox: View {
         case .outline, .track: return Tokens.Palette.ink
         case .dark: return Tokens.Mono.hi
         case .accent: return Tokens.Mono.onAccent
+        case .onHero: return Tokens.Mono.onHero
+        case .hi: return Tokens.Mono.onHi
         }
     }
 
@@ -168,6 +170,8 @@ struct MonoIconBox: View {
         case .dark: return Tokens.Mono.hero
         case .accent: return Tokens.Mono.accent
         case .track: return Tokens.Mono.track
+        case .onHero: return Tokens.Mono.heroLine
+        case .hi: return Tokens.Mono.hi
         }
     }
 }
@@ -203,5 +207,166 @@ extension View {
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 Color.clear.frame(height: 86)
             }
+    }
+}
+
+/// Dark "total" card used at the top of every add-meal flow (design D).
+struct MonoHeroCard<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        content()
+            .padding(Tokens.Space.lg + 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(Tokens.Mono.onHero)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                    .fill(Tokens.Mono.hero)
+            )
+    }
+}
+
+/// Macro value pill for dark hero cards.
+struct MonoMacroPill: View {
+    let label: LocalizedStringKey
+    let grams: Double
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 6) {
+                Circle().fill(color).frame(width: 7, height: 7)
+                Text(label)
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .textCase(.uppercase)
+                    .tracking(1)
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            Text(String.localizedStringWithFormat(L("%lld g"), Int(grams)))
+                .font(Tokens.Font.monoNumber(18))
+                .foregroundStyle(Tokens.Mono.onHero)
+                .contentTransition(.numericText())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Tokens.Mono.heroLine)
+        )
+    }
+}
+
+/// Dark total hero used by add-meal confirmation sheets: caption, big italic kcal, subtitle.
+struct MonoTotalHero: View {
+    let icon: String
+    let caption: String
+    let kcal: Int
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
+            HStack(alignment: .top) {
+                Text(caption)
+                    .font(Tokens.Font.manrope(11, weight: 800))
+                    .textCase(.uppercase)
+                    .tracking(1.4)
+                    .foregroundStyle(Tokens.Mono.heroMuted)
+                    .lineLimit(1)
+                Spacer(minLength: Tokens.Space.sm)
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Tokens.Mono.onHi)
+                    .frame(width: 36, height: 36)
+                    .background(
+                        RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                            .fill(Tokens.Mono.hi)
+                    )
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("\(kcal)")
+                    .font(Tokens.Font.monoNumber(56))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .contentTransition(.numericText())
+                Text("kcal")
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Mono.hi)
+            }
+            MonoTicks(progress: 1, count: 24, height: 10)
+            Text(subtitle)
+                .font(Tokens.Font.manrope(13, weight: 700))
+                .foregroundStyle(Tokens.Mono.heroMuted)
+                .lineLimit(1)
+        }
+        .padding(Tokens.Space.lg + 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
+    }
+}
+
+/// Dark hero with a label and one big italic value + unit; extra content (slider, chips) goes underneath.
+struct MonoValueHero<Accessory: View>: View {
+    let label: String
+    let value: String
+    let unit: String
+    @ViewBuilder var accessory: () -> Accessory
+
+    init(label: String, value: String, unit: String, @ViewBuilder accessory: @escaping () -> Accessory) {
+        self.label = label
+        self.value = value
+        self.unit = unit
+        self.accessory = accessory
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Tokens.Space.md) {
+            MonoLabel(text: label, onHero: true)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(value)
+                    .font(Tokens.Font.monoNumber(64))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.55)
+                    .contentTransition(.numericText())
+                Text(unit)
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Mono.hi)
+            }
+            accessory()
+                .tint(Tokens.Mono.hi)
+        }
+        .padding(Tokens.Space.lg + 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
+    }
+}
+
+extension MonoValueHero where Accessory == EmptyView {
+    init(label: String, value: String, unit: String) {
+        self.init(label: label, value: value, unit: unit) { EmptyView() }
+    }
+}
+
+extension View {
+    /// Flat surface fill + hairline stroke without padding changes.
+    func monoSurface(radius: CGFloat = Tokens.Mono.Radius.card) -> some View {
+        background(
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .fill(Tokens.Palette.surface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .stroke(Tokens.Mono.line, lineWidth: 1)
+        )
     }
 }

@@ -10,114 +10,127 @@ struct RecipeModificationsSheet: View {
     let intent: RecipeModificationEngine.Intent
     let onDismiss: () -> Void
 
-    @State private var copiedAt: UUID?
+    @State private var copiedIndex: Int?
 
     private var suggestions: [RecipeModificationEngine.Suggestion] {
         RecipeModificationEngine.suggestions(for: recipe, intent: intent)
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        header
-                        if suggestions.isEmpty {
-                            empty
-                        } else {
-                            VStack(spacing: Tokens.Space.md) {
-                                ForEach(suggestions) { suggestion in
-                                    card(suggestion)
-                                }
-                                ShareLink(
-                                    item: bulletList,
-                                    subject: Text(String.localizedStringWithFormat(L("Modyfikacje: %@"), recipe.title)),
-                                    preview: SharePreview(
-                                        "Modyfikacje: \(recipe.title)",
-                                        icon: Image(systemName: intent.symbol)
-                                    )
-                                ) {
-                                    HStack(spacing: Tokens.Space.sm) {
-                                        Image(systemName: "square.and.arrow.up")
-                                        Text("Udostępnij listę")
-                                            .font(Tokens.Font.bodyEmphasized)
-                                    }
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, Tokens.Space.md)
-                                    .background(Capsule().fill(Tokens.Palette.primary))
-                                }
-                                .buttonStyle(.plain)
+        let items = suggestions
+        return NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: recipe.title, kicker: L("Modyfikacje przepisu"))
+                    header
+                        .padding(.top, 14)
+                    if items.isEmpty {
+                        empty
+                            .padding(.top, 30)
+                    } else {
+                        MonoSectionHeader(title: suggestionsTitle) {
+                            MonoLabel(text: "\(items.count)")
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.top, 6)
+                        .padding(.bottom, 12)
+                        suggestionsCard(items)
+                    }
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 20)
+            }
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if !items.isEmpty {
+                    MonoBottomBar {
+                        ShareLink(
+                            item: bulletList(items),
+                            subject: Text(String.localizedStringWithFormat(L("Modyfikacje: %@"), recipe.title)),
+                            preview: SharePreview(
+                                "Modyfikacje: \(recipe.title)",
+                                icon: Image(systemName: intent.symbol)
+                            )
+                        ) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.system(size: 15, weight: .bold))
+                                Text("Udostępnij listę")
+                                    .lineLimit(1)
                             }
                         }
+                        .buttonStyle(MonoButtonStyle(kind: .dark))
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text(intent.label))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(intent.label)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Close"), action: onDismiss)
                 }
             }
         }
     }
 
+    /// Intent card in the `portion_mode` style: dark icon box + title + muted note.
     private var header: some View {
-        Card(background: Tokens.Palette.primarySoft) {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: intent.symbol)
-                    .font(.title2)
-                    .foregroundStyle(Tokens.Palette.primary)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(intent.label)
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text("Sugestie do ręcznej zamiany — auto-zamiana w przygotowaniu.")
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
-    }
-
-    private func card(_ suggestion: RecipeModificationEngine.Suggestion) -> some View {
-        Card {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(suggestion.ingredient.capitalized)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
-                    Spacer()
-                    Button {
-                        UIPasteboard.general.string = "\(suggestion.ingredient): \(suggestion.replacement)"
-                        copiedAt = suggestion.id
-                        Haptics.light()
-                        Task {
-                            try? await Task.sleep(nanoseconds: 1_500_000_000)
-                            if copiedAt == suggestion.id { copiedAt = nil }
-                        }
-                    } label: {
-                        Image(systemName: copiedAt == suggestion.id ? "checkmark" : "doc.on.doc")
-                            .font(.caption)
-                            .foregroundStyle(Tokens.Palette.primary)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text("Skopiuj sugestię"))
-                }
-                Text(suggestion.replacement)
-                    .font(Tokens.Font.body)
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: intent.symbol, style: .dark, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(intent.label)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
+                Text("Sugestie do ręcznej zamiany — auto-zamiana w przygotowaniu.")
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .monoCard(padding: 16)
     }
 
-    private var bulletList: String {
+    /// rows(inset 16): ingredient as title, replacement as sub, round copy button trailing.
+    private func suggestionsCard(_ items: [RecipeModificationEngine.Suggestion]) -> some View {
+        VStack(spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.offset) { index, suggestion in
+                if index > 0 {
+                    MonoRowDivider(inset: 16)
+                }
+                MonoRow(title: suggestion.ingredient.capitalized, sub: suggestion.replacement) {
+                    copyButton(for: suggestion, index: index)
+                }
+            }
+        }
+        .monoRowsCard()
+    }
+
+    private func copyButton(for suggestion: RecipeModificationEngine.Suggestion, index: Int) -> some View {
+        let isCopied = copiedIndex == index
+        return Button {
+            UIPasteboard.general.string = "\(suggestion.ingredient): \(suggestion.replacement)"
+            copiedIndex = index
+            Haptics.light()
+            Task {
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                if copiedIndex == index { copiedIndex = nil }
+            }
+        } label: {
+            Image(systemName: isCopied ? "checkmark" : "doc.on.doc")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(isCopied ? Tokens.Mono.onHero : Tokens.Palette.ink)
+                .frame(width: 36, height: 36)
+                .background(Circle().fill(isCopied ? Tokens.Mono.hero : Color.clear))
+                .overlay(Circle().stroke(isCopied ? Color.clear : Tokens.Mono.line2, lineWidth: 1))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Skopiuj sugestię"))
+    }
+
+    private func bulletList(_ items: [RecipeModificationEngine.Suggestion]) -> String {
         var lines = [
             String.localizedStringWithFormat(
                 L("Modyfikacje: %@"),
@@ -126,26 +139,29 @@ struct RecipeModificationsSheet: View {
             "(\(intent.label))",
             "",
         ]
-        for suggestion in suggestions {
+        for suggestion in items {
             lines.append("• \(suggestion.ingredient.capitalized): \(suggestion.replacement)")
         }
         return lines.joined(separator: "\n")
     }
 
     private var empty: some View {
-        VStack(spacing: Tokens.Space.md) {
-            Image(systemName: "checkmark.seal.fill")
-                .font(.system(size: 36))
-                .foregroundStyle(Tokens.Palette.primary)
+        VStack(spacing: 6) {
+            MonoIconBox(systemName: "checkmark.seal", style: .track, size: 44)
             Text("Nic do zmiany")
-                .font(Tokens.Font.headline)
+                .font(Tokens.Font.manrope(15, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
+                .multilineTextAlignment(.center)
             Text("Ten przepis już pasuje do wybranego kierunku.")
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.xxxl)
+        .padding(.horizontal, 24)
+    }
+
+    private var suggestionsTitle: String {
+        TL(pl: "Sugestie", en: "Suggestions", uk: "Пропозиції", ru: "Предложения", es: "Sugerencias")
     }
 }

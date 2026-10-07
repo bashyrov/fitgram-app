@@ -58,13 +58,13 @@ struct ToastBanner: View {
             iconPuck
             VStack(alignment: .leading, spacing: 2) {
                 Text(toast.title)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Mono.onHero)
                     .lineLimit(2)
                 if let message = toast.message, !message.isEmpty {
                     Text(message)
                         .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
+                        .foregroundStyle(Tokens.Mono.heroMuted)
                         .lineLimit(2)
                 }
             }
@@ -72,24 +72,20 @@ struct ToastBanner: View {
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .foregroundStyle(Tokens.Mono.heroMuted)
                     .frame(width: 28, height: 28)
                     .background(
-                        Circle().fill(Tokens.Palette.surfaceMuted)
+                        Circle().fill(Tokens.Mono.heroLine)
                     )
             }
             .accessibilityLabel(Text("Close"))
         }
         .padding(.vertical, Tokens.Space.sm)
         .padding(.horizontal, Tokens.Space.md)
-        .frostedGlass(cornerRadius: 26, fillOpacity: 0.82, borderOpacity: 0.08, glowOpacity: 0.06)
-        .overlay(alignment: .leading) {
-            Capsule()
-                .fill(toast.style.tint)
-                .frame(width: 4)
-                .padding(.vertical, Tokens.Space.sm)
-        }
-        .shadow(color: toast.style.tint.opacity(0.16), radius: 20, y: 8)
+        .background(
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.tile, style: .continuous)
+                .fill(Tokens.Mono.hero)
+        )
         .offset(y: dragOffset)
         .gesture(
             DragGesture()
@@ -110,19 +106,13 @@ struct ToastBanner: View {
     }
 
     private var iconPuck: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [toast.style.tint.opacity(0.95), toast.style.tint.opacity(0.55)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(width: 40, height: 40)
-            Image(systemName: toast.symbol)
-                .font(.system(size: 16, weight: .heavy))
-                .foregroundStyle(.white)
-        }
+        Image(systemName: toast.symbol)
+            .font(.system(size: 16, weight: .heavy))
+            .foregroundStyle(Tokens.Mono.onHi)
+            .frame(width: 40, height: 40)
+            .background(
+                RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                    .fill(Tokens.Mono.hi)
+            )
     }
 }

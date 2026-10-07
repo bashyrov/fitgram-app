@@ -1,43 +1,14 @@
 import SwiftUI
 
 extension FriendsRootView {
-    var socialActionHub: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            socialAction(
-                title: L("Username"),
-                subtitle: L("Znajdź profil"),
-                symbol: "at",
-                tint: Tokens.Palette.primary
-            ) {
-                isAddPresented = true
-            }
-            socialAction(
-                title: L("QR"),
-                subtitle: L("Pokaż kod"),
-                symbol: "qrcode.viewfinder",
-                tint: Tokens.Palette.accent
-            ) {
-                isAddPresented = true
-            }
-            socialAction(
-                title: L("Ranking"),
-                subtitle: L("Streaki"),
-                symbol: "trophy.fill",
-                tint: Tokens.Palette.warning
-            ) {
-                isLeaderboardPresented = true
-            }
-        }
-    }
-
     @ViewBuilder
     var friendHighlights: some View {
         let highlights = socialHighlights
         if !highlights.isEmpty {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                sectionHeader(title: L("Ostatnie zwycięstwa"), symbol: "rosette")
+            VStack(alignment: .leading, spacing: 0) {
+                sectionHeader(number: "04", title: L("Ostatnie zwycięstwa"))
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: Tokens.Space.sm) {
+                    HStack(spacing: 8) {
                         ForEach(highlights) { highlight in
                             Button {
                                 openedProfileID = highlight.profileID
@@ -47,8 +18,8 @@ extension FriendsRootView {
                             .buttonStyle(.plain)
                         }
                     }
-                    .padding(.horizontal, 2)
                 }
+                .scrollClipDisabled()
             }
         }
     }
@@ -94,39 +65,5 @@ extension FriendsRootView {
                 ))
         }
         return Array(highlights.prefix(3))
-    }
-
-    func socialAction(
-        title: String,
-        subtitle: String,
-        symbol: String,
-        tint: Color,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 6) {
-                Image(systemName: symbol)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(tint)
-                    .frame(width: 34, height: 34)
-                    .background(Circle().fill(tint.opacity(0.14)))
-                Text(title)
-                    .font(Tokens.Font.manrope(14, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-                Text(subtitle)
-                    .font(Tokens.Font.caption2)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-            }
-            .frame(maxWidth: .infinity, minHeight: 102, alignment: .topLeading)
-            .padding(Tokens.Space.sm)
-            .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82))
-            )
-        }
-        .buttonStyle(.pressable)
     }
 }

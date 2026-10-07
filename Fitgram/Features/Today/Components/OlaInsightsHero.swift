@@ -34,18 +34,6 @@ struct OlaInsightsHero: View {
         ZStack {
             RoundedRectangle(cornerRadius: Tokens.Radius.xl, style: .continuous)
                 .fill(Tokens.Palette.surface)
-            // Ambient gradient blob top-right (accent)
-            Circle()
-                .fill(Tokens.Palette.accent.opacity(0.45))
-                .frame(width: 220, height: 220)
-                .blur(radius: 80)
-                .offset(x: 110, y: -100)
-            // Ambient gradient blob bottom-left (primary)
-            Circle()
-                .fill(Tokens.Palette.primary.opacity(0.35))
-                .frame(width: 200, height: 200)
-                .blur(radius: 80)
-                .offset(x: -120, y: 120)
             // Soft top sheen to lift the avatar
             LinearGradient(
                 colors: [Color.white.opacity(0.30), .clear],
@@ -65,10 +53,11 @@ struct OlaInsightsHero: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Text("Porady od Oli")
-                        .font(Tokens.Font.headline)
+                        .font(Tokens.Font.monoDisplay(18))
+                        .textCase(.uppercase)
                         .foregroundStyle(Tokens.Palette.ink)
                     Text("AI Coach")
-                        .font(.system(size: 9, weight: .heavy))
+                        .font(Tokens.Font.manrope(9, weight: 800))
                         .textCase(.uppercase)
                         .tracking(1.2)
                         .padding(.horizontal, 7)
@@ -141,7 +130,7 @@ struct OlaInsightsHero: View {
                 .padding(Tokens.Space.sm)
                 .background(
                     RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                        .fill(Tokens.Palette.warning.opacity(0.15))
+                        .fill(Tokens.Mono.track)
                 )
             }
         }
@@ -218,15 +207,15 @@ struct OlaInsightsHero: View {
         HStack(spacing: Tokens.Space.md) {
             ZStack {
                 Circle()
-                    .fill(Tokens.Palette.primary)
+                    .fill(Tokens.Mono.hero)
                     .frame(width: 36, height: 36)
                 Image(systemName: "arrow.right")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
+                    .foregroundStyle(Tokens.Mono.hi)
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text("NASTĘPNY KROK")
-                    .font(.system(size: 10, weight: .heavy))
+                    .font(Tokens.Font.manrope(10, weight: 800))
                     .tracking(1.4)
                     .foregroundStyle(Tokens.Palette.primary)
                 Text(L(recommendations.nextSteps))
@@ -241,7 +230,7 @@ struct OlaInsightsHero: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             Rectangle()
-                .fill(Tokens.Palette.primarySoft)
+                .fill(Tokens.Mono.track)
         )
         .padding(.top, Tokens.Space.md)
     }

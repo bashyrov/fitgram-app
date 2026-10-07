@@ -10,11 +10,11 @@ struct SuggestedRecipeCard: View {
         Card(background: Tokens.Palette.surface, elevation: Tokens.Shadow.card) {
             HStack(spacing: Tokens.Space.md) {
                 ZStack {
-                    Circle()
-                        .fill(Tokens.Palette.primarySoft)
+                    RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                        .fill(Tokens.Mono.track)
                         .frame(width: 44, height: 44)
                     Image(systemName: "book.closed.fill")
-                        .foregroundStyle(Tokens.Palette.primary)
+                        .foregroundStyle(Tokens.Palette.ink)
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Favorites")
@@ -33,10 +33,10 @@ struct SuggestedRecipeCard: View {
                 Button(action: onCook) {
                     Text("Ugotuj")
                         .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.onPrimary)
+                        .foregroundStyle(Tokens.Mono.onHero)
                         .padding(.horizontal, Tokens.Space.md)
                         .padding(.vertical, Tokens.Space.sm)
-                        .background(Capsule().fill(Tokens.Palette.primary))
+                        .background(Capsule().fill(Tokens.Mono.hero))
                 }
                 .buttonStyle(PressableButtonStyle())
                 .accessibilityLabel(Text(String.localizedStringWithFormat(L("Ugotuj %@"), recipe.title)))

@@ -29,32 +29,30 @@ struct WorkoutDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ScreenBackground(mood: .calm)
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        hero
-                        goalImpactCard
-                        detailsGrid
-                        sourceNote
-                        deleteButton
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    hero
+                    detailsGrid
+                    goalImpactCard
+                    sourceNote
+                }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.top, 12)
+                .padding(.bottom, Tokens.Space.lg)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(title: deleteTitle, kind: .danger, icon: "trash") {
+                        isDeleteConfirmationPresented = true
                     }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
                 }
             }
-            .navigationTitle(Text(L("Activity details")))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Activity details"))
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: onDismiss) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Tokens.Palette.surfaceMuted.opacity(0.82)))
-                    }
-                    .accessibilityLabel(Text(L("Close")))
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Close"), action: onDismiss)
                 }
             }
         }
@@ -76,109 +74,90 @@ struct WorkoutDetailSheet: View {
 
 // MARK: - Sections
 extension WorkoutDetailSheet {
+    // Mockup hero: hi icon box + "RUCH · 07:30" / name, +kcal 64 pt, source badge.
     private var hero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.lg) {
-            HStack(alignment: .top, spacing: Tokens.Space.md) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            palette.primary
-                        )
-                        .frame(width: 68, height: 68)
-                    Image(systemName: activityIcon)
-                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
-                }
-
-                VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: activityIcon, style: .hi, size: 44)
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoLabel(text: heroKicker, onHero: true)
                     Text(workout.activityName)
-                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.ink)
+                        .font(Tokens.Font.manrope(20, weight: 800))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(sourceLabel)
-                        .font(Tokens.Font.footnote.weight(.semibold))
-                        .foregroundStyle(Tokens.Palette.inkMuted)
                 }
                 Spacer(minLength: 0)
             }
 
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text("+\(Int(workout.caloriesBurnedKcal.rounded()))")
-                    .font(Tokens.Font.archivo(size: 44, weight: 800, width: 115))
-                    .foregroundStyle(palette.accent)
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(verbatim: "+\(Int(workout.caloriesBurnedKcal.rounded()))")
+                    .font(Tokens.Font.monoNumber(64))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                     .contentTransition(.numericText())
-                Text("kcal")
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                Text(verbatim: "kcal")
+                    .font(Tokens.Font.manrope(16, weight: 800))
+                    .foregroundStyle(Tokens.Mono.heroMuted)
             }
+
+            HStack(spacing: 6) {
+                Image(systemName: workout.source == .appleHealth ? "heart.fill" : "pencil")
+                    .font(.system(size: 11, weight: .bold))
+                Text(sourceLabel)
+                    .font(Tokens.Font.manrope(12, weight: 700))
+                    .lineLimit(1)
+            }
+            .foregroundStyle(Tokens.Mono.onHero)
+            .padding(.horizontal, 10)
+            .frame(height: 26)
+            .background(Capsule().fill(Tokens.Mono.heroLine))
         }
-        .padding(Tokens.Space.lg)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frostedGlass(cornerRadius: 30, fillOpacity: 0.88, borderOpacity: 0.05, glowOpacity: 0.08)
+        .monoHero(padding: 20)
     }
 
     private var detailsGrid: some View {
         LazyVGrid(
             columns: [
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
-                GridItem(.flexible(), spacing: Tokens.Space.sm),
+                GridItem(.flexible(), spacing: 8),
+                GridItem(.flexible(), spacing: 8),
             ],
-            spacing: Tokens.Space.sm
+            spacing: 8
         ) {
-            detailTile(symbol: "timer", title: L("Duration"), value: durationText, tint: palette.primary)
+            detailTile(title: L("Duration"), value: durationText)
             if workout.met > 0 {
-                detailTile(
-                    symbol: "speedometer", title: "MET", value: String(format: "%.1f", workout.met),
-                    tint: palette.accent)
+                detailTile(title: "MET", value: String(format: "%.1f", workout.met))
             }
-            detailTile(symbol: "clock", title: L("Time"), value: timeText, tint: Tokens.Palette.warning)
-            detailTile(symbol: "calendar", title: L("Date"), value: dateText, tint: Tokens.Palette.success)
+            detailTile(title: L("Time"), value: timeText)
+            detailTile(title: L("Date"), value: dateText)
             if let distanceText {
-                detailTile(
-                    symbol: "point.topleft.down.curvedto.point.bottomright.up",
-                    title: distanceTitle,
-                    value: distanceText,
-                    tint: palette.accent
-                )
+                detailTile(title: distanceTitle, value: distanceText)
             }
             if let paceText {
-                detailTile(symbol: "figure.run", title: paceTitle, value: paceText, tint: Tokens.Palette.primary)
+                detailTile(title: paceTitle, value: paceText)
             }
             if workout.steps > 0 {
-                detailTile(
-                    symbol: "shoeprints.fill", title: stepsTitle, value: "\(workout.steps)",
-                    tint: Tokens.Palette.success)
+                detailTile(title: stepsTitle, value: "\(workout.steps)")
             }
             if workout.flightsClimbed > 0 {
-                detailTile(
-                    symbol: "stairs", title: flightsTitle, value: "\(workout.flightsClimbed)",
-                    tint: Tokens.Palette.warning)
+                detailTile(title: flightsTitle, value: "\(workout.flightsClimbed)")
             }
             if let averageHeartRateText {
-                detailTile(
-                    symbol: "heart.fill", title: averageHeartRateTitle, value: averageHeartRateText,
-                    tint: Tokens.Palette.error)
+                detailTile(title: averageHeartRateTitle, value: averageHeartRateText)
             }
             if let heartRateRangeText {
-                detailTile(
-                    symbol: "waveform.path.ecg", title: heartRateRangeTitle, value: heartRateRangeText,
-                    tint: Tokens.Palette.error)
+                detailTile(title: heartRateRangeTitle, value: heartRateRangeText)
             }
         }
     }
 
+    // Mockup: rows card with a single toggle row (no icon).
     private var goalImpactCard: some View {
-        HStack(alignment: .center, spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(goalImpactTitle)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(countsTowardDailyGoal ? goalImpactEnabledSubtitle : goalImpactDisabledSubtitle)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: Tokens.Space.md)
+        MonoRow(
+            title: goalImpactTitle,
+            sub: countsTowardDailyGoal ? goalImpactEnabledSubtitle : goalImpactDisabledSubtitle
+        ) {
             Toggle(
                 "",
                 isOn: Binding(
@@ -191,70 +170,29 @@ extension WorkoutDetailSheet {
                 )
             )
             .labelsHidden()
-            .tint(palette.accent)
+            .toggleStyle(MonoToggleStyle())
+            .fixedSize()
         }
-        .padding(Tokens.Space.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frostedGlass(cornerRadius: 22, fillOpacity: 0.78, borderOpacity: 0.04, glowOpacity: 0.03)
+        .monoRowsCard()
     }
 
-    private func detailTile(symbol: String, title: String, value: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: symbol)
-                .font(.system(size: 15, weight: .bold))
-                .foregroundStyle(tint)
-                .frame(width: 34, height: 34)
-                .background(Circle().fill(tint.opacity(0.14)))
+    // Mockup tile: upper-case label above a 20 pt italic number.
+    private func detailTile(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: title)
             Text(value)
-                .font(Tokens.Font.manrope(18, weight: 800))
+                .font(Tokens.Font.monoNumber(20))
                 .foregroundStyle(Tokens.Palette.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            Text(title)
-                .font(Tokens.Font.caption.weight(.semibold))
-                .foregroundStyle(Tokens.Palette.inkMuted)
         }
-        .padding(Tokens.Space.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frostedGlass(cornerRadius: 22, fillOpacity: 0.78, borderOpacity: 0.04, glowOpacity: 0.03)
+        .monoTile()
+        .accessibilityElement(children: .combine)
     }
 
+    // Mockup: muted paragraph under the toggle card (18 pt text inset).
     private var sourceNote: some View {
-        HStack(alignment: .top, spacing: Tokens.Space.sm) {
-            Image(systemName: workout.source == .appleHealth ? "heart.fill" : "pencil.and.list.clipboard")
-                .font(.system(size: 15, weight: .bold))
-                .foregroundStyle(palette.accent)
-            Text(sourceDescription)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(Tokens.Space.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(palette.accentSoft.opacity(0.42))
-        )
-    }
-
-    private var deleteButton: some View {
-        Button {
-            isDeleteConfirmationPresented = true
-        } label: {
-            HStack {
-                Image(systemName: "trash.fill")
-                Text(deleteTitle)
-            }
-            .font(Tokens.Font.bodyEmphasized)
-            .foregroundStyle(Tokens.Palette.error)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 15)
-            .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Tokens.Palette.error.opacity(0.10))
-            )
-        }
-        .buttonStyle(.pressable)
+        MonoHint(text: sourceDescription)
     }
 }
 
@@ -268,6 +206,10 @@ extension WorkoutDetailSheet {
         if workout.activityID.contains("strength") || workout.activityID.contains("gym") { return "dumbbell.fill" }
         if workout.activityID.contains("yoga") { return "figure.mind.and.body" }
         return "bolt.heart.fill"
+    }
+
+    private var heroKicker: String {
+        TL(pl: "Ruch", en: "Movement", uk: "Рух", ru: "Движение", es: "Movimiento") + " · " + timeText
     }
 
     private var sourceLabel: String {

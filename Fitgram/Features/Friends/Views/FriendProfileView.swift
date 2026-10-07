@@ -1,9 +1,7 @@
 import OSLog
 import SwiftUI
 
-// swiftlint:disable file_length
-
-// Rich friend-profile sheet — gradient hero, animated pill tab bar, and
+// Rich friend-profile sheet — avatar header, identity tiles, segmented tabs, and
 // four content tabs (Statystyki / Cele / Aktywność / Reakcje). The
 // service is responsible for honouring the owner's privacy settings; the
 // UI just renders whatever fields survive the snapshot. Per-tab content
@@ -22,7 +20,6 @@ struct FriendProfileView: View {
     var onUnfriend: (() -> Void)?
 
     @Environment(ToastCenter.self) var toasts
-    @Namespace private var tabIndicator
 
     @State var snapshot: FriendProfileSnapshot?
     @State private var isLoading: Bool = true
@@ -61,11 +58,11 @@ struct FriendProfileView: View {
                 profileBackground
                 if isLoading {
                     ScrollView {
-                        LazyVStack(spacing: Tokens.Space.md) {
-                            LoadingShimmer(cornerRadius: 28).frame(height: 260)
-                            LoadingShimmer(cornerRadius: 22).frame(height: 58)
-                            LoadingShimmer(cornerRadius: 22).frame(height: 110)
-                            LoadingShimmer(cornerRadius: 22).frame(height: 180)
+                        VStack(spacing: 12) {
+                            LoadingShimmer(cornerRadius: 26).frame(height: 96)
+                            LoadingShimmer(cornerRadius: 20).frame(height: 80)
+                            LoadingShimmer(cornerRadius: 16).frame(height: 46)
+                            LoadingShimmer(cornerRadius: 24).frame(height: 180)
                         }
                         .padding(Tokens.Space.screenPadding)
                     }
@@ -76,6 +73,7 @@ struct FriendProfileView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Tokens.Palette.background, for: .navigationBar)
             .toolbar { toolbarContent }
             .task { await load() }
             .confirmationDialog(
@@ -107,20 +105,14 @@ struct FriendProfileView: View {
     }
 
     private var profileBackground: some View {
-        ScreenBackground(mood: .social)
+        Tokens.Palette.background.ignoresSafeArea()
     }
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .frame(width: 32, height: 32)
-                    .background(Circle().fill(Tokens.Palette.surfaceMuted))
-            }
-            .accessibilityLabel(Text(L("Close")))
+            MonoNavText(title: L("Zamknij"), action: onDismiss)
+                .accessibilityLabel(Text(L("Close")))
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
@@ -136,10 +128,10 @@ struct FriendProfileView: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundStyle(Tokens.Palette.ink)
-                    .frame(width: 32, height: 32)
-                    .background(Circle().fill(Tokens.Palette.surfaceMuted))
+                    .frame(width: 44, height: 44)
+                    .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
             }
             .accessibilityLabel(Text(L("More")))
         }
@@ -147,150 +139,114 @@ struct FriendProfileView: View {
 
     @ViewBuilder
     private func content(_ snapshot: FriendProfileSnapshot) -> some View {
-        ZStack(alignment: .bottom) {
-            ScrollView {
-                LazyVStack(spacing: Tokens.Space.lg) {
-                    hero(snapshot)
-                    tabBar
-                    Group {
-                        switch activeTab {
-                        case .stats: statsTab(snapshot)
-                        case .goals: goalsTab(snapshot)
-                        case .activity: activityTab(snapshot)
-                        case .reactions: reactionsTab(snapshot)
-                        }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                hero(snapshot)
+                Color.clear.frame(height: 16)
+                identityTiles(snapshot)
+                Color.clear.frame(height: 14)
+                tabBar
+                Color.clear.frame(height: 12)
+                Group {
+                    switch activeTab {
+                    case .stats: statsTab(snapshot)
+                    case .goals: goalsTab(snapshot)
+                    case .activity: activityTab(snapshot)
+                    case .reactions: reactionsTab(snapshot)
                     }
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    .animation(Tokens.Motion.gentle, value: activeTab)
                 }
-                .padding(.horizontal, Tokens.Space.screenPadding)
-                .padding(.top, Tokens.Space.sm)
-                .padding(.bottom, Tokens.Space.xxxl + Tokens.Space.huge)
+                .transition(.opacity)
+                .animation(Tokens.Motion.gentle, value: activeTab)
+                if !snapshot.hasAnyShared {
+                    Color.clear.frame(height: 10)
+                    privacyHint
+                }
             }
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.bottom, 24)
+        }
+        .safeAreaInset(edge: .bottom) {
             actionBar
         }
     }
 
-    // MARK: - Hero
+    // MARK: - Hero (avatar + name row)
 
     @ViewBuilder
     private func hero(_ snapshot: FriendProfileSnapshot) -> some View {
-        ZStack {
-            heroBackdrop
-            VStack(spacing: Tokens.Space.md) {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 14) {
                 avatarHero(snapshot)
-                VStack(spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(snapshot.displayName)
-                        .font(Tokens.Font.archivo(size: 26, weight: 800, width: 115))
+                        .font(Tokens.Font.monoDisplay(26))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
-                    if let username = snapshot.username {
-                        Text(usernameDisplay(username))
-                            .font(Tokens.Font.manrope(14, weight: 600))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
+                    if let subtitle = heroSubtitle(snapshot) {
+                        Text(subtitle)
+                            .font(Tokens.Font.manrope(12, weight: 600))
+                            .foregroundStyle(Tokens.Mono.muted)
+                            .lineSpacing(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                if let bio = snapshot.bio {
-                    Text(bio)
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, Tokens.Space.md)
-                        .padding(.top, 2)
-                }
-                heroChips(snapshot)
-                if !snapshot.hasAnyShared {
-                    privacyHint
-                        .padding(.top, Tokens.Space.xs)
-                }
-                profilePulse(snapshot)
+                Spacer(minLength: 0)
             }
-            .padding(.vertical, Tokens.Space.lg)
-            .padding(.horizontal, Tokens.Space.lg)
-            .frame(maxWidth: .infinity)
+            if let bio = snapshot.bio {
+                Text(bio)
+                    .font(Tokens.Font.manrope(14, weight: 600))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-    }
-
-    private var heroBackdrop: some View {
-        RoundedRectangle(cornerRadius: 30, style: .continuous)
-            .fill(
-                Tokens.Palette.surface.opacity(0.86)
-            )
-            .allowsHitTesting(false)
+        .padding(.horizontal, 6)
+        .padding(.top, 10)
+        .accessibilityElement(children: .combine)
     }
 
     private func avatarHero(_ snapshot: FriendProfileSnapshot) -> some View {
-        ZStack {
-            Circle()
-                .fill(
-                    Tokens.Palette.primary
-                )
-                .frame(width: 112, height: 112)
-            Circle()
-                .fill(Tokens.Palette.surface)
-                .frame(width: 102, height: 102)
-                .shadow(color: .black.opacity(0.05), radius: 16, y: 8)
-            Text(initial(for: snapshot.displayName))
-                .font(Tokens.Font.archivo(size: 46, weight: 800, width: 115))
-                .foregroundStyle(
-                    Tokens.Palette.primary
-                )
+        Text(initial(for: snapshot.displayName))
+            .font(Tokens.Font.monoNumber(30))
+            .foregroundStyle(Tokens.Mono.hi)
+            .frame(width: 72, height: 72)
+            .background(Circle().fill(Tokens.Mono.hero))
+    }
+
+    /// "@user · W Fitgram od … · Znajomi od …" line under the name.
+    private func heroSubtitle(_ snapshot: FriendProfileSnapshot) -> String? {
+        var parts: [String] = []
+        if let username = snapshot.username {
+            parts.append(usernameDisplay(username))
+        }
+        if let since = snapshot.memberSinceDate {
+            let formatted = since.formatted(.dateTime.month(.wide).year())
+            parts.append(String.localizedStringWithFormat(L("Fitgram-er since %@"), formatted))
+            parts.append(String.localizedStringWithFormat(L("Friends since %@"), formatted))
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    /// Mockup tiles: Seria · Odznaki · Poziom.
+    private func identityTiles(_ snapshot: FriendProfileSnapshot) -> some View {
+        HStack(spacing: 8) {
+            identityTile(label: L("Seria"), value: snapshot.currentStreak.map { "\($0)" } ?? "—")
+            identityTile(label: L("Odznaki"), value: snapshot.achievements.map { "\($0.count)" } ?? "—")
+            identityTile(label: L("Poziom"), value: snapshot.level.map { "\($0.number)" } ?? "—")
         }
     }
 
-    @ViewBuilder
-    private func profilePulse(_ snapshot: FriendProfileSnapshot) -> some View {
-        let items = profilePulseItems(snapshot)
-        if !items.isEmpty {
-            HStack(spacing: Tokens.Space.sm) {
-                ForEach(items, id: \.id) { item in
-                    VStack(spacing: 3) {
-                        Text(item.value)
-                            .font(Tokens.Font.manrope(19, weight: 800))
-                            .foregroundStyle(Tokens.Palette.ink)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.72)
-                        Text(item.label)
-                            .font(Tokens.Font.manrope(10, weight: 700))
-                            .foregroundStyle(Tokens.Palette.inkMuted)
-                            .textCase(.uppercase)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.75)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Tokens.Space.sm)
-                    .background(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(Tokens.Palette.surface.opacity(0.58))
-                    )
-                }
-            }
-            .padding(.top, Tokens.Space.xs)
+    private func identityTile(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            MonoLabel(text: label)
+            Text(value)
+                .font(Tokens.Font.monoNumber(26))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
         }
-    }
-
-    private struct ProfilePulseItem: Identifiable {
-        let id: String
-        let value: String
-        let label: String
-    }
-
-    private func profilePulseItems(_ snapshot: FriendProfileSnapshot) -> [ProfilePulseItem] {
-        var items: [ProfilePulseItem] = []
-        if let streak = snapshot.currentStreak {
-            items.append(.init(id: "streak", value: "\(streak)", label: L("Streak")))
-        }
-        if let weekly = snapshot.weeklyStats {
-            items.append(.init(id: "goal", value: "\(weekly.daysHitGoal)/7", label: L("Goals")))
-            items.append(.init(id: "kcal", value: formattedThousands(weekly.averageDailyKcal), label: "kcal"))
-        } else if let achievements = snapshot.achievements {
-            items.append(.init(id: "badges", value: "\(achievements.count)", label: L("Badges")))
-        }
-        if let level = snapshot.level {
-            items.append(.init(id: "level", value: "\(level.number)", label: L("Level")))
-        }
-        return Array(items.prefix(3))
+        .monoTile()
+        .accessibilityElement(children: .combine)
     }
 
     private func usernameDisplay(_ username: String) -> String {
@@ -303,223 +259,58 @@ struct FriendProfileView: View {
         return String(first).uppercased()
     }
 
-    @ViewBuilder
-    private func heroChips(_ snapshot: FriendProfileSnapshot) -> some View {
-        let chips = heroChipItems(snapshot)
-        if !chips.isEmpty {
-            FlowLayout(spacing: Tokens.Space.xs) {
-                ForEach(chips, id: \.id) { chip in
-                    heroChip(chip)
-                }
-            }
-            .padding(.top, Tokens.Space.xs)
-        }
-    }
-
-    private struct HeroChip: Identifiable {
-        let id: String
-        let symbol: String
-        let text: String
-        let tint: Color
-        let isProminent: Bool
-    }
-
-    private func heroChipItems(_ snapshot: FriendProfileSnapshot) -> [HeroChip] {
-        var items: [HeroChip] = []
-        if let streak = snapshot.currentStreak, streak > 0 {
-            items.append(
-                HeroChip(
-                    id: "streak",
-                    symbol: "flame.fill",
-                    text: String.localizedStringWithFormat(L("%lld days in a row"), streak),
-                    tint: Tokens.Palette.warning,
-                    isProminent: true
-                )
-            )
-        }
-        if let since = snapshot.memberSinceDate {
-            let formatted = since.formatted(.dateTime.month(.wide).year())
-            items.append(
-                HeroChip(
-                    id: "member",
-                    symbol: "leaf.fill",
-                    text: String.localizedStringWithFormat(L("Fitgram-er since %@"), formatted),
-                    tint: Tokens.Palette.success,
-                    isProminent: false
-                )
-            )
-            items.append(
-                HeroChip(
-                    id: "friend",
-                    symbol: "person.2.fill",
-                    text: String.localizedStringWithFormat(L("Friends since %@"), formatted),
-                    tint: Tokens.Palette.primary,
-                    isProminent: false
-                )
-            )
-        }
-        if let level = snapshot.level {
-            items.append(
-                HeroChip(
-                    id: "level",
-                    symbol: "star.fill",
-                    text: "Lvl \(level.number) · \(level.label)",
-                    tint: Tokens.Palette.accent,
-                    isProminent: false
-                )
-            )
-        }
-        return items
-    }
-
-    private func heroChip(_ chip: HeroChip) -> some View {
-        HStack(spacing: 5) {
-            Image(systemName: chip.symbol)
-                .font(.system(size: 10, weight: .bold))
-            Text(chip.text)
-                .font(Tokens.Font.manrope(12, weight: 700))
-        }
-        .foregroundStyle(chip.isProminent ? Tokens.Palette.onPrimary : chip.tint)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(
-            Capsule()
-                .fill(
-                    chip.isProminent
-                        ? AnyShapeStyle(
-                            chip.tint
-                        )
-                        : AnyShapeStyle(chip.tint.opacity(0.16))
-                )
-        )
-        .shadow(
-            color: chip.isProminent ? chip.tint.opacity(0.35) : .clear,
-            radius: chip.isProminent ? 6 : 0,
-            y: 2
-        )
-    }
-
     private var privacyHint: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "lock.fill")
-            Text(L("Ten profil nie udostępnia szczegółów"))
+        HStack(spacing: 10) {
+            MonoIconBox(systemName: "lock", style: .track, size: 36)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(L("Ten profil nie udostępnia szczegółów"))
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(
+                    TL(
+                        pl: "Zależy od ustawień prywatności znajomego.",
+                        en: "Depends on your friend's privacy settings.",
+                        uk: "Залежить від налаштувань приватності друга.",
+                        ru: "Зависит от настроек приватности друга.",
+                        es: "Depende de la configuración de privacidad de tu amigo."
+                    )
+                )
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
         }
-        .font(Tokens.Font.caption)
-        .foregroundStyle(Tokens.Palette.inkMuted)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(Capsule().fill(Tokens.Palette.background.opacity(0.6)))
+        .monoCard(padding: 16)
     }
 
-    // MARK: - Custom segmented pill tab bar
+    // MARK: - Segmented tabs
 
     private var tabBar: some View {
-        HStack(spacing: 4) {
-            ForEach(Tab.allCases, id: \.self) { tab in
-                tabPill(tab)
-            }
-        }
-        .padding(4)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.pill, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.62))
+        MonoSegmented(
+            selection: $activeTab,
+            options: Tab.allCases.map { (value: $0, title: $0.label) }
         )
-    }
-
-    private func tabPill(_ tab: Tab) -> some View {
-        let isActive = activeTab == tab
-        return Button {
-            withAnimation(Tokens.Motion.gentle) { activeTab = tab }
-            Haptics.selection()
-        } label: {
-            HStack(spacing: 5) {
-                Image(systemName: tab.symbol)
-                    .font(.system(size: 12, weight: .bold))
-                Text(tab.label)
-                    .font(Tokens.Font.manrope(13, weight: 700))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-            }
-            .foregroundStyle(isActive ? Tokens.Palette.onPrimary : Tokens.Palette.inkMuted)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 9)
-            .background(
-                ZStack {
-                    if isActive {
-                        Capsule()
-                            .fill(
-                                Tokens.Palette.primary
-                            )
-                            .matchedGeometryEffect(id: "indicator", in: tabIndicator)
-                    }
-                }
-            )
-        }
-        .buttonStyle(.pressable)
-        .accessibilityLabel(Text(tab.label))
-        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 
     // MARK: - Bottom action bar
 
     private var actionBar: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            Button {
-                Task { await send(intent: .encourage) }
-            } label: {
-                HStack(spacing: 6) {
-                    Text(L("Support"))
-                        .font(Tokens.Font.bodyEmphasized)
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 13, weight: .bold))
+        MonoBottomBar {
+            HStack(spacing: 8) {
+                MonoButton(title: L("Support"), kind: .dark, icon: "heart", height: 46) {
+                    Task { await send(intent: .encourage) }
                 }
-                .foregroundStyle(Tokens.Palette.onPrimary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(
-                    Capsule()
-                        .fill(
-                            Tokens.Palette.primary
-                        )
-                )
-            }
-            .buttonStyle(.pressable)
-            .accessibilityLabel(Text(L("Support")))
-
-            if onUnfriend != nil {
-                Button {
-                    isUnfriendConfirmed = true
-                } label: {
-                    Image(systemName: "person.crop.circle.badge.minus")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.error)
-                        .frame(width: 48, height: 48)
-                        .background(
-                            Circle()
-                                .fill(Tokens.Palette.surface)
-                        )
-                        .fitgramShadow(Tokens.Shadow.card)
+                if onUnfriend != nil {
+                    MonoButton(title: L("Unfriend"), kind: .outline, height: 46) {
+                        isUnfriendConfirmed = true
+                    }
                 }
-                .buttonStyle(.pressable)
-                .accessibilityLabel(Text(L("Unfriend")))
+                MonoButton(title: L("Report"), kind: .danger, icon: "flag", height: 46) {
+                    isReportPresented = true
+                }
             }
         }
-        .padding(.horizontal, Tokens.Space.screenPadding)
-        .padding(.bottom, Tokens.Space.md)
-        .padding(.top, Tokens.Space.sm)
-        .background(
-            LinearGradient(
-                colors: [
-                    Tokens.Palette.background.opacity(0),
-                    Tokens.Palette.background.opacity(0.92),
-                    Tokens.Palette.background,
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .allowsHitTesting(false)
-            .ignoresSafeArea(edges: .bottom)
-        )
     }
 
     // MARK: - Empty + feedback
@@ -529,50 +320,31 @@ struct FriendProfileView: View {
         title: String,
         subtitle: String
     ) -> some View {
-        VStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(
-                        Tokens.Palette.primary.opacity(0.18)
-                    )
-                    .frame(width: 84, height: 84)
-                Image(systemName: symbol)
-                    .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            VStack(spacing: 4) {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: symbol, style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(Tokens.Font.headline)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                 Text(subtitle)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .multilineTextAlignment(.center)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Tokens.Space.xxl)
-        .padding(.horizontal, Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.80)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55))
+        .monoCard(padding: 16)
     }
 
     private var fallback: some View {
-        VStack(spacing: Tokens.Space.md) {
-            ZStack {
-                Circle()
-                    .fill(Tokens.Palette.surfaceMuted)
-                    .frame(width: 80, height: 80)
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 32))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
+        VStack(spacing: 12) {
+            MonoIconBox(systemName: "lock", style: .track, size: 56)
             Text(loadError ?? L("Profil niedostępny."))
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(Tokens.Font.manrope(14, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .multilineTextAlignment(.center)
         }
+        .padding(.horizontal, 24)
     }
 
     private var reportSheet: some View {
@@ -580,44 +352,27 @@ struct FriendProfileView: View {
             ZStack {
                 profileBackground
                 ScrollView {
-                    VStack(spacing: Tokens.Space.md) {
-                        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                            Text(L("Powód zgłoszenia"))
-                                .font(Tokens.Font.footnote)
-                                .foregroundStyle(Tokens.Palette.inkMuted)
+                    VStack(alignment: .leading, spacing: 12) {
+                        MonoField(label: L("Powód zgłoszenia"), multiline: true) {
                             TextEditor(text: $reportReason)
                                 .scrollContentBackground(.hidden)
+                                .font(Tokens.Font.manrope(15, weight: 600))
                                 .frame(minHeight: 120)
-                                .padding(Tokens.Space.sm)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .fill(Tokens.Palette.surfaceMuted.opacity(0.82))
-                                )
                         }
-                        .padding(Tokens.Space.lg)
-                        .background(
-                            RoundedRectangle(cornerRadius: 24, style: .continuous).fill(
-                                Tokens.Palette.surface.opacity(0.84))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(
-                                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55))
-                        Text(L("Zgłoszenie trafia do naszego zespołu moderacji. Nie informujemy o decyzjach."))
-                            .font(Tokens.Font.caption)
-                            .foregroundStyle(Tokens.Palette.inkMuted)
+                        MonoHint(
+                            text: L("Zgłoszenie trafia do naszego zespołu moderacji. Nie informujemy o decyzjach."))
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .padding(.vertical, 16)
                 }
             }
-            .navigationTitle(Text(L("Report")))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Report"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(L("Cancel")) { isReportPresented = false }
+                    MonoNavText(title: L("Cancel")) { isReportPresented = false }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(L("Wyślij")) {
+                    MonoNavPill(title: L("Wyślij")) {
                         Task { await report() }
                     }
                     .disabled(reportReason.trimmingCharacters(in: .whitespaces).isEmpty)

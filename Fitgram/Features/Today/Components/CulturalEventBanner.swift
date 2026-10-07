@@ -7,15 +7,15 @@ struct CulturalEventBanner: View {
     var onDismiss: (() -> Void)?
 
     var body: some View {
-        Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.card) {
+        Card(background: Tokens.Mono.track, elevation: Tokens.Shadow.card) {
             HStack(alignment: .top, spacing: Tokens.Space.md) {
                 ZStack {
                     Circle()
-                        .fill(Tokens.Palette.primary)
+                        .fill(Tokens.Mono.hero)
                         .frame(width: 36, height: 36)
                     Image(systemName: upcoming.event.symbol)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.onPrimary)
+                        .foregroundStyle(Tokens.Mono.hi)
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {

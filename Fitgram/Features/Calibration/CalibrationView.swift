@@ -17,42 +17,35 @@ struct CalibrationView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        explainer
-                        adjustmentCard
-                        referenceCard
-                        if let calibration {
-                            sampleCountCard(calibration)
-                        }
-                        PrimaryButton(title: "Save", systemImage: "checkmark", action: save)
-                        Button(role: .destructive) {
-                            isResetConfirmed = true
-                        } label: {
-                            HStack(spacing: Tokens.Space.sm) {
-                                Image(systemName: "arrow.counterclockwise")
-                                Text("Resetuj kalibrację")
-                            }
-                            .font(Tokens.Font.bodyEmphasized)
-                            .foregroundStyle(Tokens.Palette.warning)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, Tokens.Space.md)
-                        }
-                        .buttonStyle(.plain)
-                        .disabled((calibration?.sampleCount ?? 0) == 0 && draftFactor == 1)
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    MonoH1(text: L("Dopasuj AI do siebie"), sub: headerSubtitle, kicker: L("Kalibracja"))
+                    adjustmentCard
+                        .padding(.top, 16)
+                    referenceCard
+                        .padding(.top, 10)
                 }
-                .task { await load() }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, Tokens.Space.lg)
             }
-            .navigationTitle(Text("Kalibracja"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .task { await load() }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                MonoBottomBar {
+                    MonoButton(title: L("Resetuj kalibrację"), kind: .danger, icon: "arrow.counterclockwise") {
+                        isResetConfirmed = true
+                    }
+                    .disabled((calibration?.sampleCount ?? 0) == 0 && draftFactor == 1)
+                }
+            }
+            .monoNavigationTitle(L("Kalibracja"))
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", action: onDismiss)
+                    MonoNavPill(title: L("Save"), action: save)
                 }
             }
             .confirmationDialog(
@@ -70,98 +63,63 @@ struct CalibrationView: View {
 
     // MARK: - Sections
 
-    private var explainer: some View {
-        Card(background: Tokens.Palette.primarySoft, elevation: Tokens.Shadow.card) {
-            HStack(alignment: .top, spacing: Tokens.Space.md) {
-                Image(systemName: "wand.and.stars")
-                    .font(.title2)
-                    .foregroundStyle(Tokens.Palette.primary)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Dopasuj AI do siebie")
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(
-                        "Jeśli widzisz, że wpisy są zwykle za duże albo za małe, przesuń suwak."
-                            + " We'll help AI assess your portions better."
-                    )
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-            }
+    private var headerSubtitle: String {
+        guard let calibration else {
+            return L("Jeśli widzisz, że wpisy są zwykle za duże albo za małe, przesuń suwak.")
         }
+        let count = String.localizedStringWithFormat(L("%lld skanów do tej pory"), calibration.sampleCount)
+        guard calibration.sampleCount > 0 else { return count }
+        return count + " · " + updatedLabel(calibration.lastUpdated)
     }
 
     private var adjustmentCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                HStack {
-                    Text("Korekta porcji")
-                        .font(Tokens.Font.headline)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Spacer()
-                    Text(String(format: "×%.2f", draftFactor))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.primary)
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                MonoLabel(text: L("Korekta porcji"))
+                Spacer()
+                Text(String(format: "×%.2f", draftFactor))
+                    .font(Tokens.Font.monoNumber(26))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .monospacedDigit()
+            }
+            VStack(spacing: 6) {
                 Slider(
                     value: $draftFactor,
                     in: CalibrationService.factorBounds,
                     step: 0.05
                 )
-                .tint(Tokens.Palette.primary)
+                .tint(Tokens.Mono.strong)
                 HStack {
                     Text("Za małe")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                    Spacer()
-                    Text("OK")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
                     Spacer()
                     Text("Za duże")
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
                 }
+                .font(Tokens.Font.manrope(11, weight: 700))
+                .foregroundStyle(Tokens.Mono.muted)
             }
         }
+        .monoCard(padding: 16)
     }
 
     private var referenceCard: some View {
-        Card {
-            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                Text("Punkt odniesienia")
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text("Wybierz, co najczęściej widać obok talerza. Pomoże to AI w przyszłych skanach.")
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                Picker("Punkt odniesienia", selection: $draftReference) {
-                    Text("Karta").tag(ReferenceObjectKind.creditCard)
-                    Text("Hand").tag(ReferenceObjectKind.eatingHand)
-                    Text("Widelec").tag(ReferenceObjectKind.fork)
-                    Text("Inne").tag(ReferenceObjectKind.generic)
-                }
-                .pickerStyle(.segmented)
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: L("Punkt odniesienia"))
+            Text("Wybierz, co najczęściej widać obok talerza. Pomoże to AI w przyszłych skanach.")
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+            MonoSegmented(
+                selection: $draftReference,
+                options: [
+                    (value: ReferenceObjectKind.creditCard, title: L("Karta")),
+                    (value: ReferenceObjectKind.eatingHand, title: L("Hand")),
+                    (value: ReferenceObjectKind.fork, title: L("Widelec")),
+                    (value: ReferenceObjectKind.generic, title: L("Inne")),
+                ]
+            )
         }
-    }
-
-    private func sampleCountCard(_ calibration: Calibration) -> some View {
-        Card {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: "chart.bar.xaxis")
-                    .foregroundStyle(Tokens.Palette.primary)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(String.localizedStringWithFormat(L("%lld skanów do tej pory"), calibration.sampleCount))
-                        .font(Tokens.Font.body)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(updatedLabel(calibration.lastUpdated))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: 0)
-            }
-        }
+        .monoCard(padding: 16)
     }
 
     // MARK: - Helpers

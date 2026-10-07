@@ -14,7 +14,7 @@ extension Tokens {
         static let huge: CGFloat = 64
 
         /// Horizontal screen edge padding used by most screens.
-        static let screenPadding: CGFloat = 20
+        static let screenPadding: CGFloat = 12
         /// Vertical breathing room between unrelated stacks.
         static let sectionSpacing: CGFloat = 32
     }

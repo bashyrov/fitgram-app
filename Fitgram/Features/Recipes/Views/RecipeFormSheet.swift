@@ -61,120 +61,178 @@ struct RecipeFormSheet: View {
         }
     }
 
+    private var formTitle: String {
+        mode.isAdding ? L("Nowy przepis") : L("Edytuj przepis")
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                Tokens.Palette.background.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: Tokens.Space.lg) {
-                        Card {
-                            VStack(spacing: Tokens.Space.md) {
-                                field(label: "Nazwa", placeholder: "Pierogi ruskie", text: $title)
-                                field(label: "Short description (optional)", placeholder: "...", text: $summary)
-                                field(
-                                    label: "Liczba porcji", placeholder: "2", text: $servingsText, keyboard: .numberPad)
-                            }
-                        }
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                                Text("Ingredients")
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text("Wpisz każdy składnik w osobnej linii.")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                                TextEditor(text: $ingredientsText)
-                                    .font(Tokens.Font.body)
-                                    .scrollContentBackground(.hidden)
-                                    .frame(minHeight: 140)
-                                    .padding(Tokens.Space.sm)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                                            .fill(Tokens.Palette.surfaceMuted)
-                                    )
-                            }
-                        }
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-                                Text("Instructions")
-                                    .font(Tokens.Font.headline)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text("Each step on a separate line.")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                                TextEditor(text: $instructionsText)
-                                    .font(Tokens.Font.body)
-                                    .scrollContentBackground(.hidden)
-                                    .frame(minHeight: 140)
-                                    .padding(Tokens.Space.sm)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                                            .fill(Tokens.Palette.surfaceMuted)
-                                    )
-                            }
-                        }
-                        Card {
-                            VStack(alignment: .leading, spacing: Tokens.Space.md) {
-                                HStack {
-                                    Text("Wartości / porcję (opcjonalnie)")
-                                        .font(Tokens.Font.headline)
-                                        .foregroundStyle(Tokens.Palette.ink)
-                                    Spacer()
-                                    if estimator != nil {
-                                        Button {
-                                            runEstimate()
-                                        } label: {
-                                            HStack(spacing: 4) {
-                                                Image(systemName: "wand.and.stars")
-                                                    .font(.system(size: 13, weight: .semibold))
-                                                Text("Oszacuj")
-                                                    .font(Tokens.Font.footnote.bold())
-                                            }
-                                            .foregroundStyle(Tokens.Palette.primary)
-                                        }
-                                        .buttonStyle(.plain)
-                                        .disabled(splitLines(ingredientsText).isEmpty)
-                                    }
-                                }
-                                if let note = estimateNote {
-                                    Text(note)
-                                        .font(Tokens.Font.caption)
-                                        .foregroundStyle(Tokens.Palette.inkMuted)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                }
-                                field(
-                                    label: "Calories", placeholder: "350", text: $caloriesPerServingText,
-                                    keyboard: .decimalPad)
-                                field(
-                                    label: "Protein (g)", placeholder: "15", text: $proteinPerServingText,
-                                    keyboard: .decimalPad)
-                                field(
-                                    label: "Carbs (g)", placeholder: "40", text: $carbsPerServingText,
-                                    keyboard: .decimalPad)
-                                field(
-                                    label: "Fat (g)", placeholder: "12", text: $fatPerServingText,
-                                    keyboard: .decimalPad)
-                            }
-                        }
-                        PrimaryButton(
-                            title: mode.isAdding ? "Add recipe" : "Save",
-                            systemImage: "checkmark",
-                            isEnabled: isValid,
-                            action: commit
-                        )
-                    }
-                    .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    MonoH1(text: formTitle)
+                        .padding(.bottom, 4)
+                    basicsCard
+                    textBlockCard(
+                        title: L("Ingredients"),
+                        hint: L("Wpisz każdy składnik w osobnej linii."),
+                        text: $ingredientsText,
+                        minHeight: 110
+                    )
+                    textBlockCard(
+                        title: L("Instructions"),
+                        hint: L("Each step on a separate line."),
+                        text: $instructionsText,
+                        minHeight: 90
+                    )
+                    nutritionCard
                 }
+                .padding(.horizontal, Tokens.Space.screenPadding)
+                .padding(.bottom, 24)
             }
-            .navigationTitle(Text(mode.isAdding ? "Nowy przepis" : "Edytuj przepis"))
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Tokens.Palette.background.ignoresSafeArea())
+            .monoNavigationTitle(formTitle)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                    MonoNavText(title: L("Cancel"), action: onDismiss)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    MonoNavPill(title: L("Save"), action: commit)
+                        .disabled(!isValid)
+                        .opacity(isValid ? 1 : 0.45)
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                MonoBottomBar {
+                    MonoButton(
+                        title: mode.isAdding ? L("Add recipe") : L("Save"),
+                        kind: .dark,
+                        icon: "checkmark",
+                        action: commit
+                    )
+                    .disabled(!isValid)
                 }
             }
         }
+    }
+
+    private var basicsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            field(label: L("Nazwa"), placeholder: "Pierogi ruskie", text: $title)
+            field(label: L("Short description (optional)"), placeholder: "...", text: $summary)
+            field(label: L("Liczba porcji"), placeholder: "2", text: $servingsText, keyboard: .numberPad)
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func textBlockCard(title: String, hint: String, text: Binding<String>, minHeight: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            MonoLabel(text: title)
+            Text(hint)
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            TextEditor(text: text)
+                .font(Tokens.Font.manrope(14, weight: 600))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineSpacing(4)
+                .scrollContentBackground(.hidden)
+                .frame(minHeight: minHeight)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(Tokens.Mono.line2, lineWidth: 1)
+                )
+        }
+        .monoCard(padding: 16)
+    }
+
+    private var nutritionCard: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .center) {
+                MonoLabel(text: L("Wartości / porcję (opcjonalnie)"))
+                    .lineLimit(2)
+                Spacer(minLength: 8)
+                if estimator != nil {
+                    Button {
+                        runEstimate()
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 11, weight: .bold))
+                            Text("Oszacuj")
+                        }
+                        .font(Tokens.Font.manrope(12, weight: 800))
+                        .foregroundStyle(Tokens.Mono.hi)
+                        .padding(.horizontal, 12)
+                        .frame(height: 34)
+                        .background(Capsule().fill(Tokens.Mono.hero))
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(splitLines(ingredientsText).isEmpty)
+                    .opacity(splitLines(ingredientsText).isEmpty ? 0.45 : 1)
+                }
+            }
+            .padding(.bottom, 8)
+            nutrientRow(label: L("Calories"), unit: "kcal", text: $caloriesPerServingText, step: 10)
+            nutrientRow(label: L("Protein (g)"), unit: "g", text: $proteinPerServingText, step: 1)
+            nutrientRow(label: L("Carbs (g)"), unit: "g", text: $carbsPerServingText, step: 1)
+            nutrientRow(label: L("Fat (g)"), unit: "g", text: $fatPerServingText, step: 1)
+            if let note = estimateNote {
+                Text(note)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 8)
+            }
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func nutrientRow(label: String, unit: String, text: Binding<String>, step: Double) -> some View {
+        HStack(spacing: 10) {
+            Text(label)
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 8)
+            stepButton("minus") {
+                let current = Self.parseDouble(text.wrappedValue) ?? 0
+                text.wrappedValue = Self.format(max(0, current - step))
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                TextField("—", text: text)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.center)
+                    .font(Tokens.Font.monoNumber(20))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .frame(width: 52)
+                Text(unit)
+                    .font(Tokens.Font.manrope(12, weight: 700))
+                    .foregroundStyle(Tokens.Mono.muted)
+            }
+            stepButton("plus") {
+                let current = Self.parseDouble(text.wrappedValue) ?? 0
+                text.wrappedValue = Self.format(current + step)
+            }
+        }
+        .padding(.vertical, 6)
+    }
+
+    private func stepButton(_ symbol: String, action: @escaping () -> Void) -> some View {
+        Button {
+            action()
+            Haptics.light()
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .heavy))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 40, height: 40)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Helpers
@@ -197,25 +255,15 @@ struct RecipeFormSheet: View {
     }
 
     private func field(
-        label: LocalizedStringKey,
+        label: String,
         placeholder: LocalizedStringKey,
         text: Binding<String>,
         keyboard: UIKeyboardType = .default
     ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(Tokens.Font.footnote)
-                .foregroundStyle(Tokens.Palette.inkMuted)
+        MonoField(label: label) {
             TextField(placeholder, text: text)
                 .keyboardType(keyboard)
                 .textInputAutocapitalization(keyboard == .default ? .sentences : .never)
-                .font(Tokens.Font.body)
-                .foregroundStyle(Tokens.Palette.ink)
-                .padding(Tokens.Space.sm)
-                .background(
-                    RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                        .fill(Tokens.Palette.surfaceMuted)
-                )
         }
     }
 

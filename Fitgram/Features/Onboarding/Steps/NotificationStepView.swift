@@ -18,44 +18,38 @@ struct NotificationStepView: View {
             secondaryAction: onContinue,
             onPrimary: { Task { await request() } },
             content: {
-                VStack(spacing: Tokens.Space.md) {
-                    Card(elevation: Tokens.Shadow.card) {
-                        HStack(spacing: Tokens.Space.md) {
-                            Image(systemName: "sun.max.fill")
-                                .font(.title2)
-                                .foregroundStyle(Tokens.Palette.warning)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("8:00 — Hi there!")
-                                    .font(Tokens.Font.bodyEmphasized)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text("Ready for breakfast? Tap to add it.")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                            }
-                            Spacer(minLength: 0)
-                        }
-                    }
-                    Card(elevation: Tokens.Shadow.card) {
-                        HStack(spacing: Tokens.Space.md) {
-                            Image(systemName: "moon.fill")
-                                .font(.title2)
-                                .foregroundStyle(Tokens.Palette.primary)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("21:00 — Podsumowanie")
-                                    .font(Tokens.Font.bodyEmphasized)
-                                    .foregroundStyle(Tokens.Palette.ink)
-                                Text("Look back at your day.")
-                                    .font(Tokens.Font.footnote)
-                                    .foregroundStyle(Tokens.Palette.inkMuted)
-                            }
-                            Spacer(minLength: 0)
-                        }
-                    }
+                VStack(spacing: 8) {
+                    reminderCard(
+                        title: "8:00 — Hi there!",
+                        subtitle: "Ready for breakfast? Tap to add it."
+                    )
+                    reminderCard(
+                        title: "21:00 — Podsumowanie",
+                        subtitle: "Look back at your day."
+                    )
                 }
+                .padding(.top, 4)
             }
         )
         .disabled(isRequesting)
         .opacity(isRequesting ? 0.6 : 1)
+    }
+
+    private func reminderCard(title: LocalizedStringKey, subtitle: LocalizedStringKey) -> some View {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "bell", style: .dark, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(Tokens.Font.manrope(14, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(subtitle)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .monoCard(padding: 16)
     }
 
     private func request() async {

@@ -15,15 +15,21 @@ struct AddFriendSheet: View {
             ZStack {
                 addBackground
                 ScrollView {
-                    LazyVStack(spacing: Tokens.Space.lg) {
-                        hero
-                        addModes
+                    VStack(alignment: .leading, spacing: 0) {
+                        MonoH1(
+                            text: L("Dodaj znajomego"),
+                            sub: L("Znajdź osobę po username, wklej kod QR albo otwórz profil i wyślij zaproszenie.")
+                        )
+                        Color.clear.frame(height: 16)
                         searchField
+                        Color.clear.frame(height: 12)
+                        addModes
                         if state.searchResults.isEmpty {
+                            Color.clear.frame(height: 12)
                             emptyHint
-                            myCodeButton
                         } else {
-                            VStack(spacing: Tokens.Space.sm) {
+                            resultHeader
+                            VStack(spacing: 8) {
                                 ForEach(state.searchResults) { profile in
                                     searchRow(profile)
                                 }
@@ -31,14 +37,14 @@ struct AddFriendSheet: View {
                         }
                     }
                     .padding(.horizontal, Tokens.Space.screenPadding)
-                    .padding(.vertical, Tokens.Space.lg)
+                    .padding(.bottom, 24)
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
-            .navigationTitle(Text(L("Dodaj znajomego")))
-            .navigationBarTitleDisplayMode(.inline)
+            .monoNavigationTitle(L("Dodaj znajomego"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(L("Zamknij"), action: onDismiss)
+                    MonoNavText(title: L("Zamknij"), action: onDismiss)
                 }
             }
             .sheet(isPresented: $isMyCodePresented) {
@@ -52,101 +58,59 @@ struct AddFriendSheet: View {
     }
 
     private var addBackground: some View {
-        ScreenBackground(mood: .social)
+        Tokens.Palette.background.ignoresSafeArea()
     }
 
-    private var hero: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(alignment: .top, spacing: Tokens.Space.md) {
-                Image(systemName: "person.2.badge.plus.fill")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-                    .frame(width: 56, height: 56)
-                    .background(
-                        Circle().fill(
-                            Tokens.Palette.primary
-                        )
-                    )
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(L("Dodaj znajomego"))
-                        .font(Tokens.Font.archivo(size: 28, weight: 800, width: 115))
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Znajdź osobę po username, wklej kod QR albo otwórz profil i wyślij zaproszenie."))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
-        )
-    }
-
+    /// Mockup rows: Username / QR / Pokaż mój kod.
     private var addModes: some View {
-        HStack(spacing: Tokens.Space.sm) {
-            AddFriendModeCard(
-                symbol: "at",
+        VStack(spacing: 0) {
+            MonoRow(
+                icon: "person",
+                iconStyle: .track,
                 title: L("Username"),
-                subtitle: L("Wpisz nazwę, sprawdź profil, wyślij zaproszenie."),
-                tint: Tokens.Palette.primary
-            )
+                sub: L("Wpisz nazwę, sprawdź profil, wyślij zaproszenie.")
+            ) {
+                EmptyView()
+            }
+            MonoRowDivider()
             Button {
                 isMyCodePresented = true
             } label: {
-                AddFriendModeCard(
-                    symbol: "qrcode",
+                MonoRow(
+                    icon: "qrcode",
+                    iconStyle: .track,
                     title: L("QR"),
-                    subtitle: L("Pokaż swój kod albo wklej kod znajomego w wyszukiwarkę."),
-                    tint: Tokens.Palette.accent
-                )
+                    sub: L("Pokaż swój kod albo wklej kod znajomego w wyszukiwarkę.")
+                ) {
+                    EmptyView()
+                }
             }
             .buttonStyle(.plain)
+            MonoRowDivider()
+            myCodeButton
         }
+        .monoRowsCard()
     }
 
     private var myCodeButton: some View {
         Button {
             isMyCodePresented = true
         } label: {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: "qrcode")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.primary)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(Tokens.Palette.primarySoft))
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(L("Pokaż mój kod"))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Udostępnij identyfikator w kilka sekund."))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(Tokens.Palette.separator, lineWidth: 0.35)
+            MonoRow(
+                icon: "square.and.arrow.up",
+                iconStyle: .dark,
+                title: L("Pokaż mój kod"),
+                sub: L("Udostępnij identyfikator w kilka sekund.")
             )
         }
         .buttonStyle(.plain)
     }
 
     private var searchField: some View {
-        HStack(spacing: Tokens.Space.sm) {
+        HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(Tokens.Palette.inkMuted)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(Tokens.Mono.muted)
             TextField(
                 L("Imię, username lub kod QR"),
                 text: Binding(
@@ -157,6 +121,8 @@ struct AddFriendSheet: View {
                     }
                 )
             )
+            .font(Tokens.Font.manrope(15, weight: 600))
+            .foregroundStyle(Tokens.Palette.ink)
             .textInputAutocapitalization(.never)
             .submitLabel(.search)
             if !state.searchQuery.isEmpty {
@@ -165,56 +131,83 @@ struct AddFriendSheet: View {
                     Task { await state.runSearch() }
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
+                        .foregroundStyle(Tokens.Mono.muted)
                 }
+                .accessibilityLabel(Text(L("Wyczyść")))
             }
         }
-        .padding(Tokens.Space.md)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.86)))
+        .padding(.horizontal, 14)
+        .frame(height: 50)
+        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Tokens.Palette.surface))
         .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Tokens.Palette.separator, lineWidth: 0.35)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Tokens.Mono.line2, lineWidth: 1)
         )
     }
 
+    private var resultHeader: some View {
+        MonoSectionHeader(title: TL(pl: "Wynik", en: "Result", uk: "Результат", ru: "Результат", es: "Resultado"))
+            .padding(.horizontal, 6)
+            .padding(.top, 6)
+            .padding(.bottom, 12)
+    }
+
     private var emptyHint: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(spacing: Tokens.Space.md) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.accent)
-                    .frame(width: 42, height: 42)
-                    .background(Circle().fill(Tokens.Palette.accentSoft))
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(L("Szukaj po imieniu albo username"))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Najpierw zobacz profil osoby, potem wyślij zaproszenie. To chroni przed pomyłką."))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "sparkles", style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(L("Szukaj po imieniu albo username"))
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(L("Najpierw zobacz profil osoby, potem wyślij zaproszenie. To chroni przed pomyłką."))
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 0)
         }
-        .padding(Tokens.Space.md)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.80)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55))
+        .monoCard(padding: 16)
     }
 
     private func searchRow(_ profile: PublicProfile) -> some View {
         let status = state.connectionStatus(for: profile)
         let isAdding = addingProfileID == profile.id
-        return HStack(spacing: Tokens.Space.sm) {
+        return VStack(alignment: .leading, spacing: 12) {
             Button {
                 onOpenProfile(profile)
             } label: {
-                FriendRow(profile: profile)
+                HStack(spacing: 12) {
+                    FriendInitialAvatar(name: profile.displayName, size: 48)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(profile.displayName)
+                            .font(Tokens.Font.manrope(16, weight: 800))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .lineLimit(1)
+                        Text(resultSubtitle(profile))
+                            .font(Tokens.Font.manrope(12, weight: 600))
+                            .foregroundStyle(Tokens.Mono.muted)
+                            .lineLimit(1)
+                    }
+                    Spacer(minLength: 0)
+                    MonoChevron()
+                }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(Text(L("Otwórz profil")))
+            .accessibilityValue(Text(profile.displayName))
 
-            Button {
+            Text(L("Najpierw zobacz profil osoby, potem wyślij zaproszenie. To chroni przed pomyłką."))
+                .font(Tokens.Font.manrope(12, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+
+            MonoButton(
+                title: L("Wyślij zaproszenie"),
+                kind: status == .none ? .dark : .outline,
+                icon: addSymbol(status: status, isAdding: isAdding),
+                height: 46
+            ) {
                 Task {
                     addingProfileID = profile.id
                     let didAdd = await state.sendRequest(to: profile)
@@ -223,67 +216,29 @@ struct AddFriendSheet: View {
                         onOpenProfile(profile)
                     }
                 }
-            } label: {
-                addButtonLabel(status: status, isAdding: isAdding)
             }
             .accessibilityLabel(Text(L("Wyślij zaproszenie")))
             .disabled(status != .none || isAdding)
         }
+        .monoCard(padding: 16)
     }
 
-    @ViewBuilder
-    private func addButtonLabel(status: FriendsState.ConnectionStatus, isAdding: Bool) -> some View {
-        let symbol: String = {
-            if isAdding { return "hourglass" }
-            switch status {
-            case .none: return "person.crop.circle.badge.plus"
-            case .outgoing: return "paperplane.fill"
-            case .friend: return "checkmark"
-            }
-        }()
-        let tint: Color = {
-            switch status {
-            case .none: return Tokens.Palette.primary
-            case .outgoing: return Tokens.Palette.accent
-            case .friend: return Tokens.Palette.success
-            }
-        }()
-        Image(systemName: symbol)
-            .font(.system(size: 20, weight: .bold))
-            .foregroundStyle(tint)
-            .frame(width: 44, height: 44)
-            .background(Circle().fill(tint.opacity(0.14)))
-    }
-}
-
-private struct AddFriendModeCard: View {
-    let symbol: String
-    let title: String
-    let subtitle: String
-    let tint: Color
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.sm) {
-            Image(systemName: symbol)
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(tint)
-                .frame(width: 38, height: 38)
-                .background(Circle().fill(tint.opacity(0.14)))
-            Text(title)
-                .font(Tokens.Font.manrope(16, weight: 800))
-                .foregroundStyle(Tokens.Palette.ink)
-            Text(subtitle)
-                .font(Tokens.Font.caption)
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .lineLimit(3)
-                .fixedSize(horizontal: false, vertical: true)
+    private func resultSubtitle(_ profile: PublicProfile) -> String {
+        if let streak = profile.currentStreak, streak > 0, profile.sharesStreak {
+            return "\(L("Seria")) · \(streak)"
         }
-        .frame(maxWidth: .infinity, minHeight: 136, alignment: .topLeading)
-        .padding(Tokens.Space.md)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Tokens.Palette.surface.opacity(0.82)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(
-                Tokens.Palette.separator.opacity(0.55), lineWidth: 0.55)
-        )
+        if let count = profile.achievementCount, profile.sharesAchievements {
+            return String.localizedStringWithFormat(L("%lld badges"), count)
+        }
+        return "Fitgram"
+    }
+
+    private func addSymbol(status: FriendsState.ConnectionStatus, isAdding: Bool) -> String {
+        if isAdding { return "hourglass" }
+        switch status {
+        case .none: return "plus"
+        case .outgoing: return "paperplane.fill"
+        case .friend: return "checkmark"
+        }
     }
 }

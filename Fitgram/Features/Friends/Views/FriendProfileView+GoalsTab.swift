@@ -7,7 +7,7 @@ extension FriendProfileView {
     @ViewBuilder
     func goalsTab(_ snapshot: FriendProfileSnapshot) -> some View {
         if let goal = snapshot.goalLabel {
-            VStack(spacing: Tokens.Space.md) {
+            VStack(spacing: 10) {
                 goalsHeroCard(goalLabel: goal, snapshot: snapshot)
                 if let recipes = snapshot.topRecipes, !recipes.isEmpty {
                     favoriteRecipesCard(recipes)
@@ -23,100 +23,45 @@ extension FriendProfileView {
     }
 
     func goalsHeroCard(goalLabel: String, snapshot: FriendProfileSnapshot) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack {
-                Text(L("Główny cel"))
-                    .font(Tokens.Font.manrope(10, weight: 700))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                MonoLabel(text: L("Główny cel"), onHero: true)
+                Text(goalLabel)
+                    .font(Tokens.Font.monoDisplay(24))
                     .textCase(.uppercase)
-                    .tracking(0.6)
-                Spacer()
-                Image(systemName: "target")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.primary)
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Text(goalLabel)
-                .font(Tokens.Font.manrope(22, weight: 800))
-                .foregroundStyle(Tokens.Palette.ink)
-                .lineLimit(3)
             goalMetricsRow(snapshot)
         }
-        .padding(Tokens.Space.lg)
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(goalsHeroBackground)
     }
 
     @ViewBuilder
     func goalMetricsRow(_ snapshot: FriendProfileSnapshot) -> some View {
-        HStack(spacing: Tokens.Space.md) {
+        HStack(alignment: .top, spacing: 10) {
             if let weight = snapshot.weightKg {
-                miniMetric(
-                    symbol: "scalemass.fill",
-                    value: String(format: "%.1f", weight),
-                    unit: "kg",
-                    label: L("Waga"),
-                    tint: Tokens.Palette.success
-                )
+                MonoStat(label: L("Waga"), value: String(format: "%.1f", weight), unit: "kg", dark: true)
             }
             if let height = snapshot.heightCm {
-                miniMetric(
-                    symbol: "ruler.fill",
-                    value: "\(height)",
-                    unit: "cm",
-                    label: L("Wzrost"),
-                    tint: Tokens.Palette.accent
-                )
+                MonoStat(label: L("Wzrost"), value: "\(height)", unit: "cm", dark: true)
             }
             if let elapsed = daysSinceJoin(snapshot.memberSinceDate) {
-                miniMetric(
-                    symbol: "calendar",
-                    value: "\(elapsed)",
-                    unit: L("dni"),
-                    label: L("Z nami"),
-                    tint: Tokens.Palette.primary
-                )
+                MonoStat(label: L("Z nami"), value: "\(elapsed)", unit: L("dni"), dark: true)
             }
+        }
+        .padding(.top, 14)
+        .overlay(alignment: .top) {
+            Rectangle().fill(Tokens.Mono.heroLine).frame(height: 1)
         }
     }
 
     var goalsHeroBackground: some View {
-        RoundedRectangle(cornerRadius: 28, style: .continuous)
-            .fill(
-                Tokens.Palette.surface.opacity(0.92)
-            )
-    }
-
-    func miniMetric(
-        symbol: String,
-        value: String,
-        unit: String,
-        label: String,
-        tint: Color
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Image(systemName: symbol)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(tint)
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(value)
-                    .font(Tokens.Font.manrope(18, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(unit)
-                    .font(Tokens.Font.manrope(11, weight: 700))
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-            }
-            Text(label)
-                .font(Tokens.Font.manrope(10, weight: 700))
-                .foregroundStyle(Tokens.Palette.inkMuted)
-                .textCase(.uppercase)
-                .tracking(0.4)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Tokens.Space.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Radius.md, style: .continuous)
-                .fill(Tokens.Palette.surface.opacity(0.85))
-        )
+        RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
+            .fill(Tokens.Mono.hero)
     }
 
     func daysSinceJoin(_ date: Date?) -> Int? {
@@ -126,45 +71,30 @@ extension FriendProfileView {
     }
 
     func favoriteRecipesCard(_ recipes: [PublicRecipeReference]) -> some View {
-        VStack(alignment: .leading, spacing: Tokens.Space.md) {
-            HStack(spacing: Tokens.Space.sm) {
-                Image(systemName: "book.closed.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Tokens.Palette.success)
-                    .frame(width: 30, height: 30)
-                    .background(Circle().fill(Tokens.Palette.success.opacity(0.16)))
-                Text(L("Ulubione przepisy"))
-                    .font(Tokens.Font.headline)
-                    .foregroundStyle(Tokens.Palette.ink)
-                Spacer()
-            }
-            ForEach(recipes) { recipe in
-                recipeRow(recipe)
-                if recipe.id != recipes.last?.id {
-                    Rectangle()
-                        .fill(Tokens.Palette.separator.opacity(0.7))
-                        .frame(height: 0.5)
+        VStack(alignment: .leading, spacing: 0) {
+            MonoLabel(text: L("Ulubione przepisy"))
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 4)
+            ForEach(Array(recipes.enumerated()), id: \.element.id) { index, recipe in
+                if index > 0 {
+                    MonoRowDivider()
                 }
+                recipeRow(recipe)
             }
         }
-        .padding(Tokens.Space.lg)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Tokens.Palette.surface.opacity(0.72)))
+        .monoRowsCard()
     }
 
     func recipeRow(_ recipe: PublicRecipeReference) -> some View {
-        HStack(spacing: Tokens.Space.md) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(recipe.name)
-                    .font(Tokens.Font.bodyEmphasized)
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .lineLimit(1)
-                if let kcal = recipe.kcalPerServing {
-                    Text(String.localizedStringWithFormat(L("%lld kcal · %lld×"), kcal, recipe.cookCount))
-                        .font(Tokens.Font.caption)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
+        MonoRow(
+            icon: "book.closed",
+            iconStyle: .track,
+            title: recipe.name,
+            sub: recipe.kcalPerServing.map {
+                String.localizedStringWithFormat(L("%lld kcal · %lld×"), $0, recipe.cookCount)
             }
-            Spacer()
+        ) {
             if let onCopyRecipe {
                 Button {
                     onCopyRecipe(recipe)
@@ -173,15 +103,11 @@ extension FriendProfileView {
                         message: recipe.name
                     )
                 } label: {
-                    Image(systemName: "tray.and.arrow.down.fill")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.primary)
-                        .frame(width: 32, height: 32)
-                        .background(Circle().fill(Tokens.Palette.primarySoft))
+                    MonoIconBox(systemName: "tray.and.arrow.down", style: .outline, size: 36)
                 }
+                .buttonStyle(.plain)
                 .accessibilityLabel(Text(L("Zapisz do mojej książki")))
             }
         }
-        .padding(.vertical, 4)
     }
 }

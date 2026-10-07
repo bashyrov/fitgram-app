@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Slim, calm progress bar at the top of each onboarding step. Avoids dots
-/// so step count isn't visually intimidating.
+/// Slim, calm progress bar at the top of each onboarding step (design D:
+/// 6 pt track + "N / M" label).
 struct OnboardingProgressBar: View {
     let index: Int
     let total: Int
@@ -11,20 +11,29 @@ struct OnboardingProgressBar: View {
         return Double(index + 1) / Double(total)
     }
 
+    private var stepNumber: Int { min(index + 1, max(total, 1)) }
+
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(Tokens.Palette.surfaceMuted)
-                Capsule()
-                    .fill(
-                        Tokens.Palette.primary
-                    )
-                    .frame(width: max(8, proxy.size.width * progress))
-                    .animation(Tokens.Motion.gentle, value: progress)
+        HStack(spacing: 12) {
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Tokens.Mono.track)
+                    Capsule()
+                        .fill(Tokens.Mono.strong)
+                        .frame(width: proxy.size.width * min(1, max(0, progress)))
+                }
             }
+            .frame(height: 6)
+            .animation(Tokens.Motion.gentle, value: progress)
+
+            Text(verbatim: "\(stepNumber) / \(total)")
+                .font(Tokens.Font.manrope(11, weight: 800))
+                .tracking(1.5)
+                .foregroundStyle(Tokens.Mono.muted)
+                .monospacedDigit()
+                .lineLimit(1)
+                .fixedSize()
         }
-        .frame(height: 8)
         .accessibilityElement()
         .accessibilityLabel("Krok \(index + 1) z \(total)")
         .accessibilityValue("\(Int(progress * 100))%")

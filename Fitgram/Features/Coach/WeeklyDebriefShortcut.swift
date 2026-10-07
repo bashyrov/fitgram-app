@@ -1,41 +1,19 @@
 import SwiftUI
 
 /// Compact "How you're doing" link on Today — opens the weekly debrief sheet.
+/// Design D: a single `row` inside a rows card (track icon box, title, sub, chevron).
 struct WeeklyDebriefShortcut: View {
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: Tokens.Space.md) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Tokens.Palette.accent.opacity(0.15))
-                        .frame(width: 44, height: 44)
-                    Image(systemName: "chart.line.uptrend.xyaxis")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(Tokens.Palette.accent)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(L("How you're doing"))
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                    Text(L("Weekly summary from Ola"))
-                        .font(Tokens.Font.footnote)
-                        .foregroundStyle(Tokens.Palette.inkMuted)
-                }
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            }
-            .padding(Tokens.Space.md)
-            .background(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .fill(Tokens.Palette.surface)
+            MonoRow(
+                icon: "chart.line.uptrend.xyaxis",
+                iconStyle: .track,
+                title: L("How you're doing"),
+                sub: L("Weekly summary from Ola")
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: Tokens.Radius.lg, style: .continuous)
-                    .strokeBorder(Tokens.Palette.separator, lineWidth: 0.35)
-            )
+            .monoRowsCard()
         }
         .buttonStyle(PressableButtonStyle())
     }

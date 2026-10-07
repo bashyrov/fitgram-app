@@ -1,5 +1,6 @@
 import SwiftUI
 
+// swiftlint:disable:next type_body_length
 struct TodayBriefingStack: View {
     var title: LocalizedStringKey = "Dla Ciebie"
     var symbol: String = "sparkles"
@@ -16,6 +17,10 @@ struct TodayBriefingStack: View {
     let onDismissEvent: () -> Void
     let onCookSuggested: ((Recipe) -> Void)?
 
+    /// When true the rows render without their own card so the caller can
+    /// merge them into a shared rows card (mockup "02 Na dziś").
+    var isEmbedded = false
+
     private var hasContent: Bool {
         fact != nil || recommendations != nil || coachInsight != nil
             || isOlaLocked || upcomingEvent != nil || suggestedRecipe != nil
@@ -23,27 +28,21 @@ struct TodayBriefingStack: View {
 
     var body: some View {
         if hasContent {
-            VStack(alignment: .leading, spacing: 0) {
-                header
-                contentRows
+            if isEmbedded {
+                rowsStack
+            } else {
+                rowsStack
+                    .monoRowsCard()
             }
-            .padding(Tokens.Space.md)
-            .monoCard(padding: nil)
         }
     }
 
-    private var header: some View {
-        HStack {
-            Text(title)
-                .font(Tokens.Font.monoDisplay(20))
-                .textCase(.uppercase)
-                .foregroundStyle(Tokens.Palette.ink)
-            Spacer()
-            Image(systemName: symbol)
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(Tokens.Palette.accent)
+    // Design D: no inner header — the Today screen provides numbered section headers.
+    private var rowsStack: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            contentRows
         }
-        .padding(.bottom, Tokens.Space.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
@@ -62,229 +61,247 @@ struct TodayBriefingStack: View {
             insightRow(coachInsight)
         }
         if let upcomingEvent {
-            rowDivider(if: recommendations != nil || fact != nil || coachInsight != nil)
+            rowDivider(if: recommendations != nil || isOlaLocked || fact != nil || coachInsight != nil)
             eventRow(upcomingEvent)
         }
         if let suggestedRecipe, let onCookSuggested {
             rowDivider(
-                if: recommendations != nil || fact != nil || coachInsight != nil
+                if: recommendations != nil || isOlaLocked || fact != nil || coachInsight != nil
                     || upcomingEvent != nil
             )
             recipeRow(suggestedRecipe, onCook: { onCookSuggested(suggestedRecipe) })
         }
     }
 
+    // Mockup (free): outline icon, "Porady od Oli" + PRO badge, muted line, chevron.
     private var lockedOlaRow: some View {
         Button(action: onOpenTips) {
-            briefingRow(
-                icon: "sparkles",
-                iconColor: Tokens.Palette.accent,
-                title: L("Porady od Oli"),
-                body: L("Indywidualne wskazówki AI są dostępne w Pro."),
-                badge: L("PRO"),
-                accessory: Image(systemName: "lock.fill")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-            )
-            .opacity(0.52)
-            .overlay(alignment: .topTrailing) {
-                Text("PRO")
-                    .font(Tokens.Font.manrope(9, weight: 800))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(Tokens.Palette.primary))
-                    .padding(.top, 6)
-                    .padding(.trailing, 2)
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: "sparkles", style: .outline, size: 40)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 8) {
+                        Text(L("Porady od Oli"))
+                            .font(Tokens.Font.manrope(15, weight: 800))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .lineLimit(1)
+                        proBadge
+                    }
+                    Text(L("Indywidualne wskazówki AI są dostępne w Pro."))
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                MonoChevron()
             }
+            .padding(16)
+            .contentShape(Rectangle())
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityLabel(Text("Porady od Oli Pro"))
     }
 
+    private var proBadge: some View {
+        Text(L("PRO"))
+            .font(Tokens.Font.manrope(10, weight: 900))
+            .tracking(0.8)
+            .foregroundStyle(Tokens.Mono.hi)
+            .padding(.horizontal, 7)
+            .frame(height: 20)
+            .background(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(Tokens.Mono.hero)
+            )
+    }
+
     @ViewBuilder
     private func rowDivider(if isVisible: Bool) -> some View {
         if isVisible {
-            Divider()
-                .background(Tokens.Palette.separator.opacity(0.6))
-                .padding(.leading, 54)
+            MonoRowDivider()
         }
     }
 
+    // Mockup: outline icon, "PORADY OD OLI" label + 16/700 summary, green dot + chevron.
     private func coachPlanRow(_ recommendations: Recommendations) -> some View {
         Button(action: onOpenTips) {
-            briefingRow(
-                icon: "sparkles",
-                iconColor: Tokens.Palette.accent,
-                title: L("Porady od Oli"),
-                body: L(recommendations.summary),
-                accessory: recommendationsAccessory
-            )
+            HStack(alignment: .top, spacing: 12) {
+                MonoIconBox(systemName: "sparkles", style: .outline, size: 40)
+                VStack(alignment: .leading, spacing: 3) {
+                    MonoLabel(text: L("Porady od Oli"))
+                    Text(L(recommendations.summary))
+                        .font(Tokens.Font.manrope(16, weight: 700))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineSpacing(3)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                recommendationsAccessory
+                    .padding(.top, 4)
+            }
+            .padding(16)
+            .contentShape(Rectangle())
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityLabel(Text("Otwórz porady od Oli"))
     }
 
     private var recommendationsAccessory: some View {
-        VStack(alignment: .trailing, spacing: 5) {
+        VStack(alignment: .trailing, spacing: 6) {
             if recommendationsUpdatedAt != nil {
                 Circle()
                     .fill(Tokens.Palette.success)
                     .frame(width: 7, height: 7)
+                    .accessibilityLabel(Text("Zaktualizowano"))
             }
-            Image(systemName: "chevron.right")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Tokens.Palette.inkSubtle)
+            MonoChevron()
         }
     }
 
+    // Mockup: outline bulb icon, "Ciekawostka dnia" + muted fact line, chevron.
     private func factRow(_ fact: NutritionFact) -> some View {
         Button(action: onOpenTips) {
-            briefingRow(
-                iconText: fact.icon,
-                iconColor: tint(for: fact.category),
-                title: fact.title,
-                body: fact.body,
-                badge: FactCard.localizedCategory(fact.category),
-                accessory: chevron
-            )
+            HStack(spacing: 12) {
+                MonoIconBox(systemName: "lightbulb", style: .outline, size: 40)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(L("Ciekawostka dnia"))
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                        .foregroundStyle(Tokens.Palette.ink)
+                        .lineLimit(1)
+                    Text(fact.title)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .lineSpacing(2)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                MonoChevron()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .contentShape(Rectangle())
         }
         .buttonStyle(PressableButtonStyle())
         .accessibilityLabel(Text("Otwórz Ciekawostki"))
     }
 
+    // Mockup: track icon, 15/800 headline, 13/600 body, dark "action →" pill, dismiss ×.
     private func insightRow(_ insight: CoachInsight) -> some View {
-        HStack(alignment: .top, spacing: Tokens.Space.md) {
-            iconPuck(systemName: symbol(for: insight.tone), color: tint(for: insight.tone))
-            VStack(alignment: .leading, spacing: 5) {
+        HStack(alignment: .top, spacing: 12) {
+            MonoIconBox(systemName: symbol(for: insight.tone), style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 4) {
                 Text(L(insight.headline))
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(L(insight.body))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(13, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineSpacing(2)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
                 if let title = insight.actionTitle, let kind = insight.actionKind {
                     Button {
                         onCoachAction(kind)
                     } label: {
-                        Label(L(title), systemImage: "arrow.right")
-                            .font(Tokens.Font.caption.weight(.bold))
-                            .foregroundStyle(Tokens.Palette.primary)
+                        HStack(spacing: 6) {
+                            Text(L(title))
+                                .lineLimit(1)
+                            Image(systemName: "arrow.right")
+                                .font(.system(size: 11, weight: .heavy))
+                        }
+                        .font(Tokens.Font.manrope(12, weight: 800))
+                        .foregroundStyle(Tokens.Mono.onHero)
+                        .padding(.horizontal, 12)
+                        .frame(height: 36)
+                        .background(Capsule().fill(Tokens.Mono.hero))
                     }
-                    .buttonStyle(.plain)
-                    .padding(.top, 2)
+                    .buttonStyle(PressableButtonStyle())
+                    .padding(.top, 6)
                 }
             }
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
             if let onDismissInsight {
                 Button {
                     onDismissInsight(insight)
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(Tokens.Palette.inkSubtle)
-                        .frame(width: 28, height: 28)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .frame(width: 36, height: 36)
+                        .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
+                .padding(.top, -6)
+                .padding(.trailing, -6)
                 .accessibilityLabel(Text("Ukryj"))
             }
         }
-        .padding(.vertical, Tokens.Space.sm)
+        .padding(16)
     }
 
+    // Mockup: outline icon, "DZISIAJ · ZA 3 DNI" label + event name, dismiss ×.
     private func eventRow(_ upcoming: CulturalEventService.Upcoming) -> some View {
-        briefingRow(
-            icon: upcoming.event.symbol,
-            iconColor: Tokens.Palette.primary,
-            title: L(upcoming.event.name),
-            body: L(upcoming.event.foodNote),
-            badge: eventBadge(upcoming),
-            accessory: Button(action: onDismissEvent) {
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: upcoming.event.symbol, style: .outline, size: 40)
+            VStack(alignment: .leading, spacing: 1) {
+                MonoLabel(text: eventBadge(upcoming))
+                Text(L(upcoming.event.name))
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                Text(L(upcoming.event.foodNote))
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Button(action: onDismissEvent) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.inkSubtle)
-                    .frame(width: 28, height: 28)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .frame(width: 40, height: 40)
+                    .contentShape(Circle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Ukryj"))
-        )
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 10)
+        .padding(.vertical, 14)
     }
 
     private func recipeRow(_ recipe: Recipe, onCook: @escaping () -> Void) -> some View {
-        HStack(alignment: .top, spacing: Tokens.Space.md) {
-            iconPuck(systemName: "book.closed.fill", color: Tokens.Palette.primary)
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Favorites")
-                    .font(Tokens.Font.caption.weight(.semibold))
-                    .foregroundStyle(Tokens.Palette.primary)
+        HStack(spacing: 12) {
+            MonoIconBox(systemName: "book.closed", style: .track, size: 40)
+            VStack(alignment: .leading, spacing: 1) {
+                MonoLabel(text: L("Favorites"))
                 Text(recipe.title)
-                    .font(Tokens.Font.bodyEmphasized)
+                    .font(Tokens.Font.manrope(15, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .lineLimit(1)
                 Text(recipeSubtitle(recipe))
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
                     .lineLimit(1)
             }
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
             Button(action: onCook) {
-                Text("Ugotuj")
-                    .font(Tokens.Font.caption.weight(.bold))
-                    .foregroundStyle(Tokens.Palette.onPrimary)
-                    .padding(.horizontal, Tokens.Space.md)
-                    .frame(height: 34)
-                    .background(Capsule().fill(Tokens.Palette.primary))
+                Text(L("Ugotuj"))
+                    .font(Tokens.Font.manrope(12, weight: 800))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .padding(.horizontal, 14)
+                    .frame(height: 36)
+                    .background(Capsule().fill(Tokens.Mono.hero))
             }
             .buttonStyle(PressableButtonStyle())
             .accessibilityLabel(Text(String.localizedStringWithFormat(L("Ugotuj %@"), recipe.title)))
         }
-        .padding(.vertical, Tokens.Space.sm)
-    }
-
-    private func briefingRow<Accessory: View>(
-        icon: String? = nil,
-        iconText: String? = nil,
-        iconColor: Color,
-        title: String,
-        body: String,
-        badge: String? = nil,
-        accessory: Accessory
-    ) -> some View {
-        HStack(alignment: .top, spacing: Tokens.Space.md) {
-            if let iconText {
-                iconPuck(text: iconText, color: iconColor)
-            } else {
-                iconPuck(systemName: icon ?? "circle.fill", color: iconColor)
-            }
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(spacing: Tokens.Space.xs) {
-                    Text(title)
-                        .font(Tokens.Font.bodyEmphasized)
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                    if let badge {
-                        Text(badge)
-                            .font(.system(size: 9, weight: .heavy))
-                            .textCase(.uppercase)
-                            .foregroundStyle(iconColor)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Capsule().fill(iconColor.opacity(0.12)))
-                    }
-                }
-                Text(body)
-                    .font(Tokens.Font.footnote)
-                    .foregroundStyle(Tokens.Palette.inkMuted)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-            accessory
-        }
-        .padding(.vertical, Tokens.Space.sm)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 
     private var chevron: some View {
@@ -296,19 +313,19 @@ struct TodayBriefingStack: View {
 
     private func iconPuck(systemName: String, color: Color) -> some View {
         ZStack {
-            Circle()
-                .fill(color.opacity(0.14))
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                .fill(Tokens.Mono.track)
                 .frame(width: 42, height: 42)
             Image(systemName: systemName)
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(color)
+                .foregroundStyle(Tokens.Palette.ink)
         }
     }
 
     private func iconPuck(text: String, color: Color) -> some View {
         ZStack {
-            Circle()
-                .fill(color.opacity(0.14))
+            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.icon, style: .continuous)
+                .fill(Tokens.Mono.track)
                 .frame(width: 42, height: 42)
             Text(text)
                 .font(.system(size: 21))
