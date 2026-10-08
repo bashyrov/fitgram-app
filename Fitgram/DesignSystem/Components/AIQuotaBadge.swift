@@ -17,12 +17,25 @@ struct AIQuotaBadge: View {
 
     private var label: String {
         guard let remaining else { return "∞" }
-        return String.localizedStringWithFormat(L("%lld left"), remaining)
+        // "4/10" — what is left of the free weekly AI pool.
+        guard let cap = FreeTierLimits.aiActionsPerWeek else {
+            return String.localizedStringWithFormat(L("%lld left"), remaining)
+        }
+        return "\(remaining)/\(cap)"
     }
 
     private var accessibilityLabel: String {
         guard let remaining else { return L("Unlimited AI requests") }
-        return String.localizedStringWithFormat(L("%lld AI requests left today"), remaining)
+        return String.localizedStringWithFormat(
+            TL(
+                pl: "Pozostało %lld działań AI w tym tygodniu",
+                en: "%lld AI actions left this week",
+                uk: "Залишилось %lld дій AI цього тижня",
+                ru: "Осталось %lld ИИ-действий на этой неделе",
+                es: "Te quedan %lld acciones de AI esta semana"
+            ),
+            remaining
+        )
     }
 
     private var tint: Color {

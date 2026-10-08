@@ -38,15 +38,20 @@ export interface UsageRecord {
 }
 
 const FALLBACK_PRICE = { input: 0.3, output: 2.5 };
-export const DAILY_AI_REQUEST_SAFETY_CAP = 60;
-const FREE_DAILY_LIMITS: Partial<Record<AIQuotaKind, number>> = {
-    ai_logged_meal: 3,
-    ai_meal_refresh: 3,
-    ai_product_nutrition: 2,
-    // Free uses the local Ola Chef catalog. The Worker endpoint is Pro-only.
-    ola_chef: 0,
-    coach_debrief: 0,
-};
+export const DAILY_AI_REQUEST_SAFETY_CAP = 30;
+/**
+ * Free users get one weekly AI pool (Mon–Sun, user's local time) shared by
+ * photo scans, voice/text meals, meal refreshes and product lookups.
+ */
+export const FREE_WEEKLY_AI_POOL = 10;
+const FREE_POOL_KINDS: AIQuotaKind[] = [
+    "ai_draft_meal",
+    "ai_logged_meal",
+    "ai_meal_refresh",
+    "ai_product_nutrition",
+];
+// Free uses the local Ola Chef catalog and coach; those Worker routes are Pro-only.
+const FREE_BLOCKED_KINDS: AIQuotaKind[] = ["ola_chef", "coach_debrief"];
 
 export type AIQuotaKind =
     | "ai_draft_meal"
@@ -179,49 +184,49 @@ export async function checkDailyAIQuota(
             };
         }
 
-        letFeature: if (!options.isPremium && options.kind) {
-            const cap = FREE_DAILY_LIMITS[options.kind];
-            if (cap === undefined) {
-                break letFeature;
-            }
-            const endpoints = endpointsForKind(options.kind);
-            const placeholders = endpoints.map(() => "?").join(", ");
+        const scope = !options.isPremium && options.kind
+            ? freeQuotaScope(options.kind, now, options.timeZoneOffsetMinutes)
+            : undefined;
+        if (scope) {
+            const endpointMarks = scope.endpoints.map(() => "?").join(", ");
+            const kindMarks = scope.kinds.map(() => "?").join(", ");
             const freeRow = await db
                 .prepare(
                     `SELECT
                         (SELECT COUNT(*) FROM ai_usage
-                         WHERE user_id = ? AND ts >= ? AND endpoint IN (${placeholders})) +
+                         WHERE user_id = ? AND ts >= ? AND endpoint IN (${endpointMarks})) +
                         (SELECT COUNT(*) FROM ai_quota_reservations
-                         WHERE user_id = ? AND ts >= ? AND quota_kind = ?)
+                         WHERE user_id = ? AND ts >= ? AND quota_kind IN (${kindMarks}))
                         AS requests`
                 )
-                .bind(userID, since, ...endpoints, userID, since, options.kind)
+                .bind(userID, scope.since, ...scope.endpoints, userID, scope.since, ...scope.kinds)
                 .first<{ requests: number }>();
             const used = freeRow?.requests ?? 0;
-            if (used >= cap) {
-                return { allowed: false, used, cap, reason: "free_tier" };
+            if (used >= scope.cap) {
+                return { allowed: false, used, cap: scope.cap, reason: "free_tier" };
             }
         }
 
         const reservationID = crypto.randomUUID();
         const kind = options.kind ?? "ai_draft_meal";
-        const featureCap = !options.isPremium ? FREE_DAILY_LIMITS[kind] : undefined;
-        const endpoints = endpointsForKind(kind);
-        const placeholders = endpoints.map(() => "?").join(", ");
-        const featureClause = featureCap === undefined
+        const featureClause = scope === undefined
             ? "1 = 1"
             : `(
                 (SELECT COUNT(*) FROM ai_usage
-                 WHERE user_id = ? AND ts >= ? AND endpoint IN (${placeholders})) +
+                 WHERE user_id = ? AND ts >= ? AND endpoint IN (${scope.endpoints.map(() => "?").join(", ")})) +
                 (SELECT COUNT(*) FROM ai_quota_reservations
-                 WHERE user_id = ? AND ts >= ? AND quota_kind = ?)
+                 WHERE user_id = ? AND ts >= ? AND quota_kind IN (${scope.kinds.map(() => "?").join(", ")}))
               ) < ?`;
         const bindings: unknown[] = [
             reservationID, now, now + 2 * 60 * 1000, userID, kind,
             userID, since, userID, since,
         ];
-        if (featureCap !== undefined) {
-            bindings.push(userID, since, ...endpoints, userID, since, kind, featureCap);
+        if (scope !== undefined) {
+            bindings.push(
+                userID, scope.since, ...scope.endpoints,
+                userID, scope.since, ...scope.kinds,
+                scope.cap
+            );
         }
         const reserved = await db.prepare(
             `INSERT INTO ai_quota_reservations (id, ts, expires_at_ms, user_id, quota_kind)
@@ -236,14 +241,14 @@ export async function checkDailyAIQuota(
             return {
                 allowed: false,
                 used: safetyUsed,
-                cap: featureCap ?? DAILY_AI_REQUEST_SAFETY_CAP,
-                reason: featureCap === undefined ? "safety" : "free_tier",
+                cap: scope?.cap ?? DAILY_AI_REQUEST_SAFETY_CAP,
+                reason: scope === undefined ? "safety" : "free_tier",
             };
         }
         return {
             allowed: true,
             used: safetyUsed,
-            cap: featureCap ?? DAILY_AI_REQUEST_SAFETY_CAP,
+            cap: scope?.cap ?? DAILY_AI_REQUEST_SAFETY_CAP,
             reservationID,
         };
     } catch (err) {
@@ -275,12 +280,54 @@ export function dayStartTimestamp(nowMs: number, offsetMinutes: number | undefin
     );
 }
 
+export interface FreeQuotaScope {
+    cap: number;
+    since: number;
+    kinds: AIQuotaKind[];
+    endpoints: string[];
+}
+
+/** Free-tier window, cap and the request kinds that count against it. */
+export function freeQuotaScope(
+    kind: AIQuotaKind,
+    nowMs: number,
+    offsetMinutes: number | undefined
+): FreeQuotaScope | undefined {
+    if (FREE_POOL_KINDS.includes(kind)) {
+        return {
+            cap: FREE_WEEKLY_AI_POOL,
+            since: weekStartTimestamp(nowMs, offsetMinutes),
+            kinds: FREE_POOL_KINDS,
+            endpoints: [...new Set(FREE_POOL_KINDS.flatMap(endpointsForKind))],
+        };
+    }
+    if (FREE_BLOCKED_KINDS.includes(kind)) {
+        return {
+            cap: 0,
+            since: dayStartTimestamp(nowMs, offsetMinutes),
+            kinds: [kind],
+            endpoints: endpointsForKind(kind),
+        };
+    }
+    return undefined;
+}
+
+/** Monday 00:00 in the user's local time (rolling 7 days without an offset). */
+export function weekStartTimestamp(nowMs: number, offsetMinutes: number | undefined): number {
+    if (offsetMinutes === undefined) {
+        return nowMs - 7 * 24 * 3600 * 1000;
+    }
+    const dayStart = dayStartTimestamp(nowMs, offsetMinutes);
+    const localWeekday = new Date(dayStart + offsetMinutes * 60 * 1000).getUTCDay();
+    const daysSinceMonday = (localWeekday + 6) % 7;
+    return dayStart - daysSinceMonday * 24 * 3600 * 1000;
+}
+
 export function endpointsForKind(kind: AIQuotaKind): string[] {
     switch (kind) {
         case "ai_draft_meal":
             return ["/api/v1/scan-food", "/api/v1/analyze-meal-text:ai_draft_meal"];
         case "ai_logged_meal":
-            // Photo and voice share one three-use daily pool.
             return ["/api/v1/scan-food", "/api/v1/analyze-meal-text:ai_logged_meal"];
         case "ai_meal_refresh":
             return ["/api/v1/analyze-meal-text:ai_meal_refresh"];

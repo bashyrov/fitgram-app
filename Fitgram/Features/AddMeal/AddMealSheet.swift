@@ -98,7 +98,7 @@ extension AddMealSheet {
                 subtitle: "Powiedz posiłek",
                 quota: quotaLabel(
                     used: usageMeter.used(.voiceEntry),
-                    cap: entitlementsStore.current.voiceEntriesPerDay
+                    cap: entitlementsStore.current.aiActionsPerWeek
                 )
             ) {
                 run(onVoice)
@@ -272,12 +272,12 @@ extension AddMealSheet {
     private var photoQuota: AddMealQuota {
         quotaLabel(
             used: usageMeter.used(.photoScan),
-            cap: entitlementsStore.current.photoScansPerDay
+            cap: entitlementsStore.current.aiActionsPerWeek
         )
     }
 
     private func quotaLabel(used: Int, cap: Int?) -> AddMealQuota {
         guard let cap else { return .unlimited }
-        return .daily(used: used, cap: cap)
+        return .limited(used: used, cap: cap)
     }
 }

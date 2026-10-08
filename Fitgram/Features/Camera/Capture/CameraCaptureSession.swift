@@ -42,9 +42,13 @@ final class CameraCaptureSession: NSObject {
         }
     }
 
+    /// Longest edge of every photo sent to the AI scan. 1024 px is plenty to
+    /// recognise food and keeps the model to ~2 image tiles (vs ~4 at 1536).
+    nonisolated static let uploadMaxDimension: CGFloat = 1024
+
     /// Captures a high-resolution photo and returns the JPEG payload, resized
-    /// down to fit within `maxDimension` to keep upload payloads under ~1 MB.
-    func capturePhoto(maxDimension: CGFloat = 1536, quality: CGFloat = 0.85) async throws -> Data {
+    /// down to fit within `maxDimension` to keep upload payloads small.
+    func capturePhoto(maxDimension: CGFloat = uploadMaxDimension, quality: CGFloat = 0.85) async throws -> Data {
         guard session.isRunning else { throw CaptureFailure.notRunning }
         guard let output = photoOutput else { throw CaptureFailure.configurationFailed }
 
@@ -89,15 +93,29 @@ final class CameraCaptureSession: NSObject {
     /// and re-encodes to JPEG.
     nonisolated private static func compress(_ data: Data, maxDimension: CGFloat, quality: CGFloat) -> Data {
         guard let image = UIImage(data: data) else { return data }
+        return uploadJPEG(from: image, maxDimension: maxDimension, quality: quality) ?? data
+    }
+
+    /// Scales `image` down to `maxDimension` on its longest edge and encodes
+    /// it as JPEG — shared by every path that uploads a photo to the scan.
+    nonisolated static func uploadJPEG(
+        from image: UIImage,
+        maxDimension: CGFloat = uploadMaxDimension,
+        quality: CGFloat = 0.85
+    ) -> Data? {
         let longest = max(image.size.width, image.size.height)
         guard longest > maxDimension else {
-            return image.jpegData(compressionQuality: quality) ?? data
+            return image.jpegData(compressionQuality: quality)
         }
         let scale = maxDimension / longest
         let newSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
-        let renderer = UIGraphicsImageRenderer(size: newSize)
+        // Scale 1: the default format uses the screen scale (3x), which would
+        // triple the pixel size we meant to send.
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
         let resized = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: newSize)) }
-        return resized.jpegData(compressionQuality: quality) ?? data
+        return resized.jpegData(compressionQuality: quality)
     }
 }
 

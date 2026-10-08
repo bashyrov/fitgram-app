@@ -282,18 +282,18 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
     }
 
     private var mealAIRefreshRemaining: Int? {
-        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.mealAIRefreshesPerDay)
+        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private var productNutritionRemaining: Int? {
-        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
+        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private func refreshFromAI() async {
         guard let mealAnalyzer else { return }
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        let cap = entitlementsStore?.current.mealAIRefreshesPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if usageMeter?.canUse(.mealAIRefresh, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.mealAIRefreshQuota)
@@ -321,7 +321,7 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         else { return }
         let trimmed = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, draft.quantityGrams > 0 else { return }
-        let cap = entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if usageMeter?.canUse(.productNutritionLookup, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.productNutritionQuota)
@@ -459,8 +459,8 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
     /// and the per-product allowance in detailed mode.
     private var aiCompletionQuota: (kind: UsageMeter.Kind, cap: Int?) {
         portionMode == .overall
-            ? (.mealAIRefresh, entitlementsStore?.current.mealAIRefreshesPerDay)
-            : (.productNutritionLookup, entitlementsStore?.current.productNutritionLookupsPerDay)
+            ? (.mealAIRefresh, entitlementsStore?.current.aiActionsPerWeek)
+            : (.productNutritionLookup, entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private func canConsumeAICompletion(count: Int) -> Bool {

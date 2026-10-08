@@ -1,13 +1,12 @@
 import Foundation
 import OSLog
 
-/// Cloudflare Worker-backed AI coach. Wraps two endpoints:
+/// Cloudflare Worker-backed AI coach. Only the weekly debrief goes to AI:
 ///
-///   POST /api/v1/coach/daily-insight   — for Today screen tips
-///   POST /api/v1/coach/daily-plan      — for the persistent Today Ola plan
 ///   POST /api/v1/coach/weekly-debrief  — for "How you're doing" sheet
 ///
-/// Both serialise the `CoachContext` to a flat JSON body and parse a
+/// Daily tips and the Today plan come from `fallback` (the rule-based coach)
+/// to keep AI cost per active user flat. The request serialises the `CoachContext` to a flat JSON body and parse a
 /// `CoachInsight` list back. Every call logs its token usage on the
 /// server side via the same `ai_usage` table the admin dashboard reads.
 ///
@@ -30,51 +29,15 @@ struct WorkerCoachInsightGenerator: CoachInsightGenerator {
         await generateBatch(for: context).insights
     }
 
+    /// Daily tips stay on the local rule engine: they regenerate after every
+    /// logged meal, so an AI call each time cost far more than it added.
     func generateBatch(for context: CoachContext) async -> CoachInsightBatch {
-        do {
-            let request = WireCoachContext.from(context)
-            let endpoint = try Endpoint.json(
-                path: "/api/v1/coach/daily-insight",
-                method: .post,
-                payload: request,
-                encoder: .workerCoach,
-                requiresAuth: true
-            )
-            let response = try await client.send(endpoint, expecting: DailyInsightResponse.self)
-            let insights = response.insights.map(CoachInsight.init(wire:))
-            if insights.isEmpty {
-                Logger.coach.notice("worker daily-insight returned empty list, using fallback")
-                return CoachInsightBatch(insights: await fallback.generate(for: context), isFromAI: false)
-            }
-            return CoachInsightBatch(insights: insights, isFromAI: true)
-        } catch {
-            Logger.coach.error(
-                "worker daily-insight failed: \(String(describing: error), privacy: .public)")
-            return CoachInsightBatch(insights: await fallback.generate(for: context), isFromAI: false)
-        }
+        CoachInsightBatch(insights: await fallback.generate(for: context), isFromAI: false)
     }
 
+    /// Same for the Today plan — local only; AI is reserved for the weekly debrief.
     func generateDailyPlan(for context: CoachContext, now: Date) async -> DailyOlaPlan {
-        do {
-            let request = WireCoachContext.from(context)
-            let endpoint = try Endpoint.json(
-                path: "/api/v1/coach/daily-plan",
-                method: .post,
-                payload: request,
-                encoder: .workerCoach,
-                requiresAuth: true
-            )
-            let response = try await client.send(endpoint, expecting: DailyPlanResponse.self)
-            guard let plan = response.plan(context: context, now: now) else {
-                Logger.coach.notice("worker daily-plan returned incomplete payload, using fallback")
-                return await fallback.generateDailyPlan(for: context, now: now)
-            }
-            return plan
-        } catch {
-            Logger.coach.error(
-                "worker daily-plan failed: \(String(describing: error), privacy: .public)")
-            return await fallback.generateDailyPlan(for: context, now: now)
-        }
+        await fallback.generateDailyPlan(for: context, now: now)
     }
 
     func generateWeekly(for context: CoachContext) async -> WeeklyDebriefAIResult {
@@ -223,61 +186,6 @@ private struct WireCoachContext: Encodable {
             hasOngoingCulturalEvent: context.hasOngoingCulturalEvent,
             userID: context.userRemoteID ?? "anonymous",
             locale: LocalizationStore.currentLanguageCode()
-        )
-    }
-}
-
-private struct DailyInsightResponse: Decodable {
-    let insights: [WireCoachInsight]
-}
-
-private struct DailyPlanResponse: Decodable {
-    struct WireFocus: Decodable {
-        let title: String
-        let value: String
-        let detail: String
-    }
-
-    let moment: String?
-    let headline: String
-    let body: String
-    let todayGoal: String
-    let firstMealSuggestion: String
-    let risk: String?
-    let focuses: [WireFocus]
-
-    func plan(context: CoachContext, now: Date) -> DailyOlaPlan? {
-        let fallback = DailyOlaPlanBuilder.build(context: context, now: now)
-        let cleanedHeadline = headline.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanedBody = body.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanedTodayGoal = todayGoal.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanedFirstMeal = firstMealSuggestion.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !cleanedHeadline.isEmpty, !cleanedBody.isEmpty, !cleanedTodayGoal.isEmpty, !cleanedFirstMeal.isEmpty
-        else {
-            return nil
-        }
-        let cleanFocuses =
-            focuses
-            .map {
-                DailyOlaPlan.Focus(
-                    title: $0.title.trimmingCharacters(in: .whitespacesAndNewlines),
-                    value: $0.value.trimmingCharacters(in: .whitespacesAndNewlines),
-                    detail: $0.detail.trimmingCharacters(in: .whitespacesAndNewlines)
-                )
-            }
-            .filter { !$0.title.isEmpty && !$0.value.isEmpty && !$0.detail.isEmpty }
-            .prefix(4)
-        return DailyOlaPlan(
-            dateKey: fallback.dateKey,
-            moment: moment.flatMap(DailyOlaPlan.Moment.init(rawValue:)) ?? fallback.moment,
-            headline: cleanedHeadline,
-            body: cleanedBody,
-            todayGoal: cleanedTodayGoal,
-            firstMealSuggestion: cleanedFirstMeal,
-            risk: risk?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty,
-            focuses: Array(cleanFocuses).isEmpty ? fallback.focuses : Array(cleanFocuses),
-            generatedAt: now,
-            source: .ai
         )
     }
 }

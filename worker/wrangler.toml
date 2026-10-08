@@ -31,6 +31,7 @@ AI_PROVIDER = "gemini"
 CLAUDE_TEXT_MODEL = "claude-sonnet-4-20250514"
 CLAUDE_VISION_MODEL = "claude-sonnet-4-20250514"
 GEMINI_VISION_MODEL = "gemini-2.5-flash"
-GEMINI_PREMIUM_MODEL = "gemini-2.5-pro"
+# Pro scans use Flash too: Pro was ~4-5x the cost for little visible gain.
+GEMINI_PREMIUM_MODEL = "gemini-2.5-flash"
 CACHE_TTL_SECONDS = "604800"  # 7 days
 LOG_LEVEL = "info"

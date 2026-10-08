@@ -8,11 +8,9 @@ import Observation
 struct Entitlements: Equatable, Sendable {
     let isPremium: Bool
 
-    let photoScansPerDay: Int?
+    /// Shared weekly AI pool (photo, voice, refresh, product lookup).
+    let aiActionsPerWeek: Int?
     let barcodeScansPerDay: Int?
-    let voiceEntriesPerDay: Int?
-    let mealAIRefreshesPerDay: Int?
-    let productNutritionLookupsPerDay: Int?
     let olaChefRequestsPerDay: Int?
     let coachWeeklyDebriefsPerWeek: Int?
 
@@ -31,11 +29,8 @@ struct Entitlements: Equatable, Sendable {
 
     static let free = Entitlements(
         isPremium: false,
-        photoScansPerDay: FreeTierLimits.photoScansPerDay,
+        aiActionsPerWeek: FreeTierLimits.aiActionsPerWeek,
         barcodeScansPerDay: FreeTierLimits.barcodeScansPerDay,
-        voiceEntriesPerDay: FreeTierLimits.voiceEntriesPerDay,
-        mealAIRefreshesPerDay: FreeTierLimits.aiMealRefreshesPerDay,
-        productNutritionLookupsPerDay: FreeTierLimits.aiProductLookupsPerDay,
         olaChefRequestsPerDay: FreeTierLimits.olaChefRequestsPerDay,
         coachWeeklyDebriefsPerWeek: FreeTierLimits.coachWeeklyDebriefsPerWeek,
         activeCustomGoalsCap: FreeTierLimits.activeCustomGoals,
@@ -53,11 +48,8 @@ struct Entitlements: Equatable, Sendable {
     /// `nil` for every cap means "no limit".
     static let premium = Entitlements(
         isPremium: true,
-        photoScansPerDay: nil,
+        aiActionsPerWeek: nil,
         barcodeScansPerDay: nil,
-        voiceEntriesPerDay: nil,
-        mealAIRefreshesPerDay: nil,
-        productNutritionLookupsPerDay: nil,
         olaChefRequestsPerDay: nil,
         coachWeeklyDebriefsPerWeek: nil,
         activeCustomGoalsCap: nil,

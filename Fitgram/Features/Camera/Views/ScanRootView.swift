@@ -134,7 +134,7 @@ struct ScanRootView: View {
 
     /// "AI · 3/5 dziś" for the capture pill — remaining / daily cap of photo scans.
     private var photoQuotaText: String? {
-        guard let cap = entitlementsStore?.current.photoScansPerDay,
+        guard let cap = entitlementsStore?.current.aiActionsPerWeek,
             let remaining = usageMeter?.remaining(.photoScan, cap: cap)
         else { return nil }
         let today = TL(pl: "dziś", en: "today", uk: "сьогодні", ru: "сегодня", es: "hoy")
@@ -149,7 +149,7 @@ struct ScanRootView: View {
     private func recordPhotoQuotaIfNeeded() {
         guard !didRecordPhotoQuota else { return }
         guard let usageMeter, let entitlementsStore else { return }
-        let cap = entitlementsStore.current.photoScansPerDay
+        let cap = entitlementsStore.current.aiActionsPerWeek
         guard usageMeter.canUse(.photoScan, cap: cap) else { return }
         usageMeter.record(.photoScan, cap: cap)
         didRecordPhotoQuota = true

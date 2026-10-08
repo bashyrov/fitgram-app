@@ -198,7 +198,7 @@ struct FirstScanStepView: View {
     @MainActor
     private func runDetection(on image: UIImage) async {
         stage = .processing
-        guard let data = image.jpegData(compressionQuality: 0.8) else {
+        guard let data = CameraCaptureSession.uploadJPEG(from: image) else {
             stage = .failed("Couldn't prepare the photo.")
             return
         }

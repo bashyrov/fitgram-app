@@ -4,19 +4,19 @@ import SwiftUI
 
 enum AddMealQuota: Equatable {
     case unlimited
-    case daily(used: Int, cap: Int)
+    case limited(used: Int, cap: Int)
 
     var label: String? {
         switch self {
         case .unlimited:
             return nil
-        case .daily(let used, let cap):
+        case .limited(let used, let cap):
             return "\(max(0, cap - used))/\(cap)"
         }
     }
 
     var isExhausted: Bool {
-        if case .daily(let used, let cap) = self { return used >= cap }
+        if case .limited(let used, let cap) = self { return used >= cap }
         return false
     }
 }
