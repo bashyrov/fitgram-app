@@ -13,9 +13,10 @@ final class BarcodeCaptureSession: NSObject {
         case configurationFailed
     }
 
-    static let supportedTypes: [AVMetadataObject.ObjectType] = [
-        .ean8, .ean13, .upce, .code128, .code93, .code39, .qr, .dataMatrix,
-    ]
+    /// Retail product symbologies only. QR / Code128 / DataMatrix on
+    /// packaging are logistics or promo codes that never resolve to food,
+    /// and iOS reports UPC-A as a zero-padded EAN-13.
+    static let supportedTypes: [AVMetadataObject.ObjectType] = [.ean8, .ean13, .upce]
 
     let session = AVCaptureSession()
     private let sessionQueue = DispatchQueue(label: "app.fitgram.barcode.session")
@@ -79,6 +80,8 @@ extension BarcodeCaptureSession: AVCaptureMetadataOutputObjectsDelegate {
             metadataObjects
             .compactMap { $0 as? AVMetadataMachineReadableCodeObject }
             .compactMap(\.stringValue)
+            .lazy
+            .compactMap(GTIN.normalize)
             .first
         guard let firstCode else { return }
         Task { @MainActor in

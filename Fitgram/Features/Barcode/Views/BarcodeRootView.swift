@@ -9,6 +9,8 @@ struct BarcodeRootView: View {
     /// (unstarted) session would blank the preview while detection kept
     /// running on the first one.
     @State private var session: BarcodeCaptureSession
+    /// Barcode whose label the user is photographing after a database miss.
+    @State private var labelScan: LabelScanTarget?
     let onDismiss: () -> Void
     var favoritesService: (any FavoritesServing)?
     var entitlementsStore: EntitlementsStore?
@@ -83,11 +85,19 @@ struct BarcodeRootView: View {
                 ResultMessageView(
                     symbol: "barcode",
                     title: "Nie znaleźliśmy tego kodu",
-                    message:
-                        "Kod \(code) nie jest jeszcze w bazie Open Food Facts. Spróbuj zeskanować inny lub dodaj ręcznie.",
-                    primaryTitle: "Skanuj jeszcze raz",
-                    onPrimary: { state.reset() },
-                    onDismiss: dismiss
+                    message: """
+                        Kod \(code) nie jest jeszcze w bazie Open Food Facts. \
+                        Zrób zdjęcie tabeli wartości odżywczych — odczytamy ją za Ciebie.
+                        """,
+                    primaryTitle: "Sfotografuj etykietę",
+                    onPrimary: {
+                        state.stop()
+                        labelScan = LabelScanTarget(id: code)
+                    },
+                    onDismiss: dismiss,
+                    primaryIcon: "text.viewfinder",
+                    secondaryTitle: "Skanuj jeszcze raz",
+                    onSecondary: { state.reset() }
                 )
             case .error(let message):
                 ResultMessageView(
@@ -103,6 +113,16 @@ struct BarcodeRootView: View {
         }
         .animation(Tokens.Motion.gentle, value: stageKey)
         .task { await state.start() }
+        .fullScreenCover(item: $labelScan) { target in
+            LabelScannerSheet(
+                scanner: FoodLabelScanner(),
+                onSave: { food in
+                    labelScan = nil
+                    state.useLabelProduct(food, barcode: target.id)
+                },
+                onDismiss: { labelScan = nil }
+            )
+        }
         .onDisappear { state.stop() }
     }
 
@@ -145,6 +165,11 @@ struct BarcodeRootView: View {
     }
 }
 
+/// Barcode whose nutrition label is being photographed after a miss.
+private struct LabelScanTarget: Identifiable {
+    let id: String
+}
+
 /// Not-found / error state in the style of the mockup `BarcodeProduct` empty row: track icon box,
 /// 15/800 title and muted copy, with the primary action and an outline "Close" at the bottom.
 private struct ResultMessageView: View {
@@ -155,6 +180,8 @@ private struct ResultMessageView: View {
     let onPrimary: () -> Void
     let onDismiss: () -> Void
     var primaryIcon = "barcode"
+    var secondaryTitle: LocalizedStringKey?
+    var onSecondary: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -182,7 +209,13 @@ private struct ResultMessageView: View {
                     Label(primaryTitle, systemImage: primaryIcon)
                 }
                 .buttonStyle(MonoButtonStyle(kind: .dark))
-                MonoButton(title: L("Close"), kind: .outline, action: onDismiss)
+                if let secondaryTitle, let onSecondary {
+                    Button(action: onSecondary) {
+                        Label(secondaryTitle, systemImage: "barcode.viewfinder")
+                    }
+                    .buttonStyle(MonoButtonStyle(kind: .outline))
+                }
+                MonoButton(title: L("Close"), kind: .ghost, action: onDismiss)
             }
         }
         .background(Tokens.Palette.background.ignoresSafeArea())
