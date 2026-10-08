@@ -85,6 +85,9 @@ struct RecipePortionSheet: View {
             }
             .safeAreaInset(edge: .bottom) {
                 MonoBottomBar {
+                    if mealAnalyzer != nil, aiCompletionUseCount(for: selectedItems) > 0 {
+                        AISaveCostNote(remaining: productNutritionRemaining)
+                    }
                     MonoButton(
                         title: isCompletingNutrition ? L("Uzupełniam...") : L("Dodaj do dziennika"),
                         kind: .dark,
@@ -413,16 +416,10 @@ extension RecipePortionSheet {
                 )
             }
             detailDrafts.replaceSubrange(index...index, with: replacement)
-            if analysis.aiSucceeded {
-                usageMeter?.record(.productNutritionLookup, cap: cap)
-            }
             Haptics.success()
             return
         }
         let completed = analysis.items.first ?? analysis.overall
-        if analysis.aiSucceeded {
-            usageMeter?.record(.productNutritionLookup, cap: cap)
-        }
         guard let index = detailDrafts.firstIndex(where: { $0.id == draftID }) else { return }
         let factor = max(completed.quantityGrams, 1) / 100
         detailDrafts[index].name = completed.name
@@ -448,14 +445,12 @@ extension RecipePortionSheet {
             items: draftItems,
             mealType: RecipeRepository.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date()))
         )
-        recordAICompletion(count: completionUse)
         onSave(completed)
     }
 
+    /// Save-time completion sends every gap in one request — one AI action.
     private func aiCompletionUseCount(for items: [FoodItem]) -> Int {
-        let missingCount = items.filter(\.isMissingNutrition).count
-        guard missingCount > 0 else { return 0 }
-        return portionMode == .overall ? 1 : missingCount
+        items.contains(where: \.isMissingNutrition) ? 1 : 0
     }
 
     /// Save-time AI completion spends the meal allowance in overall mode
@@ -474,14 +469,6 @@ extension RecipePortionSheet {
         Haptics.light()
         paywallCoordinator?.present(portionMode == .overall ? .mealAIRefreshQuota : .productNutritionQuota)
         return false
-    }
-
-    private func recordAICompletion(count: Int) {
-        guard count > 0 else { return }
-        let (kind, cap) = aiCompletionQuota
-        for _ in 0..<count {
-            usageMeter?.record(kind, cap: cap)
-        }
     }
 
 }

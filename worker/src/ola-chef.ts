@@ -8,6 +8,7 @@ import {
     recordUsage,
     releaseAIQuotaReservation,
     timeZoneOffsetMinutesFromRequest,
+    quotaLimitMessage,
 } from "./usage";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
@@ -93,7 +94,7 @@ export async function handleOlaChefSuggestions(
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
     if (!quota.allowed) {
-        return problemResponse(429, "Daily AI safety limit reached", {
+        return problemResponse(429, quotaLimitMessage(quota.reason), {
             used: quota.used,
             cap: quota.cap,
             reason: quota.reason,

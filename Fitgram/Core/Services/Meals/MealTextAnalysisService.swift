@@ -38,17 +38,43 @@ struct MealTextAnalysisService: @unchecked Sendable {
         case loggedMeal = "ai_logged_meal"
         case mealRefresh = "ai_meal_refresh"
         case productNutrition = "ai_product_nutrition"
+
+        fileprivate var meterKind: UsageMeter.Kind {
+            switch self {
+            case .draftMeal, .loggedMeal: return .voiceEntry
+            case .mealRefresh: return .mealAIRefresh
+            case .productNutrition: return .productNutritionLookup
+            }
+        }
+
+        fileprivate var paywallTrigger: PaywallTrigger {
+            switch self {
+            case .draftMeal, .loggedMeal: return .voiceEntryQuota
+            case .mealRefresh: return .mealAIRefreshQuota
+            case .productNutrition: return .productNutritionQuota
+            }
+        }
     }
 
     private let client: (any APIClient)?
     private let fallbackParser: VoiceMealParser
     private let catalogSnapshot: [Food]
     private let foodCatalog: (any FoodCatalog)?
+    /// Spends the free weekly AI pool — one unit per request that reaches
+    /// the Worker, however the caller got here (refresh, product lookup,
+    /// save-time completion). `nil` in tests / previews.
+    private let quotaGate: AIQuotaGate?
 
-    init(client: (any APIClient)? = nil, catalog: [Food] = [], foodCatalog: (any FoodCatalog)? = nil) {
+    init(
+        client: (any APIClient)? = nil,
+        catalog: [Food] = [],
+        foodCatalog: (any FoodCatalog)? = nil,
+        quotaGate: AIQuotaGate? = nil
+    ) {
         self.client = client
         self.catalogSnapshot = catalog
         self.foodCatalog = foodCatalog
+        self.quotaGate = quotaGate
         self.fallbackParser = VoiceMealParser(catalog: catalog)
     }
 
@@ -59,7 +85,7 @@ struct MealTextAnalysisService: @unchecked Sendable {
         locale: String = LocalizationStore.currentLanguageCode(),
         quotaKind: QuotaKind = .mealRefresh
     ) async -> MealTextAnalysis {
-        if let client {
+        if let client, quotaGate?.allows(quotaKind.paywallTrigger) ?? true {
             do {
                 let payload = Request(
                     text: text,
@@ -73,7 +99,11 @@ struct MealTextAnalysisService: @unchecked Sendable {
                     requiresAuth: true
                 )
                 let response = try await client.send(endpoint, expecting: Response.self)
+                quotaGate?.spend(quotaKind.meterKind)
                 return enrichAndCache(response.toDomain(fallbackMealType: mealType))
+            } catch let error as APIError where error.isFreeTierQuota {
+                Logger.networking.notice("Meal text AI refused: weekly free pool empty")
+                quotaGate?.serverReportedExhausted(quotaKind.paywallTrigger)
             } catch {
                 Logger.networking.error("Meal text AI failed, using local fallback: \(String(describing: error))")
             }

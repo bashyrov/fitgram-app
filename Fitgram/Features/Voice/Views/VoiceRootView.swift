@@ -474,7 +474,6 @@ private struct ConfirmationView: View {
         )
         guard analysis.aiSucceeded else { return }
 
-        usageMeter?.record(.voiceEntry, cap: cap)
         analyzedItems = analysis.items.map(Self.foodItem(from:))
         overallName = analysis.overall.name
         overallGrams = max(10, analysis.overall.quantityGrams)
@@ -497,6 +496,9 @@ private struct ConfirmationView: View {
     private var footer: some View {
         if hasRecognizedMeal {
             MonoBottomBar {
+                if mealAnalyzer != nil, aiCompletionUseCount(for: adjustedItems) > 0 {
+                    AISaveCostNote(remaining: mealAIRefreshRemaining)
+                }
                 MonoButton(
                     title: isCompletingNutrition ? L("Uzupełniam...") : L("Dodaj do dziennika"),
                     kind: .dark,
@@ -683,9 +685,6 @@ private struct ConfirmationView: View {
                 mealType: suggested,
                 quotaKind: .mealRefresh
             )
-            if analysis.aiSucceeded {
-                usageMeter?.record(.mealAIRefresh, cap: cap)
-            }
             newItems = analysis.items.map(Self.foodItem(from:))
             overallName = analysis.overall.name
             overallGrams = analysis.overall.quantityGrams
@@ -720,7 +719,6 @@ private struct ConfirmationView: View {
         isCompletingNutrition = true
         defer { isCompletingNutrition = false }
         let completed = await mealAnalyzer.complete(items: items, mealType: suggested)
-        recordAICompletion(count: completionUse)
         onSave(completed)
     }
 
@@ -837,16 +835,10 @@ private struct ConfirmationView: View {
                 grams[replacementItem.id.uuidString] = replacementItem.quantityGrams
                 lastParsedKeys.insert(replacementItem.id.uuidString)
             }
-            if analysis.aiSucceeded {
-                usageMeter?.record(.productNutritionLookup, cap: cap)
-            }
             Haptics.success()
             return
         }
         let completed = analysis.items.first ?? analysis.overall
-        if analysis.aiSucceeded {
-            usageMeter?.record(.productNutritionLookup, cap: cap)
-        }
         if let index = parsedRows.firstIndex(where: { $0.key == row.key }) {
             analyzedItems[index] = FoodItem(detected: completed, id: row.item.id)
             grams[row.key] = completed.quantityGrams
@@ -888,10 +880,9 @@ private struct ConfirmationView: View {
         )
     }
 
+    /// Save-time completion sends every gap in one request — one AI action.
     private func aiCompletionUseCount(for items: [FoodItem]) -> Int {
-        let missingCount = items.filter(\.isMissingNutrition).count
-        guard missingCount > 0 else { return 0 }
-        return portionMode == .overall ? 1 : missingCount
+        items.contains(where: \.isMissingNutrition) ? 1 : 0
     }
 
     private func canConsumeAICompletion(count: Int) -> Bool {
@@ -903,15 +894,6 @@ private struct ConfirmationView: View {
         Haptics.light()
         paywallCoordinator?.present(portionMode == .overall ? .mealAIRefreshQuota : .productNutritionQuota)
         return false
-    }
-
-    private func recordAICompletion(count: Int) {
-        guard count > 0 else { return }
-        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap = entitlementsStore?.current.aiActionsPerWeek
-        for _ in 0..<count {
-            usageMeter?.record(kind, cap: cap)
-        }
     }
 
 }

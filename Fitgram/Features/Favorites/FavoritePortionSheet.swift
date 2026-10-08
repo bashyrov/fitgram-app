@@ -373,16 +373,10 @@ extension FavoritePortionSheet {
                 )
             }
             detailDrafts.replaceSubrange(index...index, with: replacement)
-            if analysis.aiSucceeded {
-                usageMeter?.record(.productNutritionLookup, cap: cap)
-            }
             Haptics.success()
             return
         }
         let completed = analysis.items.first ?? analysis.overall
-        if analysis.aiSucceeded {
-            usageMeter?.record(.productNutritionLookup, cap: cap)
-        }
         guard let index = detailDrafts.firstIndex(where: { $0.id == draftID }) else { return }
         detailDrafts[index].name = completed.name
         detailDrafts[index].baseQuantityGrams = max(1, completed.quantityGrams)

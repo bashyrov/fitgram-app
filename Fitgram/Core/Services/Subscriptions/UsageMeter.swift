@@ -96,7 +96,7 @@ final class UsageMeter {
 
     func canUse(_ kind: Kind, cap: Int?) -> Bool {
         // A nil feature cap means Pro/unlimited in the UI. The authoritative
-        // 60-request abuse ceiling lives on the Worker, which can return the
+        // 30-request daily abuse ceiling lives on the Worker, which can return the
         // dedicated temporary-unavailable state instead of a wrong paywall.
         guard let cap else { return true }
         guard canUseAISafetyCap(kind) else { return false }
@@ -125,6 +125,18 @@ final class UsageMeter {
             "UsageMeter +1 \(kind.rawValue, privacy: .public) → \(new, privacy: .public)"
         )
         return cap.map { max(0, $0 - new) }
+    }
+
+    /// Fills the pool `kind` belongs to up to `cap` — used when the server
+    /// (the source of truth) says the pool is already empty.
+    func markExhausted(_ kind: Kind, cap: Int) {
+        refreshIfDayChanged()
+        let key = perDayKey(for: kind)
+        let value = max(cap, defaults.integer(forKey: key))
+        defaults.set(value, forKey: key)
+        for sharedKind in kind.sharedKinds {
+            counts[sharedKind] = value
+        }
     }
 
     /// Test-only — clear every kind for the current period.

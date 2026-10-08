@@ -137,3 +137,37 @@ struct AIRequestHint: View {
         )
     }
 }
+
+/// Above a save button: tells a free user that saving fills missing
+/// nutrition with AI and spends one action of the weekly pool. Hidden for
+/// Pro (`remaining == nil`) and when nothing is missing.
+struct AISaveCostNote: View {
+    let remaining: Int?
+
+    var body: some View {
+        if let remaining, let cap = FreeTierLimits.aiActionsPerWeek {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 11, weight: .bold))
+                Text(
+                    String.localizedStringWithFormat(
+                        TL(
+                            pl: "Brakujące makro doliczy AI · 1 działanie (zostało %lld z %lld)",
+                            en: "AI fills the missing macros · 1 action (%lld of %lld left)",
+                            uk: "Відсутні макро дорахує AI · 1 дія (залишилось %lld з %lld)",
+                            ru: "Недостающие БЖУ досчитает ИИ · 1 действие (осталось %lld из %lld)",
+                            es: "AI completa los macros que faltan · 1 acción (quedan %lld de %lld)"
+                        ),
+                        remaining,
+                        cap
+                    )
+                )
+                .font(Tokens.Font.caption)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+            }
+            .foregroundStyle(remaining == 0 ? Tokens.Palette.error : Tokens.Palette.inkMuted)
+            .frame(maxWidth: .infinity)
+        }
+    }
+}
