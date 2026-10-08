@@ -119,17 +119,28 @@ struct MonoTicks: View {
     var empty: Color = Tokens.Mono.heroLine
 
     var body: some View {
-        let filled = Int((min(1, max(0, progress)) * Double(count)).rounded())
+        let filled = Self.filledCount(progress: progress, count: count)
         HStack(spacing: 3) {
             ForEach(0..<count, id: \.self) { index in
                 RoundedRectangle(cornerRadius: 2, style: .continuous)
                     .fill(index < filled ? fill : empty)
                     .frame(height: height)
                     .transformEffect(CGAffineTransform(a: 1, b: 0, c: -0.42, d: 1, tx: height * 0.21, ty: 0))
+                    // Snap each tick between colours — a cross-fade reads as a
+                    // half-filled tick.
+                    .transaction { $0.animation = nil }
             }
         }
-        .animation(Tokens.Motion.gentle, value: filled)
         .accessibilityHidden(true)
+    }
+
+    /// Only fully earned ticks are lit: rounds down, so 85 % of 30 ticks
+    /// shows 25, never a 26th the user hasn't reached yet.
+    nonisolated static func filledCount(progress: Double, count: Int) -> Int {
+        let clamped = min(1, max(0, progress))
+        // Tiny epsilon so exact fractions (e.g. 0.3 × 30) aren't lost to
+        // floating-point error.
+        return min(count, Int((clamped * Double(count) + 1e-9).rounded(.down)))
     }
 }
 
