@@ -53,6 +53,7 @@ struct VoiceRootView: View {
                     AddFlowNavBar(title: L("Meal by voice"), onLeft: onDismiss)
                     VoiceCaptureView(
                         isListening: isListening,
+                        meter: state.levelMeter,
                         transcript: state.partialTranscript,
                         onToggle: toggleCapture
                     )

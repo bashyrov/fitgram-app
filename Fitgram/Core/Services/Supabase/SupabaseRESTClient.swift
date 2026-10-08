@@ -91,7 +91,7 @@ struct SupabaseRESTClient: Sendable {
         if let prefer {
             request.setValue(prefer, forHTTPHeaderField: "Prefer")
         }
-        guard let token = try tokenStore.accessToken, !token.isEmpty else {
+        guard let token = try? await AccessTokenProvider.shared.validAccessToken(), !token.isEmpty else {
             throw SupabaseError.unauthorized
         }
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

@@ -11,15 +11,19 @@ final class FoodSeeder {
     private let container: ModelContainer
     private let resourceNames: [String]
     private let bundle: Bundle
+    private let defaults: UserDefaults
+    private static let fingerprintKey = "foodSeed.fingerprint"
 
     init(
         container: ModelContainer,
         resourceNames: [String] = ["international_food_seed", "polish_food_seed"],
-        bundle: Bundle = .main
+        bundle: Bundle = .main,
+        defaults: UserDefaults = .standard
     ) {
         self.container = container
         self.resourceNames = resourceNames
         self.bundle = bundle
+        self.defaults = defaults
     }
 
     /// Seeds the catalog. Additive — runs on every cold start but only
@@ -31,6 +35,15 @@ final class FoodSeeder {
     @discardableResult
     func seedIfNeeded() throws -> Int {
         let context = ModelContext(container)
+        // Parsing ~1.6 MB of seed JSON and diffing 3k rows on every cold start
+        // delayed launch; skip when the bundled files are unchanged since the
+        // last successful seed and the table is populated.
+        let fingerprint = seedFingerprint()
+        if let fingerprint, defaults.string(forKey: Self.fingerprintKey) == fingerprint,
+            (try? context.fetchCount(FetchDescriptor<Food>())) ?? 0 > 0
+        {
+            return 0
+        }
         let existingFoods = try context.fetch(FetchDescriptor<Food>())
         var existingByID = [String: Food]()
         existingFoods.forEach { food in
@@ -45,8 +58,11 @@ final class FoodSeeder {
             for item in bundleData.items {
                 if let existing = existingByID[item.id] {
                     let newJSON = item.localizationsJSONPayload()
-                    if existing.localizationsJSON != newJSON {
+                    // Seed corrections (names + translations) reach existing
+                    // installs; user-authored rows have no seed ID and are untouched.
+                    if existing.localizationsJSON != newJSON || existing.name != item.name {
                         existing.localizationsJSON = newJSON
+                        existing.name = item.name
                         refreshed += 1
                     }
                 } else {
@@ -64,6 +80,9 @@ final class FoodSeeder {
             )
         } else {
             Logger.persistence.notice("Food catalog up to date (\(existingFoods.count) rows)")
+        }
+        if let fingerprint {
+            defaults.set(fingerprint, forKey: Self.fingerprintKey)
         }
         return inserted
     }
@@ -83,6 +102,18 @@ final class FoodSeeder {
             throw SeedError.resourceMissing(resourceNames.joined(separator: ","))
         }
         return FoodSeedBundle(schemaVersion: schema, items: merged)
+    }
+
+    /// Names + byte sizes of the bundled seed files — changes whenever an app
+    /// update ships a different catalogue.
+    private func seedFingerprint() -> String? {
+        let parts = resourceNames.compactMap { resource -> String? in
+            guard let url = bundle.url(forResource: resource, withExtension: "json"),
+                let size = try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize
+            else { return nil }
+            return "\(resource):\(size)"
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: "|")
     }
 
     private func loadBundle(for resource: String) throws -> FoodSeedBundle {

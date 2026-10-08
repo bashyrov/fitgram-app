@@ -4,6 +4,7 @@ import SwiftUI
 /// the round accent mic button with its caption at the bottom. Tapping the mic toggles capture.
 struct VoiceCaptureView: View {
     let isListening: Bool
+    let meter: VoiceLevelMeter
     let transcript: String
     let onToggle: () -> Void
 
@@ -41,7 +42,7 @@ struct VoiceCaptureView: View {
                     : TL(pl: "Gotowy", en: "Ready", uk: "Готовий", ru: "Готов", es: "Listo"),
                 onHero: true
             )
-            waveform
+            VoiceWaveform(meter: meter, isListening: isListening, idleHeights: Self.waveHeights)
                 .frame(maxWidth: .infinity)
                 .frame(height: 110)
             transcriptText
@@ -70,29 +71,6 @@ struct VoiceCaptureView: View {
         }
     }
 
-    /// Static mockup bars; they gently breathe while the microphone is live.
-    private var waveform: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 20.0, paused: !isListening)) { context in
-            let time = context.date.timeIntervalSinceReferenceDate
-            HStack(spacing: 5) {
-                ForEach(Self.waveHeights.indices, id: \.self) { index in
-                    Capsule()
-                        .fill(isListening ? Tokens.Mono.hi : Tokens.Mono.heroLine)
-                        .frame(width: 6, height: barHeight(index: index, time: time))
-                }
-            }
-        }
-        .accessibilityHidden(true)
-    }
-
-    private func barHeight(index: Int, time: TimeInterval) -> CGFloat {
-        let base = Self.waveHeights[index]
-        guard isListening else { return base }
-        let wave = sin(time * 6 + Double(index) * 0.8)
-        let scale = 0.75 + 0.25 * CGFloat(wave)
-        return max(8, base * scale)
-    }
-
     /// `bottom(84 pt accent mic + 'Stuknij, aby zakończyć')`.
     private var micBlock: some View {
         VStack(spacing: 8) {
@@ -113,5 +91,38 @@ struct VoiceCaptureView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+/// Bars that follow the microphone: each one is a recent loudness sample,
+/// newest on the right, so the wave scrolls exactly with the voice. Idle, it
+/// shows the mockup's static silhouette. Lives in its own view so the ~45 Hz
+/// level updates only re-render the bars.
+private struct VoiceWaveform: View {
+    let meter: VoiceLevelMeter
+    let isListening: Bool
+    let idleHeights: [CGFloat]
+
+    private let minHeight: CGFloat = 6
+    private let maxHeight: CGFloat = 104
+
+    var body: some View {
+        HStack(spacing: 5) {
+            ForEach(idleHeights.indices, id: \.self) { index in
+                Capsule()
+                    .fill(isListening ? Tokens.Mono.hi : Tokens.Mono.heroLine)
+                    .frame(width: 6, height: height(at: index))
+            }
+        }
+        .animation(.linear(duration: 0.08), value: meter.levels)
+        .animation(Tokens.Motion.gentle, value: isListening)
+        .accessibilityHidden(true)
+    }
+
+    private func height(at index: Int) -> CGFloat {
+        guard isListening else { return idleHeights[index] }
+        let levels = meter.levels
+        let level = index < levels.count ? levels[index] : 0
+        return minHeight + (maxHeight - minHeight) * CGFloat(level)
     }
 }
