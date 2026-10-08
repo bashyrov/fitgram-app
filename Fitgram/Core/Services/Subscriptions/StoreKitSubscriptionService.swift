@@ -176,7 +176,9 @@ final class StoreKitSubscriptionService: SubscriptionService {
         return SubscriptionOffering(
             id: monthly ? "monthly" : "annual",
             productID: product.id,
-            title: product.displayName,
+            // Brand plan names stay English in every locale; ASC's localized
+            // display names ("… на месяц") read as half-translated.
+            title: monthly ? SubscriptionOffering.monthlyTitle : SubscriptionOffering.yearlyTitle,
             priceLabel: product.displayPrice,
             periodLabel: product.subscription?.subscriptionPeriod.localizedLabel ?? "",
             isFeatured: !monthly,
