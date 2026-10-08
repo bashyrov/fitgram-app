@@ -206,9 +206,9 @@ extension View {
     func monoTabBarStyle() -> some View {
         self
             .toolbar(.hidden, for: .tabBar)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: 86)
-            }
+            // iOS 26 drops safe-area insets added around TabView content once
+            // the system bar is hidden, so reserve the room as scroll margins.
+            .contentMargins(.bottom, 96, for: .scrollContent)
     }
 }
 

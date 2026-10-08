@@ -52,7 +52,11 @@ final class StoreKitSubscriptionService: SubscriptionService {
         }
         let monthlyPrice = products[Self.monthlyProductID]?.price
         return products.values
-            .sorted { $0.id < $1.id }
+            // Yearly (featured, cheapest per month) first.
+            .sorted { lhs, rhs in
+                (lhs.subscription?.subscriptionPeriod.unit == .year ? 0 : 1, lhs.id)
+                    < (rhs.subscription?.subscriptionPeriod.unit == .year ? 0 : 1, rhs.id)
+            }
             .map { product in
                 var offering = Self.mapToOffering(product)
                 if product.subscription?.subscriptionPeriod.unit == .year {
@@ -176,7 +180,8 @@ final class StoreKitSubscriptionService: SubscriptionService {
             priceLabel: product.displayPrice,
             periodLabel: product.subscription?.subscriptionPeriod.localizedLabel ?? "",
             isFeatured: !monthly,
-            trialDays: product.subscription?.introductoryOffer?.period.value
+            trialDays: product.subscription?.introductoryOffer
+                .flatMap { $0.paymentMode == .freeTrial ? $0.period.approximateDays : nil }
         )
     }
 
@@ -213,6 +218,19 @@ extension Product.SubscriptionPeriod {
         case .year: unit = L("rocznie")
         @unknown default: unit = ""
         }
+        if value == 1, self.unit == .month { return L("/ month") }
+        if value == 1, self.unit == .year { return L("/ year") }
         return value > 1 ? "/ \(value) \(unit)" : "/ \(unit)"
+    }
+
+    /// Trial length in days — a one-week trial reports `value == 1`, `unit == .week`.
+    fileprivate var approximateDays: Int {
+        switch unit {
+        case .day: return value
+        case .week: return value * 7
+        case .month: return value * 30
+        case .year: return value * 365
+        @unknown default: return value
+        }
     }
 }

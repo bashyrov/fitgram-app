@@ -64,13 +64,20 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     /// Annual plans: percent saved versus paying monthly for a year.
     var savingsPercent: Int?
 
-    /// The two stock plans expected from App Store Connect. The
-    /// "monthly" plan ships first, "annual" is the better deal.
+    /// Price per month as the paywall leads with it: the monthly plan's own
+    /// price, or the annual price spread over 12 months.
+    var perMonthLabel: String? {
+        monthlyEquivalentLabel ?? (id == "monthly" ? priceLabel : nil)
+    }
+
+    /// Fallback plans shown only when StoreKit returns no products (e.g. a
+    /// local build without a StoreKit config). Real prices always come from
+    /// App Store Connect via `Product.displayPrice`; these mirror the USA tier.
     static let stockMonthly = SubscriptionOffering(
         id: "monthly",
         productID: "fitgram_premium_monthly",
         title: L("Monthly"),
-        priceLabel: "22 zł",
+        priceLabel: "$4.99",
         periodLabel: L("/ month"),
         isFeatured: false,
         trialDays: 7
@@ -80,12 +87,12 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
         id: "annual",
         productID: "fitgram_premium_yearly",
         title: L("Yearly"),
-        priceLabel: "200 zł",
+        priceLabel: "$44.99",
         periodLabel: L("/ year"),
         isFeatured: true,
         trialDays: 7,
-        monthlyEquivalentLabel: "16,67 zł",
-        savingsPercent: 24
+        monthlyEquivalentLabel: "$3.75",
+        savingsPercent: 25
     )
 }
 

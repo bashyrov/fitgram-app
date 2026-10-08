@@ -5,7 +5,8 @@ import SwiftUI
 /// Browses saved recipes; tap a row to view + cook, swipe to delete,
 /// trailing "+" raises the form sheet.
 struct RecipeListView: View {
-    @Bindable var state: RecipeListState
+    // Owned (not @Bindable) so parent re-renders can't swap in a fresh state.
+    @State var state: RecipeListState
     let repository: RecipeRepository
     let mealSaver: any MealSaving
     let onDismiss: () -> Void

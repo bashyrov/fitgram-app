@@ -294,13 +294,14 @@ struct PaywallOfferingRow: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
+                // Lead with the per-month price so plans compare at a glance.
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(offering.priceLabel)
-                        .font(Tokens.Font.monoNumber(20))
+                    Text(offering.perMonthLabel ?? offering.priceLabel)
+                        .font(Tokens.Font.monoNumber(22))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
-                    Text(offering.periodLabel)
+                    Text(offering.perMonthLabel == nil ? offering.periodLabel : L("/ month"))
                         .font(Tokens.Font.manrope(11, weight: 700))
                         .foregroundStyle(Tokens.Mono.muted)
                         .lineLimit(1)
@@ -344,8 +345,9 @@ struct PaywallOfferingRow: View {
 
     private var detail: String {
         var parts: [String] = []
-        if let perMonth = offering.monthlyEquivalentLabel {
-            parts.append(String.localizedStringWithFormat(L("≈ %@ / mies."), perMonth))
+        if offering.monthlyEquivalentLabel != nil {
+            // Annual: the actual charge, since the big number is per month.
+            parts.append("\(offering.priceLabel) \(offering.periodLabel)")
         }
         if let trialDays = offering.trialDays {
             parts.append(String.localizedStringWithFormat(L("%lld dni za darmo"), trialDays))

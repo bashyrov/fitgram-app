@@ -10,9 +10,27 @@ struct WeightLogView: View {
     let userRemoteID: String
     let initialWeight: Double?
     var heightCm: Int?
-    @Bindable var state: WeightLogState
+    /// Owned here so a parent re-render (e.g. Profile refreshing after the
+    /// user's weight changes) can't swap in a fresh, empty state mid-session.
+    @State private var state: WeightLogState
     let healthImporter: HealthImporter?
     let onDismiss: () -> Void
+
+    init(
+        userRemoteID: String,
+        initialWeight: Double?,
+        heightCm: Int? = nil,
+        state: WeightLogState,
+        healthImporter: HealthImporter?,
+        onDismiss: @escaping () -> Void
+    ) {
+        self.userRemoteID = userRemoteID
+        self.initialWeight = initialWeight
+        self.heightCm = heightCm
+        self._state = State(initialValue: state)
+        self.healthImporter = healthImporter
+        self.onDismiss = onDismiss
+    }
 
     @State private var isAddingPresented = false
     @State private var editingEntry: WeightEntry?
