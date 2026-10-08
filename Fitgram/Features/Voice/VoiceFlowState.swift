@@ -18,6 +18,8 @@ final class VoiceFlowState {
     private(set) var partialTranscript: String = ""
 
     private let session: VoiceCaptureSession
+    /// Microphone loudness driving the waveform while listening.
+    var levelMeter: VoiceLevelMeter { session.meter }
     private let mealSaver: any MealSaving
     private let parser: VoiceMealParser
 

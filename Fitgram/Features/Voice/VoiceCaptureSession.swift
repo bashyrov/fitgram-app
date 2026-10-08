@@ -19,6 +19,8 @@ final class VoiceCaptureSession {
     private let audioEngine = AVAudioEngine()
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
+    /// Live loudness for the waveform, fed from the same tap as recognition.
+    let meter = VoiceLevelMeter()
 
     init(locale: Locale = Locale.current) {
         self.recognizer = SFSpeechRecognizer(locale: locale)
@@ -46,9 +48,10 @@ final class VoiceCaptureSession {
         let inputNode = audioEngine.inputNode
         let format = inputNode.outputFormat(forBus: 0)
         inputNode.removeTap(onBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
-            request.append(buffer)
-        }
+        meter.reset()
+        inputNode.installTap(
+            onBus: 0, bufferSize: 1024, format: format,
+            block: Self.makeTap(request: request, meter: meter))
 
         audioEngine.prepare()
         do {
@@ -77,8 +80,21 @@ final class VoiceCaptureSession {
         }
     }
 
+    /// Built outside the main actor: the tap runs on the audio render thread.
+    nonisolated private static func makeTap(
+        request: SFSpeechAudioBufferRecognitionRequest,
+        meter: VoiceLevelMeter
+    ) -> AVAudioNodeTapBlock {
+        { buffer, _ in
+            request.append(buffer)
+            let level = VoiceLevelMeter.normalizedLevel(of: buffer)
+            Task { @MainActor in meter.push(level) }
+        }
+    }
+
     /// Stops capture and finalises any pending recognition. Idempotent.
     func stop() {
+        meter.reset()
         audioEngine.inputNode.removeTap(onBus: 0)
         if audioEngine.isRunning {
             audioEngine.stop()
