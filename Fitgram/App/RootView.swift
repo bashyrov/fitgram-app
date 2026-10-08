@@ -150,6 +150,12 @@ struct RootView: View {
             }
             .onAppear {
                 migrateDefaultAccentToCitrusIfNeeded()
+                #if DEBUG
+                // FITGRAM_DEBUG_PAYWALL=1 opens the upgrade sheet for UI checks.
+                if ProcessInfo.processInfo.environment["FITGRAM_DEBUG_PAYWALL"] == "1" {
+                    paywallCoordinator.present(.photoScanQuota)
+                }
+                #endif
             }
             .sheet(
                 isPresented: Binding(

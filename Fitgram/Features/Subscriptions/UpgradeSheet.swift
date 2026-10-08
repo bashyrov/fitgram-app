@@ -17,11 +17,13 @@ struct UpgradeSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    header
-                    featuresList
-                        .padding(.top, 14)
+                    triggerContext
+                        .padding(.top, 6)
+                    PaywallHero(trialDays: selectedOffering?.trialDays)
+                        .padding(.top, 12)
+                    PaywallBenefitList()
+                    PaywallSectionTitle(title: L("Wybierz plan"))
                     planSection
-                        .padding(.top, 14)
                     if let error {
                         Text(error)
                             .font(Tokens.Font.manrope(12, weight: 700))
@@ -30,6 +32,9 @@ struct UpgradeSheet: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 6)
                             .padding(.top, 12)
+                    }
+                    if let trialDays = selectedOffering?.trialDays, let selectedOffering {
+                        PaywallTrialTimeline(trialDays: trialDays, offering: selectedOffering)
                     }
                     legalNote
                         .padding(.top, 16)
@@ -41,7 +46,13 @@ struct UpgradeSheet: View {
             .monoNavigationTitle(L("Premium"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    MonoNavText(title: L("Później"), action: onDismiss)
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .frame(width: 36, height: 36)
+                    }
+                    .accessibilityLabel(Text(L("Później")))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     MonoNavText(title: L("Przywróć"), emphasized: true) { Task { await restore() } }
@@ -61,55 +72,25 @@ struct UpgradeSheet: View {
         return offerings.first { $0.id == selectedID }
     }
 
-    private var header: some View {
+    /// Why the sheet opened ("Daily AI limit used …") — a compact card above
+    /// the shared selling hero.
+    private var triggerContext: some View {
         let copy = trigger.copy
-        return MonoH1(text: copy.headline, sub: copy.body, kicker: copy.badge)
-    }
-
-    private var featuresList: some View {
-        VStack(spacing: 0) {
-            feature(
-                symbol: "camera",
-                title: "Nieograniczone skany AI",
-                detail: "Zdjęcia, kody i głos bez tygodniowych limitów"
-            )
-            MonoRowDivider()
-            feature(
-                symbol: "sparkles",
-                title: "Ola — Twój coach AI",
-                detail: "Codzienne wskazówki i tygodniowe podsumowania pod Twoje cele"
-            )
-            MonoRowDivider()
-            feature(
-                symbol: "chart.bar",
-                title: "Pełna historia postępów",
-                detail: "Trendy, eksporty, przepisy, ulubione i synchronizacja iCloud"
-            )
-        }
-        .monoRowsCard()
-    }
-
-    private func feature(
-        symbol: String,
-        title: LocalizedStringKey,
-        detail: LocalizedStringKey
-    ) -> some View {
-        HStack(spacing: 12) {
-            MonoIconBox(systemName: symbol, style: .dark, size: 40)
+        return HStack(alignment: .top, spacing: 12) {
+            MonoIconBox(systemName: "bolt.fill", style: .accent, size: 36)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(Tokens.Font.manrope(15, weight: 800))
+                Text(copy.headline)
+                    .font(Tokens.Font.manrope(14, weight: 800))
                     .foregroundStyle(Tokens.Palette.ink)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(detail)
+                Text(copy.body)
                     .font(Tokens.Font.manrope(12, weight: 600))
                     .foregroundStyle(Tokens.Mono.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, 13)
-        .padding(.horizontal, 16)
+        .monoCard(padding: 14)
         .accessibilityElement(children: .combine)
     }
 
@@ -209,7 +190,7 @@ struct UpgradeSheet: View {
                         ProgressView()
                             .tint(Tokens.Mono.onHero)
                     }
-                    Text(selectedOffering?.trialDays == nil ? "Dalej" : "Zacznij okres próbny")
+                    Text(SubscriptionOffering.paywallCTATitle(for: selectedOffering))
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                 }
@@ -217,7 +198,7 @@ struct UpgradeSheet: View {
             .buttonStyle(MonoButtonStyle(kind: .dark))
             .disabled(selectedOffering == nil || isLoading || isPurchasing)
 
-            Text("Zarządzaj lub anuluj kiedy chcesz w Ustawieniach")
+            Text(selectedOffering?.paywallCTACaption ?? L("Zarządzaj lub anuluj kiedy chcesz w Ustawieniach"))
                 .font(Tokens.Font.manrope(12, weight: 600))
                 .foregroundStyle(Tokens.Mono.muted)
                 .multilineTextAlignment(.center)
