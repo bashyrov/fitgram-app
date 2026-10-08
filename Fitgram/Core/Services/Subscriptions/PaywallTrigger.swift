@@ -37,13 +37,7 @@ extension PaywallTrigger {
     var copy: Copy {
         switch self {
         case .photoScanQuota:
-            return Copy(
-                headline: L("Dzienny limit AI wykorzystany"),
-                body: L(
-                    "W bezpłatnej wersji masz 3 zapytania AI dziennie. Pro daje bardzo duże limity i 7 dni próbne."
-                ),
-                badge: L("Skanowanie AI")
-            )
+            return Self.weeklyAIPoolCopy(badge: L("Skanowanie AI"))
         case .barcodeScanQuota:
             return Copy(
                 headline: L("Limit skanowania wykorzystany"),
@@ -51,31 +45,11 @@ extension PaywallTrigger {
                 badge: L("Kody")
             )
         case .voiceEntryQuota:
-            return Copy(
-                headline: L("Dzienny limit AI wykorzystany"),
-                body: L(
-                    """
-                    W bezpłatnej wersji możesz zapisać 3 posiłki AI dziennie. Premium ma bardzo duże limity, żeby wszystko \
-                    działało płynnie.
-                    """
-                ),
-                badge: L("Voice")
-            )
+            return Self.weeklyAIPoolCopy(badge: L("Voice"))
         case .mealAIRefreshQuota:
-            return Copy(
-                headline: L("Limit odświeżeń AI wykorzystany"),
-                body: L(
-                    "W bezpłatnej wersji możesz odświeżyć dane dania 3 razy dziennie. Premium daje bardzo duże limity poprawek."
-                ),
-                badge: L("AI refresh")
-            )
+            return Self.weeklyAIPoolCopy(badge: L("AI refresh"))
         case .productNutritionQuota:
-            return Copy(
-                headline: L("Limit produktów AI wykorzystany"),
-                body: L(
-                    "W bezpłatnej wersji AI uzupełni 2 pojedyncze produkty dziennie. Premium ma bardzo duże limity."),
-                badge: L("Produkty")
-            )
+            return Self.weeklyAIPoolCopy(badge: L("Produkty"))
         case .olaChefQuota:
             return Copy(
                 headline: L("Kuchnia Oli z dużym limitem w Pro"),
@@ -151,5 +125,46 @@ extension PaywallTrigger {
                 badge: nil
             )
         }
+    }
+
+    /// Photo, voice, refresh and product lookups share one weekly free pool,
+    /// so they share the copy too.
+    private static func weeklyAIPoolCopy(badge: String) -> Copy {
+        let cap = FreeTierLimits.aiActionsPerWeek ?? 0
+        return Copy(
+            headline: TL(
+                pl: "Tygodniowy limit AI wykorzystany",
+                en: "Weekly AI limit used up",
+                uk: "Тижневий ліміт AI вичерпано",
+                ru: "Недельный лимит ИИ исчерпан",
+                es: "Has usado el límite semanal de AI"
+            ),
+            body: String.localizedStringWithFormat(
+                TL(
+                    pl: """
+                        Bezpłatnie masz %lld działań AI tygodniowo — zdjęcia, głos i poprawki. Kody kreskowe, baza \
+                        produktów i ręczne wpisy działają bez limitu. Pro zdejmuje limit AI — 7 dni za darmo.
+                        """,
+                    en: """
+                        Free includes %lld AI actions a week — photos, voice and fixes. Barcodes, the food database \
+                        and manual entries stay unlimited. Pro removes the AI limit — 7 days free.
+                        """,
+                    uk: """
+                        Безкоштовно — %lld дій AI на тиждень: фото, голос і правки. Штрихкоди, база продуктів і \
+                        ручні записи без ліміту. Pro знімає ліміт AI — 7 днів безкоштовно.
+                        """,
+                    ru: """
+                        Бесплатно — %lld ИИ-действий в неделю: фото, голос и правки. Штрихкоды, база продуктов и \
+                        ручной ввод без лимита. Pro снимает лимит ИИ — 7 дней бесплатно.
+                        """,
+                    es: """
+                        Gratis tienes %lld acciones de AI por semana: fotos, voz y ajustes. Códigos de barras, la base \
+                        de alimentos y las entradas manuales no tienen límite. Pro quita el límite de AI: 7 días gratis.
+                        """
+                ),
+                cap
+            ),
+            badge: badge
+        )
     }
 }

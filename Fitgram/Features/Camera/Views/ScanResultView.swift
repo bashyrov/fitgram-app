@@ -468,16 +468,16 @@ struct ScanResultView: View {
     }
 
     private var mealAIRefreshRemaining: Int? {
-        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.mealAIRefreshesPerDay)
+        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private var productNutritionRemaining: Int? {
-        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
+        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private func refreshFromAI(text: String) async {
         guard let mealAnalyzer else { return }
-        let cap = entitlementsStore?.current.mealAIRefreshesPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if usageMeter?.canUse(.mealAIRefresh, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.mealAIRefreshQuota)
@@ -500,7 +500,7 @@ struct ScanResultView: View {
         guard let mealAnalyzer else { return }
         let currentGrams = detailGrams[item.id] ?? item.quantityGrams
         guard currentGrams > 0, !item.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        let cap = entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if usageMeter?.canUse(.productNutritionLookup, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.productNutritionQuota)
@@ -662,10 +662,7 @@ struct ScanResultView: View {
     private func canConsumeAICompletion(count: Int) -> Bool {
         guard count > 0 else { return true }
         let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         guard let cap, let usageMeter else { return true }
         if usageMeter.used(kind) + count <= cap { return true }
         Haptics.light()
@@ -676,17 +673,14 @@ struct ScanResultView: View {
     private func recordAICompletion(count: Int) {
         guard count > 0 else { return }
         let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         for _ in 0..<count {
             usageMeter?.record(kind, cap: cap)
         }
     }
 
     private static func needsNutrition(_ item: ScanResult.DetectedItem) -> Bool {
-        item.caloriesKcal <= 0 || item.proteinGrams <= 0 || item.carbsGrams <= 0 || item.fatGrams <= 0
+        item.caloriesKcal <= 0 || (item.proteinGrams <= 0 && item.carbsGrams <= 0 && item.fatGrams <= 0)
     }
 }
 

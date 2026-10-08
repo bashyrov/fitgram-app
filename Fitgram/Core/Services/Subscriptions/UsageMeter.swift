@@ -2,9 +2,10 @@ import Foundation
 import OSLog
 import Observation
 
-/// Daily quota tracker for premium-gated AI features. Photo and voice share
-/// the saved-meal AI budget; barcode is intentionally non-AI and unlimited.
-/// Meal refreshes and per-product nutrition lookups have their own pools.
+/// Quota tracker for premium-gated AI features. Photo, voice, meal refreshes
+/// and per-product nutrition lookups share one weekly free pool (Mon–Sun,
+/// local time); barcode is intentionally non-AI and unlimited. The hidden AI
+/// safety counter stays daily.
 @MainActor
 @Observable
 final class UsageMeter {
@@ -19,14 +20,10 @@ final class UsageMeter {
 
         fileprivate var storageKey: String {
             switch self {
-            case .photoScan, .voiceEntry:
-                return "usage.aiLoggedMeal"
+            case .photoScan, .voiceEntry, .mealAIRefresh, .productNutritionLookup:
+                return "usage.aiWeekly"
             case .barcodeScan:
                 return "usage.barcodeScan"
-            case .mealAIRefresh:
-                return "usage.aiMealRefresh"
-            case .productNutritionLookup:
-                return "usage.aiProductNutrition"
             case .olaChef:
                 return "usage.olaChef"
             case .coachDebrief:
@@ -36,20 +33,21 @@ final class UsageMeter {
 
         fileprivate var sharedKinds: [Kind] {
             switch self {
-            case .photoScan, .voiceEntry:
-                return [.photoScan, .voiceEntry]
+            case .photoScan, .voiceEntry, .mealAIRefresh, .productNutritionLookup:
+                return Kind.weeklyPool
             case .barcodeScan:
                 return [.barcodeScan]
-            case .mealAIRefresh:
-                return [.mealAIRefresh]
-            case .productNutritionLookup:
-                return [.productNutritionLookup]
             case .olaChef:
                 return [.olaChef]
             case .coachDebrief:
                 return [.coachDebrief]
             }
         }
+
+        fileprivate static let weeklyPool: [Kind] = [.photoScan, .voiceEntry, .mealAIRefresh, .productNutritionLookup]
+
+        /// Counted per ISO week instead of per day.
+        fileprivate var isWeekly: Bool { Kind.weeklyPool.contains(self) }
 
         fileprivate var isAIBacked: Bool {
             switch self {
@@ -67,6 +65,7 @@ final class UsageMeter {
 
     private(set) var counts: [Kind: Int] = [:]
     private var cachedDayToken: String
+    private var cachedWeekToken: String
 
     init(
         defaults: UserDefaults = .standard,
@@ -77,10 +76,12 @@ final class UsageMeter {
         self.calendar = calendar
         self.now = now
         self.cachedDayToken = UsageMeter.dayToken(for: now(), calendar: calendar)
+        self.cachedWeekToken = UsageMeter.weekToken(for: now(), calendar: calendar)
         refreshCounts()
     }
 
-    /// Returns the number of AI uses already consumed today.
+    /// Returns the number of uses already consumed in the current period
+    /// (this week for the shared AI pool, today otherwise).
     func used(_ kind: Kind) -> Int {
         refreshIfDayChanged()
         return counts[kind] ?? defaults.integer(forKey: perDayKey(for: kind))
@@ -117,8 +118,8 @@ final class UsageMeter {
         let key = perDayKey(for: kind)
         let new = defaults.integer(forKey: key) + 1
         defaults.set(new, forKey: key)
-        for aiKind in kind.sharedKinds {
-            counts[aiKind] = new
+        for sharedKind in kind.sharedKinds {
+            counts[sharedKind] = new
         }
         Logger.persistence.notice(
             "UsageMeter +1 \(kind.rawValue, privacy: .public) → \(new, privacy: .public)"
@@ -126,7 +127,7 @@ final class UsageMeter {
         return cap.map { max(0, $0 - new) }
     }
 
-    /// Test-only — clear every kind for today.
+    /// Test-only — clear every kind for the current period.
     func resetForTesting() {
         refreshIfDayChanged()
         for kind in Kind.allCases {
@@ -138,6 +139,7 @@ final class UsageMeter {
 
     func reloadAfterAccountDeletion() {
         cachedDayToken = UsageMeter.dayToken(for: now(), calendar: calendar)
+        cachedWeekToken = UsageMeter.weekToken(for: now(), calendar: calendar)
         refreshCounts()
     }
 
@@ -150,7 +152,7 @@ final class UsageMeter {
     }
 
     private func perDayKey(for kind: Kind) -> String {
-        "\(kind.storageKey).\(cachedDayToken)"
+        "\(kind.storageKey).\(kind.isWeekly ? cachedWeekToken : cachedDayToken)"
     }
 
     private func aiSafetyPerDayKey() -> String {
@@ -172,7 +174,13 @@ final class UsageMeter {
         let token = Self.dayToken(for: now(), calendar: calendar)
         guard token != cachedDayToken else { return }
         cachedDayToken = token
+        cachedWeekToken = Self.weekToken(for: now(), calendar: calendar)
         refreshCounts()
+    }
+
+    private static func weekToken(for date: Date, calendar: Calendar) -> String {
+        let comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        return "\(comps.yearForWeekOfYear ?? 0)-W\(String(format: "%02d", comps.weekOfYear ?? 0))"
     }
 
     private static func dayToken(for date: Date, calendar: Calendar) -> String {

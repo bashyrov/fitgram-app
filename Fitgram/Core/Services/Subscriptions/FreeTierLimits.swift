@@ -5,18 +5,17 @@ enum FreeTierLimits {
     /// Hidden abuse guard for every AI-backed request, including premium.
     /// This is not shown as a product limit; it protects AI cost from runaway
     /// loops, scripted calls, or accidental repeated taps.
-    static let aiRequestsSafetyCapPerDay = 60
+    static let aiRequestsSafetyCapPerDay = 30
 
-    /// Shared daily AI budget for free users. `nil` means unlimited.
-    static let aiLoggedMealsPerDay: Int? = 3
-    static let aiMealRefreshesPerDay: Int? = 3
-    static let aiProductLookupsPerDay: Int? = 2
+    /// One weekly AI pool for free users, shared by photo scans, voice/text
+    /// meals, meal refreshes and single-product lookups (Mon–Sun, local time).
+    /// Everything non-AI — barcode, Quick DB, manual entry — stays unlimited.
+    /// `nil` means unlimited.
+    static let aiActionsPerWeek: Int? = 10
     // Free Ola Chef uses the local catalog and never calls AI.
     static let olaChefRequestsPerDay: Int? = nil
 
-    static let photoScansPerDay: Int? = aiLoggedMealsPerDay
     static let barcodeScansPerDay: Int? = nil
-    static let voiceEntriesPerDay: Int? = aiLoggedMealsPerDay
     static let coachWeeklyDebriefsPerWeek: Int? = 0
 
     static let activeCustomGoals: Int? = nil

@@ -497,7 +497,7 @@ struct MainTabView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                         gatedPresent(
                             kind: .photoScan,
-                            cap: entitlementsStore.current.photoScansPerDay,
+                            cap: entitlementsStore.current.aiActionsPerWeek,
                             trigger: .photoScanQuota,
                             onAllowed: { isScanPresented = true }
                         )
@@ -538,7 +538,7 @@ struct MainTabView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                         gatedPresent(
                             kind: .voiceEntry,
-                            cap: entitlementsStore.current.voiceEntriesPerDay,
+                            cap: entitlementsStore.current.aiActionsPerWeek,
                             trigger: .voiceEntryQuota,
                             onAllowed: { isVoicePresented = true }
                         )

@@ -456,7 +456,7 @@ private struct ConfirmationView: View {
         didAttemptInitialAI = true
         guard VoiceMealParser.hasRecognizableFoodText(edited), let mealAnalyzer else { return }
 
-        let cap = entitlementsStore?.current.voiceEntriesPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         guard usageMeter?.canUse(.voiceEntry, cap: cap) != false else {
             paywallCoordinator?.present(.voiceEntryQuota)
             return
@@ -654,11 +654,11 @@ private struct ConfirmationView: View {
     }
 
     private var mealAIRefreshRemaining: Int? {
-        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.mealAIRefreshesPerDay)
+        usageMeter?.remaining(.mealAIRefresh, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private var productNutritionRemaining: Int? {
-        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
+        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 
     private func refreshFromAI() async {
@@ -668,7 +668,7 @@ private struct ConfirmationView: View {
             return
         }
         let suggested = VoiceFlowState.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date()))
-        let cap = entitlementsStore?.current.mealAIRefreshesPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if mealAnalyzer != nil, usageMeter?.canUse(.mealAIRefresh, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.mealAIRefreshQuota)
@@ -803,7 +803,7 @@ private struct ConfirmationView: View {
         guard let mealAnalyzer else { return }
         let currentGrams = grams[row.key] ?? row.item.quantityGrams
         guard currentGrams > 0, !row.item.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        let cap = entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if usageMeter?.canUse(.productNutritionLookup, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.productNutritionQuota)
@@ -897,10 +897,7 @@ private struct ConfirmationView: View {
     private func canConsumeAICompletion(count: Int) -> Bool {
         guard count > 0 else { return true }
         let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         guard let cap, let usageMeter else { return true }
         if usageMeter.used(kind) + count <= cap { return true }
         Haptics.light()
@@ -911,10 +908,7 @@ private struct ConfirmationView: View {
     private func recordAICompletion(count: Int) {
         guard count > 0 else { return }
         let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap =
-            portionMode == .overall
-            ? entitlementsStore?.current.mealAIRefreshesPerDay
-            : entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         for _ in 0..<count {
             usageMeter?.record(kind, cap: cap)
         }

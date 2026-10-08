@@ -67,8 +67,10 @@ extension FoodItem {
 
 extension FoodItem {
     /// True while any macro is still zero — AI completion should fill it in.
+    /// No calories, or calories without any macro split. A single zero macro
+    /// (black coffee has no fat) is real data, not a gap worth an AI call.
     var isMissingNutrition: Bool {
-        caloriesKcal <= 0 || proteinGrams <= 0 || carbsGrams <= 0 || fatGrams <= 0
+        caloriesKcal <= 0 || (proteinGrams <= 0 && carbsGrams <= 0 && fatGrams <= 0)
     }
 }
 

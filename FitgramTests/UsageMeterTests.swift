@@ -23,17 +23,18 @@ final class UsageMeterTests: XCTestCase {
         XCTAssertEqual(meter.used(.photoScan), 2)
     }
 
-    func testCanUseRespectsDailyCap() {
+    func testAIKindsShareOneWeeklyPool() {
         let meter = UsageMeter(defaults: makeDefaults())
-        XCTAssertTrue(meter.canUse(.photoScan, cap: 3))
-        meter.record(.photoScan, cap: 3)
-        meter.record(.voiceEntry, cap: 3)
-        meter.record(.photoScan, cap: 3)
-        XCTAssertFalse(meter.canUse(.photoScan, cap: 3))
-        XCTAssertFalse(meter.canUse(.voiceEntry, cap: 3))
+        XCTAssertTrue(meter.canUse(.photoScan, cap: 4))
+        meter.record(.photoScan, cap: 4)
+        meter.record(.voiceEntry, cap: 4)
+        meter.record(.mealAIRefresh, cap: 4)
+        meter.record(.productNutritionLookup, cap: 4)
+        for kind in [UsageMeter.Kind.photoScan, .voiceEntry, .mealAIRefresh, .productNutritionLookup] {
+            XCTAssertFalse(meter.canUse(kind, cap: 4))
+            XCTAssertEqual(meter.used(kind), 4)
+        }
         XCTAssertTrue(meter.canUse(.barcodeScan, cap: nil))
-        XCTAssertTrue(meter.canUse(.mealAIRefresh, cap: 3))
-        XCTAssertTrue(meter.canUse(.productNutritionLookup, cap: 2))
         XCTAssertTrue(meter.canUse(.olaChef, cap: 1))
     }
 
@@ -82,6 +83,26 @@ final class UsageMeterTests: XCTestCase {
         XCTAssertTrue(meter.canUse(.barcodeScan, cap: nil))
     }
 
+    func testWeeklyPoolSurvivesDayChangeAndResetsOnMonday() {
+        let defaults = makeDefaults()
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 3_600) ?? .current
+        calendar.firstWeekday = 2
+        calendar.minimumDaysInFirstWeek = 4
+        let monday = Date(timeIntervalSince1970: 1_704_672_000)  // 2024-01-08 01:00 CET, Monday
+        var now = monday
+        let meter = UsageMeter(defaults: defaults, calendar: calendar, now: { now })
+        meter.record(.photoScan, cap: 10)
+        meter.record(.mealAIRefresh, cap: 10)
+
+        now = monday.addingTimeInterval(6 * 24 * 3600)  // Sunday
+        XCTAssertEqual(meter.used(.photoScan), 2)
+        XCTAssertEqual(meter.remaining(.voiceEntry, cap: 10), 8)
+
+        now = monday.addingTimeInterval(7 * 24 * 3600)  // next Monday
+        XCTAssertEqual(meter.used(.photoScan), 0)
+    }
+
     func testDayKeyRollover() {
         let defaults = makeDefaults()
         var calendar = Calendar(identifier: .gregorian)
@@ -89,14 +110,14 @@ final class UsageMeterTests: XCTestCase {
         let day1Date = Date(timeIntervalSince1970: 1_704_672_000)  // 2024-01-08 01:00 CET
         var now = day1Date
         let meter = UsageMeter(defaults: defaults, calendar: calendar, now: { now })
-        meter.record(.photoScan, cap: 3)
-        meter.record(.photoScan, cap: 3)
-        XCTAssertEqual(meter.used(.photoScan), 2)
+        meter.record(.barcodeScan, cap: 3)
+        meter.record(.barcodeScan, cap: 3)
+        XCTAssertEqual(meter.used(.barcodeScan), 2)
 
-        // Advance by 1 day — new daily AI allowance.
+        // Advance by 1 day — daily counters start over.
         now = day1Date.addingTimeInterval(24 * 3600)
         let next = UsageMeter(defaults: defaults, calendar: calendar, now: { now })
-        XCTAssertEqual(next.used(.photoScan), 0)
+        XCTAssertEqual(next.used(.barcodeScan), 0)
     }
 
     func testOpenMeterRefreshesWhenLocalDayChanges() {
@@ -114,14 +135,13 @@ final class UsageMeterTests: XCTestCase {
         var now = components.date ?? Date()
         let meter = UsageMeter(defaults: defaults, calendar: calendar, now: { now })
 
-        meter.record(.photoScan, cap: 3)
-        meter.record(.voiceEntry, cap: 3)
-        meter.record(.photoScan, cap: 3)
-        XCTAssertFalse(meter.canUse(.photoScan, cap: 3))
+        meter.record(.olaChef, cap: 2)
+        meter.record(.olaChef, cap: 2)
+        XCTAssertFalse(meter.canUse(.olaChef, cap: 2))
 
         now = now.addingTimeInterval(4 * 60)
-        XCTAssertEqual(meter.used(.photoScan), 0)
-        XCTAssertTrue(meter.canUse(.voiceEntry, cap: 3))
+        XCTAssertEqual(meter.used(.olaChef), 0)
+        XCTAssertTrue(meter.canUse(.olaChef, cap: 2))
         XCTAssertTrue(meter.canUse(.barcodeScan, cap: nil))
     }
 
@@ -138,11 +158,8 @@ final class UsageMeterTests: XCTestCase {
 final class EntitlementsTests: XCTestCase {
     func testFreeTierCapsMatchSpec() {
         let free = Entitlements.free
-        XCTAssertEqual(free.photoScansPerDay, 3)
+        XCTAssertEqual(free.aiActionsPerWeek, 10)
         XCTAssertNil(free.barcodeScansPerDay)
-        XCTAssertEqual(free.voiceEntriesPerDay, 3)
-        XCTAssertEqual(free.mealAIRefreshesPerDay, 3)
-        XCTAssertEqual(free.productNutritionLookupsPerDay, 2)
         XCTAssertNil(free.olaChefRequestsPerDay)
         XCTAssertEqual(free.coachWeeklyDebriefsPerWeek, 0)
         XCTAssertNil(free.activeCustomGoalsCap)
@@ -159,9 +176,7 @@ final class EntitlementsTests: XCTestCase {
 
     func testPremiumHasNoLimits() {
         let premium = Entitlements.premium
-        XCTAssertNil(premium.photoScansPerDay)
-        XCTAssertNil(premium.mealAIRefreshesPerDay)
-        XCTAssertNil(premium.productNutritionLookupsPerDay)
+        XCTAssertNil(premium.aiActionsPerWeek)
         XCTAssertNil(premium.olaChefRequestsPerDay)
         XCTAssertNil(premium.activeCustomGoalsCap)
         XCTAssertNil(premium.friendsCap)

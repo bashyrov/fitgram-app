@@ -278,7 +278,7 @@ extension FoodDetailSheet {
     }
 
     private var productNutritionRemaining: Int? {
-        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.productNutritionLookupsPerDay)
+        usageMeter?.remaining(.productNutritionLookup, cap: entitlementsStore?.current.aiActionsPerWeek)
     }
 }
 
@@ -318,7 +318,7 @@ extension FoodDetailSheet {
         else { return }
         let trimmed = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, draft.quantityGrams > 0 else { return }
-        let cap = entitlementsStore?.current.productNutritionLookupsPerDay
+        let cap = entitlementsStore?.current.aiActionsPerWeek
         if usageMeter?.canUse(.productNutritionLookup, cap: cap) == false {
             Haptics.light()
             paywallCoordinator?.present(.productNutritionQuota)
