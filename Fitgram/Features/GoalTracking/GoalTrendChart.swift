@@ -41,8 +41,8 @@ struct GoalTrendChart: View {
     /// Remaining distance + change since start (progress % lives in the hero above).
     private var metricStrip: some View {
         HStack(alignment: .top, spacing: 10) {
-            MonoStat(label: L("Do celu"), value: String(format: "%.1f", remainingKg), unit: "kg", size: 18)
-            MonoStat(label: L("Zmiana"), value: signedKg(weightDelta), unit: "kg", size: 18)
+            MonoStat(label: L("Do celu"), value: String(format: "%.1f", remainingKg), unit: L("kg"), size: 18)
+            MonoStat(label: L("Zmiana"), value: signedKg(weightDelta), unit: L("kg"), size: 18)
         }
         .padding(.top, 12)
         .overlay(alignment: .top) {

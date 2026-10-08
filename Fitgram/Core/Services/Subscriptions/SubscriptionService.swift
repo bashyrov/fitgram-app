@@ -59,6 +59,10 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     let periodLabel: String
     let isFeatured: Bool
     let trialDays: Int?
+    /// Annual plans: the price spread per month (e.g. "16,67 zł").
+    var monthlyEquivalentLabel: String?
+    /// Annual plans: percent saved versus paying monthly for a year.
+    var savingsPercent: Int?
 
     /// The two stock plans expected from App Store Connect. The
     /// "monthly" plan ships first, "annual" is the better deal.
@@ -77,9 +81,11 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
         productID: "fitgram_premium_yearly",
         title: L("Yearly"),
         priceLabel: "200 zł",
-        periodLabel: L("/ year — save 24%"),
+        periodLabel: L("/ year"),
         isFeatured: true,
-        trialDays: 7
+        trialDays: 7,
+        monthlyEquivalentLabel: "16,67 zł",
+        savingsPercent: 24
     )
 }
 

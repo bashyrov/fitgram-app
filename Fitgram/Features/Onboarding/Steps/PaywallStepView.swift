@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Onboarding paywall (design D "OnbPaywall"): kicker + display headline,
-/// Pro benefits list with checks, plan picker, "continue without Premium"
-/// ghost button and the trial CTA in the bottom bar. Purchase and restore
+/// Onboarding paywall: the same selling hero, benefit list, plan picker and
+/// trial timeline as `PaywallView`, with the trial CTA, price caption and
+/// "continue without Premium" in the bottom bar. Purchase and restore
 /// go through the same StoreKit-backed `SubscriptionService` as
 /// `PaywallView`, so the trial flow behaves like every in-app upgrade
 /// surface (offerings, purchase, restore, legal disclosure).
@@ -20,26 +20,19 @@ struct PaywallStepView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                MonoH1(
-                    text: L("7 dni za darmo"),
-                    sub: L("Pełny AI-coach, bez limitów"),
-                    kicker: L("Fitgram Pro")
-                )
-                benefitRows
-                    .padding(.top, 16)
+                PaywallHero(trialDays: selectedOffering?.trialDays)
+                    .padding(.top, 6)
+                PaywallBenefitList()
                 planSection
                 if let errorMessage {
                     PaywallErrorCard(message: errorMessage)
                         .padding(.top, 12)
                 }
-                Button(action: onSkip) {
-                    Text("Kontynuuj bez Premium")
+                if let trialDays = selectedOffering?.trialDays, let selectedOffering {
+                    PaywallTrialTimeline(trialDays: trialDays, offering: selectedOffering)
                 }
-                .buttonStyle(MonoButtonStyle(kind: .ghost, height: 44))
-                .disabled(isPurchasing)
-                .padding(.top, 10)
                 legalNote
-                    .padding(.top, 6)
+                    .padding(.top, 16)
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
             .padding(.bottom, Tokens.Space.lg)
@@ -55,29 +48,6 @@ struct PaywallStepView: View {
     private var selectedOffering: SubscriptionOffering? {
         guard let selectedID else { return nil }
         return offerings.first { $0.id == selectedID }
-    }
-
-    // MARK: - Benefits (rows card, dark icon boxes, trailing check)
-
-    private var benefitRows: some View {
-        VStack(spacing: 0) {
-            benefitRow(symbol: "camera", title: L("AI z dużym limitem"))
-            MonoRowDivider()
-            benefitRow(symbol: "sparkles", title: L("Ola Pro"))
-            MonoRowDivider()
-            benefitRow(symbol: "book", title: L("Przepisy"))
-            MonoRowDivider()
-            benefitRow(symbol: "chart.bar", title: L("Pełny progres"))
-        }
-        .monoRowsCard()
-    }
-
-    private func benefitRow(symbol: String, title: String) -> some View {
-        MonoRow(icon: symbol, iconStyle: .dark, title: title) {
-            Image(systemName: "checkmark")
-                .font(.system(size: 15, weight: .heavy))
-                .foregroundStyle(Tokens.Palette.ink)
-        }
     }
 
     // MARK: - Plans (needed for StoreKit pricing disclosure)
@@ -180,7 +150,7 @@ struct PaywallStepView: View {
                         ProgressView()
                             .tint(Tokens.Mono.onHero)
                     }
-                    Text(L(selectedOffering?.trialDays == nil ? "Dalej" : "Zacznij okres próbny"))
+                    Text(SubscriptionOffering.paywallCTATitle(for: selectedOffering))
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                 }
@@ -188,6 +158,20 @@ struct PaywallStepView: View {
             .buttonStyle(MonoButtonStyle(kind: .dark))
             .disabled(selectedOffering == nil || isLoading || isPurchasing)
             .accessibilityIdentifier(A11yID.Onboarding.paywallContinue)
+
+            if let caption = selectedOffering?.paywallCTACaption {
+                Text(caption)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
+
+            Button(action: onSkip) {
+                Text("Kontynuuj bez Premium")
+            }
+            .buttonStyle(MonoButtonStyle(kind: .ghost, height: 40))
+            .disabled(isPurchasing)
         }
     }
 

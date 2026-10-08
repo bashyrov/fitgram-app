@@ -6,7 +6,10 @@ import SwiftUI
 struct ScanRootView: View {
     @State private var state: ScanState
     @State private var didRecordPhotoQuota = false
-    private let session: CameraCaptureSession
+    /// Kept in @State: the init re-runs on every parent re-render, and a fresh
+    /// (unstarted) session would blank the preview while detection kept
+    /// running on the first one.
+    @State private var session: CameraCaptureSession
     let onDismiss: () -> Void
     var favoritesService: (any FavoritesServing)?
     var entitlementsStore: EntitlementsStore?
@@ -28,7 +31,7 @@ struct ScanRootView: View {
         mealAnalyzer: MealTextAnalysisService? = nil,
         usageMeter: UsageMeter? = nil
     ) {
-        self.session = captureSession
+        self._session = State(initialValue: captureSession)
         self._state = State(
             initialValue: ScanState(
                 captureSession: captureSession,

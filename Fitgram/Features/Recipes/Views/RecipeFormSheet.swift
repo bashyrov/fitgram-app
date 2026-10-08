@@ -175,10 +175,10 @@ struct RecipeFormSheet: View {
                 }
             }
             .padding(.bottom, 8)
-            nutrientRow(label: L("Calories"), unit: "kcal", text: $caloriesPerServingText, step: 10)
-            nutrientRow(label: L("Protein (g)"), unit: "g", text: $proteinPerServingText, step: 1)
-            nutrientRow(label: L("Carbs (g)"), unit: "g", text: $carbsPerServingText, step: 1)
-            nutrientRow(label: L("Fat (g)"), unit: "g", text: $fatPerServingText, step: 1)
+            nutrientRow(label: L("Calories"), unit: L("kcal"), text: $caloriesPerServingText, step: 10)
+            nutrientRow(label: L("Protein (g)"), unit: L("g"), text: $proteinPerServingText, step: 1)
+            nutrientRow(label: L("Carbs (g)"), unit: L("g"), text: $carbsPerServingText, step: 1)
+            nutrientRow(label: L("Fat (g)"), unit: L("g"), text: $fatPerServingText, step: 1)
             if let note = estimateNote {
                 Text(note)
                     .font(Tokens.Font.manrope(12, weight: 600))

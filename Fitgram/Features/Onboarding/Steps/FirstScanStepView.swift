@@ -13,6 +13,9 @@ struct FirstScanStepView: View {
     @State private var pickedImage: UIImage?
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var showingCamera = false
+    /// The demo spends a real AI request, so it runs once per install; a
+    /// failed attempt doesn't count.
+    @AppStorage("onboarding.demoScanUsed") private var demoScanUsed = false
 
     private let detector: any FoodDetector = FoodDetectorFactory.make()
 
@@ -34,20 +37,12 @@ struct FirstScanStepView: View {
             subtitle: subtitleKey,
             primaryTitle: ctaKey,
             primarySystemImage: "arrow.right",
-            secondaryTitle: stage.isResult ? "Try again" : nil,
-            secondaryAction: stage.isResult ? { reset() } : nil,
             onPrimary: onContinue,
             content: {
                 content
             }
         )
-        .photosPicker(
-            isPresented: Binding(
-                get: { selectedPhoto == nil && stage == .idle && pickedImage == nil && pickerVisible },
-                set: { if !$0 { pickerVisible = false } }),
-            selection: $selectedPhoto,
-            matching: .images
-        )
+        .photosPicker(isPresented: $pickerVisible, selection: $selectedPhoto, matching: .images)
         .fullScreenCover(isPresented: $showingCamera) {
             DemoCameraSheet { image in
                 showingCamera = false
@@ -58,6 +53,14 @@ struct FirstScanStepView: View {
             }
             .ignoresSafeArea()
         }
+        #if DEBUG
+        .onAppear {
+            // FITGRAM_DEBUG_SCAN_PROGRESS=1 shows the analysis card for UI checks.
+            if ProcessInfo.processInfo.environment["FITGRAM_DEBUG_SCAN_PROGRESS"] == "1" {
+                stage = .processing
+            }
+        }
+        #endif
         .onChange(of: selectedPhoto) { _, item in
             guard let item else { return }
             Task {
@@ -77,19 +80,23 @@ struct FirstScanStepView: View {
     @ViewBuilder
     private var content: some View {
         VStack(spacing: 10) {
-            photoSlot
             switch stage {
             case .idle:
-                EmptyView()
+                if demoScanUsed {
+                    DemoScanUsedCard()
+                } else {
+                    photoSlot
+                }
             case .processing:
-                LoadingHero(title: "Reading the plate…")
-                    .frame(height: 200)
+                ScanAnalysisProgressView(image: pickedImage)
             case .result(let result):
+                photoSlot
                 DemoScanResultCard(result: result)
             case .failed(let message):
+                photoSlot
                 DemoScanFailureCard(message: message) { reset() }
             }
-            if stage != .processing {
+            if canStartScan {
                 DemoScanCTA(
                     onCamera: {
                         reset()
@@ -126,8 +133,19 @@ struct FirstScanStepView: View {
         }
     }
 
+    /// Upload buttons show before the one allowed scan, or after a failure.
+    private var canStartScan: Bool {
+        switch stage {
+        case .idle: return !demoScanUsed
+        case .failed: return true
+        case .processing, .result: return false
+        }
+    }
+
     private var titleKey: String {
         switch stage {
+        case .idle where demoScanUsed:
+            return "That's how it works"
         case .idle, .processing:
             return "Try a scan in 5 seconds"
         case .result:
@@ -139,6 +157,8 @@ struct FirstScanStepView: View {
 
     private var subtitleKey: String {
         switch stage {
+        case .idle where demoScanUsed:
+            return "You can change all of this later in Profile."
         case .idle:
             return "Point the camera at your plate or pick a photo from the library. Nothing is saved."
         case .processing:
@@ -152,6 +172,8 @@ struct FirstScanStepView: View {
 
     private var ctaKey: LocalizedStringKey {
         switch stage {
+        case .idle where demoScanUsed:
+            return "Next"
         case .idle, .processing, .failed:
             return "Skip demo"
         case .result:
@@ -182,6 +204,7 @@ struct FirstScanStepView: View {
         }
         do {
             let result = try await detector.detect(from: data, suggestedMealType: nil)
+            demoScanUsed = true
             withAnimation(Tokens.Motion.gentle) {
                 stage = .result(result)
             }
@@ -273,6 +296,27 @@ private struct DemoScanResultCard: View {
             return result.items.count > 1 ? "\(first.name) + \(result.items.count - 1)" : first.name
         }
         return L("Your meal")
+    }
+}
+
+private struct DemoScanUsedCard: View {
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 22, weight: .bold))
+                .foregroundStyle(Tokens.Mono.strong)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(L("Demo skanu już za Tobą"))
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                Text(L("Pełny skaner czeka w aplikacji — zeskanujesz nim każdy posiłek."))
+                    .font(Tokens.Font.manrope(13, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .monoCard(padding: 16)
     }
 }
 

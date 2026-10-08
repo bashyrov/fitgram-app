@@ -75,13 +75,20 @@ struct DietaryStepView: View {
             dietPreset = preset
             Haptics.selection()
         } label: {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
+                // Title gets the full width; the badge shares the macro line
+                // so neither is truncated in the two-column grid.
+                Text(preset.title)
+                    .font(Tokens.Font.manrope(15, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                 HStack(alignment: .center, spacing: 6) {
-                    Text(preset.title)
-                        .font(Tokens.Font.manrope(15, weight: 800))
-                        .foregroundStyle(Tokens.Palette.ink)
+                    Text(preset.splitLabel)
+                        .font(Tokens.Font.manrope(12, weight: 600))
+                        .foregroundStyle(Tokens.Mono.muted)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.75)
+                        .layoutPriority(1)
                     Spacer(minLength: 0)
                     if isRecommended {
                         Text(
@@ -92,15 +99,12 @@ struct DietaryStepView: View {
                         .font(Tokens.Font.manrope(10, weight: 800))
                         .foregroundStyle(Tokens.Mono.onAccent)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                         .padding(.horizontal, 7)
                         .frame(height: 20)
                         .background(Capsule().fill(Tokens.Mono.accent))
                     }
                 }
-                Text(preset.splitLabel)
-                    .font(Tokens.Font.manrope(12, weight: 600))
-                    .foregroundStyle(Tokens.Mono.muted)
-                    .lineLimit(1)
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)

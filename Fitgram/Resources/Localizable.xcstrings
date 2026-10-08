@@ -18094,31 +18094,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Goal: %lld kcal daily"
+            "value" : "Goal: %lld kcal"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objetivo: %lld kcal al día"
+            "value" : "Meta: %lld kcal"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cel: %lld kcal dziennie"
+            "value" : "Cel: %lld kcal"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Цель: %lld ккал в день"
+            "value" : "Цель: %lld ккал"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ціль: %lld ккал на день"
+            "value" : "Ціль: %lld ккал"
           }
         }
       }
@@ -18170,25 +18170,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "objetivo semanal"
+            "value" : "meta semanal"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "celu tygodnia"
+            "value" : "cel tygodnia"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "недельной цели"
+            "value" : "цель недели"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "тижневої цілі"
+            "value" : "ціль тижня"
           }
         }
       }
@@ -19308,34 +19308,34 @@
     },
     "Coach Ola" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ola, your AI coach"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ola, tu coach con IA"
-          }
-        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ola, Twoja trenerka AI"
+            "value" : "Coach Ola"
           }
         },
-        "ru" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля — твой ИИ-коуч"
+            "value" : "Coach Ola"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оля — твій ШІ-коуч"
+            "value" : "Коуч Оля"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коуч Оля"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach Ola"
           }
         }
       }
@@ -22640,13 +22640,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "дней с записями"
+            "value" : "дни с записью"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "днів із записами"
+            "value" : "дні із записом"
           }
         }
       }
@@ -24561,24 +24561,23 @@
       }
     },
     "Dzień %lld" : {
-      "extractionState" : "stale",
       "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dzień %lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Day %lld"
           }
         },
-        "es" : {
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Día %lld"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dzień %lld"
+            "value" : "День %lld"
           }
         },
         "ru" : {
@@ -24587,10 +24586,10 @@
             "value" : "День %lld"
           }
         },
-        "uk" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "День %lld"
+            "value" : "Día %lld"
           }
         }
       }
@@ -24945,24 +24944,23 @@
       }
     },
     "Dziś" : {
-      "extractionState" : "stale",
       "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dziś"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
           }
         },
-        "es" : {
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hoy"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dziś"
+            "value" : "Сьогодні"
           }
         },
         "ru" : {
@@ -24971,10 +24969,10 @@
             "value" : "Сегодня"
           }
         },
-        "uk" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сьогодні"
+            "value" : "Hoy"
           }
         }
       }
@@ -93729,6 +93727,958 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "240 min"
+          }
+        }
+      }
+    },
+    "cm" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cm"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "см"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "см"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cm"
+          }
+        }
+      }
+    },
+    "Demo skanu już za Tobą" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo skanu już za Tobą"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You've already tried the scan demo"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Демо скану ти вже спробував(ла)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Демо скана ты уже попробовал(а)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya probaste la demo del escáner"
+          }
+        }
+      }
+    },
+    "Pełny skaner czeka w aplikacji — zeskanujesz nim każdy posiłek." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełny skaner czeka w aplikacji — zeskanujesz nim każdy posiłek."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The full scanner is waiting in the app — use it for every meal."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний сканер чекає в застосунку — скануй ним кожну страву."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный сканер ждёт в приложении — сканируй им каждое блюдо."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El escáner completo te espera en la app: úsalo en cada comida."
+          }
+        }
+      }
+    },
+    "Jedz normalnie. Chudnij mądrze." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedz normalnie. Chudnij mądrze."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eat normally. Lose weight smartly."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Їж як завжди. Худни з розумом."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ешь как обычно. Худей с умом."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come normal. Adelgaza con cabeza."
+          }
+        }
+      }
+    },
+    "AI policzy kalorie z jednego zdjęcia, a Ola poprowadzi Cię do celu — bez liczenia w głowie." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI policzy kalorie z jednego zdjęcia, a Ola poprowadzi Cię do celu — bez liczenia w głowie."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI counts calories from a single photo, and Ola guides you to your goal — no mental math."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ШІ порахує калорії з одного фото, а Оля доведе тебе до цілі — без підрахунків у голові."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ посчитает калории по одному фото, а Оля доведёт тебя до цели — без подсчётов в голове."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA cuenta las calorías con una sola foto y Ola te guía hasta tu meta, sin cálculos mentales."
+          }
+        }
+      }
+    },
+    "Skan w 5 s" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skan w 5 s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5-sec scan"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скан за 5 с"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скан за 5 с"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneo en 5 s"
+          }
+        }
+      }
+    },
+    "Bez limitów" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bez limitów"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No limits"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без лімітів"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без лимитов"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin límites"
+          }
+        }
+      }
+    },
+    "Bez opłat dziś. Anulujesz jednym kliknięciem." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bez opłat dziś. Anulujesz jednym kliknięciem."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to pay today. Cancel in one tap."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сьогодні без оплати. Скасуєш в один дотик."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сегодня без оплаты. Отменишь в одно касание."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy no pagas nada. Cancela con un toque."
+          }
+        }
+      }
+    },
+    "Co dostajesz w Pro" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Co dostajesz w Pro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What you get with Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Що дає Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что даёт Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qué incluye Pro"
+          }
+        }
+      }
+    },
+    "Skanowanie zdjęć bez dziennego limitu" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skanowanie zdjęć bez dziennego limitu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo scans with no daily cap"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканування фото без денного ліміту"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканирование фото без дневного лимита"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneos de fotos sin límite diario"
+          }
+        }
+      }
+    },
+    "Zrób zdjęcie talerza — kalorie i makro w kilka sekund." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrób zdjęcie talerza — kalorie i makro w kilka sekund."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snap your plate — calories and macros in seconds."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сфотографуй тарілку — калорії й макро за кілька секунд."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сфотографируй тарелку — калории и макро за пару секунд."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz una foto del plato: calorías y macros en segundos."
+          }
+        }
+      }
+    },
+    "Ola — Twój osobisty coach AI" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola — Twój osobisty coach AI"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola — your personal AI coach"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оля — твій особистий ШІ-коуч"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оля — твой личный ИИ-коуч"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ola, tu coach personal con IA"
+          }
+        }
+      }
+    },
+    "Codzienne porady i tygodniowe podsumowania pod Twój cel." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codzienne porady i tygodniowe podsumowania pod Twój cel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily tips and weekly reviews tailored to your goal."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щоденні поради й тижневі підсумки під твою ціль."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ежедневные советы и недельные итоги под твою цель."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consejos diarios y resúmenes semanales según tu meta."
+          }
+        }
+      }
+    },
+    "Przepisy i Kuchnia Oli" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przepisy i Kuchnia Oli"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipes and Ola's Kitchen"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рецепти й Кухня Олі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рецепты и Кухня Оли"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recetas y la Cocina de Ola"
+          }
+        }
+      }
+    },
+    "Gotowe dania z policzonym makro, dopasowane do diety." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gotowe dania z policzonym makro, dopasowane do diety."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready dishes with macros counted, matched to your diet."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готові страви з порахованим макро під твою дієту."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готовые блюда с посчитанным макро под твою диету."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Platos listos con macros calculados, según tu dieta."
+          }
+        }
+      }
+    },
+    "Pełna historia i eksport" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełna historia i eksport"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full history and export"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повна історія та експорт"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полная история и экспорт"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial completo y exportación"
+          }
+        }
+      }
+    },
+    "Wykresy postępów oraz CSV i ZIP dla dietetyka." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wykresy postępów oraz CSV i ZIP dla dietetyka."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progress charts plus CSV and ZIP for your dietitian."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Графіки прогресу, CSV і ZIP для дієтолога."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Графики прогресса, CSV и ZIP для диетолога."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gráficos de progreso y CSV y ZIP para tu dietista."
+          }
+        }
+      }
+    },
+    "Wypróbuj %lld dni za darmo" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wypróbuj %lld dni za darmo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try %lld days free"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спробуй %lld днів безкоштовно"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Попробуй %lld дней бесплатно"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba %lld días gratis"
+          }
+        }
+      }
+    },
+    "Przejdź na Pro" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przejdź na Pro"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти на Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти на Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hazte Pro"
+          }
+        }
+      }
+    },
+    "Potem %@ · anuluj kiedy chcesz" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potem %@ · anuluj kiedy chcesz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Then %@ · cancel anytime"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потім %@ · скасуй будь-коли"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потом %@ · отмена в любой момент"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luego %@ · cancela cuando quieras"
+          }
+        }
+      }
+    },
+    "%@ · anuluj kiedy chcesz" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · anuluj kiedy chcesz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · cancel anytime"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · скасуй будь-коли"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · отмена в любой момент"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · cancela cuando quieras"
+          }
+        }
+      }
+    },
+    "NAJLEPSZA CENA · −%lld%%" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAJLEPSZA CENA · −%lld%%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BEST VALUE · −%lld%%"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "НАЙКРАЩА ЦІНА · −%lld%%"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ЛУЧШАЯ ЦЕНА · −%lld%%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MEJOR PRECIO · −%lld%%"
+          }
+        }
+      }
+    },
+    "NAJLEPSZA CENA" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAJLEPSZA CENA"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BEST VALUE"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "НАЙКРАЩА ЦІНА"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ЛУЧШАЯ ЦЕНА"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MEJOR PRECIO"
+          }
+        }
+      }
+    },
+    "≈ %@ / mies." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ / mies."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ / mo"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ / міс."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ / мес."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ / mes"
+          }
+        }
+      }
+    },
+    "Jak działa okres próbny" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jak działa okres próbny"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How the free trial works"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як працює пробний період"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как работает пробный период"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo funciona la prueba"
+          }
+        }
+      }
+    },
+    "Pełny dostęp do wszystkiego w Pro." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełny dostęp do wszystkiego w Pro."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full access to everything in Pro."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний доступ до всього в Pro."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный доступ ко всему в Pro."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso completo a todo Pro."
+          }
+        }
+      }
+    },
+    "Pierwsza płatność: %@. Anulujesz wcześniej — nic nie płacisz." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pierwsza płatność: %@. Anulujesz wcześniej — nic nie płacisz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First payment: %@. Cancel before then and you pay nothing."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перший платіж: %@. Скасуєш раніше — нічого не платиш."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Первый платёж: %@. Отменишь раньше — ничего не платишь."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primer pago: %@. Si cancelas antes, no pagas nada."
+          }
+        }
+      }
+    },
+    "/ year" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ rok"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ year"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ рік"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ год"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ año"
           }
         }
       }

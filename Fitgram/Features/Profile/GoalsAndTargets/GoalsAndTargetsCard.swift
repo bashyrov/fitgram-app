@@ -395,13 +395,13 @@ struct GoalsAndTargetsCard: View {
                     dataStat(label: L("Age"), value: age)
                 }
                 if let height = user.heightCm {
-                    dataStat(label: L("Height"), value: "\(height)", unit: "cm")
+                    dataStat(label: L("Height"), value: "\(height)", unit: L("cm"))
                 }
                 if let weight = user.weightKg {
                     dataStat(
                         label: L("Weight"),
                         value: String(format: "%.1f", weight).replacingOccurrences(of: ".", with: ","),
-                        unit: "kg",
+                        unit: L("kg"),
                         action: { sheet = .weight }
                     )
                 }

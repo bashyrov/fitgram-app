@@ -6,6 +6,7 @@ import SwiftUI
 struct MonoLabel: View {
     let text: String
     var onHero = false
+    var lines = 1
 
     var body: some View {
         Text(text)
@@ -13,7 +14,8 @@ struct MonoLabel: View {
             .tracking(1.5)
             .textCase(.uppercase)
             .foregroundStyle(onHero ? Tokens.Mono.heroMuted : Tokens.Mono.muted)
-            .lineLimit(1)
+            .lineLimit(lines)
+            .fixedSize(horizontal: false, vertical: lines > 1)
     }
 }
 

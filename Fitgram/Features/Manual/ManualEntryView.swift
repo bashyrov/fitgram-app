@@ -230,19 +230,19 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
             }
             VStack(spacing: 0) {
                 ManualNumericRow(
-                    config: .init(symbol: "flame.fill", label: "Kalorie", range: 0...3000, step: 5, unit: "kcal"),
+                    config: .init(symbol: "flame.fill", label: "Kalorie", range: 0...3000, step: 5, unit: L("kcal")),
                     value: draft.caloriesKcal
                 )
                 ManualNumericRow(
-                    config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
+                    config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: L("g")),
                     value: draft.proteinGrams
                 )
                 ManualNumericRow(
-                    config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
+                    config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: L("g")),
                     value: draft.carbsGrams
                 )
                 ManualNumericRow(
-                    config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
+                    config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: L("g")),
                     value: draft.fatGrams
                 )
             }

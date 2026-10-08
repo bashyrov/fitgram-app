@@ -17,15 +17,18 @@ struct PaywallView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    header
+                    PaywallHero(trialDays: selectedOffering?.trialDays)
                         .padding(.top, 6)
-                    benefitList
-                    PaywallComparisonSection()
+                    PaywallBenefitList()
                     planSection
                     if let errorMessage {
                         PaywallErrorCard(message: errorMessage)
                             .padding(.top, 12)
                     }
+                    if let trialDays = selectedOffering?.trialDays, let selectedOffering {
+                        PaywallTrialTimeline(trialDays: trialDays, offering: selectedOffering)
+                    }
+                    PaywallComparisonSection()
                     legalNote
                         .padding(.top, 16)
                 }
@@ -53,70 +56,6 @@ struct PaywallView: View {
     private var selectedOffering: SubscriptionOffering? {
         guard let selectedID else { return nil }
         return offerings.first { $0.id == selectedID }
-    }
-
-    /// Dark hero: kicker, display headline, tagline and description.
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            MonoLabel(text: L("FITGRAM PRO"), onHero: true)
-            Text("7 dni za darmo")
-                .font(Tokens.Font.monoDisplay(36))
-                .textCase(.uppercase)
-                .foregroundStyle(Tokens.Mono.onHero)
-                .lineLimit(2)
-                .minimumScaleFactor(0.76)
-            Text("Pełny AI-coach, bez limitów")
-                .font(Tokens.Font.manrope(15, weight: 700))
-                .foregroundStyle(Tokens.Mono.onHero)
-                .fixedSize(horizontal: false, vertical: true)
-            Text("Skanuj jedzenie, poprawiaj AI, korzystaj z Oli, przepisów i celów bez dziennych blokad.")
-                .font(Tokens.Font.manrope(13, weight: 600))
-                .foregroundStyle(Tokens.Mono.heroMuted)
-                .lineSpacing(3)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(24)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
-                .fill(Tokens.Mono.hero)
-        )
-    }
-
-    private var benefitList: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            PaywallSectionTitle(title: L("W Pro odblokujesz"))
-            LazyVGrid(
-                columns: [
-                    GridItem(.flexible(), spacing: 8),
-                    GridItem(.flexible(), spacing: 8),
-                ],
-                spacing: 8
-            ) {
-                benefitTile(symbol: "camera", title: "AI z dużym limitem", text: "Foto, głos i poprawki")
-                benefitTile(symbol: "sparkles", title: "Ola Pro", text: "Porady, pamięć, cele")
-                benefitTile(symbol: "book", title: "Przepisy", text: "Biblioteka z dużym limitem")
-                benefitTile(symbol: "chart.bar", title: "Pełny progres", text: "Historia i eksport")
-            }
-        }
-    }
-
-    private func benefitTile(symbol: String, title: LocalizedStringKey, text: LocalizedStringKey) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            MonoIconBox(systemName: symbol, style: .dark, size: 36)
-            Text(title)
-                .font(Tokens.Font.manrope(14, weight: 800))
-                .foregroundStyle(Tokens.Palette.ink)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-            Text(text)
-                .font(Tokens.Font.manrope(12, weight: 600))
-                .foregroundStyle(Tokens.Mono.muted)
-                .lineLimit(2)
-                .minimumScaleFactor(0.75)
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .monoTile()
     }
 
     @ViewBuilder
@@ -184,7 +123,7 @@ struct PaywallView: View {
                         ProgressView()
                             .tint(Tokens.Mono.onHero)
                     }
-                    Text(selectedOffering?.trialDays == nil ? "Dalej" : "Zacznij okres próbny")
+                    Text(SubscriptionOffering.paywallCTATitle(for: selectedOffering))
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                 }
@@ -192,10 +131,13 @@ struct PaywallView: View {
             .buttonStyle(MonoButtonStyle(kind: .dark))
             .disabled(selectedOffering == nil || isLoading || isPurchasing)
 
-            Label("Bezpieczna płatność przez Apple", systemImage: "lock")
-                .font(Tokens.Font.manrope(12, weight: 600))
-                .foregroundStyle(Tokens.Mono.muted)
-                .frame(maxWidth: .infinity)
+            if let ctaCaption = selectedOffering?.paywallCTACaption {
+                Text(ctaCaption)
+                    .font(Tokens.Font.manrope(12, weight: 600))
+                    .foregroundStyle(Tokens.Mono.muted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
 
             Button(action: onSkip) {
                 Text("Kontynuuj bez Premium")
@@ -376,7 +318,7 @@ struct PaywallOfferingRow: View {
             )
             .overlay(alignment: .topTrailing) {
                 if offering.isFeatured {
-                    Text("NAJLEPSZA")
+                    Text(badgeTitle)
                         .font(Tokens.Font.manrope(10, weight: 800))
                         .tracking(0.8)
                         .foregroundStyle(Tokens.Mono.onAccent)
@@ -392,12 +334,22 @@ struct PaywallOfferingRow: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    private var detail: LocalizedStringKey {
-        if let trialDays = offering.trialDays {
-            return LocalizedStringKey(
-                String.localizedStringWithFormat(L("%lld dni za darmo"), trialDays)
-            )
+    /// "Best value · −24%" when the savings are known.
+    private var badgeTitle: String {
+        if let savings = offering.savingsPercent {
+            return String.localizedStringWithFormat(L("NAJLEPSZA CENA · −%lld%%"), savings)
         }
-        return "Anuluj kiedy chcesz"
+        return L("NAJLEPSZA CENA")
+    }
+
+    private var detail: String {
+        var parts: [String] = []
+        if let perMonth = offering.monthlyEquivalentLabel {
+            parts.append(String.localizedStringWithFormat(L("≈ %@ / mies."), perMonth))
+        }
+        if let trialDays = offering.trialDays {
+            parts.append(String.localizedStringWithFormat(L("%lld dni za darmo"), trialDays))
+        }
+        return parts.isEmpty ? L("Anuluj kiedy chcesz") : parts.joined(separator: " · ")
     }
 }

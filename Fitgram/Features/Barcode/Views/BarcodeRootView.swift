@@ -5,7 +5,10 @@ import SwiftUI
 /// transitions the AI scan uses.
 struct BarcodeRootView: View {
     @State private var state: BarcodeFlowState
-    private let session: BarcodeCaptureSession
+    /// Kept in @State: the init re-runs on every parent re-render, and a fresh
+    /// (unstarted) session would blank the preview while detection kept
+    /// running on the first one.
+    @State private var session: BarcodeCaptureSession
     let onDismiss: () -> Void
     var favoritesService: (any FavoritesServing)?
     var entitlementsStore: EntitlementsStore?
@@ -26,7 +29,7 @@ struct BarcodeRootView: View {
         mealAnalyzer: MealTextAnalysisService? = nil,
         usageMeter: UsageMeter? = nil
     ) {
-        self.session = captureSession
+        self._session = State(initialValue: captureSession)
         self._state = State(
             initialValue: BarcodeFlowState(
                 captureSession: captureSession,

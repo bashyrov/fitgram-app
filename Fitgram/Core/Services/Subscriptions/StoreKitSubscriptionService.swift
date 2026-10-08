@@ -50,9 +50,22 @@ final class StoreKitSubscriptionService: SubscriptionService {
             Logger.persistence.notice("StoreKit: using local fallback offerings")
             return [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
         }
+        let monthlyPrice = products[Self.monthlyProductID]?.price
         return products.values
             .sorted { $0.id < $1.id }
-            .map(Self.mapToOffering(_:))
+            .map { product in
+                var offering = Self.mapToOffering(product)
+                if product.subscription?.subscriptionPeriod.unit == .year {
+                    offering.monthlyEquivalentLabel = (product.price / 12).formatted(product.priceFormatStyle)
+                    if let monthlyPrice, monthlyPrice > 0 {
+                        let yearOfMonthly = monthlyPrice * 12
+                        let saved = (yearOfMonthly - product.price) / yearOfMonthly * 100
+                        let percent = Int(NSDecimalNumber(decimal: saved).doubleValue.rounded())
+                        offering.savingsPercent = percent > 0 ? percent : nil
+                    }
+                }
+                return offering
+            }
     }
 
     func purchase(_ offering: SubscriptionOffering) async throws -> SubscriptionSnapshot {

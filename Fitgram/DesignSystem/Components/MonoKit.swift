@@ -354,30 +354,114 @@ struct MonoToggleStyle: ToggleStyle {
 }
 
 /// − value + stepper with outline round buttons and an italic number.
+/// The number is also a text field: tap it to type an exact value, which is
+/// clamped to `range` when editing ends.
 struct MonoStepper: View {
     @Binding var value: Double
     var range: ClosedRange<Double> = 0...10_000
     var step: Double = 1
     var unit: String = ""
     var format: String = "%.0f"
+    /// Fixed width for the number + unit box so stacked rows line up.
+    var boxWidth: CGFloat?
+
+    @State private var text = ""
+    @FocusState private var isEditing: Bool
+
+    private var locale: Locale { Locale(identifier: LocalizationStore.currentLanguageCode()) }
+    private var allowsDecimal: Bool { format.contains(".") && !format.contains(".0f") }
+
+    /// Wide enough for the longest value the range allows, so digits never clip.
+    private var fieldWidth: CGFloat {
+        let longest = max(display(range.upperBound).count, display(range.lowerBound).count)
+        return CGFloat(longest) * 14 + 6
+    }
 
     var body: some View {
-        HStack(spacing: 10) {
-            roundButton("minus") { value = max(range.lowerBound, value - step) }
+        HStack(spacing: 8) {
+            roundButton("minus") { update(value - step) }
             HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text(String(format: format, value))
+                // Cleared while editing so typing replaces the value; the
+                // current value stays visible as the placeholder.
+                TextField(display(value), text: $text)
+                    .keyboardType(allowsDecimal ? .decimalPad : .numberPad)
+                    .multilineTextAlignment(.center)
                     .font(Tokens.Font.monoNumber(20))
                     .foregroundStyle(Tokens.Palette.ink)
-                    .contentTransition(.numericText())
+                    .focused($isEditing)
+                    .frame(width: fieldWidth)
+                    .accessibilityValue(Text(verbatim: "\(display(value)) \(unit)"))
                 if !unit.isEmpty {
                     Text(unit)
                         .font(Tokens.Font.manrope(12, weight: 700))
                         .foregroundStyle(Tokens.Mono.muted)
+                        .lineLimit(1)
+                        .fixedSize()
                 }
             }
-            .frame(minWidth: 56)
-            roundButton("plus") { value = min(range.upperBound, value + step) }
+            .padding(.horizontal, 6)
+            .frame(width: boxWidth, height: 40)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(isEditing ? Tokens.Mono.strong : Tokens.Mono.line, lineWidth: 1)
+            )
+            .contentShape(Rectangle())
+            .onTapGesture { isEditing = true }
+            roundButton("plus") { update(value + step) }
         }
+        .onAppear { text = display(value) }
+        .onChange(of: value) { _, newValue in
+            if !isEditing { text = display(newValue) }
+        }
+        .onChange(of: isEditing) { _, editing in
+            if editing {
+                text = ""
+            } else {
+                commit()
+            }
+        }
+        .toolbar {
+            if isEditing {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button(L("Gotowe")) { isEditing = false }
+                        .font(Tokens.Font.manrope(15, weight: 800))
+                }
+            }
+        }
+    }
+
+    /// Digits plus one decimal separator; any non-digit (",", ".", or a
+    /// layout-specific key) counts as the separator.
+    static func parse(_ raw: String) -> Double? {
+        var result = ""
+        var hasSeparator = false
+        for character in raw.trimmingCharacters(in: .whitespaces) {
+            if character.isASCII, character.isNumber {
+                result.append(character)
+            } else if !hasSeparator, !result.isEmpty {
+                result.append(".")
+                hasSeparator = true
+            }
+        }
+        return Double(result)
+    }
+
+    private func display(_ number: Double) -> String {
+        String(format: format, locale: locale, number)
+    }
+
+    private func update(_ newValue: Double) {
+        isEditing = false
+        value = min(range.upperBound, max(range.lowerBound, newValue))
+        text = display(value)
+    }
+
+    private func commit() {
+        if let typed = Self.parse(text) {
+            value = min(range.upperBound, max(range.lowerBound, typed))
+        }
+        text = display(value)
     }
 
     private func roundButton(_ symbol: String, action: @escaping () -> Void) -> some View {
@@ -473,7 +557,10 @@ struct MonoStat: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            MonoLabel(text: label, onHero: dark)
+            // Stat tiles sit three abreast, so labels may wrap to a second line.
+            MonoLabel(text: label, onHero: dark, lines: 2)
+                // Reserve two lines so values line up across neighbouring tiles.
+                .frame(minHeight: 30, alignment: .topLeading)
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
                     .font(Tokens.Font.monoNumber(size))
