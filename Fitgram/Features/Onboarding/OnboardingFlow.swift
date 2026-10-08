@@ -10,7 +10,7 @@ import Observation
 final class OnboardingFlow {
     enum Step: Int, CaseIterable, Identifiable {
         case welcome
-        /// Name + email capture. Lives right after Welcome so the rest
+        /// Name capture. Lives right after Welcome so the rest
         /// of the flow can address the user by name.
         case account
         case goal
@@ -55,6 +55,9 @@ final class OnboardingFlow {
     private let recommendationsService: any RecommendationsServing
     private let userProfileService: (any UserProfileServing)?
     private let onFinished: @MainActor (CompletionOutcome) -> Void
+
+    /// Account this flow writes to.
+    var userID: String { authUser.id }
 
     /// Surface name for the celebration step ("Witaj, X!"). Prefers the
     /// name typed on the account step, falling back to the AuthUser's.
@@ -135,6 +138,8 @@ final class OnboardingFlow {
         self.recommendationsService = recommendationsService
         self.userProfileService = userProfileService
         self.onFinished = onFinished
+        // Prefill the name the auth provider gave us (Apple shares it once).
+        profile.displayName = authUser.displayName ?? ""
         #if DEBUG
         // FITGRAM_DEBUG_ONBOARDING_STEP=<raw index> jumps straight to a step for UI checks.
         if let raw = ProcessInfo.processInfo.environment["FITGRAM_DEBUG_ONBOARDING_STEP"].flatMap(Int.init),

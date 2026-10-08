@@ -51,15 +51,11 @@ final class UserRepository {
         guard let stored = try context.fetch(descriptor).first else {
             throw RepositoryError.userNotFound
         }
-        // Onboarding-captured identity fields. Empty string means
-        // "user didn't override what the auth provider gave us".
+        // Onboarding-captured name. Empty string means "keep what the auth
+        // provider gave us". Email always stays the provider's.
         let trimmedDisplay = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedDisplay.isEmpty {
             stored.displayName = trimmedDisplay
-        }
-        let trimmedEmail = profile.emailAddress.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !trimmedEmail.isEmpty, trimmedEmail.contains("@") {
-            stored.email = trimmedEmail
         }
         stored.goalKind = profile.goal
         stored.dietMacroPreset = profile.dietMacroPreset
@@ -173,10 +169,6 @@ struct OnboardingProfile: Equatable {
     /// the auth provider gave us if the user leaves the field empty.
     var displayName: String = ""
 
-    /// Optional email — Apple Sign In with the "Hide my email" toggle
-    /// gives us nothing, so we offer the user a way to fill it in
-    /// manually. Validated lightly (must contain @ if present).
-    var emailAddress: String = ""
 }
 
 extension OnboardingProfile {
