@@ -21,6 +21,24 @@ struct OpenFoodFactsLookup: BarcodeLookupService {
     }
 
     func lookup(barcode: String) async throws -> BarcodeProduct {
+        let candidates = GTIN.lookupCandidates(for: barcode)
+        var lastError = BarcodeLookupError.notFound
+        for candidate in candidates {
+            do {
+                return try await fetch(code: candidate, reportedAs: barcode)
+            } catch BarcodeLookupError.notFound {
+                continue
+            } catch let error as BarcodeLookupError {
+                // Missing nutrition on one variant shouldn't stop a later
+                // variant that might carry it; network errors end the search.
+                if case .network = error { throw error }
+                lastError = error
+            }
+        }
+        throw lastError
+    }
+
+    private func fetch(code barcode: String, reportedAs scanned: String) async throws -> BarcodeProduct {
         let url = baseURL.appending(path: "api/v2/product/\(barcode).json")
         var request = URLRequest(url: url)
         request.setValue("Fitgram/0.1 (https://fitgram.space)", forHTTPHeaderField: "User-Agent")
@@ -52,7 +70,7 @@ struct OpenFoodFactsLookup: BarcodeLookupService {
         guard envelope.status == 1, let product = envelope.product else {
             throw BarcodeLookupError.notFound
         }
-        return try Self.makeProduct(from: product, barcode: barcode)
+        return try Self.makeProduct(from: product, barcode: scanned)
     }
 
     // MARK: - Mapping
@@ -174,6 +192,8 @@ struct OFFNutriments: Decodable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case kcal100g = "energy-kcal_100g"
+        case kj100g = "energy-kj_100g"
+        case energy100g = "energy_100g"
         case protein100g = "proteins_100g"
         case carbs100g = "carbohydrates_100g"
         case fat100g = "fat_100g"
@@ -182,7 +202,9 @@ struct OFFNutriments: Decodable, Sendable {
 
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        kcal100g = try Self.decode(container, .kcal100g)
+        // Many EU labels only carry kJ; `energy_100g` is always kJ in OFF.
+        let kilojoules = try Self.decode(container, .kj100g) ?? Self.decode(container, .energy100g)
+        kcal100g = try Self.decode(container, .kcal100g) ?? kilojoules.map { ($0 / 4.184).rounded() }
         protein100g = try Self.decode(container, .protein100g)
         carbs100g = try Self.decode(container, .carbs100g)
         fat100g = try Self.decode(container, .fat100g)

@@ -97,6 +97,26 @@ final class BarcodeFlowState {
         reset()
     }
 
+    /// Product the user built by photographing the nutrition label after a
+    /// database miss — continues into the normal portion + save screen.
+    func useLabelProduct(_ food: Food, barcode: String) {
+        let product = BarcodeProduct(
+            barcode: barcode,
+            name: food.name.isEmpty ? barcode : food.name,
+            brand: food.brand,
+            imageURL: nil,
+            nutrition: .init(
+                caloriesKcalPer100g: food.caloriesKcalPer100g,
+                proteinPer100g: food.proteinGramsPer100g,
+                carbsPer100g: food.carbsGramsPer100g,
+                fatPer100g: food.fatGramsPer100g,
+                fiberPer100g: food.fiberGramsPer100g
+            ),
+            servingGrams: food.defaultPortionGrams
+        )
+        stage = .result(product)
+    }
+
     // MARK: - Detection
 
     private func handle(detected code: String) async {

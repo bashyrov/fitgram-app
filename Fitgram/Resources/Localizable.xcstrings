@@ -94682,6 +94682,74 @@
           }
         }
       }
+    },
+    "Kod %@ nie jest jeszcze w bazie Open Food Facts. Zrób zdjęcie tabeli wartości odżywczych — odczytamy ją za Ciebie." : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod %@ nie jest jeszcze w bazie Open Food Facts. Zrób zdjęcie tabeli wartości odżywczych — odczytamy ją za Ciebie."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code %@ isn’t in the Open Food Facts database yet. Take a photo of the nutrition table — we’ll read it for you."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коду %@ ще немає в базі Open Food Facts. Сфотографуй таблицю харчової цінності — ми її прочитаємо."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кода %@ пока нет в базе Open Food Facts. Сфотографируй таблицу пищевой ценности — мы её прочитаем."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El código %@ aún no está en Open Food Facts. Haz una foto de la tabla nutricional y la leeremos por ti."
+          }
+        }
+      }
+    },
+    "Sfotografuj etykietę" : {
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sfotografuj etykietę"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photograph the label"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сфотографувати етикетку"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сфотографировать этикетку"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotografiar la etiqueta"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
