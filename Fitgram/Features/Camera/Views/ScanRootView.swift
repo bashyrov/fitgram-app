@@ -99,6 +99,11 @@ struct ScanRootView: View {
             }
             didRecordPhotoQuota = false
         }
+        .onChange(of: state.hitFreeAIQuota) { _, hit in
+            // Server is the source of truth (e.g. counter reset by reinstall).
+            guard hit, let cap = entitlementsStore?.current.aiActionsPerWeek else { return }
+            usageMeter?.markExhausted(.photoScan, cap: cap)
+        }
         .task {
             await state.start()
             didRecordPhotoQuota = false
@@ -132,13 +137,13 @@ struct ScanRootView: View {
         .background(Tokens.Palette.background.ignoresSafeArea())
     }
 
-    /// "AI · 3/5 dziś" for the capture pill — remaining / daily cap of photo scans.
+    /// "AI · 4 / 10 w tym tyg." for the capture pill — what is left of the weekly AI pool.
     private var photoQuotaText: String? {
         guard let cap = entitlementsStore?.current.aiActionsPerWeek,
             let remaining = usageMeter?.remaining(.photoScan, cap: cap)
         else { return nil }
-        let today = TL(pl: "dziś", en: "today", uk: "сьогодні", ru: "сегодня", es: "hoy")
-        return "AI · \(remaining) / \(cap) " + today
+        let week = TL(pl: "w tym tyg.", en: "this week", uk: "цього тижня", ru: "на неделе", es: "esta semana")
+        return "AI · \(remaining) / \(cap) " + week
     }
 
     private func dismiss() {
@@ -149,9 +154,7 @@ struct ScanRootView: View {
     private func recordPhotoQuotaIfNeeded() {
         guard !didRecordPhotoQuota else { return }
         guard let usageMeter, let entitlementsStore else { return }
-        let cap = entitlementsStore.current.aiActionsPerWeek
-        guard usageMeter.canUse(.photoScan, cap: cap) else { return }
-        usageMeter.record(.photoScan, cap: cap)
+        usageMeter.record(.photoScan, cap: entitlementsStore.current.aiActionsPerWeek)
         didRecordPhotoQuota = true
     }
 

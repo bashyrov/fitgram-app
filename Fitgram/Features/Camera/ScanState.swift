@@ -23,6 +23,8 @@ final class ScanState {
     /// Captured image waiting to be saved with the meal — kept in memory so
     /// we can render it on the results screen.
     private(set) var capturedImageData: Data?
+    /// The Worker refused the scan because the free weekly AI pool is empty.
+    private(set) var hitFreeAIQuota = false
 
     private let captureSession: CameraCaptureSession
     private let detector: any FoodDetector
@@ -73,6 +75,10 @@ final class ScanState {
             let suggested = Self.suggestedMealType(forHour: Calendar.current.component(.hour, from: Date()))
             let result = try await detector.detect(from: image, suggestedMealType: suggested)
             stage = .results(result)
+        } catch let error as APIError where error.isFreeTierQuota {
+            Logger.ui.notice("Scan refused: weekly free AI pool empty")
+            hitFreeAIQuota = true
+            stage = .error(message: error.userMessage)
         } catch {
             Logger.ui.error("Scan capture failed: \(String(describing: error))")
             stage = .error(message: "Something went wrong. Try again.")

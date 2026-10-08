@@ -196,7 +196,12 @@ struct MainTabView: View {
         self.mealTextAnalyzer = MealTextAnalysisService(
             client: mealTextClient,
             catalog: foods,
-            foodCatalog: foodCatalog
+            foodCatalog: foodCatalog,
+            quotaGate: AIQuotaGate(
+                usageMeter: usageMeter,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator
+            )
         )
         self.olaChefWorkerService = mealTextClient.map { WorkerOlaChefService(client: $0) }
         self._friendsState = State(

@@ -103,6 +103,9 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
     /// `bottom(btn('Zapisz', 'dark', 'check'))`.
     private var saveBar: some View {
         MonoBottomBar {
+            if mealAnalyzer != nil, canSave, aiCompletionUseCount(for: itemsToSave(defaultName: name)) > 0 {
+                AISaveCostNote(remaining: mealAIRefreshRemaining)
+            }
             Button {
                 Task { await save() }
             } label: {
@@ -302,9 +305,6 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         isAnalyzingText = true
         defer { isAnalyzingText = false }
         let analysis = await mealAnalyzer.analyze(text: trimmed, mealType: mealType)
-        if analysis.aiSucceeded {
-            usageMeter?.record(.mealAIRefresh, cap: cap)
-        }
         name = analysis.overall.name
         quantityGrams = analysis.overall.quantityGrams
         caloriesKcal = analysis.overall.caloriesKcal
@@ -339,16 +339,10 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         {
             detailDrafts.replaceSubrange(
                 index...index, with: analysis.items.map(ManualIngredientDraft.init(detected:)))
-            if analysis.aiSucceeded {
-                usageMeter?.record(.productNutritionLookup, cap: cap)
-            }
             Haptics.success()
             return
         }
         let completed = analysis.items.first ?? analysis.overall
-        if analysis.aiSucceeded {
-            usageMeter?.record(.productNutritionLookup, cap: cap)
-        }
         guard let index = detailDrafts.firstIndex(where: { $0.id == draftID }) else { return }
         detailDrafts[index].name = completed.name
         detailDrafts[index].quantityGrams = completed.quantityGrams
@@ -368,7 +362,6 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         let completionUse = aiCompletionUseCount(for: draftItems)
         guard canConsumeAICompletion(count: completionUse) else { return }
         let items = await mealAnalyzer?.complete(items: draftItems, mealType: mealType) ?? draftItems
-        recordAICompletion(count: completionUse)
         let meal = MealEntry(
             mealType: mealType,
             source: .manual,
@@ -449,10 +442,9 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         }
     }
 
+    /// Save-time completion sends every gap in one request — one AI action.
     private func aiCompletionUseCount(for items: [FoodItem]) -> Int {
-        let missingCount = items.filter(\.isMissingNutrition).count
-        guard missingCount > 0, mealAnalyzer != nil else { return 0 }
-        return portionMode == .overall ? 1 : missingCount
+        items.contains(where: \.isMissingNutrition) ? 1 : 0
     }
 
     /// Save-time AI completion spends the meal allowance in overall mode
@@ -471,14 +463,6 @@ struct ManualEntryView: View {  // swiftlint:disable:this type_body_length
         Haptics.light()
         paywallCoordinator?.present(portionMode == .overall ? .mealAIRefreshQuota : .productNutritionQuota)
         return false
-    }
-
-    private func recordAICompletion(count: Int) {
-        guard count > 0 else { return }
-        let (kind, cap) = aiCompletionQuota
-        for _ in 0..<count {
-            usageMeter?.record(kind, cap: cap)
-        }
     }
 
     /// Best guess of which meal-type slot the entry belongs to, based

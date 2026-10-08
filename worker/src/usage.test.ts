@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
+import type { Env } from "./env";
+import { makeLogger } from "./log";
 import {
+    checkDailyAIQuota,
     dayStartTimestamp,
+    ONBOARDING_RECS_PER_DAY,
     estimateCostUSD,
     endpointsForKind,
     freeQuotaScope,
@@ -80,6 +84,21 @@ describe("usage quota helpers", () => {
         expect(photo?.endpoints).toContain("/api/v1/analyze-meal-text:ai_product_nutrition");
         expect(new Set(photo?.endpoints).size).toBe(photo?.endpoints.length);
         expect(freeQuotaScope("ola_chef", now, 120)?.cap).toBe(0);
+    });
+
+    it("caps anonymous onboarding tips per day", () => {
+        const scope = freeQuotaScope("initial_recommendations", Date.UTC(2026, 9, 8, 12), 120);
+        expect(scope?.cap).toBe(ONBOARDING_RECS_PER_DAY);
+        expect(scope?.endpoints).toEqual(["/api/v1/user/initial-recommendations"]);
+    });
+
+    it("fails closed for free users when the usage ledger is unavailable", async () => {
+        const env = {} as Env;
+        const log = makeLogger("error");
+        const free = await checkDailyAIQuota(env, log, "user-1", { kind: "ai_logged_meal", isPremium: false });
+        const pro = await checkDailyAIQuota(env, log, "user-1", { kind: "ai_logged_meal", isPremium: true });
+        expect(free.allowed).toBe(false);
+        expect(pro.allowed).toBe(true);
     });
 
     it("uses stable pseudonymous IDs without exposing the source user ID", async () => {

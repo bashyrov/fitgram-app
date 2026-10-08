@@ -10,6 +10,8 @@ import {
     recordUsage,
     releaseAIQuotaReservation,
     timeZoneOffsetMinutesFromRequest,
+    pseudonymousUserID,
+    quotaLimitMessage,
 } from "./usage";
 
 const ALLOWED_ACTIONS = new Set([
@@ -76,12 +78,16 @@ export async function handleInitialRecommendations(
 
     const prompt = buildInitialRecsPrompt(payload);
     const startedAt = Date.now();
-    const userID = payload.userID?.trim() || "anonymous";
+    // Pre-sign-in call: the body's user id is unverified, so the limit is
+    // keyed by a hashed client IP instead (no raw IP is stored).
+    const clientIP = request.headers.get("CF-Connecting-IP") ?? "unknown";
+    const userID = `onboarding:${await pseudonymousUserID(clientIP)}`;
     const quota = await checkDailyAIQuota(env, log, userID, {
+        kind: "initial_recommendations",
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
     if (!quota.allowed) {
-        return problemResponse(429, "Daily AI safety limit reached", {
+        return problemResponse(429, quotaLimitMessage(quota.reason), {
             used: quota.used,
             cap: quota.cap,
             reason: quota.reason,
@@ -257,7 +263,7 @@ export async function handleDailyInsight(
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
     if (!quota.allowed) {
-        return problemResponse(429, "Daily AI safety limit reached", {
+        return problemResponse(429, quotaLimitMessage(quota.reason), {
             used: quota.used,
             cap: quota.cap,
             reason: quota.reason,
@@ -361,7 +367,7 @@ export async function handleDailyPlan(
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
     if (!quota.allowed) {
-        return problemResponse(429, "Daily AI safety limit reached", {
+        return problemResponse(429, quotaLimitMessage(quota.reason), {
             used: quota.used,
             cap: quota.cap,
             reason: quota.reason,
@@ -468,7 +474,7 @@ export async function handleWeeklyDebrief(
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
     if (!quota.allowed) {
-        return problemResponse(429, "Daily AI safety limit reached", {
+        return problemResponse(429, quotaLimitMessage(quota.reason), {
             used: quota.used,
             cap: quota.cap,
             reason: quota.reason,

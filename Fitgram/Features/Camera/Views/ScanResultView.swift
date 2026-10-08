@@ -429,6 +429,9 @@ struct ScanResultView: View {
     /// `bottom(btn('Dodaj do dziennika', dark, check) + btn('Zrób kolejne zdjęcie', outline, camera))`.
     private var footer: some View {
         MonoBottomBar {
+            if mealAnalyzer != nil, aiCompletionUseCount(for: selectedResult.items) > 0 {
+                AISaveCostNote(remaining: mealAIRefreshRemaining)
+            }
             MonoButton(
                 title: isCompletingNutrition ? L("Uzupełniam...") : L("Dodaj do dziennika"),
                 kind: .dark,
@@ -452,7 +455,6 @@ struct ScanResultView: View {
         isCompletingNutrition = true
         defer { isCompletingNutrition = false }
         let completed = await mealAnalyzer.complete(result: selected)
-        recordAICompletion(count: completionUse)
         onSave(completed, 1)
     }
 
@@ -486,9 +488,6 @@ struct ScanResultView: View {
         isAnalyzingText = true
         defer { isAnalyzingText = false }
         let analysis = await mealAnalyzer.analyze(text: text, mealType: result.suggestedMealType)
-        if analysis.aiSucceeded {
-            usageMeter?.record(.mealAIRefresh, cap: cap)
-        }
         result = analysis.detailedResult
         overallName = analysis.overall.name
         overallGrams = analysis.overall.quantityGrams
@@ -534,16 +533,10 @@ struct ScanResultView: View {
             for replacementItem in replacement {
                 detailGrams[replacementItem.id] = replacementItem.quantityGrams
             }
-            if analysis.aiSucceeded {
-                usageMeter?.record(.productNutritionLookup, cap: cap)
-            }
             Haptics.success()
             return
         }
         let completed = analysis.items.first ?? analysis.overall
-        if analysis.aiSucceeded {
-            usageMeter?.record(.productNutritionLookup, cap: cap)
-        }
         guard let index = result.items.firstIndex(where: { $0.id == item.id }) else { return }
         result.items[index] = ScanResult.DetectedItem(
             id: item.id,
@@ -653,10 +646,9 @@ struct ScanResultView: View {
         return result.items.map(\.name).joined(separator: " + ")
     }
 
+    /// Save-time completion sends every gap in one request — one AI action.
     private func aiCompletionUseCount(for items: [ScanResult.DetectedItem]) -> Int {
-        let missingCount = items.filter(Self.needsNutrition).count
-        guard missingCount > 0 else { return 0 }
-        return portionMode == .overall ? 1 : missingCount
+        items.contains(where: Self.needsNutrition) ? 1 : 0
     }
 
     private func canConsumeAICompletion(count: Int) -> Bool {
@@ -668,15 +660,6 @@ struct ScanResultView: View {
         Haptics.light()
         paywallCoordinator?.present(portionMode == .overall ? .mealAIRefreshQuota : .productNutritionQuota)
         return false
-    }
-
-    private func recordAICompletion(count: Int) {
-        guard count > 0 else { return }
-        let kind: UsageMeter.Kind = portionMode == .overall ? .mealAIRefresh : .productNutritionLookup
-        let cap = entitlementsStore?.current.aiActionsPerWeek
-        for _ in 0..<count {
-            usageMeter?.record(kind, cap: cap)
-        }
     }
 
     private static func needsNutrition(_ item: ScanResult.DetectedItem) -> Bool {

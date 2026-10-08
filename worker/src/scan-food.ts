@@ -9,6 +9,7 @@ import {
     recordUsage,
     releaseAIQuotaReservation,
     timeZoneOffsetMinutesFromRequest,
+    quotaLimitMessage,
 } from "./usage";
 
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024; // 6 MB safety cap
@@ -79,7 +80,7 @@ export async function handleScanFood(
         timeZoneOffsetMinutes: timeZoneOffsetMinutesFromRequest(request),
     });
     if (!quota.allowed) {
-        return problemResponse(429, "Daily AI safety limit reached", {
+        return problemResponse(429, quotaLimitMessage(quota.reason), {
             used: quota.used,
             cap: quota.cap,
             reason: quota.reason,

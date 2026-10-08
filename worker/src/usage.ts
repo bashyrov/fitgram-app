@@ -52,6 +52,8 @@ const FREE_POOL_KINDS: AIQuotaKind[] = [
 ];
 // Free uses the local Ola Chef catalog and coach; those Worker routes are Pro-only.
 const FREE_BLOCKED_KINDS: AIQuotaKind[] = ["ola_chef", "coach_debrief"];
+/** Onboarding tips run before sign-in, keyed by a hashed client IP. */
+export const ONBOARDING_RECS_PER_DAY = 3;
 
 export type AIQuotaKind =
     | "ai_draft_meal"
@@ -59,7 +61,8 @@ export type AIQuotaKind =
     | "ai_meal_refresh"
     | "ai_product_nutrition"
     | "ola_chef"
-    | "coach_debrief";
+    | "coach_debrief"
+    | "initial_recommendations";
 
 export function estimateCostUSD(
     model: string,
@@ -157,9 +160,12 @@ export async function checkDailyAIQuota(
     } = {}
 ): Promise<DailyAIQuotaCheck> {
     const db = env.USAGE_DB;
+    // Free requests fail closed: without the ledger we cannot prove the
+    // weekly pool still has room. Pro keeps working on the safety cap alone.
+    const failOpen = options.isPremium === true;
     if (!db) {
-        log.warn("USAGE_DB binding missing — skipping AI quota check", { user: userID });
-        return { allowed: true, used: 0, cap: DAILY_AI_REQUEST_SAFETY_CAP };
+        log.warn("USAGE_DB binding missing — AI quota check unavailable", { user: userID });
+        return { allowed: failOpen, used: 0, cap: DAILY_AI_REQUEST_SAFETY_CAP, reason: "safety" };
     }
     try {
         const now = Date.now();
@@ -253,8 +259,13 @@ export async function checkDailyAIQuota(
         };
     } catch (err) {
         log.error("usage quota check failed", { err: String(err), user: userID });
-        return { allowed: true, used: 0, cap: DAILY_AI_REQUEST_SAFETY_CAP };
+        return { allowed: failOpen, used: 0, cap: DAILY_AI_REQUEST_SAFETY_CAP, reason: "safety" };
     }
+}
+
+/** 429 body text that tells the client which limit it hit. */
+export function quotaLimitMessage(reason: DailyAIQuotaCheck["reason"]): string {
+    return reason === "free_tier" ? "Free AI limit reached" : "Daily AI safety limit reached";
 }
 
 export function timeZoneOffsetMinutesFromRequest(request: Request): number | undefined {
@@ -301,6 +312,14 @@ export function freeQuotaScope(
             endpoints: [...new Set(FREE_POOL_KINDS.flatMap(endpointsForKind))],
         };
     }
+    if (kind === "initial_recommendations") {
+        return {
+            cap: ONBOARDING_RECS_PER_DAY,
+            since: dayStartTimestamp(nowMs, offsetMinutes),
+            kinds: [kind],
+            endpoints: endpointsForKind(kind),
+        };
+    }
     if (FREE_BLOCKED_KINDS.includes(kind)) {
         return {
             cap: 0,
@@ -337,6 +356,8 @@ export function endpointsForKind(kind: AIQuotaKind): string[] {
             return ["/api/v1/ola-chef/suggestions"];
         case "coach_debrief":
             return ["/api/v1/coach/weekly-debrief"];
+        case "initial_recommendations":
+            return ["/api/v1/user/initial-recommendations"];
     }
 }
 

@@ -45,6 +45,14 @@ extension APIError {
             return L("Server not configured. Try updating the app.")
         case .transport, .http(503, _), .http(504, _):
             return L("Brak połączenia. Sprawdź internet i spróbuj jeszcze raz.")
+        case .http(429, _) where isFreeTierQuota:
+            return TL(
+                pl: "Tygodniowy limit AI wykorzystany. Wróci w poniedziałek albo bez limitu w Pro.",
+                en: "Weekly AI limit used up. It resets on Monday, or go unlimited with Pro.",
+                uk: "Тижневий ліміт AI вичерпано. Оновиться в понеділок, або без ліміту в Pro.",
+                ru: "Недельный лимит ИИ исчерпан. Обновится в понедельник, или без лимита в Pro.",
+                es: "Límite semanal de AI agotado. Se renueva el lunes, o sin límite con Pro."
+            )
         case .http(429, _):
             return L("AI odpocznie do jutra. Dzienny limit bezpieczeństwa został wykorzystany.")
         case .http(502, _):
@@ -54,5 +62,16 @@ extension APIError {
         case .http, .decoding, .unknown:
             return L("Something went wrong. Try again in a moment.")
         }
+    }
+}
+
+extension APIError {
+    /// The Worker refused because the free weekly AI pool is empty
+    /// (`429` with `"reason": "free_tier"`), not the hidden safety cap.
+    var isFreeTierQuota: Bool {
+        guard case .http(429, let body) = self, let body,
+            let object = try? JSONSerialization.jsonObject(with: body) as? [String: Any]
+        else { return false }
+        return object["reason"] as? String == "free_tier"
     }
 }

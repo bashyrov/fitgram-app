@@ -347,16 +347,10 @@ extension FoodDetailSheet {
                 )
             }
             detailDrafts.replaceSubrange(index...index, with: replacement)
-            if analysis.aiSucceeded {
-                usageMeter?.record(.productNutritionLookup, cap: cap)
-            }
             Haptics.success()
             return
         }
         let completed = analysis.items.first ?? analysis.overall
-        if analysis.aiSucceeded {
-            usageMeter?.record(.productNutritionLookup, cap: cap)
-        }
         guard let index = detailDrafts.firstIndex(where: { $0.id == draftID }) else { return }
         let factor = max(completed.quantityGrams, 1) / 100
         detailDrafts[index].name = completed.name
