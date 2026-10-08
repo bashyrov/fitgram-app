@@ -3,7 +3,7 @@
   "items": [
     {
       "id": "intl.3b76396a24",
-      "name": "' boy (oyster)",
+      "name": "Po' boy (oyster)",
       "category": "fast_food",
       "brand": null,
       "restaurant": null,
@@ -14,15 +14,15 @@
       "default_portion_g": 250,
       "localized_names": {
         "pl": "Po' boy (oyster)",
-        "uk": "' boy (oyster)",
-        "ru": "' boy (oyster)",
-        "es": "' boy (oyster)",
-        "en": "' boy (oyster)"
+        "uk": "Po' boy (oyster)",
+        "ru": "Po' boy (oyster)",
+        "es": "Po' boy (oyster)",
+        "en": "Po' boy (oyster)"
       }
     },
     {
       "id": "intl.5f145e035d",
-      "name": "' boy (shrimp)",
+      "name": "Po' boy (shrimp)",
       "category": "fast_food",
       "brand": null,
       "restaurant": null,
@@ -33,10 +33,10 @@
       "default_portion_g": 250,
       "localized_names": {
         "pl": "Po' boy (shrimp)",
-        "uk": "' boy (креветки)",
-        "ru": "' boy (креветки)",
-        "es": "' boy (camarones)",
-        "en": "' boy (shrimp)"
+        "uk": "Po' boy (креветки)",
+        "ru": "Po' boy (креветки)",
+        "es": "Po' boy (camarones)",
+        "en": "Po' boy (shrimp)"
       }
     },
     {

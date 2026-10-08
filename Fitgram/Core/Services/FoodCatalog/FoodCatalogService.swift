@@ -35,6 +35,12 @@ protocol FoodCatalog {
 @MainActor
 final class FoodCatalogService: FoodCatalog {
     private let container: ModelContainer
+    /// The full catalogue (~3k rows) is read by Quick DB, the voice parser,
+    /// the recipe estimator and AI text analysis. Keep one fetched snapshot
+    /// (and the context that owns it) instead of re-fetching per call;
+    /// invalidated whenever this service writes to the catalogue.
+    private var cachedAll: [Food]?
+    private var cacheContext: ModelContext?
 
     init(container: ModelContainer) {
         self.container = container
@@ -47,11 +53,20 @@ final class FoodCatalogService: FoodCatalog {
     }
 
     func all() throws -> [Food] {
+        if let cachedAll { return cachedAll }
         let context = ModelContext(container)
-        return try context.fetch(
+        let foods = try context.fetch(
             FetchDescriptor<Food>(
                 sortBy: [SortDescriptor(\Food.name)]
             ))
+        cacheContext = context
+        cachedAll = foods
+        return foods
+    }
+
+    private func invalidateCache() {
+        cachedAll = nil
+        cacheContext = nil
     }
 
     func search(_ query: String) throws -> [Food] {
@@ -102,6 +117,7 @@ final class FoodCatalogService: FoodCatalog {
         attached.pickCount += 1
         attached.lastPickedAt = Date()
         try context.save()
+        invalidateCache()
     }
 
     @discardableResult
@@ -109,6 +125,7 @@ final class FoodCatalogService: FoodCatalog {
         let context = ModelContext(container)
         context.insert(food)
         try context.save()
+        invalidateCache()
         return food
     }
 
@@ -130,6 +147,7 @@ final class FoodCatalogService: FoodCatalog {
             food.lastPickedAt = nil
         }
         try context.save()
+        invalidateCache()
     }
 }
 

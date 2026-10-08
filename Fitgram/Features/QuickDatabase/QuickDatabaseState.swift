@@ -19,6 +19,13 @@ final class QuickDatabaseState {
     private(set) var hasCustomFoods: Bool = false
 
     private let catalog: any FoodCatalog
+    /// Whole catalogue (~3k rows), fetched once per `refresh()`. Query,
+    /// category and "mine only" changes filter this in memory instead of
+    /// re-fetching on every keystroke.
+    private var allFoods: [Food] = []
+    /// Lower-cased name + translations + brand + restaurant per food, built
+    /// once per fetch so search doesn't decode localisation JSON per keystroke.
+    private var searchKeys: [UUID: String] = [:]
 
     init(catalog: any FoodCatalog) {
         self.catalog = catalog
@@ -28,10 +35,19 @@ final class QuickDatabaseState {
         isLoading = true
         defer { isLoading = false }
         do {
-            availableCategories = try catalog.categories()
+            // Sort by the name the user actually sees (translations differ
+            // from the English storage name); compute each once.
             let all = try catalog.all()
+                .map { ($0, $0.localizedName) }
+                .sorted { $0.1.localizedStandardCompare($1.1) == .orderedAscending }
+                .map(\.0)
+            allFoods = all
+            searchKeys = Dictionary(
+                all.map { ($0.id, Self.searchKey(for: $0)) },
+                uniquingKeysWith: { first, _ in first })
+            availableCategories = Set(all.map(\.category)).sorted { $0.rawValue < $1.rawValue }
             hasCustomFoods = all.contains { !$0.verified }
-            foods = try filteredFoods()
+            applyFilters()
             recentPicks = (try? catalog.recent(limit: 8)) ?? []
             popularPicks = (try? catalog.popular(limit: 8)) ?? []
         } catch {
@@ -73,35 +89,39 @@ final class QuickDatabaseState {
     /// Convenience for the search field's `.onChange`.
     func applyQuery(_ raw: String) async {
         query = raw
-        await refresh()
+        applyFilters()
     }
 
     func selectCategory(_ category: FoodCategory?) async {
         selectedCategory = category
-        await refresh()
+        applyFilters()
     }
 
     func toggleCustomOnly() async {
         customOnly.toggle()
-        await refresh()
+        applyFilters()
     }
 
-    private func filteredFoods() throws -> [Food] {
-        var base: [Food]
+    private func applyFilters() {
+        var base = allFoods
         if let selectedCategory {
-            base = try catalog.byCategory(selectedCategory)
-        } else {
-            base = try catalog.all()
+            base = base.filter { $0.category == selectedCategory }
         }
         if customOnly {
             base = base.filter { !$0.verified }
         }
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return base }
-        return base.filter { food in
-            food.allSearchableNames.contains { $0.localizedCaseInsensitiveContains(trimmed) }
-                || (food.brand?.localizedCaseInsensitiveContains(trimmed) ?? false)
-                || (food.restaurantName?.localizedCaseInsensitiveContains(trimmed) ?? false)
+        if !trimmed.isEmpty {
+            let needle = trimmed.lowercased()
+            base = base.filter { searchKeys[$0.id]?.contains(needle) ?? false }
         }
+        foods = base
+    }
+
+    private static func searchKey(for food: Food) -> String {
+        var parts = food.allSearchableNames
+        if let brand = food.brand { parts.append(brand) }
+        if let restaurant = food.restaurantName { parts.append(restaurant) }
+        return parts.joined(separator: "\n").lowercased()
     }
 }
