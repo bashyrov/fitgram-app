@@ -112,30 +112,49 @@ struct PaywallStepView: View {
             .font(Tokens.Font.manrope(11, weight: 600))
             .foregroundStyle(Tokens.Mono.muted)
             .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: 6) {
-                if let termsURL = URL(string: "https://fitgram.space/terms") {
-                    Link("Terms of Use", destination: termsURL)
+            // One line when it fits, otherwise stacked — long RU/UK labels
+            // would otherwise wrap mid-link.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 6) {
+                    legalLinks(separated: true)
                 }
-                Text(verbatim: "·")
-                    .foregroundStyle(Tokens.Mono.muted)
-                if let privacyURL = URL(string: "https://fitgram.space/privacy") {
-                    Link("Privacy Policy", destination: privacyURL)
+                VStack(alignment: .leading, spacing: 6) {
+                    legalLinks(separated: false)
                 }
-                Text(verbatim: "·")
-                    .foregroundStyle(Tokens.Mono.muted)
-                Button {
-                    Task { await restore() }
-                } label: {
-                    Text("Przywróć zakupy")
-                }
-                .buttonStyle(.plain)
-                .disabled(isPurchasing)
             }
             .font(Tokens.Font.manrope(12, weight: 800))
             .foregroundStyle(Tokens.Palette.ink)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 6)
+    }
+
+    @ViewBuilder
+    private func legalLinks(separated: Bool) -> some View {
+        if let termsURL = URL(string: "https://fitgram.space/terms") {
+            Link("Terms of Use", destination: termsURL)
+                .fixedSize()
+        }
+        if separated {
+            Text(verbatim: "·")
+                .foregroundStyle(Tokens.Mono.muted)
+        }
+        if let privacyURL = URL(string: "https://fitgram.space/privacy") {
+            Link("Privacy Policy", destination: privacyURL)
+                .fixedSize()
+        }
+        if separated {
+            Text(verbatim: "·")
+                .foregroundStyle(Tokens.Mono.muted)
+        }
+        Button {
+            Task { await restore() }
+        } label: {
+            Text("Przywróć zakupy")
+        }
+        .buttonStyle(.plain)
+        .fixedSize()
+        .disabled(isPurchasing)
     }
 
     // MARK: - CTA
