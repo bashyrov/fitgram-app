@@ -305,7 +305,11 @@ struct RootView: View {
     }
 
     private func freshFlow(for authUser: AuthUser) -> OnboardingFlow {
-        if let existing = onboardingFlow { return existing }
+        // Only reuse a flow that belongs to this account. After sign-out or
+        // account deletion a cached flow still points at the old user id:
+        // reusing it saved the name + "onboarded" flag on the old row, so the
+        // new account greeted "Ty" and asked for onboarding again next launch.
+        if let existing = onboardingFlow, existing.userID == authUser.id { return existing }
         let flow = OnboardingFlow(
             authUser: authUser,
             userRepository: userRepository,
@@ -327,7 +331,9 @@ struct RootView: View {
 
     private func resetAfterAccountDeletion() {
         onboardingFlow = nil
-        router.restartOnboarding()
+        // The account is gone and signed out: route from the auth session
+        // (→ sign-in), never back into onboarding for the deleted user.
+        router.evaluate(authPhase: session.phase)
         todayState.resetForSignedOutUser()
         progressState.resetForSignedOutUser()
         usageMeter.reloadAfterAccountDeletion()

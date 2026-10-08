@@ -70495,6 +70495,41 @@
         }
       }
     },
+    "That's how Ola will address you." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That's how Ola will address you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Así es como Ola se dirigirá a ti."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tak Ola będzie się do Ciebie zwracać."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так Оля будет к тебе обращаться."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так Оля звертатиметься до тебе."
+          }
+        }
+      }
+    },
     "The brain feels thirst after losing 1–2% of water — already with a slight drop in performance. A developed drink-before-work habit beats reactive drinking." : {
       "extractionState" : "stale",
       "localizations" : {
