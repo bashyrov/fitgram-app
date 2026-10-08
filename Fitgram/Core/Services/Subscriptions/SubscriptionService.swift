@@ -70,13 +70,16 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
         monthlyEquivalentLabel ?? (id == "monthly" ? priceLabel : nil)
     }
 
+    static let monthlyTitle = "Fitgram Pro Monthly"
+    static let yearlyTitle = "Fitgram Pro Yearly"
+
     /// Fallback plans shown only when StoreKit returns no products (e.g. a
     /// local build without a StoreKit config). Real prices always come from
     /// App Store Connect via `Product.displayPrice`; these mirror the USA tier.
     static let stockMonthly = SubscriptionOffering(
         id: "monthly",
         productID: "fitgram_premium_monthly",
-        title: L("Monthly"),
+        title: monthlyTitle,
         priceLabel: "$4.99",
         periodLabel: L("/ month"),
         isFeatured: false,
@@ -86,7 +89,7 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     static let stockAnnual = SubscriptionOffering(
         id: "annual",
         productID: "fitgram_premium_yearly",
-        title: L("Yearly"),
+        title: yearlyTitle,
         priceLabel: "$44.99",
         periodLabel: L("/ year"),
         isFeatured: true,
