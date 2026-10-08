@@ -44,10 +44,10 @@ extension FriendProfileView {
     func goalMetricsRow(_ snapshot: FriendProfileSnapshot) -> some View {
         HStack(alignment: .top, spacing: 10) {
             if let weight = snapshot.weightKg {
-                MonoStat(label: L("Waga"), value: String(format: "%.1f", weight), unit: "kg", dark: true)
+                MonoStat(label: L("Waga"), value: String(format: "%.1f", weight), unit: L("kg"), dark: true)
             }
             if let height = snapshot.heightCm {
-                MonoStat(label: L("Wzrost"), value: "\(height)", unit: "cm", dark: true)
+                MonoStat(label: L("Wzrost"), value: "\(height)", unit: L("cm"), dark: true)
             }
             if let elapsed = daysSinceJoin(snapshot.memberSinceDate) {
                 MonoStat(label: L("Z nami"), value: "\(elapsed)", unit: L("dni"), dark: true)

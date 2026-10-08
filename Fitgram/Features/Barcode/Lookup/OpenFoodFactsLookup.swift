@@ -126,7 +126,9 @@ struct OFFProduct: Decodable, Sendable {
         brands = try container.decodeIfPresent(String.self, forKey: .brands)
         imageURL = try container.decodeIfPresent(String.self, forKey: .imageURL)
         servingQuantity = try Self.decodeOptionalDouble(container, key: .servingQuantity)
-        nutriments = try container.decode(OFFNutriments.self, forKey: .nutriments)
+        // Some OFF entries ship without a nutriments object; treat that as
+        // "no nutrition data" instead of failing the whole decode.
+        nutriments = (try? container.decodeIfPresent(OFFNutriments.self, forKey: .nutriments)) ?? .empty
     }
 
     /// Prefer Polish, fall back to English, then the generic field. OFF
@@ -159,6 +161,16 @@ struct OFFNutriments: Decodable, Sendable {
     let carbs100g: Double?
     let fat100g: Double?
     let fiber100g: Double?
+
+    static let empty = OFFNutriments(kcal100g: nil, protein100g: nil, carbs100g: nil, fat100g: nil, fiber100g: nil)
+
+    init(kcal100g: Double?, protein100g: Double?, carbs100g: Double?, fat100g: Double?, fiber100g: Double?) {
+        self.kcal100g = kcal100g
+        self.protein100g = protein100g
+        self.carbs100g = carbs100g
+        self.fat100g = fat100g
+        self.fiber100g = fiber100g
+    }
 
     enum CodingKeys: String, CodingKey {
         case kcal100g = "energy-kcal_100g"

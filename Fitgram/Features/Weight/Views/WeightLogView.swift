@@ -138,7 +138,7 @@ struct WeightLogView: View {
             MonoStat(
                 label: L("Latest"),
                 value: String(format: "%.1f", summary.latest.weightKg),
-                unit: "kg",
+                unit: L("kg"),
                 dark: true
             )
             MonoStat(

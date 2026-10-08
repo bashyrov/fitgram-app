@@ -64,8 +64,8 @@ struct ProfileStepView: View {
                 unit: L("lat"),
                 format: "%.0f"
             )
-            stepperRow(title: L("Height"), value: $heightCm, range: 130...220, step: 1, unit: "cm", format: "%.0f")
-            stepperRow(title: L("Weight"), value: $weightKg, range: 30...200, step: 0.5, unit: "kg", format: "%.1f")
+            stepperRow(title: L("Height"), value: $heightCm, range: 130...220, step: 1, unit: L("cm"), format: "%.0f")
+            stepperRow(title: L("Weight"), value: $weightKg, range: 30...200, step: 0.5, unit: L("kg"), format: "%.1f")
         }
         .monoCard(padding: 16)
     }
@@ -84,7 +84,7 @@ struct ProfileStepView: View {
                 .font(Tokens.Font.manrope(15, weight: 800))
                 .foregroundStyle(Tokens.Palette.ink)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            MonoStepper(value: value, range: range, step: step, unit: unit, format: format)
+            MonoStepper(value: value, range: range, step: step, unit: unit, format: format, boxWidth: 116)
         }
     }
 

@@ -52,7 +52,7 @@ extension FriendProfileView {
                     id: "weight",
                     symbol: "scalemass.fill",
                     value: String(format: "%.1f", weight),
-                    unit: "kg",
+                    unit: L("kg"),
                     label: L("Aktualna waga"),
                     tint: Tokens.Palette.success
                 ))
@@ -105,7 +105,7 @@ extension FriendProfileView {
                 id: "avgKcal",
                 symbol: "bolt.heart.fill",
                 value: formattedThousands(weekly.averageDailyKcal),
-                unit: "kcal",
+                unit: L("kcal"),
                 label: L("Średnia dzienna"),
                 tint: Tokens.Palette.error
             ),

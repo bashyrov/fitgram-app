@@ -108,7 +108,9 @@ final class BarcodeFlowState {
             do {
                 let product = try await lookup.lookup(barcode: code)
                 stage = .result(product)
-            } catch BarcodeLookupError.notFound {
+            } catch BarcodeLookupError.notFound, BarcodeLookupError.missingNutrition {
+                // A product without nutrition data is as unusable as a miss —
+                // offer a rescan / manual add rather than a generic error.
                 stage = .notFound(barcode: code)
             } catch {
                 Logger.networking.error("Barcode lookup failed: \(String(describing: error))")

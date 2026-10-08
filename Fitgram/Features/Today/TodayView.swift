@@ -236,7 +236,7 @@ struct TodayView: View {
                 title: L("Dzienny cel wody"),
                 message: L("250–8000 ml. Standard to 2000 ml."),
                 value: $waterGoalDraft,
-                unit: "ml",
+                unit: L("ml"),
                 layout: .stacked,
                 onSave: {
                     waterGoalStored = max(250, min(8000, waterGoalDraft))
@@ -300,7 +300,7 @@ struct TodayView: View {
                     es: "1000–4500 kcal. Este cambio solo aplica a este día. Los objetivos futuros se editan en Perfil."
                 ),
                 value: $calorieGoalDraft,
-                unit: "kcal",
+                unit: L("kcal"),
                 layout: .inline,
                 onSave: {
                     applyCalorieGoal(calorieGoalDraft)

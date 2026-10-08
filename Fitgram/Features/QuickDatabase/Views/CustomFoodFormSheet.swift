@@ -121,10 +121,10 @@ struct CustomFoodFormSheet: View {
         VStack(alignment: .leading, spacing: 2) {
             MonoLabel(text: L("Wartości / 100 g"))
                 .padding(.bottom, 4)
-            stepperRow(label: L("Kalorie"), value: $kcal, step: 5, range: 0...900, unit: "kcal")
-            stepperRow(label: L("Protein"), value: $protein, step: 1, range: 0...100, unit: "g")
-            stepperRow(label: L("Węgle"), value: $carbs, step: 1, range: 0...100, unit: "g")
-            stepperRow(label: L("Tłuszcz"), value: $fat, step: 1, range: 0...100, unit: "g")
+            stepperRow(label: L("Kalorie"), value: $kcal, step: 5, range: 0...900, unit: L("kcal"))
+            stepperRow(label: L("Protein"), value: $protein, step: 1, range: 0...100, unit: L("g"))
+            stepperRow(label: L("Węgle"), value: $carbs, step: 1, range: 0...100, unit: L("g"))
+            stepperRow(label: L("Tłuszcz"), value: $fat, step: 1, range: 0...100, unit: L("g"))
         }
         .monoCard(padding: 16)
     }
@@ -133,7 +133,7 @@ struct CustomFoodFormSheet: View {
     private var portionCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             MonoLabel(text: L("Sugerowana porcja"))
-            stepperRow(label: L("Porcja"), value: $defaultPortion, step: 10, range: 0...1000, unit: "g")
+            stepperRow(label: L("Porcja"), value: $defaultPortion, step: 10, range: 0...1000, unit: L("g"))
             Text("0 = zostaw bez sugestii — wybierzesz wagę przy logowaniu.")
                 .font(Tokens.Font.manrope(12, weight: 600))
                 .foregroundStyle(Tokens.Mono.muted)

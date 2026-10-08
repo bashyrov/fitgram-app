@@ -86,7 +86,7 @@ struct ManualPortionCard: View {
             HStack(spacing: 8) {
                 MonoLabel(text: L("Kalorie"))
                 Spacer(minLength: 0)
-                MonoStepper(value: $caloriesKcal, range: 0...3000, step: 5, unit: "kcal")
+                MonoStepper(value: $caloriesKcal, range: 0...3000, step: 5, unit: L("kcal"))
             }
             .monoCard(padding: 16)
         }
@@ -105,19 +105,19 @@ struct ManualMacrosCard: View {
             MonoLabel(text: L("Makro (opcjonalnie)"))
                 .padding(.bottom, 4)
             ManualNumericRow(
-                config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: "g"),
+                config: .init(symbol: "fork.knife", label: "Protein", range: 0...300, step: 1, unit: L("g")),
                 value: $proteinGrams
             )
             ManualNumericRow(
-                config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: "g"),
+                config: .init(symbol: "leaf.fill", label: "Węgle", range: 0...400, step: 1, unit: L("g")),
                 value: $carbsGrams
             )
             ManualNumericRow(
-                config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: "g"),
+                config: .init(symbol: "drop.fill", label: "Tłuszcz", range: 0...200, step: 1, unit: L("g")),
                 value: $fatGrams
             )
             ManualNumericRow(
-                config: .init(symbol: "leaf", label: "Fiber", range: 0...100, step: 1, unit: "g"),
+                config: .init(symbol: "leaf", label: "Fiber", range: 0...100, step: 1, unit: L("g")),
                 value: $fiberGrams
             )
         }

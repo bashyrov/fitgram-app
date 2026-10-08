@@ -135,6 +135,14 @@ final class OnboardingFlow {
         self.recommendationsService = recommendationsService
         self.userProfileService = userProfileService
         self.onFinished = onFinished
+        #if DEBUG
+        // FITGRAM_DEBUG_ONBOARDING_STEP=<raw index> jumps straight to a step for UI checks.
+        if let raw = ProcessInfo.processInfo.environment["FITGRAM_DEBUG_ONBOARDING_STEP"].flatMap(Int.init),
+            let step = Step(rawValue: raw)
+        {
+            currentStep = step
+        }
+        #endif
     }
 
     // MARK: - Navigation

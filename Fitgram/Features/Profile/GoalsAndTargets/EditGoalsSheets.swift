@@ -638,7 +638,7 @@ extension OlaCalorieRecalculationSheet {
                 value: $weightKg,
                 range: 35...220,
                 step: 0.1,
-                unit: "kg",
+                unit: L("kg"),
                 format: "%.1f"
             )
             stepperRow(
@@ -649,7 +649,7 @@ extension OlaCalorieRecalculationSheet {
                 ),
                 range: 130...220,
                 step: 1,
-                unit: "cm",
+                unit: L("cm"),
                 format: "%.0f"
             )
             MonoField(label: birthDateTitle) {
@@ -909,7 +909,7 @@ extension OlaCalorieRecalculationSheet {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 8)
-            MonoStepper(value: value, range: range, step: step, unit: unit, format: format)
+            MonoStepper(value: value, range: range, step: step, unit: unit, format: format, boxWidth: 116)
         }
         .padding(.vertical, 4)
     }
@@ -1329,7 +1329,7 @@ struct EditWaterSheet: View {
                 HStack(spacing: 12) {
                     MonoLabel(text: TL(pl: "Woda", en: "Water", uk: "Вода", ru: "Вода", es: "Agua"))
                     Spacer(minLength: 8)
-                    MonoStepper(value: waterBinding, range: 1000...5000, step: 50, unit: "ml")
+                    MonoStepper(value: waterBinding, range: 1000...5000, step: 50, unit: L("ml"))
                 }
                 GoalRangeSlider(
                     value: waterBinding,
@@ -1877,7 +1877,8 @@ struct EditProfileDataSheet: View {
                         ),
                         range: 130...220,
                         step: 1,
-                        unit: "cm"
+                        unit: L("cm"),
+                        boxWidth: 116
                     )
                 }
                 .padding(.vertical, 4)

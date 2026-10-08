@@ -97,7 +97,7 @@ struct EditGoalsView: View {
         HStack(spacing: 12) {
             MonoLabel(text: TL(pl: "Kalorie", en: "Calories", uk: "Калорії", ru: "Калории", es: "Calorías"))
             Spacer(minLength: 8)
-            MonoStepper(value: intBinding($calories), range: 1000...4500, step: 50, unit: "kcal")
+            MonoStepper(value: intBinding($calories), range: 1000...4500, step: 50, unit: L("kcal"))
         }
         .monoCard(padding: 16)
     }
@@ -136,7 +136,7 @@ struct EditGoalsView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 8)
-            MonoStepper(value: intBinding(value), range: range, step: 5, unit: "g")
+            MonoStepper(value: intBinding(value), range: range, step: 5, unit: L("g"))
         }
         .padding(.vertical, 4)
     }
