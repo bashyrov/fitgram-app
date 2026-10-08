@@ -43,6 +43,17 @@ struct SupabaseAuthExchange: Sendable {
         return try credentials(from: data, provider: .email)
     }
 
+    /// Trades the stored refresh token for a fresh session
+    /// (`grant_type=refresh_token`). Supabase rotates the refresh token too.
+    func refresh(refreshToken: String, provider: AuthProviderKind) async throws -> AuthCredentials {
+        let data = try await post(
+            path: "auth/v1/token",
+            query: [URLQueryItem(name: "grant_type", value: "refresh_token")],
+            body: RefreshPayload(refreshToken: refreshToken)
+        )
+        return try credentials(from: data, provider: provider)
+    }
+
     /// Sign in with Apple: `rawNonce` is the value whose SHA-256 was set on
     /// the Apple request; Supabase re-hashes it to check the token's nonce.
     func exchangeAppleIDToken(_ idToken: String, rawNonce: String) async throws -> AuthCredentials {
@@ -106,6 +117,14 @@ struct SupabaseAuthExchange: Sendable {
 private struct PasswordPayload: Encodable {
     let email: String
     let password: String
+}
+
+private struct RefreshPayload: Encodable {
+    let refreshToken: String
+
+    enum CodingKeys: String, CodingKey {
+        case refreshToken = "refresh_token"
+    }
 }
 
 private struct IDTokenPayload: Encodable {
