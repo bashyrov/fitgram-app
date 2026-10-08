@@ -14,7 +14,7 @@
 
 do $$
 declare
-    my_email text := 'PUT_YOUR_EMAIL_HERE';
+    my_email text := 'bashyroov@gmail.com';
     me uuid;
     friend record;
     pair_a uuid;
