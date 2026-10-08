@@ -3,7 +3,8 @@ import SwiftUI
 /// Quick Database — browse + search the local Polish food catalogue. Tap
 /// an item → portion sheet → save as a MealEntry with source=.quickDatabase.
 struct QuickDatabaseRootView: View {
-    @Bindable var state: QuickDatabaseState
+    // Owned (not @Bindable) so parent re-renders can't swap in a fresh state.
+    @State var state: QuickDatabaseState
     let mealSaver: any MealSaving
     let onDismiss: () -> Void
     var favoritesService: (any FavoritesServing)?
