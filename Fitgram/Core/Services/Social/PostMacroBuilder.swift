@@ -69,3 +69,37 @@ enum PostMacroBuilder {
         return (try? context.fetch(descriptor)) ?? []
     }
 }
+
+/// Turns a logged workout into the snapshot a post can carry.
+enum PostActivityBuilder {
+    static func activity(_ workout: WorkoutEntry) -> PostActivitySnapshot {
+        PostActivitySnapshot(
+            name: workout.activityName.nilIfBlank
+                ?? TL(
+                    pl: "Trening", en: "Workout", uk: "Тренування", ru: "Тренировка", es: "Entrenamiento"),
+            symbol: WorkoutEntry.symbolName(forActivityID: workout.activityID),
+            startedAt: workout.recordedAt,
+            durationMinutes: workout.durationMinutes,
+            kcalBurned: Int(workout.caloriesBurnedKcal.rounded()),
+            distanceMeters: workout.distanceMeters.flatMap { $0 >= 1 ? $0 : nil },
+            steps: workout.steps > 0 ? workout.steps : nil,
+            averageHeartRate: workout.averageHeartRateBpm.map { Int($0.rounded()) }
+        )
+    }
+
+    /// The user's workouts on the calendar day of `day`, oldest first.
+    @MainActor
+    static func workouts(
+        on day: Date, userRemoteID: String, in context: ModelContext, calendar: Calendar = .current
+    ) -> [WorkoutEntry] {
+        let start = calendar.startOfDay(for: day)
+        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return [] }
+        let descriptor = FetchDescriptor<WorkoutEntry>(
+            predicate: #Predicate {
+                $0.userRemoteID == userRemoteID && $0.recordedAt >= start && $0.recordedAt < end
+            },
+            sortBy: [SortDescriptor(\WorkoutEntry.recordedAt)]
+        )
+        return (try? context.fetch(descriptor)) ?? []
+    }
+}

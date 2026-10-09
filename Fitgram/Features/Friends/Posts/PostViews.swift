@@ -155,6 +155,8 @@ struct PostCard: View {
             }
             if let macros = post.macros {
                 PostMacroCard(macros: macros)
+            } else if let activity = post.activity {
+                PostActivityCard(activity: activity)
             }
             footer
         }

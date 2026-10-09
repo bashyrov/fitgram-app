@@ -245,6 +245,11 @@ final class FriendsState {
     }
 
     func publish(_ draft: PostDraft) async throws {
+        // Make sure the server already knows about Premium — the backend
+        // refuses posts from accounts without the flag.
+        if isPremium {
+            await socialProfile.syncProfile(isPremium: true, displayName: myDisplayName, userID: userRemoteID)
+        }
         let post = try await postService.create(draft, as: me, isPremium: isPremium)
         posts.insert(post, at: 0)
         postsPublishedToday += 1

@@ -75,6 +75,17 @@ final class WorkoutEntry {
 }
 
 extension WorkoutEntry {
+    /// SF Symbol for an activity id ("run", "walk_brisk", "gym_strength"…).
+    static func symbolName(forActivityID activityID: String) -> String {
+        if activityID.contains("walk") { return "figure.walk.motion" }
+        if activityID.contains("run") { return "figure.run" }
+        if activityID.contains("bike") || activityID.contains("cycling") { return "bicycle" }
+        if activityID.contains("swim") { return "figure.pool.swim" }
+        if activityID.contains("strength") || activityID.contains("gym") { return "dumbbell.fill" }
+        if activityID.contains("yoga") { return "figure.mind.and.body" }
+        return "bolt.heart.fill"
+    }
+
     var source: WorkoutSource {
         get { WorkoutSource(rawValue: sourceRaw) ?? .manualMET }
         set { sourceRaw = newValue.rawValue }

@@ -1,33 +1,38 @@
 import AuthenticationServices
 import SwiftUI
 
-/// Entry point for unauthenticated users. Three options in the order Apple
-/// requires (Apple first), all built on the same pill-shape so the screen
-/// reads calmly.
+/// Entry point for unauthenticated users: the full-width FIT/GRAM lockup
+/// over the FITGRAM stripes (same as the first onboarding screen), then
+/// the three sign-in options with Apple first, as Apple requires.
 struct AuthView: View {
     @Environment(AuthSession.self) private var session
     let authService: AuthService
 
     @State private var errorBannerVisible = false
     @State private var isEmailSheetPresented = false
+    @State private var appeared = false
 
     var body: some View {
         ZStack {
-            Tokens.Palette.background
+            WordmarkStripes()
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Spacer(minLength: 16)
                 header
-                    .padding(.top, 40)
                 Spacer(minLength: 20)
                 VStack(spacing: 8) {
                     buttonStack
                     footer
                 }
-                .padding(.top, 20)
-                .padding(.bottom, Tokens.Space.lg)
+                .padding(.bottom, Tokens.Space.sm)
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.8).delay(0.1)) {
+                appeared = true
+            }
         }
         .overlay(alignment: .top) { errorBanner }
         .animation(Tokens.Motion.gentle, value: session.lastError)
@@ -44,33 +49,25 @@ struct AuthView: View {
 
     // MARK: - Sections
 
-    /// Dark hero: Fitgram mark, display wordmark and the tagline.
+    /// Full-width FIT / GRAM lockup and the tagline.
     private var header: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            FitgramLogoMark(color: Tokens.Mono.hi)
-                .frame(width: 120, height: 56)
-
-            Text(verbatim: "Fitgram")
-                .font(Tokens.Font.monoDisplay(44))
-                .textCase(.uppercase)
-                .foregroundStyle(Tokens.Mono.onHero)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-
-            Text("Twój spokojny tracker kalorii.")
-                .font(Tokens.Font.manrope(16, weight: 600))
-                .foregroundStyle(Tokens.Mono.heroMuted)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 12) {
+            FitgramWordmarkLockup(appeared: appeared)
+            Text(
+                TL(
+                    pl: "Jedno zdjęcie — i wiesz, co zjadłeś. Zacznij za darmo.",
+                    en: "One photo and you know what you ate. Start for free.",
+                    uk: "Одне фото — і ти знаєш, що з'їв. Почни безкоштовно.",
+                    ru: "Одно фото — и ты знаешь, что съел. Начни бесплатно.",
+                    es: "Una foto y sabes lo que comiste. Empieza gratis.")
+            )
+            .font(Tokens.Font.manrope(24, weight: 800))
+            .foregroundStyle(Tokens.Mono.heroMuted)
+            .lineLimit(2)
+            .minimumScaleFactor(0.5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .opacity(appeared ? 1 : 0)
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 28)
-        .padding(.bottom, 32)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
-                .fill(Tokens.Mono.hero)
-        )
-        .accessibilityElement(children: .combine)
     }
 
     private var buttonStack: some View {
@@ -82,7 +79,7 @@ struct AuthView: View {
                 // everywhere — the button's onCompletion fires after our
                 // provider's continuation already resolved, so it's a no-op.
             }
-            .signInWithAppleButtonStyle(.black)
+            .signInWithAppleButtonStyle(.white)
             .frame(height: 54)
             .clipShape(Capsule())
             .overlay(
@@ -96,7 +93,8 @@ struct AuthView: View {
 
             SocialAuthButton(
                 title: "Kontynuuj z Google",
-                systemImage: "globe"
+                systemImage: "globe",
+                kind: .heroOutline
             ) {
                 Task { await authService.signIn(with: .google) }
             }
@@ -104,7 +102,8 @@ struct AuthView: View {
 
             SocialAuthButton(
                 title: "Kontynuuj e-mailem",
-                systemImage: "envelope"
+                systemImage: "envelope",
+                kind: .heroOutline
             ) {
                 isEmailSheetPresented = true
             }
@@ -118,10 +117,10 @@ struct AuthView: View {
     private var footer: some View {
         Text(footerText)
             .font(Tokens.Font.manrope(12, weight: 600))
-            .foregroundStyle(Tokens.Mono.muted)
+            .foregroundStyle(Tokens.Mono.heroMuted)
             .lineSpacing(2)
             .multilineTextAlignment(.center)
-            .tint(Tokens.Palette.ink)
+            .tint(Tokens.Mono.onHero)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity)
             .padding(.top, 6)
@@ -157,7 +156,7 @@ struct AuthView: View {
         var link = AttributedString(title)
         link.link = url
         link.swiftUI.font = Tokens.Font.manrope(12, weight: 800)
-        link.swiftUI.foregroundColor = Tokens.Palette.ink
+        link.swiftUI.foregroundColor = Tokens.Mono.onHero
         return link
     }
 

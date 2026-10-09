@@ -105,13 +105,7 @@ struct WorkoutTimelineRow: View {
     }
 
     private var activityIcon: String {
-        if workout.activityID.contains("walk") { return "figure.walk.motion" }
-        if workout.activityID.contains("run") { return "figure.run" }
-        if workout.activityID.contains("bike") || workout.activityID.contains("cycling") { return "bicycle" }
-        if workout.activityID.contains("swim") { return "figure.pool.swim" }
-        if workout.activityID.contains("strength") || workout.activityID.contains("gym") { return "dumbbell.fill" }
-        if workout.activityID.contains("yoga") { return "figure.mind.and.body" }
-        return "bolt.heart.fill"
+        WorkoutEntry.symbolName(forActivityID: workout.activityID)
     }
 
     private var rowSubtitle: String {
