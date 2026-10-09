@@ -11,6 +11,9 @@ final class User {
     var remoteID: String = ""
     var email: String?
     var displayName: String?
+    /// Social username (without "@"), chosen once in onboarding. Mirrors
+    /// `public_profiles.username`; nil until picked.
+    var username: String?
     var providerKindRaw: String = ""
     var avatarFilename: String?
 

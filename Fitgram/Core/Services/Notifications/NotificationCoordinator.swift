@@ -73,6 +73,24 @@ final class NotificationCoordinator {
         }
     }
 
+    /// One alert per new incoming friend request, deduplicated by request id.
+    func notifyNewFriendRequests(_ requests: [FriendRequest]) async {
+        guard UserDefaults.standard.boolWithDefaultTrue(forKey: "preferences.friend.reactionEnabled") else { return }
+        for request in requests where deliveryStore.markFriendRequestIfNeeded(request.id) {
+            let name = request.counterpart?.displayName ?? L("Ktoś")
+            let title = TL(
+                pl: "Nowe zaproszenie do znajomych", en: "New friend request", uk: "Новий запит у друзі",
+                ru: "Новая заявка в друзья", es: "Nueva solicitud de amistad")
+            let body = TL(
+                pl: "\(name) chce dodać Cię do znajomych. Otwórz Znajomych, żeby odpowiedzieć.",
+                en: "\(name) wants to be your friend. Open Friends to respond.",
+                uk: "\(name) хоче додати тебе в друзі. Відкрий «Друзі», щоб відповісти.",
+                ru: "\(name) хочет добавить тебя в друзья. Открой «Друзья», чтобы ответить.",
+                es: "\(name) quiere ser tu amigo. Abre Amigos para responder.")
+            await scheduler.notifyAchievement(title: title, body: body)
+        }
+    }
+
     func notifyProteinNudge(remainingGrams: Int) async {
         let title = L("Białko jeszcze czeka")
         let body = String.localizedStringWithFormat(
@@ -266,15 +284,22 @@ struct NotificationDeliveryStore {
     }
 
     func markFriendReactionIfNeeded(_ id: UUID) -> Bool {
-        let key = "notifications.friendReaction.\(id.uuidString)"
+        markOnce(id, prefix: "notifications.friendReaction.")
+    }
+
+    func markFriendRequestIfNeeded(_ id: UUID) -> Bool {
+        markOnce(id, prefix: "notifications.friendRequest.")
+    }
+
+    private func markOnce(_ id: UUID, prefix: String) -> Bool {
+        let key = prefix + id.uuidString
         guard defaults.object(forKey: key) == nil else { return false }
         defaults.set(Date().timeIntervalSince1970, forKey: key)
-        pruneFriendReactionKeys(keeping: 160)
+        pruneKeys(prefix: prefix, keeping: 160)
         return true
     }
 
-    private func pruneFriendReactionKeys(keeping limit: Int) {
-        let prefix = "notifications.friendReaction."
+    private func pruneKeys(prefix: String, keeping limit: Int) {
         let pairs = defaults.dictionaryRepresentation().compactMap { key, value -> (String, Double)? in
             guard key.hasPrefix(prefix), let timestamp = value as? Double else { return nil }
             return (key, timestamp)

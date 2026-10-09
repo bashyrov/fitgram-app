@@ -28,7 +28,7 @@ final class SupabaseFriendService: FriendService {
                 URLQueryItem(name: "requested_by", value: "neq.\(userID)"),
             ]
         )
-        return rows.map(\.toRequest)
+        return try await withCounterparts(rows.map(\.toRequest), viewer: userID)
     }
 
     func pendingOutgoing(for userID: String) async throws -> [FriendRequest] {
@@ -39,17 +39,19 @@ final class SupabaseFriendService: FriendService {
                 URLQueryItem(name: "requested_by", value: "eq.\(userID)"),
             ]
         )
-        return rows.map(\.toRequest)
+        return try await withCounterparts(rows.map(\.toRequest), viewer: userID)
     }
 
     func search(query: String, excluding userID: String) async throws -> [PublicProfile] {
         let cleaned = query.trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "@", with: "")
+            .filter { !",()*%".contains($0) }
         guard cleaned.count >= 2 else { return [] }
-        let pattern = "*\(cleaned.replacingOccurrences(of: ",", with: ""))*"
+        let pattern = "*\(cleaned)*"
         let rows: [PublicProfileRow] = try await client.request(
             path: "public_profiles",
             query: [
-                URLQueryItem(name: "select", value: "user_id,username,display_name,photo_url,bio,created_at"),
+                URLQueryItem(name: "select", value: PublicProfileRow.selectColumns),
                 URLQueryItem(name: "user_id", value: "neq.\(userID)"),
                 URLQueryItem(name: "or", value: "(username.ilike.\(pattern),display_name.ilike.\(pattern))"),
                 URLQueryItem(name: "limit", value: "12"),
@@ -60,12 +62,13 @@ final class SupabaseFriendService: FriendService {
 
     func profile(forCode code: String) async throws -> PublicProfile {
         let resolved = Self.extractCode(code)
-        let filterName = UUID(uuidString: resolved) == nil ? "username" : "user_id"
+        let isUserID = UUID(uuidString: resolved) != nil
+        let filterName = isUserID ? "user_id" : "username"
         let rows: [PublicProfileRow] = try await client.request(
             path: "public_profiles",
             query: [
-                URLQueryItem(name: "select", value: "user_id,username,display_name,photo_url,bio,created_at"),
-                URLQueryItem(name: filterName, value: "eq.\(resolved)"),
+                URLQueryItem(name: "select", value: PublicProfileRow.selectColumns),
+                URLQueryItem(name: filterName, value: "eq.\(isUserID ? resolved : UsernamePolicy.normalize(resolved))"),
                 URLQueryItem(name: "limit", value: "1"),
             ]
         )
@@ -180,13 +183,26 @@ final class SupabaseFriendService: FriendService {
         let profileRows: [PublicProfileRow] = try await client.request(
             path: "public_profiles",
             query: [
-                URLQueryItem(name: "select", value: "user_id,username,display_name,photo_url,bio,created_at"),
+                URLQueryItem(name: "select", value: PublicProfileRow.selectColumns),
                 URLQueryItem(name: "user_id", value: "eq.\(userID)"),
                 URLQueryItem(name: "limit", value: "1"),
             ]
         )
         guard let profileRow = profileRows.first else { throw FriendError.notFound(query: userID) }
         let profile = profileRow.toPublicProfile
+        let canView: Bool = try await client.request(
+            path: "rpc/can_view_profile",
+            method: .post,
+            body: ViewerOwnerArgs(viewer: viewer, owner: userID)
+        )
+        guard canView else {
+            return FriendProfileSnapshot(
+                id: profile.id, displayName: profile.displayName, username: profile.handle,
+                avatarURL: profile.avatarURL, bio: nil, memberSinceDate: nil, currentStreak: nil, level: nil,
+                goalLabel: nil, achievements: nil, weeklyStats: nil, topRecipes: nil, recentEvents: nil,
+                weightKg: nil, heightCm: nil, isPremium: profile.isPremium, isRestricted: true
+            )
+        }
         let eventRows: [ActivityEventRow] = try await client.request(
             path: "activity_events",
             query: [
@@ -211,7 +227,8 @@ final class SupabaseFriendService: FriendService {
             topRecipes: nil,
             recentEvents: try await hydrateEvents(eventRows, viewerID: viewer),
             weightKg: nil,
-            heightCm: nil
+            heightCm: nil,
+            isPremium: profile.isPremium
         )
     }
 
@@ -319,18 +336,6 @@ final class SupabaseFriendService: FriendService {
         return rows.first
     }
 
-    private func profiles(ids: [String]) async throws -> [PublicProfile] {
-        guard !ids.isEmpty else { return [] }
-        let rows: [PublicProfileRow] = try await client.request(
-            path: "public_profiles",
-            query: [
-                URLQueryItem(name: "select", value: "user_id,username,display_name,photo_url,bio,created_at"),
-                URLQueryItem(name: "user_id", value: "in.(\(ids.joined(separator: ",")))"),
-            ]
-        )
-        return rows.map(\.toPublicProfile)
-    }
-
     private func hydrateEvents(_ rows: [ActivityEventRow], viewerID: String) async throws -> [FeedEvent] {
         let profileMap = Dictionary(
             uniqueKeysWithValues: try await profiles(ids: Array(Set(rows.map(\.userID)))).map { ($0.id, $0) })
@@ -353,7 +358,42 @@ final class SupabaseFriendService: FriendService {
         }
     }
 
-    private func reactions(for eventIDs: [UUID], viewerID: String) async throws -> [UUID: [ReactionRow]] {
+    private static func orderedPair(_ lhs: String, _ rhs: String) -> (String, String) {
+        lhs < rhs ? (lhs, rhs) : (rhs, lhs)
+    }
+
+    private static func extractCode(_ code: String) -> String {
+        if let url = URL(string: code), url.scheme == "fitgram", url.host == "friend" {
+            return url.pathComponents.dropFirst().first ?? code
+        }
+        return code.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+extension SupabaseFriendService {
+    fileprivate func withCounterparts(_ requests: [FriendRequest], viewer: String) async throws -> [FriendRequest] {
+        let otherIDs = requests.map { $0.fromUserID == viewer ? $0.toUserID : $0.fromUserID }
+        let byID = Dictionary(uniqueKeysWithValues: try await profiles(ids: Array(Set(otherIDs))).map { ($0.id, $0) })
+        return requests.map { request in
+            var copy = request
+            copy.counterpart = byID[request.fromUserID == viewer ? request.toUserID : request.fromUserID]
+            return copy
+        }
+    }
+
+    fileprivate func profiles(ids: [String]) async throws -> [PublicProfile] {
+        guard !ids.isEmpty else { return [] }
+        let rows: [PublicProfileRow] = try await client.request(
+            path: "public_profiles",
+            query: [
+                URLQueryItem(name: "select", value: PublicProfileRow.selectColumns),
+                URLQueryItem(name: "user_id", value: "in.(\(ids.joined(separator: ",")))"),
+            ]
+        )
+        return rows.map(\.toPublicProfile)
+    }
+
+    fileprivate func reactions(for eventIDs: [UUID], viewerID: String) async throws -> [UUID: [ReactionRow]] {
         guard !eventIDs.isEmpty else { return [:] }
         let rows: [ReactionRow] = try await client.request(
             path: "reactions",
@@ -366,16 +406,5 @@ final class SupabaseFriendService: FriendService {
             ]
         )
         return Dictionary(grouping: rows.filter { $0.eventID != nil }) { $0.eventID ?? UUID() }
-    }
-
-    private static func orderedPair(_ lhs: String, _ rhs: String) -> (String, String) {
-        lhs < rhs ? (lhs, rhs) : (rhs, lhs)
-    }
-
-    private static func extractCode(_ code: String) -> String {
-        if let url = URL(string: code), url.scheme == "fitgram", url.host == "friend" {
-            return url.pathComponents.dropFirst().first ?? code
-        }
-        return code.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

@@ -18,12 +18,23 @@ struct SupabaseProfileProvisioner: Sendable {
                 displayName: displayName?.nilIfBlank ?? username,
                 photoURL: nil
             )
+            // Never overwrite an existing row: the username is locked once
+            // chosen. Only the display name follows the auth provider.
             try await client.request(
                 path: "public_profiles",
                 method: .post,
                 body: profile,
-                prefer: "resolution=merge-duplicates"
+                prefer: "resolution=ignore-duplicates,return=minimal"
             )
+            if let name = displayName?.nilIfBlank {
+                try await client.request(
+                    path: "public_profiles",
+                    method: .patch,
+                    query: [URLQueryItem(name: "user_id", value: "eq.\(userID)")],
+                    body: DisplayNamePatch(displayName: name),
+                    prefer: "return=minimal"
+                )
+            }
             let privacy = PrivacyUpsert(userID: userID)
             try await client.request(
                 path: "profile_privacy",
@@ -47,6 +58,10 @@ private struct PublicProfileUpsert: Encodable {
     let username: String
     let displayName: String
     let photoURL: String?
+}
+
+private struct DisplayNamePatch: Encodable {
+    let displayName: String
 }
 
 private struct PrivacyUpsert: Encodable {

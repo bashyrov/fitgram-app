@@ -56,6 +56,15 @@ struct FitgramApp: App {
     /// WhatsNewSheet exactly once per version.
     private static let lastSeenVersionKey = "whatsnew.lastSeenVersion"
 
+    private static func makeSubscriptionService() -> any SubscriptionService {
+        #if DEBUG
+        if DebugBypass.premium {
+            return MockSubscriptionService(initialSnapshot: .premiumMock)
+        }
+        #endif
+        return AppConfig.isPaymentsEnabled ? StoreKitSubscriptionService() : MockSubscriptionService()
+    }
+
     /// Reads CFBundleShortVersionString from the running bundle.
     /// Defaults to "0.0.0" if missing (only on broken builds).
     private static func runningShortVersion() -> String {
@@ -142,10 +151,7 @@ struct FitgramApp: App {
         // — flip the build setting and the next launch wires the real
         // StoreKit2-backed service. Existing user data (favorites,
         // recipes, etc.) is preserved; only display caps activate.
-        let subscriptionService: any SubscriptionService =
-            AppConfig.isPaymentsEnabled
-            ? StoreKitSubscriptionService()
-            : MockSubscriptionService()
+        let subscriptionService = Self.makeSubscriptionService()
         self.notificationCoordinator = NotificationCoordinator(
             scheduler: NotificationService(),
             container: persistence.container,

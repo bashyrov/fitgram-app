@@ -53,6 +53,10 @@ final class UserRepository {
         }
         // Onboarding-captured name. Empty string means "keep what the auth
         // provider gave us". Email always stays the provider's.
+        let chosenUsername = UsernamePolicy.normalize(profile.username)
+        if stored.username == nil, UsernamePolicy.isValid(chosenUsername) {
+            stored.username = chosenUsername
+        }
         let trimmedDisplay = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedDisplay.isEmpty {
             stored.displayName = trimmedDisplay
@@ -137,6 +141,8 @@ final class UserRepository {
 /// Free-floating value the onboarding flow accumulates as the user moves
 /// step-to-step. Persisted once via `UserRepository.completeOnboarding`.
 struct OnboardingProfile: Equatable {
+    /// Chosen on the account step; empty when skipped.
+    var username: String = ""
     var goal: GoalKind = .maintain
     var dietMacroPreset: DietMacroPreset = DietMacroPreset.recommended(for: .maintain)
     var biologicalSex: BiologicalSex = .undisclosed

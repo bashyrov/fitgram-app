@@ -58,7 +58,7 @@ struct OnboardingView: View {
                     onSkip: nil
                 )
             case .account:
-                AccountStepView(profile: $flow.profile) { flow.advance() }
+                AccountStepView(profile: $flow.profile, userID: flow.userID) { flow.advance() }
             case .goal:
                 GoalStepView(goal: $flow.profile.goal) { flow.advance() }
             case .profile:

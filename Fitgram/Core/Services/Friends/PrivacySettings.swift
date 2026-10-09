@@ -24,7 +24,37 @@ struct PrivacySettings: Codable, Equatable, Sendable {
     var showWeightAndHeight: Bool = false
     var showMealDetails: Bool = false
 
+    /// Who can read my posts. Friends always can; `.everyone` opens them to
+    /// anyone who finds the profile.
+    enum PostsVisibility: String, Codable, Sendable, CaseIterable {
+        case friends
+        case everyone = "public"
+    }
+
+    var postsVisibility: PostsVisibility = .friends
+
     static let `default` = PrivacySettings()
+
+    init() {}
+
+    /// Settings saved before a field existed must still decode.
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let defaults = PrivacySettings()
+        visibility = try container.decodeIfPresent(Visibility.self, forKey: .visibility) ?? defaults.visibility
+        showStreak = try container.decodeIfPresent(Bool.self, forKey: .showStreak) ?? defaults.showStreak
+        showLevel = try container.decodeIfPresent(Bool.self, forKey: .showLevel) ?? defaults.showLevel
+        showAchievements =
+            try container.decodeIfPresent(Bool.self, forKey: .showAchievements) ?? defaults.showAchievements
+        showGoal = try container.decodeIfPresent(Bool.self, forKey: .showGoal) ?? defaults.showGoal
+        showWeeklyStats = try container.decodeIfPresent(Bool.self, forKey: .showWeeklyStats) ?? defaults.showWeeklyStats
+        showRecipes = try container.decodeIfPresent(Bool.self, forKey: .showRecipes) ?? defaults.showRecipes
+        showWeightAndHeight =
+            try container.decodeIfPresent(Bool.self, forKey: .showWeightAndHeight) ?? defaults.showWeightAndHeight
+        showMealDetails = try container.decodeIfPresent(Bool.self, forKey: .showMealDetails) ?? defaults.showMealDetails
+        postsVisibility =
+            try container.decodeIfPresent(PostsVisibility.self, forKey: .postsVisibility) ?? defaults.postsVisibility
+    }
 }
 
 /// Observable wrapper around the on-device privacy preferences. UI binds
@@ -37,6 +67,8 @@ final class PrivacyStore {
     private let storageKey: String
 
     private(set) var current: PrivacySettings
+    /// Fired after a user-initiated change so the backend copy follows.
+    var onChange: (@MainActor (PrivacySettings) -> Void)?
 
     init(defaults: UserDefaults = .standard, storageKey: String = "privacy.settings") {
         self.defaults = defaults
@@ -53,16 +85,16 @@ final class PrivacyStore {
     func update(_ block: (inout PrivacySettings) -> Void) {
         var copy = current
         block(&copy)
-        current = copy
-        if let data = try? JSONEncoder().encode(copy) {
-            defaults.set(data, forKey: storageKey)
-        }
+        replace(copy)
     }
 
-    func replace(_ settings: PrivacySettings) {
+    /// `notify: false` is for adopting the server's copy without echoing it
+    /// straight back.
+    func replace(_ settings: PrivacySettings, notify: Bool = true) {
         current = settings
         if let data = try? JSONEncoder().encode(settings) {
             defaults.set(data, forKey: storageKey)
         }
+        if notify { onChange?(settings) }
     }
 }

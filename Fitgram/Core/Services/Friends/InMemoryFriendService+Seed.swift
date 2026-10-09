@@ -14,6 +14,36 @@ extension InMemoryFriendService {
         let nina: PublicProfile
     }
 
+    struct Stranger {
+        let profile: PublicProfile
+        let visibility: PrivacySettings.Visibility
+        let bio: String
+    }
+
+    /// Searchable non-friends: Piotr has an open profile, Zosia a closed one.
+    static var strangers: [Stranger] {
+        [
+            Stranger(
+                profile: PublicProfile(
+                    id: "friend-piotr-open", displayName: "Piotr Kowalczyk", avatarURL: nil, sharesStreak: true,
+                    sharesAchievements: true, currentStreak: 9, achievementCount: 11, username: "piotr.k",
+                    isPremium: true),
+                visibility: .publicLink,
+                bio: TL(
+                    pl: "Minus 6 kg od lutego. Biegam 3 razy w tygodniu.",
+                    en: "Down 6 kg since February. I run 3 times a week.",
+                    uk: "Мінус 6 кг з лютого. Бігаю 3 рази на тиждень.",
+                    ru: "Минус 6 кг с февраля. Бегаю 3 раза в неделю.",
+                    es: "6 kg menos desde febrero. Corro 3 veces por semana.")),
+            Stranger(
+                profile: PublicProfile(
+                    id: "friend-zosia-private", displayName: "Zosia", avatarURL: nil, sharesStreak: false,
+                    sharesAchievements: false, currentStreak: nil, achievementCount: nil, username: "zosia.w"),
+                visibility: .friendsOnly,
+                bio: ""),
+        ]
+    }
+
     // swiftlint:disable:next function_body_length
     static func makeSeedSnapshots(cast: SeedCast, now: Date) -> [String: FriendProfileSnapshot] {
         let testFriend = cast.testFriend
@@ -191,7 +221,27 @@ extension InMemoryFriendService {
                 weeklyStats: nil, topRecipes: nil, recentEvents: nil,
                 weightKg: nil, heightCm: nil
             ),
-        ]
+        ].merging(strangerSnapshots(now: now)) { current, _ in current }
+    }
+
+    private static func strangerSnapshots(now: Date) -> [String: FriendProfileSnapshot] {
+        Dictionary(
+            uniqueKeysWithValues: strangers.map { stranger in
+                let profile = stranger.profile
+                return (
+                    profile.id,
+                    FriendProfileSnapshot(
+                        id: profile.id, displayName: profile.displayName, username: profile.handle, avatarURL: nil,
+                        bio: stranger.bio.isEmpty ? nil : stranger.bio,
+                        memberSinceDate: Calendar.current.date(byAdding: .month, value: -5, to: now),
+                        currentStreak: profile.currentStreak, level: ProfileLevel(number: 9, label: L("Explorer")),
+                        goalLabel: nil, achievements: nil,
+                        weeklyStats: WeeklyStats(
+                            averageDailyKcal: 2240, totalScans: 19, daysHitGoal: 4,
+                            topFoods: [L("Owsianka"), L("Kurczak z kaszą")]),
+                        topRecipes: nil, recentEvents: nil, weightKg: nil, heightCm: nil)
+                )
+            })
     }
 
     private static func demoAchievements(for userID: String, now: Date) -> [Achievement] {

@@ -69,6 +69,48 @@ struct SupabaseRESTClient: Sendable {
         )
     }
 
+    /// Uploads a file to Supabase Storage (`/storage/v1/object/<bucket>/<path>`).
+    func uploadObject(bucket: String, path: String, data: Data, contentType: String) async throws {
+        var request = try await storageRequest(bucket: bucket, path: path, method: .post)
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        request.setValue("3600", forHTTPHeaderField: "Cache-Control")
+        request.httpBody = data
+        try await perform(request)
+    }
+
+    func deleteObject(bucket: String, path: String) async throws {
+        try await perform(try await storageRequest(bucket: bucket, path: path, method: .delete))
+    }
+
+    /// Public URL of an object in a public bucket.
+    func publicObjectURL(bucket: String, path: String) -> URL {
+        baseURL.appendingPathComponent("storage/v1/object/public/\(bucket)").appendingPathComponent(path)
+    }
+
+    private func storageRequest(bucket: String, path: String, method: HTTPMethod) async throws -> URLRequest {
+        let url = baseURL.appendingPathComponent("storage/v1/object/\(bucket)").appendingPathComponent(path)
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+        guard let token = try? await AccessTokenProvider.shared.validAccessToken(), !token.isEmpty else {
+            throw SupabaseError.unauthorized
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+
+    @discardableResult
+    private func perform(_ request: URLRequest) async throws -> Data {
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw SupabaseError.invalidResponse
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            throw SupabaseError.http(status: http.statusCode, body: String(data: data, encoding: .utf8) ?? "")
+        }
+        return data
+    }
+
     private func rawRequest(
         path: String,
         method: HTTPMethod,
@@ -98,16 +140,7 @@ struct SupabaseRESTClient: Sendable {
         if let body {
             request.httpBody = try encoder.encode(AnyEncodable(body))
         }
-
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else {
-            throw SupabaseError.invalidResponse
-        }
-        guard (200..<300).contains(http.statusCode) else {
-            let body = String(data: data, encoding: .utf8) ?? ""
-            throw SupabaseError.http(status: http.statusCode, body: body)
-        }
-        return data
+        return try await perform(request)
     }
 }
 

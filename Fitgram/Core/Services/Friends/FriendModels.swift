@@ -14,6 +14,12 @@ struct PublicProfile: Equatable, Sendable, Identifiable {
     let sharesAchievements: Bool
     let currentStreak: Int?
     let achievementCount: Int?
+    /// Without the "@". Nil for profiles that only exist locally.
+    var username: String?
+    var isPremium: Bool = false
+
+    /// "@kasia.nowak", or nil.
+    var handle: String? { username.map { "@\($0)" } }
 }
 
 struct FriendRequest: Equatable, Sendable, Identifiable {
@@ -29,6 +35,9 @@ struct FriendRequest: Equatable, Sendable, Identifiable {
     let toUserID: String
     var status: Status
     let createdAt: Date
+    /// The other person — the sender for incoming requests, the receiver
+    /// for outgoing ones. Filled in by the service when it can read them.
+    var counterpart: PublicProfile?
 }
 
 /// Event kinds the feed renders. Stable raw strings so the Supabase

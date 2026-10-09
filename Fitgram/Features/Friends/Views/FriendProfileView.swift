@@ -1,53 +1,55 @@
 import OSLog
 import SwiftUI
 
-// Rich friend-profile sheet — avatar header, identity tiles, segmented tabs, and
-// four content tabs (Statystyki / Cele / Aktywność / Reakcje). The
-// service is responsible for honouring the owner's privacy settings; the
-// UI just renders whatever fields survive the snapshot. Per-tab content
-// lives in `FriendProfileView+*Tab.swift` extension files.
+// Profile sheet for a friend or anyone found in search — avatar header,
+// identity tiles and tabs (Posty / Statystyki / Cele / Aktywność). The
+// service honours the owner's privacy settings; the UI renders whatever
+// survives the snapshot. Per-tab content lives in
+// `FriendProfileView+*Tab.swift` extension files.
 // swiftlint:disable:next type_body_length
 struct FriendProfileView: View {
     let userID: String
-    let viewerID: String
-    let service: any FriendService
+    @Bindable var state: FriendsState
     let onDismiss: () -> Void
     /// Optional — when present, lets the user save a top-recipe to
     /// their own library.
     var onCopyRecipe: ((PublicRecipeReference) -> Void)?
-    /// Optional — when present, the bottom action bar exposes a
-    /// destructive "Unfriend" CTA.
-    var onUnfriend: (() -> Void)?
 
     @Environment(ToastCenter.self) var toasts
 
     @State var snapshot: FriendProfileSnapshot?
     @State private var isLoading: Bool = true
     @State private var loadError: String?
-    @State private var activeTab: Tab = .stats
+    @State private var activeTab: Tab = .posts
     @State private var isReportPresented: Bool = false
     @State private var reportReason: String = ""
     @State private var isBlockConfirmed: Bool = false
     @State private var isUnfriendConfirmed: Bool = false
+    @State private var isWorking = false
+    @State var authorPosts: AuthorPosts?
+
+    private var viewerID: String { state.userRemoteID }
+    private var service: any FriendService { state.service }
+    var connection: FriendsState.ConnectionStatus { state.connectionStatus(for: userID) }
 
     enum Tab: Hashable, CaseIterable {
-        case stats, goals, activity, reactions
+        case posts, stats, goals, activity
 
         var label: String {
             switch self {
+            case .posts: return TL(pl: "Posty", en: "Posts", uk: "Пости", ru: "Посты", es: "Posts")
             case .stats: return L("Stats")
             case .goals: return L("Goals")
             case .activity: return L("Activity")
-            case .reactions: return L("Reactions")
             }
         }
 
         var symbol: String {
             switch self {
+            case .posts: return "text.bubble.fill"
             case .stats: return "chart.bar.fill"
             case .goals: return "target"
             case .activity: return "bolt.fill"
-            case .reactions: return "hand.thumbsup.fill"
             }
         }
     }
@@ -92,8 +94,11 @@ struct FriendProfileView: View {
                 titleVisibility: .visible
             ) {
                 Button(L("Unfriend"), role: .destructive) {
-                    onUnfriend?()
-                    onDismiss()
+                    Task {
+                        await state.unfriend(userID)
+                        Haptics.warning()
+                        onDismiss()
+                    }
                 }
                 Button(L("Cancel"), role: .cancel) {}
             } message: {
@@ -111,30 +116,49 @@ struct FriendProfileView: View {
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            MonoNavText(title: L("Zamknij"), action: onDismiss)
-                .accessibilityLabel(Text(L("Close")))
+            MonoNavIcon(systemName: "xmark", accessibilityLabel: L("Close"), action: onDismiss)
         }
         ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                Button(role: .destructive) {
-                    isBlockConfirmed = true
-                } label: {
-                    Label(L("Block"), systemImage: "hand.raised.fill")
+            HStack(spacing: 6) {
+                if connection == .friend {
+                    Button {
+                        isUnfriendConfirmed = true
+                    } label: {
+                        Image(systemName: "person.badge.minus")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(Tokens.Palette.ink)
+                            .frame(width: 44, height: 44)
+                            .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(L("Unfriend")))
+                    .accessibilityIdentifier("friend.profile.unfriend")
                 }
-                Button(role: .destructive) {
-                    isReportPresented = true
-                } label: {
-                    Label(L("Report"), systemImage: "exclamationmark.bubble.fill")
-                }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .frame(width: 44, height: 44)
-                    .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+                moreMenu
             }
-            .accessibilityLabel(Text(L("More")))
         }
+    }
+
+    private var moreMenu: some View {
+        Menu {
+            Button(role: .destructive) {
+                isBlockConfirmed = true
+            } label: {
+                Label(L("Block"), systemImage: "hand.raised.fill")
+            }
+            Button(role: .destructive) {
+                isReportPresented = true
+            } label: {
+                Label(L("Report"), systemImage: "exclamationmark.bubble.fill")
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 44, height: 44)
+                .overlay(Circle().stroke(Tokens.Mono.line2, lineWidth: 1))
+        }
+        .accessibilityLabel(Text(L("More")))
     }
 
     @ViewBuilder
@@ -143,30 +167,39 @@ struct FriendProfileView: View {
             VStack(alignment: .leading, spacing: 0) {
                 hero(snapshot)
                 Color.clear.frame(height: 16)
-                identityTiles(snapshot)
-                Color.clear.frame(height: 14)
-                tabBar
-                Color.clear.frame(height: 12)
-                Group {
-                    switch activeTab {
-                    case .stats: statsTab(snapshot)
-                    case .goals: goalsTab(snapshot)
-                    case .activity: activityTab(snapshot)
-                    case .reactions: reactionsTab(snapshot)
+                if snapshot.isRestricted {
+                    restrictedCard
+                    Color.clear.frame(height: 14)
+                    postsTab()
+                } else {
+                    identityTiles(snapshot)
+                    Color.clear.frame(height: 14)
+                    tabBar
+                    Color.clear.frame(height: 12)
+                    Group {
+                        switch activeTab {
+                        case .posts: postsTab()
+                        case .stats: statsTab(snapshot)
+                        case .goals: goalsTab(snapshot)
+                        case .activity: activityTab(snapshot)
+                        }
                     }
-                }
-                .transition(.opacity)
-                .animation(Tokens.Motion.gentle, value: activeTab)
-                if !snapshot.hasAnyShared {
-                    Color.clear.frame(height: 10)
-                    privacyHint
+                    .transition(.opacity)
+                    .animation(Tokens.Motion.gentle, value: activeTab)
+                    if !snapshot.hasAnyShared && activeTab != .posts {
+                        Color.clear.frame(height: 10)
+                        privacyHint
+                    }
                 }
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
             .padding(.bottom, 24)
         }
+        .refreshable { await load() }
         .safeAreaInset(edge: .bottom) {
-            actionBar
+            if userID != viewerID, connection != .friend {
+                actionBar
+            }
         }
     }
 
@@ -178,11 +211,12 @@ struct FriendProfileView: View {
             HStack(spacing: 14) {
                 avatarHero(snapshot)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(snapshot.displayName)
-                        .font(Tokens.Font.monoDisplay(26))
-                        .foregroundStyle(Tokens.Palette.ink)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
+                    SocialNameLabel(
+                        name: snapshot.displayName,
+                        isPremium: snapshot.isPremium,
+                        font: Tokens.Font.monoDisplay(26),
+                        markHeight: 20
+                    )
                     if let subtitle = heroSubtitle(snapshot) {
                         Text(subtitle)
                             .font(Tokens.Font.manrope(12, weight: 600))
@@ -213,7 +247,7 @@ struct FriendProfileView: View {
             .background(Circle().fill(Tokens.Mono.hero))
     }
 
-    /// "@user · W Fitgram od … · Znajomi od …" line under the name.
+    /// "@user · W Fitgram od …" line under the name.
     private func heroSubtitle(_ snapshot: FriendProfileSnapshot) -> String? {
         var parts: [String] = []
         if let username = snapshot.username {
@@ -222,7 +256,6 @@ struct FriendProfileView: View {
         if let since = snapshot.memberSinceDate {
             let formatted = since.formatted(.dateTime.month(.wide).year())
             parts.append(String.localizedStringWithFormat(L("Fitgram-er since %@"), formatted))
-            parts.append(String.localizedStringWithFormat(L("Friends since %@"), formatted))
         }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
@@ -259,31 +292,6 @@ struct FriendProfileView: View {
         return String(first).uppercased()
     }
 
-    private var privacyHint: some View {
-        HStack(spacing: 10) {
-            MonoIconBox(systemName: "lock", style: .track, size: 36)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(L("Ten profil nie udostępnia szczegółów"))
-                    .font(Tokens.Font.manrope(14, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(
-                    TL(
-                        pl: "Zależy od ustawień prywatności znajomego.",
-                        en: "Depends on your friend's privacy settings.",
-                        uk: "Залежить від налаштувань приватності друга.",
-                        ru: "Зависит от настроек приватности друга.",
-                        es: "Depende de la configuración de privacidad de tu amigo."
-                    )
-                )
-                .font(Tokens.Font.manrope(12, weight: 600))
-                .foregroundStyle(Tokens.Mono.muted)
-                .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-        }
-        .monoCard(padding: 16)
-    }
-
     // MARK: - Segmented tabs
 
     private var tabBar: some View {
@@ -295,45 +303,65 @@ struct FriendProfileView: View {
 
     // MARK: - Bottom action bar
 
+    /// Shown only for people who aren't friends yet.
     private var actionBar: some View {
         MonoBottomBar {
-            HStack(spacing: 8) {
-                MonoButton(title: L("Support"), kind: .dark, icon: "heart", height: 46) {
-                    Task { await send(intent: .encourage) }
-                }
-                if onUnfriend != nil {
-                    MonoButton(title: L("Unfriend"), kind: .outline, height: 46) {
-                        isUnfriendConfirmed = true
+            switch connection {
+            case .none, .friend:
+                MonoButton(
+                    title: TL(
+                        pl: "Dodaj do znajomych", en: "Add friend", uk: "Додати в друзі", ru: "Добавить в друзья",
+                        es: "Añadir a amigos"),
+                    kind: .dark, icon: "person.badge.plus", height: 50
+                ) {
+                    work {
+                        if await state.sendRequest(to: userID) {
+                            Haptics.success()
+                            toasts.success(
+                                TL(
+                                    pl: "Zaproszenie wysłane", en: "Request sent", uk: "Запит надіслано",
+                                    ru: "Заявка отправлена", es: "Solicitud enviada"),
+                                message: snapshot?.displayName)
+                        }
                     }
                 }
-                MonoButton(title: L("Report"), kind: .danger, icon: "flag", height: 46) {
-                    isReportPresented = true
+                .accessibilityIdentifier("friend.profile.add")
+            case .outgoing:
+                MonoButton(
+                    title: TL(
+                        pl: "Zaproszenie wysłane · cofnij", en: "Request sent · cancel",
+                        uk: "Запит надіслано · скасувати", ru: "Заявка отправлена · отменить",
+                        es: "Solicitud enviada · cancelar"),
+                    kind: .outline, icon: "paperplane.fill", height: 50
+                ) {
+                    work { await state.cancelRequest(to: userID) }
+                }
+            case .incoming:
+                HStack(spacing: 8) {
+                    MonoButton(title: L("Odrzuć"), kind: .outline, height: 50) {
+                        work { await state.respondToRequest(from: userID, accept: false) }
+                    }
+                    MonoButton(title: L("Akceptuj"), kind: .dark, icon: "checkmark", height: 50) {
+                        work {
+                            await state.respondToRequest(from: userID, accept: true)
+                            Haptics.success()
+                            await load()
+                        }
+                    }
                 }
             }
         }
+        .disabled(isWorking)
+        .opacity(isWorking ? 0.6 : 1)
     }
 
-    // MARK: - Empty + feedback
-
-    func placeholder(
-        symbol: String,
-        title: String,
-        subtitle: String
-    ) -> some View {
-        HStack(spacing: 12) {
-            MonoIconBox(systemName: symbol, style: .track, size: 40)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(Tokens.Font.manrope(15, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                Text(subtitle)
-                    .font(Tokens.Font.manrope(12, weight: 600))
-                    .foregroundStyle(Tokens.Mono.muted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
+    private func work(_ action: @escaping () async -> Void) {
+        guard !isWorking else { return }
+        isWorking = true
+        Task {
+            await action()
+            isWorking = false
         }
-        .monoCard(padding: 16)
     }
 
     private var fallback: some View {
@@ -384,7 +412,7 @@ struct FriendProfileView: View {
     // MARK: - Actions
 
     private func load() async {
-        isLoading = true
+        if snapshot == nil { isLoading = true }
         do {
             snapshot = try await service.snapshot(forUserID: userID, viewer: viewerID)
         } catch {
@@ -392,19 +420,7 @@ struct FriendProfileView: View {
             Logger.persistence.error("Snapshot load failed: \(String(describing: error))")
         }
         isLoading = false
-    }
-
-    func send(intent: PositiveReactionIntent) async {
-        do {
-            try await service.sendPositiveReaction(to: userID, from: viewerID, intent: intent)
-            toasts.success(intent.toastTitle, message: intent.toastSubtitle(name: snapshot?.displayName))
-            Haptics.success()
-        } catch {
-            toasts.error(
-                L("Nie udało się wysłać"),
-                message: L("Spróbuj jeszcze raz za chwilę.")
-            )
-        }
+        authorPosts = await state.posts(by: userID)
     }
 
     private func block() async {

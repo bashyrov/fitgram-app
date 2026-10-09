@@ -20,6 +20,12 @@ enum DebugBypass {
         flag("fitgramDebugOnboarding", env: "FITGRAM_DEBUG_ONBOARDING")
     }
 
+    /// Pass `-fitgramDebugPremium 1` to start with a mock Premium
+    /// subscription (screenshots of Premium-only surfaces such as posts).
+    static var premium: Bool {
+        flag("fitgramDebugPremium", env: "FITGRAM_DEBUG_PREMIUM")
+    }
+
     /// Pass `-fitgramDebugResetData 1` once from Xcode/devicectl to wipe
     /// local stores and keychain before the app boots normally.
     static var resetData: Bool {
