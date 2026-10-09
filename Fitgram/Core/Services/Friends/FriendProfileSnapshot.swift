@@ -28,6 +28,9 @@ struct FriendProfileSnapshot: Equatable, Identifiable {
     /// and avatar from this viewer.
     var isRestricted: Bool = false
 
+    /// The username — other people never see the real name.
+    var publicName: String { username?.nilIfBlank ?? displayName }
+
     var hasAnyShared: Bool {
         currentStreak != nil
             || level != nil

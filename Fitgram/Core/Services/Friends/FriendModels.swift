@@ -20,6 +20,10 @@ struct PublicProfile: Equatable, Sendable, Identifiable {
 
     /// "@kasia.nowak", or nil.
     var handle: String? { username.map { "@\($0)" } }
+
+    /// What other people see: the username; the real name stays private to
+    /// its owner. Falls back to the name for profiles without a username.
+    var publicName: String { username?.nilIfBlank ?? displayName }
 }
 
 struct FriendRequest: Equatable, Sendable, Identifiable {

@@ -6,9 +6,9 @@ struct FriendRow: View {
     var body: some View {
         HStack(spacing: 12) {
             HStack(spacing: 10) {
-                FriendInitialAvatar(name: profile.displayName, size: 40)
+                FriendInitialAvatar(name: profile.publicName, size: 40)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(profile.displayName)
+                    Text(profile.publicName)
                         .font(Tokens.Font.manrope(15, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
                         .lineLimit(1)
@@ -43,7 +43,7 @@ struct FriendRow: View {
     }
 
     private var initial: String {
-        profile.displayName.first.map { String($0).uppercased() } ?? "?"
+        profile.publicName.first.map { String($0).uppercased() } ?? "?"
     }
 
     private var subtitle: String {
