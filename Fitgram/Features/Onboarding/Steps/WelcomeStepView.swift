@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// First onboarding screen: a big Fitgram mark pinned to the left, the
-/// wordmark and a one-line promise, plus a few playful stickers.
+/// First onboarding screen: the FIT mark and "GRAM" spanning the full
+/// width over a striped backdrop of faint, randomly offset FITGRAM rows.
 struct WelcomeStepView: View {
     let onContinue: () -> Void
     var onSkip: (() -> Void)?
@@ -12,112 +12,87 @@ struct WelcomeStepView: View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer(minLength: 24)
             FitgramLogoMark(color: Tokens.Mono.hi)
-                .frame(width: 240, height: 112)
+                .aspectRatio(240.0 / 112.0, contentMode: .fit)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .opacity(appeared ? 1 : 0)
-                .offset(x: appeared ? 0 : -40)
-            Text(verbatim: "FITGRAM")
-                .font(Tokens.Font.monoDisplay(58))
-                .foregroundStyle(Tokens.Palette.ink)
+                .offset(x: appeared ? 0 : -60)
+            Text(verbatim: "GRAM")
+                .font(Tokens.Font.monoDisplay(320))
+                .foregroundStyle(Tokens.Mono.onHero)
                 .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .padding(.top, 18)
+                .minimumScaleFactor(0.05)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 4)
+                .opacity(appeared ? 1 : 0)
+                .offset(x: appeared ? 0 : 60)
             Text(
                 TL(
-                    pl: "Licz kalorie zdjęciem.\nBez tabelek, bez spiny.",
-                    en: "Count calories with a photo.\nNo spreadsheets, no stress.",
-                    uk: "Рахуй калорії по фото.\nБез таблиць і нервів.",
-                    ru: "Считай калории по фото.\nБез таблиц и нервов.",
-                    es: "Cuenta calorías con una foto.\nSin tablas ni estrés.")
+                    pl: "Licz kalorie zdjęciem. Bez tabelek, bez spiny.",
+                    en: "Count calories with a photo. No spreadsheets, no stress.",
+                    uk: "Рахуй калорії по фото. Без таблиць і нервів.",
+                    ru: "Считай калории по фото. Без таблиц и нервов.",
+                    es: "Cuenta calorías con una foto. Sin tablas ni estrés.")
             )
-            .font(Tokens.Font.manrope(18, weight: 700))
-            .foregroundStyle(Tokens.Mono.muted)
-            .lineSpacing(4)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.top, 8)
+            .font(Tokens.Font.manrope(26, weight: 800))
+            .foregroundStyle(Tokens.Mono.heroMuted)
+            .lineLimit(2)
+            .minimumScaleFactor(0.5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 12)
+            .opacity(appeared ? 1 : 0)
             Spacer(minLength: 24)
-            StickerCloud(appeared: appeared)
-            Spacer(minLength: 24)
-            MonoButton(title: L("Zacznijmy"), kind: .dark, action: onContinue)
+            MonoButton(title: L("Zacznijmy"), kind: .hi, action: onContinue)
                 .accessibilityIdentifier(A11yID.Onboarding.welcomeStart)
                 .padding(.bottom, 8)
         }
         .padding(.horizontal, Tokens.Space.screenPadding)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Tokens.Palette.background.ignoresSafeArea())
+        .background(WordmarkStripes().ignoresSafeArea())
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.75).delay(0.1)) {
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.8).delay(0.1)) {
                 appeared = true
             }
         }
     }
 }
 
-/// Three tilted stickers that pop in one after another.
-private struct StickerCloud: View {
-    let appeared: Bool
-
-    private struct Sticker {
-        let emoji: String
-        let text: String
-        let fill: Color
-        let ink: Color
-        let angle: Double
-        var outlined = false
-    }
+/// Alternating dark bands, each carrying one "FITGRAMFITGRAM…" row at 10 %
+/// opacity. Rows start at scattered offsets and run past both edges.
+private struct WordmarkStripes: View {
+    private static let bandHeight: CGFloat = 58
+    /// Fixed pseudo-random offsets (fraction of one word) and repeat
+    /// counts, so the pattern is chaotic but identical on every launch.
+    private static let offsets: [Double] = [0.62, 0.08, 0.91, 0.37, 0.74, 0.19, 0.55, 0.97, 0.28, 0.83, 0.44, 0.03]
+    private static let repeats = [5, 6, 4, 6, 5, 4, 6, 5, 4, 6, 5, 6]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            sticker(
-                Sticker(
-                    emoji: "📸",
-                    text: TL(
-                        pl: "pyk → 420 kcal", en: "snap → 420 kcal", uk: "клац → 420 ккал", ru: "щёлк → 420 ккал",
-                        es: "clic → 420 kcal"),
-                    fill: Tokens.Mono.hi, ink: Tokens.Mono.onHi, angle: -4),
-                index: 0)
-            sticker(
-                Sticker(
-                    emoji: "🥟",
-                    text: TL(
-                        pl: "pierogi też się liczą", en: "pierogi count too", uk: "вареники теж рахуються",
-                        ru: "вареники тоже считаются", es: "los pierogi también cuentan"),
-                    fill: Tokens.Mono.hero, ink: Tokens.Mono.onHero, angle: 3),
-                index: 1
-            )
-            .padding(.leading, 36)
-            sticker(
-                Sticker(
-                    emoji: "🔥",
-                    text: TL(
-                        pl: "12 dni z rzędu", en: "12 days in a row", uk: "12 днів поспіль", ru: "12 дней подряд",
-                        es: "12 días seguidos"),
-                    fill: Tokens.Palette.surface, ink: Tokens.Palette.ink, angle: -2, outlined: true),
-                index: 2
-            )
-            .padding(.leading, 12)
+        GeometryReader { proxy in
+            let rows = Int((proxy.size.height / Self.bandHeight).rounded(.up))
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach(0..<rows, id: \.self) { row in
+                    band(row)
+                }
+            }
+            .frame(width: proxy.size.width, alignment: .leading)
+            .clipped()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Tokens.Mono.hero)
         .accessibilityHidden(true)
     }
 
-    private func sticker(_ sticker: Sticker, index: Int) -> some View {
-        HStack(spacing: 8) {
-            Text(verbatim: sticker.emoji)
-                .font(.system(size: 20))
-            Text(sticker.text)
-                .font(Tokens.Font.manrope(15, weight: 800))
-                .foregroundStyle(sticker.ink)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 11)
-        .background(Capsule().fill(sticker.fill))
-        .overlay(Capsule().stroke(sticker.outlined ? Tokens.Mono.line2 : .clear, lineWidth: 1))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-        .rotationEffect(.degrees(appeared ? sticker.angle : 0))
-        .scaleEffect(appeared ? 1 : 0.6)
-        .opacity(appeared ? 1 : 0)
-        .animation(
-            .spring(response: 0.5, dampingFraction: 0.6).delay(0.35 + Double(index) * 0.12), value: appeared)
+    private func band(_ row: Int) -> some View {
+        let offset = Self.offsets[row % Self.offsets.count]
+        let count = Self.repeats[row % Self.repeats.count]
+        // One "FITGRAM" at this size is ~190 pt wide; shift left by a
+        // fraction of it so word starts never line up between rows.
+        return Text(verbatim: String(repeating: "FITGRAM", count: count))
+            .font(Tokens.Font.monoDisplay(44))
+            .foregroundStyle(Tokens.Mono.onHero.opacity(0.10))
+            .lineLimit(1)
+            .fixedSize()
+            .offset(x: -CGFloat(offset) * 190 - 30)
+            .frame(height: Self.bandHeight, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(row.isMultiple(of: 2) ? Color.clear : Tokens.Mono.onHero.opacity(0.035))
     }
 }
