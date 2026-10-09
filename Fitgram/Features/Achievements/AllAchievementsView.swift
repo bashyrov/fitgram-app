@@ -2,6 +2,8 @@ import SwiftUI
 
 struct AllAchievementsView: View {
     let earnedKindsToDate: [String: Date]
+    /// Track metric values for the "Levels" tab.
+    var metrics: [AchievementMetric: Int] = [:]
 
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCategory: AchievementCollectionCategory = .all
@@ -32,14 +34,25 @@ struct AllAchievementsView: View {
                         sub: L("Twoja kolekcja rośnie z każdym realnym nawykiem."),
                         kicker: L("Odznaki")
                     )
+                    PlayerLevelCard(earnedIDs: Array(earnedKindsToDate.keys))
+                        .padding(.top, 14)
                     categoryRail
                         .padding(.top, 14)
-                    LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach(definitions, id: \.id) { definition in
-                            achievementCard(definition)
+                    if selectedCategory == .levels {
+                        LazyVStack(spacing: 8) {
+                            ForEach(AchievementTracks.all, id: \.slug) { track in
+                                AchievementTrackRow(track: track, value: metrics[track.metric] ?? 0)
+                            }
                         }
+                        .padding(.top, 12)
+                    } else {
+                        LazyVGrid(columns: columns, spacing: 8) {
+                            ForEach(definitions, id: \.id) { definition in
+                                achievementCard(definition)
+                            }
+                        }
+                        .padding(.top, 12)
                     }
-                    .padding(.top, 12)
                 }
                 .padding(.horizontal, Tokens.Space.screenPadding)
                 .padding(.bottom, 34)

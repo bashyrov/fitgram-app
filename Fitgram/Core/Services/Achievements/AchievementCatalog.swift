@@ -10,6 +10,10 @@ struct AchievementDefinition: Equatable, Sendable {
     let symbol: String
     /// Lower value = earlier in the grid.
     let order: Int
+    /// Set for leveled track badges (`lvl.*`): this badge's level and the
+    /// track's top level.
+    var level: Int?
+    var maxLevel: Int?
 }
 
 /// The full set of achievements the engine evaluates against. New entries
@@ -17,7 +21,23 @@ struct AchievementDefinition: Equatable, Sendable {
 /// lives in `AchievementEngine`.
 enum AchievementCatalog {
     static var all: [AchievementDefinition] {
-        baseMilestones + generatedMilestones
+        cachedAll
+    }
+
+    /// Built once per language: the catalog has hundreds of entries and is
+    /// read on every evaluation.
+    nonisolated(unsafe) private static var cache: (language: String, definitions: [AchievementDefinition])?
+    private static let cacheLock = NSLock()
+
+    private static var cachedAll: [AchievementDefinition] {
+        let language = LocalizationStore.currentLanguageCode()
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
+        if let cache, cache.language == language { return cache.definitions }
+        let built =
+            baseMilestones + generatedMilestones + AchievementTracks.definitions + AchievementSpecials.definitions
+        cache = (language, built)
+        return built
     }
 
     private static var baseMilestones: [AchievementDefinition] {
@@ -323,6 +343,10 @@ enum AchievementCatalog {
             milestone("achievements.50", "Gablotka pełna", "Pięćdziesiąt zdobytych odznak.", "sparkles", 401),
             milestone("achievements.75", "Łowca postępów", "Siedemdziesiąt pięć zdobytych odznak.", "rosette", 402),
             milestone("achievements.100", "Legenda Fitgram", "Sto zdobytych odznak.", "trophy.fill", 403),
+            milestone("achievements.150", "Sto pięćdziesiąt", "150 zdobytych odznak.", "trophy.circle.fill", 404),
+            milestone("achievements.200", "Dwie setki odznak", "200 zdobytych odznak.", "medal.fill", 405),
+            milestone("achievements.250", "Skarbiec", "250 zdobytych odznak.", "crown.fill", 406),
+            milestone("achievements.300", "Wszystko widziane", "300 zdobytych odznak.", "infinity", 407),
         ]
     }
 

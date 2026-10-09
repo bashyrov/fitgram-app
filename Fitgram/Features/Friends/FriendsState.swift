@@ -22,16 +22,19 @@ final class FriendsState {
 
     private let service: any FriendService
     private let notificationCoordinator: NotificationCoordinator?
+    private let achievementCounters: AchievementCounterStore
     let userRemoteID: String
 
     init(
         service: any FriendService,
         userRemoteID: String,
-        notificationCoordinator: NotificationCoordinator? = nil
+        notificationCoordinator: NotificationCoordinator? = nil,
+        achievementCounters: AchievementCounterStore = AchievementCounterStore()
     ) {
         self.service = service
         self.userRemoteID = userRemoteID
         self.notificationCoordinator = notificationCoordinator
+        self.achievementCounters = achievementCounters
     }
 
     func refresh() async {
@@ -46,6 +49,7 @@ final class FriendsState {
             self.incoming = try await incoming
             self.outgoing = try await outgoing
             self.feed = try await feed
+            achievementCounters.recordAtLeast(self.friends.count, for: .friends, user: userRemoteID)
             await notifyIncomingReactionsIfNeeded()
             self.errorMessage = nil
         } catch {
@@ -90,6 +94,7 @@ final class FriendsState {
     func sendRequest(to profile: PublicProfile) async -> Bool {
         do {
             let request = try await service.sendRequest(from: userRemoteID, to: profile.id)
+            achievementCounters.increment(.friendRequestsSent, user: userRemoteID)
             if service is InMemoryFriendService {
                 try await service.accept(request: request, as: profile.id)
             }
@@ -121,6 +126,9 @@ final class FriendsState {
         let next: ReactionKind? = event.myReaction == kind ? nil : kind
         do {
             let updated = try await service.react(to: event, as: userRemoteID, kind: next)
+            if next != nil, event.myReaction == nil {
+                achievementCounters.increment(.reactionsGiven, user: userRemoteID)
+            }
             if let index = feed.firstIndex(where: { $0.id == updated.id }) {
                 feed[index] = updated
             }

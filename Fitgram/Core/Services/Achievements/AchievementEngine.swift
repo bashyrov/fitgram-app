@@ -28,6 +28,9 @@ struct AchievementEngine {
         /// How many achievement rows already on file. Used by the meta
         /// `achievements.ten` predicate without re-counting.
         var totalAchievementsEarned: Int
+        /// Non-meal counters for leveled tracks and special badges (water,
+        /// workouts, friends, …). Missing keys count as 0.
+        var counters: [AchievementMetric: Int] = [:]
 
         static let empty = Inputs(
             proteinGoalGrams: nil, carbsGoalGrams: nil, fatGoalGrams: nil,
@@ -56,9 +59,10 @@ struct AchievementEngine {
         considerDailyMilestones(dayBuckets, inputs: inputs, collector: collector)
         considerConsistencyMilestones(meals, dayBuckets: dayBuckets, inputs: inputs, collector: collector)
         considerLifetimeMilestones(meals, inputs: inputs, collector: collector)
+        let metrics = Self.metrics(meals: meals, dayBuckets: dayBuckets, inputs: inputs, calendar: calendar, now: now)
+        considerTrackMilestones(metrics, collector: collector)
+        considerSpecialMilestones(meals, dayBuckets: dayBuckets, metrics: metrics, collector: collector)
         considerMetaMilestones(inputs: inputs, collector: collector)
-
-        _ = now  // future-dated predicates can reach for this without an API churn
         return collector.unlocked
     }
 
@@ -227,10 +231,96 @@ struct AchievementEngine {
         collector.consider("achievements.ten") {
             inputs.totalAchievementsEarned + collector.unlocked.count >= 10
         }
-        for threshold in [25, 50, 75, 100] {
+        for threshold in [25, 50, 75, 100, 150, 200, 250, 300] {
             collector.consider("achievements.\(threshold)") {
                 inputs.totalAchievementsEarned + collector.unlocked.count >= threshold
             }
+        }
+    }
+
+    /// Meal-derived counters merged with the external ones from `inputs`.
+    static func metrics(
+        meals: [MealEntry],
+        dayBuckets: [Date: [MealEntry]],
+        inputs: Inputs,
+        calendar: Calendar,
+        now: Date
+    ) -> [AchievementMetric: Int] {
+        AchievementMetrics.fromMeals(
+            meals, dayBuckets: dayBuckets, calorieGoalKcal: inputs.calorieGoalKcal, calendar: calendar, now: now
+        ).merging(inputs.counters) { _, external in external }
+    }
+
+    private func considerTrackMilestones(_ metrics: [AchievementMetric: Int], collector: UnlockCollector) {
+        for track in AchievementTracks.all {
+            let value = metrics[track.metric] ?? 0
+            for (index, threshold) in track.thresholds.enumerated() {
+                collector.consider(track.id(level: index + 1)) { value >= threshold }
+            }
+        }
+    }
+
+    private func considerSpecialMilestones(
+        _ meals: [MealEntry],
+        dayBuckets: [Date: [MealEntry]],
+        metrics: [AchievementMetric: Int],
+        collector: UnlockCollector
+    ) {
+        let hour = { (meal: MealEntry) in calendar.component(.hour, from: meal.consumedAt) }
+        collector.consider("special.night_owl") { meals.contains { hour($0) >= 23 || hour($0) < 4 } }
+        collector.consider("special.early_bird") { meals.contains { $0.mealType == .breakfast && hour($0) < 7 } }
+        collector.consider("special.full_weekend") {
+            dayBuckets.keys.contains { day in
+                calendar.component(.weekday, from: day) == 7
+                    && calendar.date(byAdding: .day, value: 1, to: day).map { dayBuckets[$0] != nil } == true
+            }
+        }
+        collector.consider("special.five_meals") { dayBuckets.values.contains { $0.count >= 5 } }
+        collector.consider("special.rainbow") {
+            dayBuckets.values.contains { entries in
+                Set(entries.flatMap(\.items).map { $0.name.lowercased() }).count >= 8
+            }
+        }
+        let proteinPeak = dayBuckets.values.map { $0.reduce(0) { $0 + $1.totalProteinGrams } }.max() ?? 0
+        collector.consider("special.protein_150") { proteinPeak >= 150 }
+        collector.consider("special.protein_200") { proteinPeak >= 200 }
+        collector.consider("special.royal_breakfast") {
+            meals.contains { $0.mealType == .breakfast && $0.totalCaloriesKcal > 600 }
+        }
+        let waterPeak = metrics[.maxWaterDayMl] ?? 0
+        collector.consider("special.hydrated_2l") { waterPeak >= 2000 }
+        collector.consider("special.hydrated_3l") { waterPeak >= 3000 }
+        collector.consider("special.all_methods") { Set(meals.map(\.source)).count >= MealSource.allCases.count }
+        let days = dayBuckets.keys.sorted()
+        collector.consider("special.comeback") {
+            zip(days, days.dropFirst()).contains { previous, next in
+                (calendar.dateComponents([.day], from: previous, to: next).day ?? 0) >= 8
+            }
+        }
+        collector.consider("special.documented") {
+            meals.contains { $0.photoFilename != nil && !($0.notes ?? "").isEmpty && !$0.tags.isEmpty }
+        }
+        collector.consider("special.full_month") { Self.hasFullMonth(days: days, calendar: calendar) }
+        collector.consider("special.marathon") { (metrics[.maxWorkoutMinutes] ?? 0) >= 90 }
+        for holiday in AchievementSpecials.holidays {
+            collector.consider(holiday.id) {
+                days.contains { day in
+                    let parts = calendar.dateComponents([.month, .day], from: day)
+                    return parts.month == holiday.month && holiday.days.contains(parts.day ?? 0)
+                }
+            }
+        }
+    }
+
+    private static func hasFullMonth(days: [Date], calendar: Calendar) -> Bool {
+        let byMonth = Dictionary(grouping: days) { day -> DateComponents in
+            calendar.dateComponents([.year, .month], from: day)
+        }
+        return byMonth.contains { components, monthDays in
+            guard let start = calendar.date(from: components),
+                let range = calendar.range(of: .day, in: .month, for: start)
+            else { return false }
+            return monthDays.count >= range.count
         }
     }
 

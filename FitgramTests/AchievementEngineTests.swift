@@ -116,7 +116,11 @@ final class AchievementEngineTests: XCTestCase {
             streak: nil,
             alreadyEarned: ["meal.first", "scan.first"]
         )
-        XCTAssertTrue(unlocks.isEmpty)
+        XCTAssertFalse(unlocks.contains("meal.first"))
+        XCTAssertFalse(unlocks.contains("scan.first"))
+        let again = engine.evaluate(
+            meals: meals, streak: nil, alreadyEarned: Set(unlocks + ["meal.first", "scan.first"]))
+        XCTAssertTrue(again.isEmpty)
     }
 
     // MARK: - New sources

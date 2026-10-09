@@ -47,6 +47,8 @@ struct ProfileView: View {
     @State private var selectedHeatmapDay: HeatmapDay?
     @State private var searchSelectedMeal: MealEntry?
     @State private var selectedAchievement: AchievementSelection?
+    @State private var isAllAchievementsPresented = false
+    @State private var achievementMetrics: [AchievementMetric: Int] = [:]
     @AppStorage(AppAccentPalette.storageKey) private var accentRaw = AppAccentPalette.rose.rawValue
 
     private struct HeatmapDay: Identifiable {
@@ -73,7 +75,7 @@ struct ProfileView: View {
                         if let user {
                             goalsGroupedSystem(user: user)
                         }
-                        if !earnedAchievements.isEmpty {
+                        if user != nil {
                             achievementsRail
                         }
                         if let heatmapSnapshot {
@@ -158,6 +160,13 @@ struct ProfileView: View {
                     photoStore: photoStore,
                     onDismiss: { searchSelectedMeal = nil },
                     onChanged: {}
+                )
+            }
+            .sheet(isPresented: $isAllAchievementsPresented) {
+                AllAchievementsView(
+                    earnedKindsToDate: Dictionary(
+                        earnedAchievements.map { ($0.kind, $0.earnedAt) }, uniquingKeysWith: { lhs, _ in lhs }),
+                    metrics: achievementMetrics
                 )
             }
             .sheet(item: $selectedAchievement) { selection in
@@ -538,12 +547,33 @@ struct ProfileView: View {
     /// locked ones (track). Tap → existing `AchievementDetailSheet`.
     private var achievementsRail: some View {
         VStack(alignment: .leading, spacing: 0) {
-            profileSectionHeader(
-                number: "03",
-                title: L("Twoje odznaki"),
-                caption: String.localizedStringWithFormat(
-                    L("%lld / %lld"), earnedAchievements.count, AchievementCatalog.all.count)
-            )
+            MonoSectionHeader(number: "03", title: L("Twoje odznaki")) {
+                Button {
+                    isAllAchievementsPresented = true
+                    Haptics.light()
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(
+                            String.localizedStringWithFormat(
+                                L("%lld / %lld"), earnedAchievements.count, AchievementCatalog.all.count))
+                        Image(systemName: "chevron.right")
+                    }
+                    .font(Tokens.Font.manrope(12, weight: 800))
+                    .foregroundStyle(Tokens.Palette.ink)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 6)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
+            Button {
+                isAllAchievementsPresented = true
+                Haptics.light()
+            } label: {
+                PlayerLevelCard(earnedIDs: earnedAchievements.map(\.kind))
+            }
+            .buttonStyle(.plain)
+            .padding(.bottom, 8)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(latestAchievements, id: \.id) { item in
@@ -863,7 +893,9 @@ struct ProfileView: View {
             earnedAchievements = []
             return
         }
+        _ = try? achievementService.evaluate(forUser: user.remoteID)
         earnedAchievements = (try? achievementService.earned(forUser: user.remoteID)) ?? []
+        achievementMetrics = achievementService.metrics(forUser: user.remoteID)
     }
 }
 
