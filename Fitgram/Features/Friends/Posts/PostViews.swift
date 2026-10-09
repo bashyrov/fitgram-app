@@ -1,16 +1,17 @@
 import SwiftUI
 
-/// Mini FIT logo on an accent pill — shown next to Premium users' names.
+/// Mini coloured FIT logo, no background — shown next to Premium users'
+/// names.
 struct PremiumMark: View {
     var height: CGFloat = 16
+    /// Sits on a dark hero card (own profile) rather than a light card.
+    var onDark = false
 
     var body: some View {
-        FitgramLogoMark(color: Tokens.Mono.onHi)
+        FitgramLogoMark(color: onDark ? Tokens.Mono.hi : Tokens.Mono.Brand.logo)
             .aspectRatio(240.0 / 112.0, contentMode: .fit)
-            .frame(height: height * 0.56)
-            .padding(.horizontal, height * 0.3)
+            .frame(height: height * 0.8)
             .frame(height: height)
-            .background(Capsule().fill(Tokens.Mono.hi))
             .accessibilityElement()
             .accessibilityLabel(Text(verbatim: "Premium"))
     }
