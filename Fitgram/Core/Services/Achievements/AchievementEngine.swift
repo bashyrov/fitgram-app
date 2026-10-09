@@ -48,6 +48,19 @@ struct AchievementEngine {
         inputs: Inputs = .empty,
         now: Date = Date()
     ) -> [String] {
+        evaluate(
+            facts: meals.map(MealFacts.init), streak: streak, alreadyEarned: alreadyEarned, inputs: inputs, now: now)
+    }
+
+    /// Same as `evaluate(meals:…)` over plain snapshots. SwiftData property
+    /// access is slow, so callers read each meal once and reuse the facts.
+    func evaluate(
+        facts meals: [MealFacts],
+        streak: Streak?,
+        alreadyEarned: Set<String>,
+        inputs: Inputs = .empty,
+        now: Date = Date()
+    ) -> [String] {
         // Order matters: unlocks are reported in evaluation order and the
         // meta badges count everything unlocked earlier in this call.
         let collector = UnlockCollector(alreadyEarned: alreadyEarned)
@@ -81,7 +94,7 @@ struct AchievementEngine {
         }
     }
 
-    private func considerEntryMilestones(_ meals: [MealEntry], inputs: Inputs, collector: UnlockCollector) {
+    private func considerEntryMilestones(_ meals: [MealFacts], inputs: Inputs, collector: UnlockCollector) {
         // Onboarding milestones — single positive sample is enough.
         let totalMeals = meals.count
         collector.consider("meal.first") { !meals.isEmpty }
@@ -127,7 +140,7 @@ struct AchievementEngine {
     }
 
     private func considerDailyMilestones(
-        _ dayBuckets: [Date: [MealEntry]],
+        _ dayBuckets: [Date: [MealFacts]],
         inputs: Inputs,
         collector: UnlockCollector
     ) {
@@ -177,8 +190,8 @@ struct AchievementEngine {
     }
 
     private func considerConsistencyMilestones(
-        _ meals: [MealEntry],
-        dayBuckets: [Date: [MealEntry]],
+        _ meals: [MealFacts],
+        dayBuckets: [Date: [MealFacts]],
         inputs: Inputs,
         collector: UnlockCollector
     ) {
@@ -208,7 +221,7 @@ struct AchievementEngine {
         }
     }
 
-    private func considerLifetimeMilestones(_ meals: [MealEntry], inputs: Inputs, collector: UnlockCollector) {
+    private func considerLifetimeMilestones(_ meals: [MealFacts], inputs: Inputs, collector: UnlockCollector) {
         collector.consider("recipes.ten") { inputs.totalRecipeCooks >= 10 }
         for threshold in [3, 25, 50, 100] {
             collector.consider("recipes.cooked.\(threshold)") { inputs.totalRecipeCooks >= threshold }
@@ -240,8 +253,8 @@ struct AchievementEngine {
 
     /// Meal-derived counters merged with the external ones from `inputs`.
     static func metrics(
-        meals: [MealEntry],
-        dayBuckets: [Date: [MealEntry]],
+        meals: [MealFacts],
+        dayBuckets: [Date: [MealFacts]],
         inputs: Inputs,
         calendar: Calendar,
         now: Date
@@ -261,12 +274,12 @@ struct AchievementEngine {
     }
 
     private func considerSpecialMilestones(
-        _ meals: [MealEntry],
-        dayBuckets: [Date: [MealEntry]],
+        _ meals: [MealFacts],
+        dayBuckets: [Date: [MealFacts]],
         metrics: [AchievementMetric: Int],
         collector: UnlockCollector
     ) {
-        let hour = { (meal: MealEntry) in calendar.component(.hour, from: meal.consumedAt) }
+        let hour = { (meal: MealFacts) in calendar.component(.hour, from: meal.consumedAt) }
         collector.consider("special.night_owl") { meals.contains { hour($0) >= 23 || hour($0) < 4 } }
         collector.consider("special.early_bird") { meals.contains { $0.mealType == .breakfast && hour($0) < 7 } }
         collector.consider("special.full_weekend") {
@@ -278,7 +291,7 @@ struct AchievementEngine {
         collector.consider("special.five_meals") { dayBuckets.values.contains { $0.count >= 5 } }
         collector.consider("special.rainbow") {
             dayBuckets.values.contains { entries in
-                Set(entries.flatMap(\.items).map { $0.name.lowercased() }).count >= 8
+                Set(entries.flatMap(\.itemNames).map { $0.lowercased() }).count >= 8
             }
         }
         let proteinPeak = dayBuckets.values.map { $0.reduce(0) { $0 + $1.totalProteinGrams } }.max() ?? 0
@@ -346,7 +359,7 @@ struct AchievementEngine {
         return best
     }
 
-    static func groupByDay(_ meals: [MealEntry], calendar: Calendar) -> [Date: [MealEntry]] {
+    static func groupByDay(_ meals: [MealFacts], calendar: Calendar) -> [Date: [MealFacts]] {
         Dictionary(grouping: meals) { calendar.startOfDay(for: $0.consumedAt) }
     }
 }

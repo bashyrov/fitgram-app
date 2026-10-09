@@ -373,18 +373,18 @@ private struct ChainedMealSaver: MealSaving {
             try? calibrationService.recordSample(forUser: userRemoteID)
         }
         try? streakService.registerLog(for: userRemoteID)
-        if let unlocks = try? achievementService.evaluateAfterSaving(
-            meal: meal,
-            forUser: userRemoteID
-        ),
-            !unlocks.isEmpty
-        {
+        // Badges are checked after the save returns so the sheet closes
+        // right away; the banner follows a moment later.
+        Task { @MainActor [achievementService, unlockBus, notificationCoordinator, userRemoteID] in
+            await Task.yield()
+            guard
+                let unlocks = try? achievementService.evaluateAfterSaving(meal: meal, forUser: userRemoteID),
+                !unlocks.isEmpty
+            else { return }
             unlockBus.push(unlocks)
             Haptics.medium()
-            Task {
-                for unlock in unlocks {
-                    await notificationCoordinator.notifyAchievement(unlock)
-                }
+            for unlock in unlocks {
+                await notificationCoordinator.notifyAchievement(unlock)
             }
         }
         Task { await notificationCoordinator.rescheduleAll(for: userRemoteID) }

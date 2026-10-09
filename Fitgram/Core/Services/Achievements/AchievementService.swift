@@ -11,6 +11,15 @@ final class AchievementService {
     private let container: ModelContainer
     private let engine: AchievementEngine
     private let counterStore: AchievementCounterStore
+    /// Snapshots keyed by meal id, reused while `updatedAt` is unchanged.
+    /// Reading items out of SwiftData costs ~1 s per 1 000 meals, so only
+    /// new or edited meals are re-read on each evaluation.
+    private var factsCache: [UUID: CachedFacts] = [:]
+
+    private struct CachedFacts {
+        let updatedAt: Date
+        let facts: MealFacts
+    }
 
     init(
         container: ModelContainer,
@@ -25,7 +34,7 @@ final class AchievementService {
     /// Current value of every track metric, for the "Levels" progress view.
     func metrics(forUser userRemoteID: String) -> [AchievementMetric: Int] {
         let context = ModelContext(container)
-        let meals = (try? context.fetch(FetchDescriptor<MealEntry>())) ?? []
+        let meals = (try? mealFacts(in: context)) ?? []
         guard let inputs = try? engineInputs(for: userRemoteID, earnedCount: 0, in: context) else { return [:] }
         return AchievementEngine.metrics(
             meals: meals,
@@ -53,6 +62,28 @@ final class AchievementService {
         forUser userRemoteID: String
     ) throws -> [AchievementDefinition] {
         try evaluate(forUser: userRemoteID, afterSavingMealID: savedMeal.id)
+    }
+
+    /// Every meal on the device as snapshots, oldest first.
+    private func mealFacts(in context: ModelContext) throws -> [MealFacts] {
+        let meals = try context.fetch(
+            FetchDescriptor<MealEntry>(sortBy: [SortDescriptor(\MealEntry.consumedAt)])
+        )
+        var fresh: [UUID: CachedFacts] = [:]
+        fresh.reserveCapacity(meals.count)
+        let facts = meals.map { meal -> MealFacts in
+            let id = meal.id
+            let updatedAt = meal.updatedAt
+            if let cached = factsCache[id], cached.updatedAt == updatedAt {
+                fresh[id] = cached
+                return cached.facts
+            }
+            let snapshot = MealFacts(meal)
+            fresh[id] = CachedFacts(updatedAt: updatedAt, facts: snapshot)
+            return snapshot
+        }
+        factsCache = fresh
+        return facts
     }
 
     /// Goals and lifetime counters the engine needs besides meals + streak.
@@ -140,10 +171,7 @@ final class AchievementService {
         // MealEntry has no userRemoteID yet (single-user installs). Pull
         // every entry on the device — once multi-user lands the predicate
         // will move into the descriptor.
-        let meals = try context.fetch(
-            FetchDescriptor<MealEntry>(
-                sortBy: [SortDescriptor(\MealEntry.consumedAt)]
-            ))
+        let meals = try mealFacts(in: context)
 
         let streakDescriptor = FetchDescriptor<Streak>(
             predicate: #Predicate { $0.userRemoteID == userRemoteID }
@@ -153,7 +181,7 @@ final class AchievementService {
         let inputs = try engineInputs(for: userRemoteID, earnedCount: already.count, in: context)
 
         let unlockedIDs = engine.evaluate(
-            meals: meals, streak: streak,
+            facts: meals, streak: streak,
             alreadyEarned: earnedIDs, inputs: inputs
         )
         let idsToGrant: [String]
@@ -161,7 +189,7 @@ final class AchievementService {
             let previousMeals = meals.filter { $0.id != savedMealID }
             let previousUnlockedIDs = Set(
                 engine.evaluate(
-                    meals: previousMeals, streak: streak,
+                    facts: previousMeals, streak: streak,
                     alreadyEarned: earnedIDs, inputs: inputs
                 )
             )

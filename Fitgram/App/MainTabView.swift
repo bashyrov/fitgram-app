@@ -104,6 +104,7 @@ struct MainTabView: View {
     @State private var undoDismissTask: Task<Void, Never>?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
+    @State private var lastAchievementCheck = Date.distantPast
     @State private var goalTrackingState: GoalTrackingState
     @State private var isGoalTrackingPresented = false
     @State private var isAddWorkoutPresented = false
@@ -223,6 +224,9 @@ struct MainTabView: View {
     /// friends, weight, …). A large backlog is granted quietly; only the
     /// first few get a banner.
     private func checkAchievements() {
+        let now = Date()
+        guard now.timeIntervalSince(lastAchievementCheck) > 20 else { return }
+        lastAchievementCheck = now
         guard let unlocks = try? achievementService.evaluate(forUser: authUser.id), !unlocks.isEmpty else { return }
         unlockBus.push(Array(unlocks.prefix(3)))
         Haptics.medium()
