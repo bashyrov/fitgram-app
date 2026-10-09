@@ -55,29 +55,29 @@ extension AppAccentPalette {
                 fat: 0xF5A962, muted: 0x93A5B2)
         case .amber:
             return Self.lightRoles(
-                hero: 0x1A2116, heroMuted: 0x9DA894, heroLine: 0x2E3829, hi: 0xA8DB57, onHi: 0x171A1C,
+                hero: 0x2C3527, heroMuted: 0xA7B19E, heroLine: 0x3F4A39, hi: 0xA8DB57, onHi: 0x171A1C,
                 track: 0xE4EBD4, accent: 0x548038, onAccent: 0xFFFFFF, onAccentSub: 0xE3F0D2, fat: 0xD9A55B,
                 ink: 0x171A1C, muted: 0x5B6356)
         case .porcelainCoralSky:
             return Self.lightRoles(
-                hero: 0x22283A, heroMuted: 0x9AA2B8, heroLine: 0x363D52, hi: 0x8CA8D4, onHi: 0x171A1C,
+                hero: 0x343B50, heroMuted: 0xA5ADC2, heroLine: 0x474F66, hi: 0x8CA8D4, onHi: 0x171A1C,
                 track: 0xE2E5EF, accent: 0x8CA8D4, onAccent: 0x171A1C, onAccentSub: 0x2F3E57, fat: 0xEBC999,
                 ink: 0x1C2030, muted: 0x5C6273)
         case .matchaCeramic:
             return Self.lightRoles(
-                hero: 0x1E241A, heroMuted: 0xA0A895, heroLine: 0x323A2C, hi: 0xA9C98C, onHi: 0x171A1C,
+                hero: 0x30382B, heroMuted: 0xAAB29F, heroLine: 0x434C3D, hi: 0xA9C98C, onHi: 0x171A1C,
                 track: 0xE6E3D3, accent: 0x6B8F52, onAccent: 0xFFFFFF, onAccentSub: 0xE6F0DC, fat: 0xC99A6B,
                 ink: 0x171A1C, muted: 0x5E6357)
         case .nordicBerry:
             return Self.lightRoles(
-                hero: 0x1B2433, heroMuted: 0x8E9AAD, heroLine: 0x2E3A4D, hi: 0xE7A3C4, onHi: 0x1B2433,
+                hero: 0x2D384A, heroMuted: 0x9AA6B8, heroLine: 0x404D61, hi: 0xE7A3C4, onHi: 0x1B2433,
                 track: 0xE1E8EF, accent: 0x942E61, onAccent: 0xFFFFFF, onAccentSub: 0xF7D3E4, fat: 0x85A3C2,
                 ink: 0x1B1F2A, muted: 0x5B6575)
         default:
             // Citrus White (`.rose`) and every non-selectable legacy palette.
             return Self.lightRoles(
-                hero: 0x171A1C, heroMuted: 0x9AA09C, heroLine: 0x2E3337, hi: 0xF08A45, onHi: 0x171A1C,
-                track: 0xEEE7DC, accent: 0xE6752E, onAccent: 0x171A1C, onAccentSub: 0x5A2A0C, fat: 0xD9B36C,
+                hero: 0x2C3136, heroMuted: 0xA4AAA6, heroLine: 0x40464C, hi: 0xF3A774, onHi: 0x171A1C,
+                track: 0xEEE7DC, accent: 0xEC915A, onAccent: 0x171A1C, onAccentSub: 0x5A2A0C, fat: 0xD9B36C,
                 ink: 0x171A1C, muted: 0x5F6366)
         }
     }
@@ -141,6 +141,17 @@ extension Tokens {
 }
 
 extension Tokens.Mono {
+    /// Brand screens (splash, sign-in, welcome): dark on dark palettes,
+    /// light paper with ink stripes on light ones.
+    enum Brand {
+        static var isLight: Bool { AppAccentPalette.current.preferredColorScheme == .light }
+        static var background: Color { isLight ? Tokens.Palette.background : Tokens.Mono.hero }
+        static var text: Color { isLight ? Tokens.Palette.ink : Tokens.Mono.onHero }
+        static var muted: Color { isLight ? Tokens.Mono.muted : Tokens.Mono.heroMuted }
+        /// The FIT mark: the stronger accent reads better on paper.
+        static var logo: Color { isLight ? Tokens.Mono.accent : Tokens.Mono.hi }
+    }
+
     enum Radius {
         static let hero: CGFloat = 26
         static let card: CGFloat = 24

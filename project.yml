@@ -111,7 +111,7 @@ targets:
           - ru
           - es
         UILaunchScreen:
-          UIColorName: LaunchBackground
+          UIColorName: BrandBackground
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         UISupportedInterfaceOrientations:
