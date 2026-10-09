@@ -19,6 +19,8 @@ final class InMemoryFriendService: FriendService {
     /// Per-friend rich snapshot — produced once at seed time so the
     /// stub returns realistic data on every call.
     private var snapshots: [String: FriendProfileSnapshot] = [:]
+    /// Profile visibility per user; missing means `.friendsOnly`.
+    private var visibility: [String: PrivacySettings.Visibility] = [:]
     private let now: () -> Date
 
     // swiftlint:disable function_body_length
@@ -83,9 +85,19 @@ final class InMemoryFriendService: FriendService {
             currentStreak: 18,
             achievementCount: 14
         )
-        for profile in [testFriend, marta, ania, kasia, michal, ola] {
+        let handles: [String: (username: String, premium: Bool)] = [
+            testFriend.id: ("fitgram_test", true), marta.id: ("marta_fit", true), ania.id: ("ania.fit", true),
+            kasia.id: ("kasia_zdrowo", false), michal.id: ("michal", false), ola.id: ("ola_k", true),
+        ]
+        for var profile in [testFriend, marta, ania, kasia, michal, ola] {
+            profile.username = handles[profile.id]?.username
+            profile.isPremium = handles[profile.id]?.premium ?? false
             seedProfiles[profile.id] = profile
             seedFriendships.insert(UnorderedPair(userID, profile.id))
+        }
+        // Two people who aren't friends yet: one open, one closed profile.
+        for stranger in Self.strangers {
+            seedProfiles[stranger.profile.id] = stranger.profile
         }
 
         // Mock pending request from a non-friend.
@@ -96,7 +108,8 @@ final class InMemoryFriendService: FriendService {
             sharesStreak: false,
             sharesAchievements: false,
             currentStreak: nil,
-            achievementCount: nil
+            achievementCount: nil,
+            username: "nina"
         )
         seedProfiles[nina.id] = nina
 
@@ -190,6 +203,7 @@ final class InMemoryFriendService: FriendService {
                 createdAt: now().addingTimeInterval(-8 * 60)
             )
         ]
+        self.visibility = Dictionary(uniqueKeysWithValues: Self.strangers.map { ($0.profile.id, $0.visibility) })
         self.snapshots = Self.makeSeedSnapshots(
             cast: SeedCast(
                 testFriend: testFriend, marta: marta, ania: ania, kasia: kasia, michal: michal, ola: ola,
@@ -211,24 +225,40 @@ final class InMemoryFriendService: FriendService {
     }
 
     func pendingIncoming(for userID: String) async throws -> [FriendRequest] {
-        requests.filter { $0.toUserID == userID && $0.status == .pending }
+        requests.filter { $0.toUserID == userID && $0.status == .pending }.map { request in
+            var copy = request
+            copy.counterpart = profiles[request.fromUserID]
+            return copy
+        }
     }
 
     func pendingOutgoing(for userID: String) async throws -> [FriendRequest] {
-        requests.filter { $0.fromUserID == userID && $0.status == .pending }
+        requests.filter { $0.fromUserID == userID && $0.status == .pending }.map { request in
+            var copy = request
+            copy.counterpart = profiles[request.toUserID]
+            return copy
+        }
     }
 
     func search(query: String, excluding userID: String) async throws -> [PublicProfile] {
-        let trimmed = query.trimmingCharacters(in: .whitespaces).lowercased()
+        let trimmed = UsernamePolicy.normalize(query)
         guard !trimmed.isEmpty else { return [] }
+        let blocked = blocks[userID] ?? []
         return profiles.values
-            .filter { $0.id != userID }
-            .filter { $0.displayName.localizedCaseInsensitiveContains(trimmed) }
+            .filter { $0.id != userID && !blocked.contains($0.id) }
+            .filter {
+                $0.displayName.localizedCaseInsensitiveContains(trimmed)
+                    || ($0.username?.contains(trimmed) ?? false)
+            }
             .sorted { $0.displayName < $1.displayName }
     }
 
     func profile(forCode code: String) async throws -> PublicProfile {
-        guard let profile = profiles[code] else { throw FriendError.notFound(query: code) }
+        if let profile = profiles[code] { return profile }
+        let username = UsernamePolicy.normalize(code)
+        guard let profile = profiles.values.first(where: { $0.username == username }) else {
+            throw FriendError.notFound(query: code)
+        }
         return profile
     }
 
@@ -301,35 +331,6 @@ final class InMemoryFriendService: FriendService {
 
     // MARK: - Profile snapshot + reactions + blocks
 
-    func snapshot(forUserID userID: String, viewer: String) async throws -> FriendProfileSnapshot {
-        if blocks[viewer]?.contains(userID) == true {
-            throw FriendError.notFound(query: userID)
-        }
-        guard let snapshot = snapshots[userID] else {
-            throw FriendError.notFound(query: userID)
-        }
-        // Recent events for this friend pulled from the feed so the
-        // Activity tab has something to render.
-        let events = feed.filter { $0.actorID == userID }.sorted { $0.createdAt > $1.createdAt }
-        return FriendProfileSnapshot(
-            id: snapshot.id,
-            displayName: snapshot.displayName,
-            username: snapshot.username,
-            avatarURL: snapshot.avatarURL,
-            bio: snapshot.bio,
-            memberSinceDate: snapshot.memberSinceDate,
-            currentStreak: snapshot.currentStreak,
-            level: snapshot.level,
-            goalLabel: snapshot.goalLabel,
-            achievements: snapshot.achievements,
-            weeklyStats: snapshot.weeklyStats,
-            topRecipes: snapshot.topRecipes,
-            recentEvents: events.isEmpty ? nil : events,
-            weightKg: snapshot.weightKg,
-            heightCm: snapshot.heightCm
-        )
-    }
-
     func sendPositiveReaction(
         to userID: String, from viewer: String, intent: PositiveReactionIntent
     ) async throws {
@@ -383,6 +384,68 @@ final class InMemoryFriendService: FriendService {
         Logger.persistence.notice(
             "Moderation report from \(viewer, privacy: .private) → \(userID, privacy: .private): \(reason, privacy: .public)"
         )
+    }
+}
+
+// Profile snapshots + post visibility.
+extension InMemoryFriendService {
+    func snapshot(forUserID userID: String, viewer: String) async throws -> FriendProfileSnapshot {
+        if blocks[viewer]?.contains(userID) == true || blocks[userID]?.contains(viewer) == true {
+            throw FriendError.notFound(query: userID)
+        }
+        guard let snapshot = snapshots[userID] else {
+            throw FriendError.notFound(query: userID)
+        }
+        let profile = profiles[userID]
+        let isFriend = friendships.contains(UnorderedPair(viewer, userID))
+        let canView: Bool =
+            switch visibility[userID] ?? .friendsOnly {
+            case .publicLink: true
+            case .friendsOnly: isFriend || viewer == userID
+            case .privateOnly: viewer == userID
+            }
+        guard canView else {
+            return FriendProfileSnapshot(
+                id: snapshot.id, displayName: snapshot.displayName, username: snapshot.username,
+                avatarURL: snapshot.avatarURL, bio: nil, memberSinceDate: nil, currentStreak: nil, level: nil,
+                goalLabel: nil, achievements: nil, weeklyStats: nil, topRecipes: nil, recentEvents: nil,
+                weightKg: nil, heightCm: nil, isPremium: profile?.isPremium ?? false, isRestricted: true
+            )
+        }
+        // Recent events for this friend pulled from the feed so the
+        // Activity tab has something to render.
+        let events = feed.filter { $0.actorID == userID }.sorted { $0.createdAt > $1.createdAt }
+        return FriendProfileSnapshot(
+            id: snapshot.id,
+            displayName: snapshot.displayName,
+            username: snapshot.username,
+            avatarURL: snapshot.avatarURL,
+            bio: snapshot.bio,
+            memberSinceDate: snapshot.memberSinceDate,
+            currentStreak: snapshot.currentStreak,
+            level: snapshot.level,
+            goalLabel: snapshot.goalLabel,
+            achievements: snapshot.achievements,
+            weeklyStats: snapshot.weeklyStats,
+            topRecipes: snapshot.topRecipes,
+            recentEvents: events.isEmpty ? nil : events,
+            weightKg: snapshot.weightKg,
+            heightCm: snapshot.heightCm,
+            isPremium: profile?.isPremium ?? false
+        )
+    }
+
+    /// Whether `viewer` may read `authorID`'s posts (friends, or anyone when
+    /// the author's profile is public).
+    func canViewPosts(of authorID: String, viewer: String) -> Bool {
+        if authorID == viewer { return true }
+        if blocks[viewer]?.contains(authorID) == true || blocks[authorID]?.contains(viewer) == true { return false }
+        if friendships.contains(UnorderedPair(viewer, authorID)) { return true }
+        return visibility[authorID] == .publicLink
+    }
+
+    func knows(_ userID: String) -> Bool {
+        profiles[userID] != nil
     }
 }
 

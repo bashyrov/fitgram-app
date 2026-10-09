@@ -83,7 +83,7 @@ struct PaywallHero: View {
     }
 }
 
-/// "What you get in Pro" — four outcome-led benefit rows.
+/// "What you get in Pro" — outcome-led benefit rows.
 struct PaywallBenefitList: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -105,6 +105,20 @@ struct PaywallBenefitList: View {
                     symbol: "chart.line.uptrend.xyaxis",
                     title: L("Pełna historia i eksport"),
                     text: L("Wykresy postępów oraz CSV i ZIP dla dietetyka."))
+                row(
+                    symbol: "text.bubble",
+                    title: TL(
+                        pl: "Posty dla znajomych", en: "Posts for friends", uk: "Пости для друзів",
+                        ru: "Посты для друзей", es: "Publicaciones para amigos"),
+                    text: TL(
+                        pl:
+                            "Do \(PostLimits.dailyMax) postów dziennie ze zdjęciem i makro, plus znaczek Premium przy imieniu.",
+                        en:
+                            "Up to \(PostLimits.dailyMax) posts a day with photos and macros, plus a Premium mark by your name.",
+                        uk: "До \(PostLimits.dailyMax) постів на день з фото й макро та значок Premium біля імені.",
+                        ru: "До \(PostLimits.dailyMax) постов в день с фото и макро и значок Premium рядом с именем.",
+                        es: "Hasta \(PostLimits.dailyMax) publicaciones al día con fotos y macros, y la marca Premium.")
+                )
             }
             .monoCard(padding: 16)
         }

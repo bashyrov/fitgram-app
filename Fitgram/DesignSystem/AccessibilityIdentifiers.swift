@@ -19,6 +19,7 @@ enum A11yID {
     enum Onboarding {
         static let welcomeStart = "onboarding.welcome.start"
         static let welcomeSkip = "onboarding.welcome.skip"
+        static let usernameField = "onboarding.account.username"
         static let goalContinue = "onboarding.goal.continue"
         static let profileContinue = "onboarding.profile.continue"
         static let dietaryContinue = "onboarding.dietary.continue"

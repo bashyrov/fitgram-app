@@ -14,6 +14,9 @@ struct PublicProfileRow: Decodable {
     let photoURL: String?
     let bio: String?
     let createdAt: String?
+    let isPremium: Bool?
+
+    static let selectColumns = "user_id,username,display_name,photo_url,bio,created_at,is_premium"
 
     private enum CodingKeys: String, CodingKey {
         case userID = "userId"
@@ -22,6 +25,7 @@ struct PublicProfileRow: Decodable {
         case photoURL = "photoUrl"
         case bio
         case createdAt
+        case isPremium
     }
 
     var toPublicProfile: PublicProfile {
@@ -32,7 +36,9 @@ struct PublicProfileRow: Decodable {
             sharesStreak: true,
             sharesAchievements: true,
             currentStreak: nil,
-            achievementCount: nil
+            achievementCount: nil,
+            username: username,
+            isPremium: isPremium ?? false
         )
     }
 }
@@ -147,6 +153,12 @@ struct ReactionInsert: Encodable {
     let toUser: String
     let eventID: UUID?
     let reactionType: String
+}
+
+/// Arguments of the `can_view_profile` / `can_view_posts` RPCs.
+struct ViewerOwnerArgs: Encodable {
+    let viewer: String
+    let owner: String
 }
 
 struct BlockInsert: Encodable {

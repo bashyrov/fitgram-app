@@ -259,8 +259,18 @@ struct ProfileView: View {
                         .foregroundStyle(Tokens.Mono.onHero)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
-                    if entitlementsStore.current.isPremium {
-                        premiumBadge
+                    if user?.username != nil || entitlementsStore.current.isPremium {
+                        HStack(spacing: 6) {
+                            if let username = user?.username {
+                                Text(verbatim: "@\(username)")
+                                    .font(Tokens.Font.manrope(13, weight: 800))
+                                    .foregroundStyle(Tokens.Mono.onHero)
+                                    .lineLimit(1)
+                            }
+                            if entitlementsStore.current.isPremium {
+                                PremiumMark(height: 18)
+                            }
+                        }
                     }
                     Text(vibeLine)
                         .font(Tokens.Font.manrope(13, weight: 600))
@@ -278,16 +288,6 @@ struct ProfileView: View {
             RoundedRectangle(cornerRadius: Tokens.Mono.Radius.hero, style: .continuous)
                 .fill(Tokens.Mono.hero)
         )
-    }
-
-    private var premiumBadge: some View {
-        Text(L("PREMIUM"))
-            .font(Tokens.Font.manrope(10, weight: 800))
-            .tracking(1)
-            .foregroundStyle(Tokens.Mono.onHi)
-            .padding(.horizontal, 8)
-            .frame(height: 22)
-            .background(Capsule().fill(Tokens.Mono.hi))
     }
 
     private var profileHeroStats: some View {

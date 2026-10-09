@@ -29,10 +29,17 @@ struct PrivacySettingsSheet: View {
                     )
                     sectionHeader(number: "01", title: L("Kto może zobaczyć Twój profil"), top: 4)
                     visibilityCard
+                    sectionHeader(
+                        number: "02",
+                        title: TL(
+                            pl: "Kto widzi Twoje posty", en: "Who sees your posts", uk: "Хто бачить твої пости",
+                            ru: "Кто видит твои посты", es: "Quién ve tus publicaciones"),
+                        top: 12)
+                    postsVisibilityCard
                     if draft.visibility != .privateOnly {
-                        sectionHeader(number: "02", title: L("What to share"), top: 12)
+                        sectionHeader(number: "03", title: L("What to share"), top: 12)
                         toggleCard
-                        sectionHeader(number: "03", title: L("Wrażliwe dane"), top: 12, bottom: 8)
+                        sectionHeader(number: "04", title: L("Wrażliwe dane"), top: 12, bottom: 8)
                         MonoHint(
                             text: L(
                                 "This data is disabled by default. You only enable it if you consciously want to show it."
@@ -79,9 +86,56 @@ struct PrivacySettingsSheet: View {
             visibilityRow(.friendsOnly, label: L("Tylko znajomi"), subtitle: L("Widoczne dla osób, które dodały Cię"))
             MonoRowDivider(inset: 16)
             visibilityRow(
-                .publicLink, label: L("Wszyscy z linkiem"), subtitle: L("Anyone with your code can see your profile"))
+                .publicLink,
+                label: TL(pl: "Wszyscy", en: "Everyone", uk: "Усі", ru: "Все", es: "Todos"),
+                subtitle: TL(
+                    pl: "Każdy, kto znajdzie Cię w Fitgram", en: "Anyone who finds you on Fitgram",
+                    uk: "Будь-хто, хто знайде тебе у Fitgram", ru: "Любой, кто найдёт тебя в Fitgram",
+                    es: "Cualquiera que te encuentre en Fitgram"))
         }
         .monoRowsCard()
+    }
+
+    private var postsVisibilityCard: some View {
+        VStack(spacing: 0) {
+            postsRow(
+                .friends,
+                label: TL(
+                    pl: "Tylko znajomi", en: "Friends only", uk: "Лише друзі", ru: "Только друзья",
+                    es: "Solo amigos"),
+                subtitle: TL(
+                    pl: "Zamknięty profil — posty widzą tylko znajomi", en: "Closed — only friends see your posts",
+                    uk: "Закритий — пости бачать лише друзі", ru: "Закрытый — посты видят только друзья",
+                    es: "Cerrado: solo tus amigos ven tus publicaciones"))
+            MonoRowDivider(inset: 16)
+            postsRow(
+                .everyone,
+                label: TL(pl: "Wszyscy", en: "Everyone", uk: "Усі", ru: "Все", es: "Todos"),
+                subtitle: TL(
+                    pl: "Otwarty profil — posty widzi każdy, kto Cię znajdzie",
+                    en: "Open — anyone who finds you sees your posts",
+                    uk: "Відкритий — пости бачить кожен, хто тебе знайде",
+                    ru: "Открытый — посты видит любой, кто тебя найдёт",
+                    es: "Abierto: cualquiera que te encuentre ve tus publicaciones"))
+        }
+        .monoRowsCard()
+    }
+
+    private func postsRow(_ option: PrivacySettings.PostsVisibility, label: String, subtitle: String) -> some View {
+        let isSelected = draft.postsVisibility == option
+        return Button {
+            Haptics.selection()
+            withAnimation(Tokens.Motion.quick) { draft.postsVisibility = option }
+        } label: {
+            MonoRow(title: label, sub: subtitle) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 16, weight: .heavy))
+                    .foregroundStyle(Tokens.Palette.ink)
+                    .opacity(isSelected ? 1 : 0)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private func visibilityRow(

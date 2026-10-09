@@ -21,6 +21,7 @@ enum PaywallTrigger: String, Equatable, Sendable {
     case themePicker = "theme_picker"
     case iCloudSync = "icloud_sync"
     case goalTracking = "goal_tracking"
+    case socialPosts = "social_posts"
     case manual = "manual"
 }
 
@@ -117,6 +118,33 @@ extension PaywallTrigger {
                 headline: L("Śledzenie celu — Premium"),
                 body: L("Daily weight, trend chart, and reminder. Premium unlocks full progress tracking."),
                 badge: L("Goal")
+            )
+        case .socialPosts:
+            return Copy(
+                headline: TL(
+                    pl: "Posty dla znajomych — Premium", en: "Posts for friends — Premium",
+                    uk: "Пости для друзів — Premium", ru: "Посты для друзей — Premium",
+                    es: "Publicaciones para amigos: Premium"),
+                body: TL(
+                    pl:
+                        "Z Premium publikujesz do \(PostLimits.dailyMax) postów dziennie: tytuł, opis, zdjęcie i makro z dowolnego dnia. "
+                        + "Przy Twoim imieniu pojawi się znaczek Premium.",
+                    en:
+                        "With Premium you can publish up to \(PostLimits.dailyMax) posts a day: "
+                        + "title, description, photo and macros from any day. "
+                        + "A Premium mark appears next to your name.",
+                    uk:
+                        "З Premium ти публікуєш до \(PostLimits.dailyMax) постів на день: заголовок, опис, фото й макро за будь-який день. "
+                        + "Біля імені з'явиться значок Premium.",
+                    ru:
+                        "С Premium ты публикуешь до \(PostLimits.dailyMax) постов в день: заголовок, описание, фото и макро за любой день. "
+                        + "Рядом с именем появится значок Premium.",
+                    es:
+                        "Con Premium publicas hasta \(PostLimits.dailyMax) veces al día: "
+                        + "título, descripción, foto y macros de cualquier día. "
+                        + "Junto a tu nombre aparecerá la marca Premium."
+                ),
+                badge: TL(pl: "Posty", en: "Posts", uk: "Пости", ru: "Посты", es: "Posts")
             )
         case .manual:
             return Copy(

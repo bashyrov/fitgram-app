@@ -23,6 +23,10 @@ struct FriendProfileSnapshot: Equatable, Identifiable {
     let recentEvents: [FeedEvent]?
     let weightKg: Double?
     let heightCm: Int?
+    var isPremium: Bool = false
+    /// The owner's privacy settings hide everything except name, username
+    /// and avatar from this viewer.
+    var isRestricted: Bool = false
 
     var hasAnyShared: Bool {
         currentStreak != nil

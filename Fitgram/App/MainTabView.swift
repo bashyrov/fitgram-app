@@ -205,13 +205,17 @@ struct MainTabView: View {
             )
         )
         self.olaChefWorkerService = mealTextClient.map { WorkerOlaChefService(client: $0) }
-        self._friendsState = State(
-            initialValue: FriendsState(
-                service: friendService,
-                userRemoteID: authUser.id,
-                notificationCoordinator: notificationCoordinator
-            )
+        let friendsState = FriendsState(
+            service: friendService,
+            userRemoteID: authUser.id,
+            notificationCoordinator: notificationCoordinator
         )
+        self._friendsState = State(initialValue: friendsState)
+        let socialProfile = friendsState.socialProfile
+        let userID = authUser.id
+        privacyStore.onChange = { settings in
+            Task { await socialProfile.syncPrivacy(settings, userID: userID) }
+        }
         self._goalTrackingState = State(
             initialValue: GoalTrackingState(
                 service: goalTrackingService,
@@ -326,10 +330,12 @@ struct MainTabView: View {
 
             FriendsRootView(
                 state: friendsState,
+                entitlementsStore: entitlementsStore,
+                paywallCoordinator: paywallCoordinator,
+                user: todayState.user,
                 yourStreak: todayState.streak?.currentLength ?? 0,
                 yourDisplayName: todayState.user?.displayName ?? "Ty",
-                yourID: authUser.id,
-                friendService: friendService
+                yourID: authUser.id
             )
             .monoTabBarStyle()
             .tabItem {
@@ -403,6 +409,11 @@ struct MainTabView: View {
             await startHealthWorkoutSyncIfNeeded()
             await todayState.refresh(for: authUser.id)
             checkAchievements()
+            // Adopt the server's privacy settings so the sheet shows what
+            // others actually see.
+            if let remote = await friendsState.socialProfile.fetchPrivacy(userID: authUser.id) {
+                privacyStore.replace(remote, notify: false)
+            }
         }
         .onChange(of: selectedTab) { _, newValue in
             checkAchievements()

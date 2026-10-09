@@ -6,31 +6,33 @@ final class DebugFriendOverlayService: FriendService {
     private let base: any FriendService
     private var demosByUserID: [String: InMemoryFriendService] = [:]
 
+    /// The real backend failing (offline, no session in screenshot runs)
+    /// must not hide the demo people, so base reads are best-effort.
     init(base: any FriendService) {
         self.base = base
     }
 
     func friends(of userID: String) async throws -> [PublicProfile] {
-        let baseFriends = try await base.friends(of: userID)
+        let baseFriends = (try? await base.friends(of: userID)) ?? []
         let demoFriends = try await demo(for: userID).friends(of: userID)
         let merged = baseFriends + demoFriends
         return uniqueProfiles(merged).sorted { $0.displayName < $1.displayName }
     }
 
     func pendingIncoming(for userID: String) async throws -> [FriendRequest] {
-        let baseRequests = try await base.pendingIncoming(for: userID)
+        let baseRequests = (try? await base.pendingIncoming(for: userID)) ?? []
         let demoRequests = try await demo(for: userID).pendingIncoming(for: userID)
         return baseRequests + demoRequests
     }
 
     func pendingOutgoing(for userID: String) async throws -> [FriendRequest] {
-        let baseRequests = try await base.pendingOutgoing(for: userID)
+        let baseRequests = (try? await base.pendingOutgoing(for: userID)) ?? []
         let demoRequests = try await demo(for: userID).pendingOutgoing(for: userID)
         return baseRequests + demoRequests
     }
 
     func search(query: String, excluding userID: String) async throws -> [PublicProfile] {
-        let baseResults = try await base.search(query: query, excluding: userID)
+        let baseResults = (try? await base.search(query: query, excluding: userID)) ?? []
         let demoResults = try await demo(for: userID).search(query: query, excluding: userID)
         let merged = baseResults + demoResults
         return uniqueProfiles(merged).sorted { $0.displayName < $1.displayName }
@@ -84,7 +86,7 @@ final class DebugFriendOverlayService: FriendService {
     }
 
     func recentFeed(for userID: String, limit: Int) async throws -> [FeedEvent] {
-        let baseFeed = try await base.recentFeed(for: userID, limit: limit)
+        let baseFeed = (try? await base.recentFeed(for: userID, limit: limit)) ?? []
         let demoFeed = try await demo(for: userID).recentFeed(for: userID, limit: limit)
         let merged = baseFeed + demoFeed
         return Array(merged.sorted { $0.createdAt > $1.createdAt }.prefix(limit))
@@ -113,7 +115,7 @@ final class DebugFriendOverlayService: FriendService {
     }
 
     func incomingReactions(for userID: String, since: Date?, limit: Int) async throws -> [FriendReactionNotification] {
-        let baseReactions = try await base.incomingReactions(for: userID, since: since, limit: limit)
+        let baseReactions = (try? await base.incomingReactions(for: userID, since: since, limit: limit)) ?? []
         let demoReactions = try await demo(for: userID).incomingReactions(for: userID, since: since, limit: limit)
         let merged = baseReactions + demoReactions
         return Array(merged.sorted { $0.createdAt > $1.createdAt }.prefix(limit))
@@ -133,6 +135,11 @@ final class DebugFriendOverlayService: FriendService {
 
     func report(_ userID: String, reason: String, as viewer: String) async throws {
         try await base.report(userID, reason: reason, as: viewer)
+    }
+
+    /// Post visibility for the demo people, following the demo friend graph.
+    func canViewDemoPosts(of authorID: String, viewer: String) -> Bool {
+        demo(for: viewer).canViewPosts(of: authorID, viewer: viewer)
     }
 
     private func demo(for userID: String) -> InMemoryFriendService {
