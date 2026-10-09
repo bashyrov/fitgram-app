@@ -268,7 +268,7 @@ struct ProfileView: View {
                                     .lineLimit(1)
                             }
                             if entitlementsStore.current.isPremium {
-                                PremiumMark(height: 18)
+                                PremiumMark(height: 18, onDark: true)
                             }
                         }
                     }
