@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Alternating dark bands, each carrying one "FITGRAMFITGRAM…" row at 10 %
-/// opacity. Rows start at scattered offsets and run past both edges.
+/// Alternating bands, each carrying one faint "FITGRAMFITGRAM…" row. Rows
+/// start at scattered offsets and run past both edges. Dark palettes get
+/// light words on the hero colour, light palettes ink words on paper.
 struct WordmarkStripes: View {
     private static let bandHeight: CGFloat = 58
     /// Fixed pseudo-random offsets (fraction of one word) and repeat
@@ -20,7 +21,7 @@ struct WordmarkStripes: View {
             .frame(width: proxy.size.width, alignment: .leading)
             .clipped()
         }
-        .background(Tokens.Mono.hero)
+        .background(Tokens.Mono.Brand.background)
         .accessibilityHidden(true)
     }
 
@@ -31,13 +32,15 @@ struct WordmarkStripes: View {
         // fraction of it so word starts never line up between rows.
         return Text(verbatim: String(repeating: "FITGRAM", count: count))
             .font(Tokens.Font.monoDisplay(44))
-            .foregroundStyle(Tokens.Mono.onHero.opacity(0.10))
+            .foregroundStyle(Tokens.Mono.Brand.text.opacity(Tokens.Mono.Brand.isLight ? 0.07 : 0.10))
             .lineLimit(1)
             .fixedSize()
             .offset(x: -CGFloat(offset) * 190 - 30)
             .frame(height: Self.bandHeight, alignment: .leading)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(row.isMultiple(of: 2) ? Color.clear : Tokens.Mono.onHero.opacity(0.035))
+            .background(
+                row.isMultiple(of: 2)
+                    ? Color.clear : Tokens.Mono.Brand.text.opacity(Tokens.Mono.Brand.isLight ? 0.03 : 0.035))
     }
 }
 
@@ -48,14 +51,14 @@ struct FitgramWordmarkLockup: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            FitgramLogoMark(color: Tokens.Mono.hi)
+            FitgramLogoMark(color: Tokens.Mono.Brand.logo)
                 .aspectRatio(240.0 / 112.0, contentMode: .fit)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .opacity(appeared ? 1 : 0)
                 .offset(x: appeared ? 0 : -60)
             Text(verbatim: "GRAM")
                 .font(Tokens.Font.monoDisplay(320))
-                .foregroundStyle(Tokens.Mono.onHero)
+                .foregroundStyle(Tokens.Mono.Brand.text)
                 .lineLimit(1)
                 .minimumScaleFactor(0.05)
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -21,7 +21,7 @@ struct WelcomeStepView: View {
                     es: "Cuenta calorías con una foto. Sin tablas ni estrés.")
             )
             .font(Tokens.Font.manrope(26, weight: 800))
-            .foregroundStyle(Tokens.Mono.heroMuted)
+            .foregroundStyle(Tokens.Mono.Brand.muted)
             .lineLimit(2)
             .minimumScaleFactor(0.5)
             .frame(maxWidth: .infinity, alignment: .leading)

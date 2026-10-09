@@ -62,7 +62,7 @@ struct AuthView: View {
                     es: "Una foto y sabes lo que comiste. Empieza gratis.")
             )
             .font(Tokens.Font.manrope(24, weight: 800))
-            .foregroundStyle(Tokens.Mono.heroMuted)
+            .foregroundStyle(Tokens.Mono.Brand.muted)
             .lineLimit(2)
             .minimumScaleFactor(0.5)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -79,7 +79,7 @@ struct AuthView: View {
                 // everywhere — the button's onCompletion fires after our
                 // provider's continuation already resolved, so it's a no-op.
             }
-            .signInWithAppleButtonStyle(.white)
+            .signInWithAppleButtonStyle(Tokens.Mono.Brand.isLight ? .black : .white)
             .frame(height: 54)
             .clipShape(Capsule())
             .overlay(
@@ -94,19 +94,21 @@ struct AuthView: View {
             SocialAuthButton(
                 title: "Kontynuuj z Google",
                 systemImage: "globe",
-                kind: .heroOutline
+                kind: Tokens.Mono.Brand.isLight ? .outline : .heroOutline
             ) {
                 Task { await authService.signIn(with: .google) }
             }
+            .background(Capsule().fill(Tokens.Mono.Brand.background))
             .accessibilityIdentifier(A11yID.Auth.googleButton)
 
             SocialAuthButton(
                 title: "Kontynuuj e-mailem",
                 systemImage: "envelope",
-                kind: .heroOutline
+                kind: Tokens.Mono.Brand.isLight ? .outline : .heroOutline
             ) {
                 isEmailSheetPresented = true
             }
+            .background(Capsule().fill(Tokens.Mono.Brand.background))
             .accessibilityIdentifier(A11yID.Auth.emailButton)
         }
         .disabled(session.isWorking)
@@ -117,10 +119,10 @@ struct AuthView: View {
     private var footer: some View {
         Text(footerText)
             .font(Tokens.Font.manrope(12, weight: 600))
-            .foregroundStyle(Tokens.Mono.heroMuted)
+            .foregroundStyle(Tokens.Mono.Brand.muted)
             .lineSpacing(2)
             .multilineTextAlignment(.center)
-            .tint(Tokens.Mono.onHero)
+            .tint(Tokens.Mono.Brand.text)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity)
             .padding(.top, 6)
@@ -156,7 +158,7 @@ struct AuthView: View {
         var link = AttributedString(title)
         link.link = url
         link.swiftUI.font = Tokens.Font.manrope(12, weight: 800)
-        link.swiftUI.foregroundColor = Tokens.Mono.onHero
+        link.swiftUI.foregroundColor = Tokens.Mono.Brand.text
         return link
     }
 

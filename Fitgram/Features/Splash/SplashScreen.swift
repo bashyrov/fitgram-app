@@ -19,21 +19,21 @@ struct SplashScreen: View {
         ZStack {
             WordmarkStripes()
                 .opacity(stripesOpacity)
-                .background(Tokens.Mono.hero)
+                .background(Tokens.Mono.Brand.background)
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 4) {
                 FitgramAnimatedLogo(
                     outlineProgress: outlineProgress,
                     fillOpacity: fillOpacity,
-                    color: Tokens.Mono.hi
+                    color: Tokens.Mono.Brand.logo
                 )
                 .aspectRatio(240.0 / 112.0, contentMode: .fit)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Text(verbatim: "GRAM")
                     .font(Tokens.Font.monoDisplay(320))
-                    .foregroundStyle(Tokens.Mono.onHero)
+                    .foregroundStyle(Tokens.Mono.Brand.text)
                     .lineLimit(1)
                     .minimumScaleFactor(0.05)
                     .frame(maxWidth: .infinity, alignment: .leading)
