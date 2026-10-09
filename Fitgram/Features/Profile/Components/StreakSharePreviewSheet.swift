@@ -7,7 +7,6 @@ import SwiftUI
 struct StreakSharePreviewSheet: View {
     let streakLength: Int
     let longestLength: Int
-    let displayName: String?
     let onDismiss: () -> Void
 
     @State private var renderedImage: Image?
@@ -60,7 +59,7 @@ struct StreakSharePreviewSheet: View {
     private var preview: some View {
         ZStack {
             Rectangle()
-                .fill(backgroundChoice == .transparent ? Tokens.Mono.track : Tokens.Mono.hero)
+                .fill(backgroundChoice == .transparent ? Color(white: 0.55) : Tokens.Mono.hero)
             if let renderedImage {
                 renderedImage
                     .resizable()
@@ -114,19 +113,21 @@ struct StreakSharePreviewSheet: View {
             MonoBottomBar {
                 HStack(spacing: 8) {
                     ShareLink(
-                        item: renderedImage,
-                        preview: SharePreview(
-                            String.localizedStringWithFormat(L("Fitgram — %lld days"), streakLength),
-                            image: renderedImage
-                        )
+                        item: ShareCardImage(image: renderedUIImage),
+                        preview: SharePreview("Fitgram — \(streakLength) day streak", image: renderedImage)
                     ) {
                         buttonLabel(title: L("Share"), symbol: "square.and.arrow.up")
                     }
                     .buttonStyle(MonoButtonStyle(kind: .dark, height: 50))
 
                     Button {
-                        UIImageWriteToSavedPhotosAlbum(renderedUIImage, nil, nil, nil)
-                        Haptics.success()
+                        Task {
+                            if await ShareCardImage(image: renderedUIImage).saveToPhotos() {
+                                Haptics.success()
+                            } else {
+                                Haptics.warning()
+                            }
+                        }
                     } label: {
                         buttonLabel(title: L("Save to photos"), symbol: "square.and.arrow.down")
                     }
@@ -174,7 +175,6 @@ struct StreakSharePreviewSheet: View {
             if let img = StreakShareCard.render(
                 streakLength: streakLength,
                 longestLength: longestLength,
-                displayName: displayName,
                 background: resolvedBackground
             ) {
                 renderedUIImage = img

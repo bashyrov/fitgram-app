@@ -137,7 +137,6 @@ struct ProfileView: View {
                 StreakSharePreviewSheet(
                     streakLength: streak?.currentLength ?? 0,
                     longestLength: streak?.longestLength ?? 0,
-                    displayName: user?.displayName,
                     onDismiss: { isShareStreakPresented = false }
                 )
             }
