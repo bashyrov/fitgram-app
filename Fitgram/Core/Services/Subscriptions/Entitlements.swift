@@ -83,6 +83,27 @@ final class EntitlementsStore {
     init(subscriptionService: any SubscriptionService) {
         self.subscriptionService = subscriptionService
         self.current = subscriptionService.snapshot.isPremium ? .premium : .free
+        observeSnapshot()
+    }
+
+    /// StoreKit restores the subscription asynchronously after launch (and
+    /// on renewals / refunds), so follow the snapshot instead of waiting for
+    /// someone to call `reconcile()`.
+    private func observeSnapshot() {
+        withObservationTracking {
+            _ = subscriptionService.snapshot
+        } onChange: { [weak self] in
+            Task { @MainActor [weak self] in
+                self?.reconcile()
+                self?.observeSnapshot()
+            }
+        }
+    }
+
+    /// Pulls the latest entitlement from the provider and applies it.
+    func refresh() async {
+        await subscriptionService.refresh()
+        reconcile()
     }
 
     /// Reconciles `current` against the latest snapshot. Called after

@@ -425,6 +425,7 @@ struct MainTabView: View {
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
             Task {
+                await entitlementsStore.refresh()
                 await startHealthWorkoutSyncIfNeeded()
                 await todayState.syncHealthWorkoutsNow(for: authUser.id)
                 checkAchievements()
