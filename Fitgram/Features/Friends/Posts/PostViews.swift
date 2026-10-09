@@ -225,24 +225,28 @@ struct PostCard: View {
     }
 
     private func photo(_ url: URL) -> some View {
-        AsyncImage(url: url, transaction: Transaction(animation: Tokens.Motion.gentle)) { phase in
-            switch phase {
-            case .success(let image):
-                image.resizable().scaledToFill()
-            case .failure:
-                MonoImagePlaceholder()
-            default:
-                LoadingShimmer(cornerRadius: 20)
+        Color.clear
+            .frame(maxWidth: .infinity)
+            .frame(height: 260)
+            .overlay {
+                AsyncImage(url: url, transaction: Transaction(animation: Tokens.Motion.gentle)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image.resizable().scaledToFill()
+                    case .failure:
+                        MonoImagePlaceholder()
+                    default:
+                        LoadingShimmer(cornerRadius: 20)
+                    }
+                }
+                .allowsHitTesting(false)
             }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 260)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .onTapGesture(count: 2) {
-            if !post.isLikedByMe { like() }
-        }
-        .accessibilityLabel(Text(TL(pl: "Zdjęcie", en: "Photo", uk: "Фото", ru: "Фото", es: "Foto")))
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .onTapGesture(count: 2) {
+                if !post.isLikedByMe { like() }
+            }
+            .accessibilityLabel(Text(TL(pl: "Zdjęcie", en: "Photo", uk: "Фото", ru: "Фото", es: "Foto")))
     }
 
     private var footer: some View {
