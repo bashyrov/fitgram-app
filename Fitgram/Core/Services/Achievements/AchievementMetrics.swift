@@ -1,11 +1,62 @@
 import Foundation
 
+/// Plain snapshot of one meal: everything the achievement engine reads,
+/// copied out of SwiftData once per evaluation.
+struct MealFacts: Sendable {
+    let id: UUID
+    let consumedAt: Date
+    let mealType: MealType
+    let source: MealSource
+    let totalCaloriesKcal: Double
+    let totalProteinGrams: Double
+    let totalCarbsGrams: Double
+    let totalFatGrams: Double
+    let itemNames: [String]
+    let tags: [String]
+    let photoFilename: String?
+    let notes: String?
+    let rating: Int?
+
+    init(_ meal: MealEntry) {
+        id = meal.id
+        consumedAt = meal.consumedAt
+        mealType = meal.mealType
+        source = meal.source
+        // Read the relationship once: every `meal.items` access rebuilds the
+        // array through SwiftData, which dominated evaluation time.
+        let items = meal.items
+        let multiplier = meal.portionMultiplier
+        var kcal = 0.0
+        var protein = 0.0
+        var carbs = 0.0
+        var fat = 0.0
+        var names: [String] = []
+        names.reserveCapacity(items.count)
+        for item in items {
+            kcal += item.caloriesKcal
+            protein += item.proteinGrams
+            carbs += item.carbsGrams
+            fat += item.fatGrams
+            names.append(item.name)
+        }
+        totalCaloriesKcal = kcal * multiplier
+        totalProteinGrams = protein * multiplier
+        totalCarbsGrams = carbs * multiplier
+        totalFatGrams = fat * multiplier
+        itemNames = names
+        tags = meal.tags
+        photoFilename = meal.photoFilename
+        notes = meal.notes
+        rating = meal.rating
+    }
+}
+
 /// Meal-log counters for the leveled tracks. Pure — the engine merges the
 /// result with the non-meal counters from `Inputs.counters`.
 enum AchievementMetrics {
     static func fromMeals(
-        _ meals: [MealEntry],
-        dayBuckets: [Date: [MealEntry]],
+        _ meals: [MealFacts],
+        dayBuckets: [Date: [MealFacts]],
         calorieGoalKcal: Int?,
         calendar: Calendar,
         now: Date
@@ -14,10 +65,10 @@ enum AchievementMetrics {
         values[.daysLogged] = dayBuckets.count
         values[.kcalLogged] = Int(meals.reduce(0) { $0 + $1.totalCaloriesKcal })
         values[.proteinLogged] = Int(meals.reduce(0) { $0 + $1.totalProteinGrams })
-        values[.itemsLogged] = meals.reduce(0) { $0 + $1.items.count }
+        values[.itemsLogged] = meals.reduce(0) { $0 + $1.itemNames.count }
         values[.distinctFoods] =
             Set(
-                meals.flatMap(\.items).map { $0.name.trimmingCharacters(in: .whitespaces).lowercased() }
+                meals.flatMap(\.itemNames).map { $0.trimmingCharacters(in: .whitespaces).lowercased() }
                     .filter { !$0.isEmpty }
             ).count
         values[.mealsWithPhotos] = meals.filter { $0.photoFilename != nil }.count
