@@ -212,7 +212,7 @@ struct FriendProfileView: View {
                 avatarHero(snapshot)
                 VStack(alignment: .leading, spacing: 3) {
                     SocialNameLabel(
-                        name: snapshot.displayName,
+                        name: snapshot.publicName,
                         isPremium: snapshot.isPremium,
                         font: Tokens.Font.monoDisplay(26),
                         markHeight: 20
@@ -240,7 +240,7 @@ struct FriendProfileView: View {
     }
 
     private func avatarHero(_ snapshot: FriendProfileSnapshot) -> some View {
-        Text(initial(for: snapshot.displayName))
+        Text(initial(for: snapshot.publicName))
             .font(Tokens.Font.monoNumber(30))
             .foregroundStyle(Tokens.Mono.hi)
             .frame(width: 72, height: 72)
@@ -250,9 +250,6 @@ struct FriendProfileView: View {
     /// "@user · W Fitgram od …" line under the name.
     private func heroSubtitle(_ snapshot: FriendProfileSnapshot) -> String? {
         var parts: [String] = []
-        if let username = snapshot.username {
-            parts.append(usernameDisplay(username))
-        }
         if let since = snapshot.memberSinceDate {
             let formatted = since.formatted(.dateTime.month(.wide).year())
             parts.append(String.localizedStringWithFormat(L("Fitgram-er since %@"), formatted))
@@ -280,10 +277,6 @@ struct FriendProfileView: View {
         }
         .monoTile()
         .accessibilityElement(children: .combine)
-    }
-
-    private func usernameDisplay(_ username: String) -> String {
-        username.hasPrefix("@") ? username : "@\(username)"
     }
 
     private func initial(for name: String) -> String {
@@ -321,7 +314,7 @@ struct FriendProfileView: View {
                                 TL(
                                     pl: "Zaproszenie wysłane", en: "Request sent", uk: "Запит надіслано",
                                     ru: "Заявка отправлена", es: "Solicitud enviada"),
-                                message: snapshot?.displayName)
+                                message: snapshot?.publicName)
                         }
                     }
                 }

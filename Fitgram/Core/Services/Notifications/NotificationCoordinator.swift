@@ -77,7 +77,7 @@ final class NotificationCoordinator {
     func notifyNewFriendRequests(_ requests: [FriendRequest]) async {
         guard UserDefaults.standard.boolWithDefaultTrue(forKey: "preferences.friend.reactionEnabled") else { return }
         for request in requests where deliveryStore.markFriendRequestIfNeeded(request.id) {
-            let name = request.counterpart?.displayName ?? L("Ktoś")
+            let name = request.counterpart?.publicName ?? L("Ktoś")
             let title = TL(
                 pl: "Nowe zaproszenie do znajomych", en: "New friend request", uk: "Новий запит у друзі",
                 ru: "Новая заявка в друзья", es: "Nueva solicitud de amistad")

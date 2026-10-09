@@ -35,7 +35,7 @@ enum Leaderboard {
     static func from(friends: [PublicProfile], you: You?) -> [LeaderboardEntry] {
         var rows: [Candidate] = friends.map {
             Candidate(
-                id: $0.id, name: $0.displayName,
+                id: $0.id, name: $0.publicName,
                 streak: $0.currentStreak ?? 0,
                 avatar: $0.avatarURL, isYou: false
             )

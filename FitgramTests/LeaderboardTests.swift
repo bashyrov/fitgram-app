@@ -80,3 +80,21 @@ final class LeaderboardTests: XCTestCase {
         XCTAssertEqual(entries.map(\.id), ["a", "z"])
     }
 }
+
+@MainActor
+final class PublicNameTests: XCTestCase {
+    func testOthersSeeUsernameNotRealName() {
+        let profile = PublicProfile(
+            id: "a", displayName: "Kasia Nowak", avatarURL: nil, sharesStreak: true,
+            sharesAchievements: false, currentStreak: 3, achievementCount: nil, username: "kasia.n")
+        XCTAssertEqual(profile.publicName, "kasia.n")
+        XCTAssertEqual(Leaderboard.from(friends: [profile], you: nil).first?.displayName, "kasia.n")
+    }
+
+    func testFallsBackToNameWithoutUsername() {
+        let profile = PublicProfile(
+            id: "a", displayName: "Kasia", avatarURL: nil, sharesStreak: false,
+            sharesAchievements: false, currentStreak: nil, achievementCount: nil, username: "  ")
+        XCTAssertEqual(profile.publicName, "Kasia")
+    }
+}

@@ -150,7 +150,7 @@ struct FriendsHubSheet: View {
 
     private func incomingRow(_ request: FriendRequest) -> some View {
         let profile = request.counterpart
-        let name = profile?.displayName ?? L("Znajomy")
+        let name = profile?.publicName ?? L("Znajomy")
         let isBusy = busyIDs.contains(request.fromUserID)
         return VStack(alignment: .leading, spacing: 12) {
             Button {
@@ -161,8 +161,7 @@ struct FriendsHubSheet: View {
                     VStack(alignment: .leading, spacing: 1) {
                         SocialNameLabel(name: name, isPremium: profile?.isPremium ?? false)
                         Text(
-                            [profile?.handle, request.createdAt.formatted(.relative(presentation: .named))]
-                                .compactMap { $0 }.joined(separator: " · ")
+                            request.createdAt.formatted(.relative(presentation: .named))
                         )
                         .font(Tokens.Font.manrope(12, weight: 600))
                         .foregroundStyle(Tokens.Mono.muted)
@@ -277,15 +276,9 @@ struct FriendsHubSheet: View {
                 openProfile(profile.id)
             } label: {
                 HStack(spacing: 12) {
-                    FriendInitialAvatar(name: profile.displayName, size: 42)
+                    FriendInitialAvatar(name: profile.publicName, size: 42)
                     VStack(alignment: .leading, spacing: 1) {
-                        SocialNameLabel(name: profile.displayName, isPremium: profile.isPremium)
-                        if let handle = profile.handle {
-                            Text(handle)
-                                .font(Tokens.Font.manrope(12, weight: 600))
-                                .foregroundStyle(Tokens.Mono.muted)
-                                .lineLimit(1)
-                        }
+                        SocialNameLabel(name: profile.publicName, isPremium: profile.isPremium)
                     }
                     Spacer(minLength: 0)
                 }

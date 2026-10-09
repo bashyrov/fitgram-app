@@ -50,6 +50,9 @@ struct SocialPost: Identifiable, Equatable, Sendable {
     let createdAt: Date
     var likeCount: Int
     var isLikedByMe: Bool
+
+    /// The author's username — real names stay private to their owner.
+    var authorPublicName: String { authorUsername?.nilIfBlank ?? authorName }
 }
 
 /// What the composer hands to `PostService.create`.

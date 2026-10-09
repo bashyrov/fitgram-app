@@ -78,7 +78,7 @@ struct FriendsRootView: View {
                         friends: state.friends,
                         you: yourID.isEmpty
                             ? nil
-                            : .init(id: yourID, displayName: yourDisplayName, streak: yourStreak)
+                            : .init(id: yourID, displayName: state.myUsername ?? yourDisplayName, streak: yourStreak)
                     ),
                     onDismiss: { isLeaderboardPresented = false }
                 )

@@ -182,9 +182,9 @@ struct PostCard: View {
                 onOpenAuthor?()
             } label: {
                 HStack(spacing: 10) {
-                    FriendInitialAvatar(name: post.authorName, size: 42, dark: post.authorIsPremium)
+                    FriendInitialAvatar(name: post.authorPublicName, size: 42, dark: post.authorIsPremium)
                     VStack(alignment: .leading, spacing: 1) {
-                        SocialNameLabel(name: post.authorName, isPremium: post.authorIsPremium)
+                        SocialNameLabel(name: post.authorPublicName, isPremium: post.authorIsPremium)
                         Text(subtitle)
                             .font(Tokens.Font.manrope(12, weight: 600))
                             .foregroundStyle(Tokens.Mono.muted)
@@ -220,9 +220,7 @@ struct PostCard: View {
     }
 
     private var subtitle: String {
-        let time = post.createdAt.formatted(.relative(presentation: .named))
-        if let username = post.authorUsername { return "@\(username) · \(time)" }
-        return time
+        post.createdAt.formatted(.relative(presentation: .named))
     }
 
     private func photo(_ url: URL) -> some View {
