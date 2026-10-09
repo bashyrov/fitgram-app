@@ -1,6 +1,11 @@
 import Foundation
 
 // PostgREST row shapes used by SupabaseFriendService.
+//
+// The client decodes with `.convertFromSnakeCase`, which turns `user_id`
+// into `userId` — not `userID`. Rows with acronym properties therefore map
+// their keys explicitly; without that every profile / feed decode failed
+// and the friends list was always empty.
 
 struct PublicProfileRow: Decodable {
     let userID: String
@@ -9,6 +14,15 @@ struct PublicProfileRow: Decodable {
     let photoURL: String?
     let bio: String?
     let createdAt: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case userID = "userId"
+        case username
+        case displayName
+        case photoURL = "photoUrl"
+        case bio
+        case createdAt
+    }
 
     var toPublicProfile: PublicProfile {
         PublicProfile(
@@ -54,6 +68,14 @@ struct ActivityEventRow: Decodable {
     let createdAt: String
 
     var createdAtDate: Date { createdAt.supabaseDate }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case userID = "userId"
+        case eventType
+        case eventData
+        case createdAt
+    }
 }
 
 struct EventData: Decodable {
@@ -78,6 +100,12 @@ struct ReactionRow: Decodable {
     let reactionType: String
 
     var kind: ReactionKind? { ReactionKind(rawValue: reactionType) }
+
+    private enum CodingKeys: String, CodingKey {
+        case fromUser
+        case eventID = "eventId"
+        case reactionType
+    }
 }
 
 struct IncomingReactionRow: Decodable {

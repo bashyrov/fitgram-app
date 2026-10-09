@@ -9,6 +9,7 @@ struct AchievementDetailSheet: View {
     let onDismiss: () -> Void
 
     @State private var renderedImage: Image?
+    @State private var renderedUIImage: UIImage?
 
     private var isEarned: Bool { earnedAt != nil }
 
@@ -41,10 +42,10 @@ struct AchievementDetailSheet: View {
             .scrollIndicators(.hidden)
             .background(Tokens.Palette.background.ignoresSafeArea())
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                if isEarned, let renderedImage {
+                if isEarned, let renderedImage, let renderedUIImage {
                     MonoBottomBar {
                         ShareLink(
-                            item: renderedImage,
+                            item: ShareCardImage(image: renderedUIImage, fileName: "fitgram-achievement"),
                             preview: SharePreview(
                                 "Fitgram — \(definition.title)",
                                 image: renderedImage
@@ -63,11 +64,8 @@ struct AchievementDetailSheet: View {
             }
             .task(id: definition.id) {
                 guard isEarned else { return }
-                if let uiImage = AchievementShareCard.render(
-                    definition: definition,
-                    earnedAt: earnedAt,
-                    displayName: nil
-                ) {
+                if let uiImage = AchievementShareCard.render(definition: definition, earnedAt: earnedAt) {
+                    renderedUIImage = uiImage
                     renderedImage = Image(uiImage: uiImage)
                 }
             }
