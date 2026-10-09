@@ -11,7 +11,7 @@ struct OnboardingView: View {
         ZStack {
             Tokens.Palette.background.ignoresSafeArea()
             VStack(spacing: 0) {
-                if flow.currentStep != .celebration {
+                if flow.currentStep != .celebration, flow.currentStep != .welcome {
                     header
                 }
                 stepBody
