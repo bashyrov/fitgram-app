@@ -219,6 +219,15 @@ struct MainTabView: View {
         )
     }
 
+    /// Grants badges that don't come from a meal save (water, workouts,
+    /// friends, weight, …). A large backlog is granted quietly; only the
+    /// first few get a banner.
+    private func checkAchievements() {
+        guard let unlocks = try? achievementService.evaluate(forUser: authUser.id), !unlocks.isEmpty else { return }
+        unlockBus.push(Array(unlocks.prefix(3)))
+        Haptics.medium()
+    }
+
     enum Tab: Hashable {
         case today
         case add
@@ -389,8 +398,10 @@ struct MainTabView: View {
         .task {
             await startHealthWorkoutSyncIfNeeded()
             await todayState.refresh(for: authUser.id)
+            checkAchievements()
         }
         .onChange(of: selectedTab) { _, newValue in
+            checkAchievements()
             if newValue == .add {
                 addOptionsVisible = true
                 selectedTab = .today
@@ -401,6 +412,7 @@ struct MainTabView: View {
             Task {
                 await startHealthWorkoutSyncIfNeeded()
                 await todayState.syncHealthWorkoutsNow(for: authUser.id)
+                checkAchievements()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: AppShortcutAction.logMeal)) { _ in

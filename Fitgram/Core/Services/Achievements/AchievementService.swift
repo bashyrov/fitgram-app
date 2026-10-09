@@ -10,10 +10,30 @@ import SwiftData
 final class AchievementService {
     private let container: ModelContainer
     private let engine: AchievementEngine
+    private let counterStore: AchievementCounterStore
 
-    init(container: ModelContainer, engine: AchievementEngine = AchievementEngine()) {
+    init(
+        container: ModelContainer,
+        engine: AchievementEngine = AchievementEngine(),
+        counterStore: AchievementCounterStore = AchievementCounterStore()
+    ) {
         self.container = container
         self.engine = engine
+        self.counterStore = counterStore
+    }
+
+    /// Current value of every track metric, for the "Levels" progress view.
+    func metrics(forUser userRemoteID: String) -> [AchievementMetric: Int] {
+        let context = ModelContext(container)
+        let meals = (try? context.fetch(FetchDescriptor<MealEntry>())) ?? []
+        guard let inputs = try? engineInputs(for: userRemoteID, earnedCount: 0, in: context) else { return [:] }
+        return AchievementEngine.metrics(
+            meals: meals,
+            dayBuckets: AchievementEngine.groupByDay(meals, calendar: engine.calendar),
+            inputs: inputs,
+            calendar: engine.calendar,
+            now: Date()
+        )
     }
 
     /// Evaluates the catalog and persists newly-earned rows for `userRemoteID`.
@@ -53,7 +73,10 @@ final class AchievementService {
 
         let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
         let totalCooks = recipes.reduce(0) { $0 + $1.cookCount }
-        return AchievementEngine.Inputs(
+        var counters = counterStore.counters(forUser: userRemoteID)
+        counters.merge(activityCounters(for: userRemoteID, in: context)) { _, new in new }
+        counters[.recipesCreated] = recipes.count
+        var inputs = AchievementEngine.Inputs(
             proteinGoalGrams: user?.proteinGoalGrams,
             carbsGoalGrams: user?.carbsGoalGrams,
             fatGoalGrams: user?.fatGoalGrams,
@@ -63,6 +86,43 @@ final class AchievementService {
             totalWeightEntries: weightCount,
             totalAchievementsEarned: earnedCount
         )
+        inputs.counters = counters
+        return inputs
+    }
+
+    /// Water, workouts, favourites, goals and coach debriefs.
+    private func activityCounters(for userRemoteID: String, in context: ModelContext) -> [AchievementMetric: Int] {
+        let calendar = engine.calendar
+        let water =
+            (try? context.fetch(
+                FetchDescriptor<WaterEntry>(predicate: #Predicate { $0.userRemoteID == userRemoteID }))) ?? []
+        let waterByDay = Dictionary(grouping: water) { calendar.startOfDay(for: $0.recordedAt) }
+            .mapValues { $0.reduce(0) { $0 + $1.milliliters } }
+        let workouts =
+            (try? context.fetch(
+                FetchDescriptor<WorkoutEntry>(predicate: #Predicate { $0.userRemoteID == userRemoteID }))) ?? []
+        let favorites =
+            (try? context.fetch(
+                FetchDescriptor<FavoriteMeal>(predicate: #Predicate { $0.userRemoteID == userRemoteID }))) ?? []
+        let goals =
+            (try? context.fetch(
+                FetchDescriptor<CustomGoal>(predicate: #Predicate { $0.userRemoteID == userRemoteID }))) ?? []
+        let debriefs =
+            (try? context.fetchCount(
+                FetchDescriptor<CoachInsightLog>(predicate: #Predicate { $0.userRemoteID == userRemoteID }))) ?? 0
+        return [
+            .waterLiters: water.reduce(0) { $0 + $1.milliliters } / 1000,
+            .waterDays: waterByDay.values.filter { $0 > 0 }.count,
+            .maxWaterDayMl: waterByDay.values.max() ?? 0,
+            .workouts: workouts.count,
+            .workoutMinutes: workouts.reduce(0) { $0 + $1.durationMinutes },
+            .maxWorkoutMinutes: workouts.map(\.durationMinutes).max() ?? 0,
+            .kcalBurned: Int(workouts.reduce(0) { $0 + $1.caloriesBurnedKcal }),
+            .favoritesSaved: favorites.count,
+            .favoriteUses: favorites.reduce(0) { $0 + $1.useCount },
+            .goalsCompleted: goals.filter { $0.status == .completed }.count,
+            .coachDebriefs: debriefs,
+        ]
     }
 
     private func evaluate(
