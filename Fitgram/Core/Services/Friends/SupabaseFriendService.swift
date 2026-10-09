@@ -105,13 +105,13 @@ final class SupabaseFriendService: FriendService {
         )
     }
 
+    /// `friendships.status` only allows pending / accepted / blocked, so a
+    /// declined request is removed instead of being marked "rejected".
     func reject(request: FriendRequest, as userID: String) async throws {
         try await client.request(
             path: "friendships",
-            method: .patch,
-            query: [URLQueryItem(name: "id", value: "eq.\(request.id.uuidString)")],
-            body: FriendshipUpdate(status: "rejected", acceptedAt: nil),
-            prefer: "return=minimal"
+            method: .delete,
+            query: [URLQueryItem(name: "id", value: "eq.\(request.id.uuidString)")]
         )
     }
 

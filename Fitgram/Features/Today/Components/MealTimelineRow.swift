@@ -21,7 +21,7 @@ struct MealTimelineRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text("\(mealTypeLabel) · \(Self.timeFormatter.string(from: meal.consumedAt))")
+                    Text(verbatim: "\(mealTypeLabel) · \(Self.timeFormatter.string(from: meal.consumedAt))")
                         .font(Tokens.Font.manrope(11, weight: 700))
                         .foregroundStyle(Tokens.Mono.muted)
                     if meal.photoFilename != nil {
@@ -106,12 +106,14 @@ struct MealTimelineRow: View {
         return parts.joined(separator: " · ")
     }
 
-    private var mealTypeLabel: LocalizedStringKey {
+    /// Resolved to `String` up front: interpolating a `LocalizedStringKey`
+    /// into another string printed its debug description on screen.
+    private var mealTypeLabel: String {
         switch meal.mealType {
-        case .breakfast: return "śniadanie"
-        case .lunch: return "obiad"
-        case .dinner: return "kolacja"
-        case .snack: return "przekąska"
+        case .breakfast: return L("śniadanie")
+        case .lunch: return L("obiad")
+        case .dinner: return L("kolacja")
+        case .snack: return L("przekąska")
         }
     }
 
@@ -120,7 +122,7 @@ struct MealTimelineRow: View {
         case .breakfast: return "sunrise.fill"
         case .lunch: return "fork.knife"
         case .dinner: return "moon.stars.fill"
-        case .snack: return "leaf.fill"
+        case .snack: return "carrot.fill"
         }
     }
 }

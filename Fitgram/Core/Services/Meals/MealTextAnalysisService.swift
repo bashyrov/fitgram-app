@@ -247,10 +247,11 @@ struct MealTextAnalysisService: @unchecked Sendable {
         )
     }
 
+    @MainActor
     private func resolve(
         item: ScanResult.DetectedItem, catalog: [Food]
     ) -> (item: ScanResult.DetectedItem, matchedCatalog: Bool) {
-        guard let food = catalog.first(where: { FoodNameNormalizer.isMatch(query: item.name, food: $0) }) else {
+        guard let food = FoodMatchIndex.shared.firstMatch(for: item.name, in: catalog) else {
             return (item, false)
         }
         let factor = max(item.quantityGrams, 0) / 100
@@ -271,8 +272,9 @@ struct MealTextAnalysisService: @unchecked Sendable {
         return (resolved, true)
     }
 
+    @MainActor
     private func resolve(item: FoodItem, catalog: [Food]) -> (item: FoodItem, matchedCatalog: Bool) {
-        guard let food = catalog.first(where: { FoodNameNormalizer.isMatch(query: item.name, food: $0) }) else {
+        guard let food = FoodMatchIndex.shared.firstMatch(for: item.name, in: catalog) else {
             return (item, false)
         }
         let factor = max(item.quantityGrams, 0) / 100
@@ -341,7 +343,7 @@ struct MealTextAnalysisService: @unchecked Sendable {
             item.proteinGrams >= 0,
             item.carbsGrams >= 0,
             item.fatGrams >= 0,
-            !catalog.contains(where: { FoodNameNormalizer.isMatch(query: item.name, food: $0) })
+            FoodMatchIndex.shared.firstMatch(for: item.name, in: catalog) == nil
         else { return }
 
         let factor = 100 / item.quantityGrams
