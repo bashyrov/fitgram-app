@@ -33,14 +33,15 @@ final class AuthService {
     func restoreSession() async {
         do {
             guard let userID = try tokenStore.userID,
-                try tokenStore.accessToken != nil,
+                let accessToken = try tokenStore.accessToken,
                 let providerRaw = try tokenStore.providerKind,
                 let provider = AuthProviderKind(rawValue: providerRaw)
             else {
                 session.update(phase: .anonymous)
                 return
             }
-            let user = AuthUser(id: userID, email: nil, displayName: nil, provider: provider)
+            let user = AuthUser(
+                id: userID, email: JWTClaims.email(in: accessToken), displayName: nil, provider: provider)
             session.update(phase: .authenticated(user))
         } catch {
             Logger.auth.error("Restore session failed: \(String(describing: error))")
@@ -62,7 +63,7 @@ final class AuthService {
             try tokenStore.save(session: credentials)
             let user = AuthUser(
                 id: credentials.userID,
-                email: nil,
+                email: JWTClaims.email(in: credentials.accessToken),
                 displayName: nil,
                 provider: credentials.provider
             )
@@ -89,7 +90,9 @@ final class AuthService {
 
         let credentials = try await provider.signIn(email: email, password: password, createAccount: createAccount)
         try tokenStore.save(session: credentials)
-        let user = AuthUser(id: credentials.userID, email: nil, displayName: nil, provider: .email)
+        let user = AuthUser(
+            id: credentials.userID, email: JWTClaims.email(in: credentials.accessToken) ?? email,
+            displayName: nil, provider: .email)
         await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
         session.update(phase: .authenticated(user))
         Logger.auth.info("Signed in via email (\(createAccount ? "sign-up" : "sign-in", privacy: .public))")
