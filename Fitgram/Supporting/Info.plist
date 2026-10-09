@@ -190,7 +190,7 @@
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
-		<string>BrandBackground</string>
+		<string>LaunchBackground</string>
 	</dict>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>

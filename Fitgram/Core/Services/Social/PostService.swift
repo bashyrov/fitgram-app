@@ -29,6 +29,7 @@ extension PostService {
     func validate(_ draft: PostDraft, isPremium: Bool, publishedToday: Int) throws {
         guard isPremium else { throw PostError.premiumRequired }
         guard publishedToday < PostLimits.dailyMax else { throw PostError.dailyLimitReached }
+        guard draft.macros == nil || draft.activity == nil else { throw PostError.oneAttachmentOnly }
         guard PostContentPolicy.violations(title: draft.title, body: draft.body).isEmpty else {
             throw PostError.contentRejected
         }
@@ -85,6 +86,7 @@ final class InMemoryPostService: PostService {
             body: draft.body.trimmingCharacters(in: .whitespacesAndNewlines),
             photoURL: draft.photoJPEG.flatMap(Self.writeTemporaryPhoto),
             macros: draft.macros,
+            activity: draft.activity,
             createdAt: now(),
             likeCount: 0,
             isLikedByMe: false

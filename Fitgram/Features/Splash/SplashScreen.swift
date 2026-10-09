@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Brand splash shown on cold start. The Fitgram mark draws itself as a
-/// clean outline, then softly fills with the current theme accent.
+/// Brand splash shown on cold start: the FITGRAM stripes, the full-width
+/// FIT mark drawing itself and filling with the theme accent, then "GRAM"
+/// sliding in underneath — the same lockup as sign-in and onboarding.
 struct SplashScreen: View {
     let onComplete: () -> Void
 
@@ -9,58 +10,63 @@ struct SplashScreen: View {
 
     @State private var outlineProgress: CGFloat = 0
     @State private var fillOpacity: Double = 0
-    @State private var logoScale: CGFloat = 0.985
-    @State private var logoOpacity: Double = 1
-    @State private var logoBlur: CGFloat = 0
-    @State private var logoOffsetY: CGFloat = 0
-
-    private var palette: AppAccentPalette {
-        let palette = AppAccentPalette(rawValue: accentRaw) ?? .rose
-        return palette.isSelectable ? palette : .rose
-    }
+    @State private var gramVisible = false
+    @State private var stripesOpacity: Double = 0
+    @State private var contentOpacity: Double = 1
+    @State private var contentScale: CGFloat = 1
 
     var body: some View {
         ZStack {
-            Tokens.Mono.hero.ignoresSafeArea()
+            WordmarkStripes()
+                .opacity(stripesOpacity)
+                .background(Tokens.Mono.hero)
+                .ignoresSafeArea()
 
-            VStack(spacing: 18) {
+            VStack(alignment: .leading, spacing: 4) {
                 FitgramAnimatedLogo(
                     outlineProgress: outlineProgress,
                     fillOpacity: fillOpacity,
                     color: Tokens.Mono.hi
                 )
-                .frame(width: 180, height: 84)
+                .aspectRatio(240.0 / 112.0, contentMode: .fit)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(verbatim: "FITGRAM")
-                    .font(Tokens.Font.manrope(13, weight: 800))
-                    .tracking(3.9)
-                    .foregroundStyle(Tokens.Mono.heroMuted)
-                    .opacity(fillOpacity)
+                Text(verbatim: "GRAM")
+                    .font(Tokens.Font.monoDisplay(320))
+                    .foregroundStyle(Tokens.Mono.onHero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.05)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .opacity(gramVisible ? 1 : 0)
+                    .offset(x: gramVisible ? 0 : 60)
                     .accessibilityHidden(true)
             }
-            .scaleEffect(logoScale)
-            .opacity(logoOpacity)
-            .blur(radius: logoBlur)
-            .offset(y: logoOffsetY)
+            .padding(.horizontal, Tokens.Space.screenPadding)
+            .scaleEffect(contentScale)
+            .opacity(contentOpacity)
         }
+        .id(accentRaw)
         .onAppear { runAnimation() }
     }
 
     private func runAnimation() {
-        withAnimation(.easeInOut(duration: 0.95)) {
-            outlineProgress = 1
-            logoScale = 1
+        withAnimation(.easeOut(duration: 0.5)) {
+            stripesOpacity = 1
         }
-        withAnimation(.easeOut(duration: 0.55).delay(0.78)) {
+        withAnimation(.easeInOut(duration: 0.85)) {
+            outlineProgress = 1
+        }
+        withAnimation(.easeOut(duration: 0.45).delay(0.7)) {
             fillOpacity = 1
         }
-        withAnimation(.easeInOut(duration: 0.42).delay(1.55)) {
-            logoScale = 1.025
-            logoOpacity = 0
-            logoBlur = 5
-            logoOffsetY = -4
+        withAnimation(.spring(response: 0.55, dampingFraction: 0.8).delay(0.85)) {
+            gramVisible = true
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.92) {
+        withAnimation(.easeInOut(duration: 0.38).delay(1.75)) {
+            contentOpacity = 0
+            contentScale = 1.03
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) {
             onComplete()
         }
     }
@@ -102,7 +108,7 @@ private struct FitgramAnimatedLogo: View {
                     .trim(from: 0, to: outlineProgress)
                     .stroke(
                         color,
-                        style: StrokeStyle(lineWidth: 2.2, lineCap: .round, lineJoin: .round)
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round)
                     )
                     .opacity(fillOpacity > 0.88 ? 0.24 : 1)
             }

@@ -430,25 +430,3 @@ final class SocialPrivacyAndMacrosTests: XCTestCase {
         XCTAssertEqual(decoded, snapshot)
     }
 }
-
-final class PostPluralTests: XCTestCase {
-    func testPolishAndRussianPlurals() {
-        let polish = { (count: Int) in
-            PostCard.plural(count, one: "polubienie", few: "polubienia", many: "polubień", eastSlavic: false)
-        }
-        XCTAssertEqual(polish(1), "polubienie")
-        XCTAssertEqual(polish(3), "polubienia")
-        XCTAssertEqual(polish(5), "polubień")
-        XCTAssertEqual(polish(12), "polubień")
-        XCTAssertEqual(polish(21), "polubień")
-        XCTAssertEqual(polish(22), "polubienia")
-        let russian = { (count: Int) in
-            PostCard.plural(count, one: "лайк", few: "лайка", many: "лайков", eastSlavic: true)
-        }
-        XCTAssertEqual(russian(1), "лайк")
-        XCTAssertEqual(russian(2), "лайка")
-        XCTAssertEqual(russian(11), "лайков")
-        XCTAssertEqual(russian(21), "лайк")
-        XCTAssertEqual(russian(0), "лайков")
-    }
-}

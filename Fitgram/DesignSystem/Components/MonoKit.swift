@@ -133,6 +133,8 @@ extension View {
 
 enum MonoButtonKind {
     case dark, accent, outline, danger, hi, ghost
+    /// Outline capsule on dark hero backgrounds.
+    case heroOutline
 
     var background: Color {
         switch self {
@@ -140,6 +142,7 @@ enum MonoButtonKind {
         case .accent: return Tokens.Mono.accent
         case .hi: return Tokens.Mono.hi
         case .outline, .danger, .ghost: return .clear
+        case .heroOutline: return Tokens.Mono.onHero.opacity(0.06)
         }
     }
 
@@ -151,6 +154,7 @@ enum MonoButtonKind {
         case .outline: return Tokens.Palette.ink
         case .danger: return Tokens.Mono.danger
         case .ghost: return Tokens.Mono.muted
+        case .heroOutline: return Tokens.Mono.onHero
         }
     }
 
@@ -158,6 +162,7 @@ enum MonoButtonKind {
         switch self {
         case .outline: return Tokens.Mono.line2
         case .danger: return Tokens.Mono.danger.opacity(0.35)
+        case .heroOutline: return Tokens.Mono.onHero.opacity(0.22)
         default: return .clear
         }
     }
@@ -228,16 +233,18 @@ struct MonoBottomBar<Content: View>: View {
 /// Dark pill used as the right navigation action ("Gotowe", "Zapisz").
 struct MonoNavPill: View {
     let title: String
+    /// Theme accent fill instead of the dark hero colour.
+    var accent = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Text(title)
                 .font(Tokens.Font.manrope(13, weight: 800))
-                .foregroundStyle(Tokens.Mono.onHero)
+                .foregroundStyle(accent ? Tokens.Mono.onHi : Tokens.Mono.onHero)
                 .padding(.horizontal, 14)
                 .frame(height: 36)
-                .background(Capsule().fill(Tokens.Mono.hero))
+                .background(Capsule().fill(accent ? Tokens.Mono.hi : Tokens.Mono.hero))
         }
         .buttonStyle(.plain)
     }

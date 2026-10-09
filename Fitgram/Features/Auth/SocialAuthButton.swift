@@ -6,6 +6,7 @@ import SwiftUI
 struct SocialAuthButton: View {
     let title: LocalizedStringKey
     let systemImage: String?
+    var kind: MonoButtonKind = .outline
     let action: () -> Void
 
     var body: some View {
@@ -20,7 +21,7 @@ struct SocialAuthButton: View {
                     .minimumScaleFactor(0.8)
             }
         }
-        .buttonStyle(MonoButtonStyle(kind: .outline, height: 54))
+        .buttonStyle(MonoButtonStyle(kind: kind, height: 54))
     }
 }
 

@@ -24,6 +24,18 @@ struct PostMacroSnapshot: Codable, Equatable, Sendable {
     let mealCount: Int
 }
 
+/// A logged workout attached to a post, frozen at publish time.
+struct PostActivitySnapshot: Codable, Equatable, Sendable {
+    let name: String
+    let symbol: String
+    let startedAt: Date
+    let durationMinutes: Int
+    let kcalBurned: Int
+    let distanceMeters: Double?
+    let steps: Int?
+    let averageHeartRate: Int?
+}
+
 struct SocialPost: Identifiable, Equatable, Sendable {
     let id: UUID
     let authorID: String
@@ -34,6 +46,7 @@ struct SocialPost: Identifiable, Equatable, Sendable {
     let body: String
     let photoURL: URL?
     let macros: PostMacroSnapshot?
+    var activity: PostActivitySnapshot?
     let createdAt: Date
     var likeCount: Int
     var isLikedByMe: Bool
@@ -44,7 +57,9 @@ struct PostDraft: Sendable {
     var title: String
     var body: String
     var photoJPEG: Data?
+    /// Macros *or* an activity — never both.
     var macros: PostMacroSnapshot?
+    var activity: PostActivitySnapshot?
 }
 
 /// Posts of one author as seen by a viewer. `isHidden` distinguishes
@@ -66,6 +81,9 @@ enum PostError: Error, Equatable {
     case premiumRequired
     case dailyLimitReached
     case contentRejected
+    /// Macros and an activity were both attached.
+    case oneAttachmentOnly
+    case photoUpload(String)
     case notFound
     case network(String)
 }

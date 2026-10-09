@@ -38,6 +38,10 @@ extension InMemoryPostService {
                 es: "Sin milagros: déficit de 400 kcal, mucha proteína y paseos después del trabajo."),
             photoURL: nil,
             macros: nil,
+            activity: PostActivitySnapshot(
+                name: TL(pl: "Bieg", en: "Run", uk: "Біг", ru: "Бег", es: "Carrera"), symbol: "figure.run",
+                startedAt: now.addingTimeInterval(-27 * hour), durationMinutes: 42, kcalBurned: 460,
+                distanceMeters: 7_300, steps: 8_900, averageHeartRate: 152),
             createdAt: now.addingTimeInterval(-26 * hour),
             likeCount: 0,
             isLikedByMe: false

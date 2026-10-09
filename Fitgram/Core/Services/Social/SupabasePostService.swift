@@ -53,12 +53,21 @@ final class SupabasePostService: PostService {
 
     func create(_ draft: PostDraft, as author: PublicProfile, isPremium: Bool) async throws -> SocialPost {
         let now = Date()
-        let today = try await postCount(by: author.id, on: now, calendar: calendar)
+        let today: Int
+        do {
+            today = try await postCount(by: author.id, on: now, calendar: calendar)
+        } catch let SupabaseRESTClient.SupabaseError.http(_, body) {
+            throw Self.mapServerError(body)
+        }
         try validate(draft, isPremium: isPremium, publishedToday: today)
         var photoPath: String?
         if let jpeg = draft.photoJPEG {
             let path = "\(author.id.lowercased())/\(UUID().uuidString.lowercased()).jpg"
-            try await client.uploadObject(bucket: Self.bucket, path: path, data: jpeg, contentType: "image/jpeg")
+            do {
+                try await client.uploadObject(bucket: Self.bucket, path: path, data: jpeg, contentType: "image/jpeg")
+            } catch let SupabaseRESTClient.SupabaseError.http(status, body) {
+                throw PostError.photoUpload("\(status) \(Self.serverMessage(body))")
+            }
             photoPath = path
         }
         do {
@@ -72,6 +81,7 @@ final class SupabasePostService: PostService {
                     body: draft.body.trimmingCharacters(in: .whitespacesAndNewlines),
                     photoPath: photoPath,
                     macros: draft.macros,
+                    activity: draft.activity,
                     localDay: Self.dayString(now, calendar: calendar)
                 ),
                 prefer: "return=representation"
@@ -178,8 +188,20 @@ final class SupabasePostService: PostService {
     static func mapServerError(_ body: String) -> PostError {
         if body.contains("daily_post_limit") { return .dailyLimitReached }
         if body.contains("premium_required") { return .premiumRequired }
+        if body.contains("posts_one_attachment") { return .oneAttachmentOnly }
         if body.contains("check constraint") { return .contentRejected }
-        return .network(body)
+        return .network(serverMessage(body))
+    }
+
+    /// The `message` field of a PostgREST / Storage error body, or the body.
+    static func serverMessage(_ body: String) -> String {
+        if let data = body.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let message = json["message"] as? String
+        {
+            return message
+        }
+        return String(body.prefix(160))
     }
 }
 
@@ -192,9 +214,10 @@ struct PostRow: Decodable, Sendable {
     let body: String
     let photoPath: String?
     let macros: PostMacroSnapshot?
+    let activity: PostActivitySnapshot?
     let createdAt: String
 
-    static let selectColumns = "id,user_id,title,body,photo_path,macros,created_at"
+    static let selectColumns = "id,user_id,title,body,photo_path,macros,activity,created_at"
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -203,6 +226,7 @@ struct PostRow: Decodable, Sendable {
         case body
         case photoPath
         case macros
+        case activity
         case createdAt
     }
 
@@ -215,6 +239,7 @@ struct PostRow: Decodable, Sendable {
         photoPath = try container.decodeIfPresent(String.self, forKey: .photoPath)
         // A malformed macros blob must not hide the whole post.
         macros = try? container.decodeIfPresent(PostMacroSnapshot.self, forKey: .macros)
+        activity = try? container.decodeIfPresent(PostActivitySnapshot.self, forKey: .activity)
         createdAt = try container.decode(String.self, forKey: .createdAt)
     }
 
@@ -229,6 +254,7 @@ struct PostRow: Decodable, Sendable {
             body: body,
             photoURL: photoURL,
             macros: macros,
+            activity: activity,
             createdAt: createdAt.supabaseDate,
             likeCount: likes.count,
             isLikedByMe: likes.contains(viewer)
@@ -256,6 +282,7 @@ private struct PostInsert: Encodable {
     let body: String
     let photoPath: String?
     let macros: PostMacroSnapshot?
+    let activity: PostActivitySnapshot?
     let localDay: String
 }
 
