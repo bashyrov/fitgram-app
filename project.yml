@@ -131,8 +131,8 @@ targets:
         NSPhotoLibraryAddUsageDescription: "Fitgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
         NSMicrophoneUsageDescription: "Fitgram używa mikrofonu do szybkiego dodawania posiłków głosem."
         NSSpeechRecognitionUsageDescription: "Fitgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
-        NSHealthShareUsageDescription: "Fitgram synchronizuje aktywność i wagę z Apple Health."
-        NSHealthUpdateUsageDescription: "Fitgram zapisuje posiłki i kalorie w Apple Health."
+        NSHealthShareUsageDescription: "Fitgram odczytuje wagę, treningi i aktywność z Apple Health, aby aktualizować Twój plan."
+        NSHealthUpdateUsageDescription: "Fitgram nie zapisuje danych w Apple Health — ta zgoda nie jest obecnie używana."
         NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
         UIAppFonts:
@@ -161,12 +161,6 @@ targets:
       properties:
         com.apple.developer.applesignin:
           - Default
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.app.fitgram.ios.bashyrov
-        com.apple.developer.icloud-services:
-          - CloudKit
-        com.apple.developer.ubiquity-container-identifiers:
-          - iCloud.app.fitgram.ios.bashyrov
         com.apple.security.application-groups:
           - group.app.fitgram.shared
         com.apple.developer.healthkit: true
@@ -232,40 +226,6 @@ targets:
         CODE_SIGN_ENTITLEMENTS: FitgramWidget/FitgramWidget.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
 
-  FitgramWatch:
-    type: application
-    platform: watchOS
-    deploymentTarget: "10.0"
-    sources:
-      - path: FitgramWatch
-      - path: Shared
-        excludes:
-          - FitgramActivityAttributes.swift
-    resources:
-      - path: FitgramWatch/Assets.xcassets
-    info:
-      path: FitgramWatch/Info.plist
-      properties:
-        CFBundleDisplayName: Fitgram
-        CFBundleShortVersionString: $(MARKETING_VERSION)
-        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        WKApplication: true
-        WKCompanionAppBundleIdentifier: app.fitgram.ios.bashyrov
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.watchkitapp
-        PRODUCT_NAME: FitgramWatch
-        SWIFT_VERSION: "5.10"
-        CODE_SIGN_STYLE: Automatic
-        TARGETED_DEVICE_FAMILY: "4"
-        SUPPORTS_MACCATALYST: NO
-        GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: FitgramWatch/Info.plist
-        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
-        IPHONEOS_DEPLOYMENT_TARGET: ""
-        WATCHOS_DEPLOYMENT_TARGET: "10.0"
-
   FitgramTests:
     type: bundle.unit-test
     platform: iOS
@@ -293,18 +253,6 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
 
 schemes:
-  FitgramWatch:
-    build:
-      targets:
-        FitgramWatch: all
-    run:
-      config: Debug
-    profile:
-      config: Release
-    analyze:
-      config: Debug
-    archive:
-      config: Release
   Fitgram:
     build:
       targets:

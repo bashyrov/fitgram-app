@@ -29,7 +29,6 @@ enum FreeTierLimits {
 
     static let canUseFavorites: Bool = true
     static let canChangeTheme: Bool = true
-    static let canUseICloudSync: Bool = true
     static let canUseOlaAdvice: Bool = false
 }
 
