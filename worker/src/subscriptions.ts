@@ -85,6 +85,13 @@ export async function handleSubscriptionSync(
             return problemResponse(409, "Subscription is linked to another account");
         }
 
+        await mirrorPremiumToSupabase(
+            env,
+            log,
+            auth.userID,
+            verified.revokedAt === null ? verified.expiresAt : null
+        );
+
         return jsonResponse({
             is_premium: verified.revokedAt === null && verified.expiresAt > Date.now(),
             product_id: verified.productID,
@@ -93,6 +100,50 @@ export async function handleSubscriptionSync(
     } catch (error) {
         log.error("App Store subscription sync failed", { user: auth.userID, error: String(error) });
         return problemResponse(502, "App Store verification is temporarily unavailable");
+    }
+}
+
+/**
+ * Writes the verified expiry into Supabase `public_profiles.premium_until`,
+ * which gates posting and drives the Premium mark. Best effort: the app
+ * re-syncs on every launch, purchase, restore and renewal.
+ */
+export async function mirrorPremiumToSupabase(
+    env: Env,
+    log: Logger,
+    userID: string,
+    premiumUntilMs: number | null,
+    fetcher: typeof fetch = fetch
+): Promise<boolean> {
+    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+        log.warn("Premium mirror skipped: SUPABASE_SERVICE_ROLE_KEY not configured");
+        return false;
+    }
+    const base = env.SUPABASE_URL.replace(/\/$/, "");
+    try {
+        const response = await fetcher(
+            `${base}/rest/v1/public_profiles?user_id=eq.${encodeURIComponent(userID)}`,
+            {
+                method: "PATCH",
+                headers: {
+                    apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+                    Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+                    "Content-Type": "application/json",
+                    Prefer: "return=minimal",
+                },
+                body: JSON.stringify({
+                    premium_until: premiumUntilMs === null ? null : new Date(premiumUntilMs).toISOString(),
+                }),
+            }
+        );
+        if (!response.ok) {
+            log.warn("Premium mirror failed", { user: userID, status: response.status });
+            return false;
+        }
+        return true;
+    } catch (error) {
+        log.warn("Premium mirror error", { user: userID, error: String(error) });
+        return false;
     }
 }
 
