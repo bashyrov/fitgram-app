@@ -32,8 +32,7 @@ struct WorkerOlaChefService: Sendable {
             )
             let endpoint = try Endpoint.json(
                 path: "/api/v1/ola-chef/suggestions",
-                payload: payload,
-                requiresAuth: false
+                payload: payload
             )
             let response = try await client.send(endpoint, expecting: WorkerOlaChefResponse.self)
             if !response.suggestions.isEmpty, let data = try? JSONEncoder.fitgram.encode(response) {

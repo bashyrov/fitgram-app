@@ -1,6 +1,6 @@
 Primera versión de Fitgram — gracias por estar desde el día 1.
 
 — Escaneo de fotos, códigos de barras y voz
-— Coach Ola recuerda tus objetivos
+— Coach Ola tiene en cuenta tus objetivos
 — 5 idiomas: polaco, inglés, ucraniano, ruso, español
 — Live Activity con anillo de calorías

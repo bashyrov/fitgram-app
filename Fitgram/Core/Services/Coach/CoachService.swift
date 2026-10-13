@@ -17,6 +17,7 @@ final class CoachService {
     private let dismissalStore: CoachDismissalStore?
     private let dailyPlanStore: DailyOlaPlanStore
     private let insightStore: CoachInsightStore
+    private let weeklyDebriefStore: WeeklyDebriefStore
     /// The Today insight request currently on the wire, keyed by context
     /// signature, so overlapping refreshes share one AI call.
     private var inFlightInsights: (signature: String, task: Task<CoachInsightBatch, Never>)?
@@ -34,6 +35,7 @@ final class CoachService {
         dismissalStore: CoachDismissalStore? = nil,
         dailyPlanStore: DailyOlaPlanStore = DailyOlaPlanStore(),
         insightStore: CoachInsightStore = CoachInsightStore(),
+        weeklyDebriefStore: WeeklyDebriefStore = WeeklyDebriefStore(),
         calorieOverrideStore: DailyCalorieOverrideStore = DailyCalorieOverrideStore(),
         macroOverrideStore: DailyMacroOverrideStore = DailyMacroOverrideStore(),
         activityCaloriePolicyStore: ActivityCaloriePolicyStore = ActivityCaloriePolicyStore(),
@@ -49,6 +51,7 @@ final class CoachService {
         self.dismissalStore = dismissalStore
         self.dailyPlanStore = dailyPlanStore
         self.insightStore = insightStore
+        self.weeklyDebriefStore = weeklyDebriefStore
         self.calorieOverrideStore = calorieOverrideStore
         self.macroOverrideStore = macroOverrideStore
         self.activityCaloriePolicyStore = activityCaloriePolicyStore
@@ -102,13 +105,6 @@ final class CoachService {
 
     func headline(for userRemoteID: String) async -> CoachInsight? {
         await insights(for: userRemoteID).first
-    }
-
-    func weeklyDebrief(for userRemoteID: String) async -> WeeklyDebrief {
-        let context = buildContext(for: userRemoteID)
-        let debrief = await WeeklyDebrief.from(context: context, generator: generator, now: now())
-        logStore?.record(debrief, for: userRemoteID)
-        return debrief
     }
 
     func dailyPlan(for userRemoteID: String) async -> DailyOlaPlan {
@@ -383,6 +379,28 @@ final class CoachService {
             latestKg: entries.first?.weightKg,
             deltaKg30Days: summary?.thirtyDayDelta
         )
+    }
+}
+
+// MARK: - Weekly debrief
+extension CoachService {
+    /// The weekly debrief. Ola's AI text is asked for once per day and
+    /// language; reopening the sheet reuses it with fresh stats. A local
+    /// fallback is never stored, so the AI is retried on the next open.
+    func weeklyDebrief(for userRemoteID: String) async -> WeeklyDebrief {
+        let context = buildContext(for: userRemoteID)
+        let dateKey = DailyOlaPlanBuilder.planDateKey(now(), calendar: calendar)
+        let locale = LocalizationStore.currentLanguageCode()
+        if let stored = weeklyDebriefStore.load(userRemoteID: userRemoteID, dateKey: dateKey, locale: locale) {
+            return stored.refreshingStats(from: context)
+        }
+        let aiResult = await generator.generateWeekly(for: context)
+        let debrief = WeeklyDebrief.from(context: context, aiResult: aiResult, now: now())
+        logStore?.record(debrief, for: userRemoteID)
+        if aiResult.isFromAI {
+            weeklyDebriefStore.save(debrief, userRemoteID: userRemoteID, dateKey: dateKey, locale: locale)
+        }
+        return debrief
     }
 }
 

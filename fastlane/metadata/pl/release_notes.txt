@@ -1,6 +1,6 @@
 Pierwsza wersja Fitgrama! Dzięki, że jesteś z nami od dnia 1.
 
 — Skanowanie zdjęć, kodów i głosu
-— AI Coach Ola pamięta Twoje cele
+— AI Coach Ola uwzględnia Twoje cele
 — 5 języków: polski, angielski, ukraiński, rosyjski, hiszpański
 — Live Activity z kalorycznym pierścieniem

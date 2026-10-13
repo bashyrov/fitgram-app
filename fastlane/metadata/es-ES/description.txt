@@ -5,7 +5,7 @@ LO QUE OBTIENES
 • Escáner de códigos de barras — Open Food Facts directo del envase
 • Añadir por voz — "comí sopa de tomate y un sándwich de queso"
 • Base Rápida — 3000+ comidas con datos nutricionales precisos
-• Coach Ola — IA que recuerda tus objetivos, dieta y hábitos
+• Coach Ola — IA que tiene en cuenta tus objetivos, dieta y hábitos
 • Objetivos y métricas — calorías, macros, agua, peso, IMC
 • Racha diaria — mantén el ritmo, gana insignias, comparte tu progreso
 • Amigos — retos semanales, ranking, perder peso juntos

@@ -1,6 +1,6 @@
 Fitgram's first release — thank you for being here on day 1.
 
 — Photo, barcode, and voice scanning
-— Coach Ola remembers your goals
+— Coach Ola builds advice around your goals
 — 5 languages: Polish, English, Ukrainian, Russian, Spanish
 — Live Activity with the calorie ring

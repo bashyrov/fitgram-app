@@ -29,6 +29,13 @@
 - [ ] Жалоба на пост: «…» на чужом посте → «Zgłoś post» → в `moderation_reports` появилась строка
       с `reason`, начинающимся на `post:<id>`.
 - [ ] Пост с матом или ссылкой через прямой запрос к API отклоняется (`check constraint`).
+- [ ] Kuchnia Oli (Pro): открыть экран → через несколько секунд сверху появляются 4–6 блюд от ИИ.
+      Раньше запрос уходил без токена и воркер отвечал 401.
+- [ ] Недельный отчёт Оли (Pro): открыть дважды за день → в панели `/admin/dashboard` один запрос
+      `weekly-debrief`, а не два; цифры в плитках при этом обновляются.
+- [ ] Правки кэша отчёта написаны без компиляции: `CoachService.swift`, `WeeklyDebrief.swift`,
+      `CoachInsightCache.swift`, `CoachInsightGenerator.swift`, `WorkerCoachInsightGenerator.swift`;
+      прогнать `WeeklyDebriefTests`.
 - [ ] Mac: `make test` — 506 unit / 4 UI тестов (последний прогон был 28 сентября, до постов и юзернеймов).
 - [ ] Секреты на живом воркере: `APPLE_SIWA_KEY_ID`, `APPLE_SIWA_PRIVATE_KEY`, `APPLE_ISSUER_ID`,
       `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY`, `ADMIN_TOKEN`. Без SIWA-ключа отзыв токенов Apple
@@ -66,6 +73,11 @@
 - 8 строк без перевода — это осиротевшие ключи каталога, в коде они не используются.
 - Убрать `is_premium` из `SocialProfileService.syncProfile` — не нужно: сервер поле игнорирует,
   а сам запрос заставляет базу пересчитать значок Premium.
+
+- [ ] Память Оли: хранилище `CoachMemoryStore` есть, но в него никто не пишет — либо реализовать,
+      либо убрать поле `memory` из запроса. В описаниях «помнит цели» уже заменено на «учитывает».
+- [ ] Эндпоинты воркера `coach/daily-insight` и `coach/daily-plan` приложением не вызываются —
+      удалить или оставить осознанно.
 
 ## 5. Мелочи
 

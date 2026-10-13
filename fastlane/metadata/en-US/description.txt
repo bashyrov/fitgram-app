@@ -5,7 +5,7 @@ WHAT YOU GET
 • Barcode scanner — Open Food Facts straight from the package
 • Add by voice — "I had tomato soup and a cheese sandwich"
 • Quick Database — 3000+ foods with precise nutrition data
-• Coach Ola — AI coach that remembers your goals, diet, and habits
+• Coach Ola — AI coach that works from your goals, diet, and habits
 • Goals and metrics — calories, macros, water, weight, BMI
 • Daily streak — keep the rhythm, earn badges, share progress
 • Friends — weekly challenges, leaderboard, lose weight together
