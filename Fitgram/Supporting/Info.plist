@@ -152,9 +152,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Fitgram używa aparatu, żeby rozpoznawać Twoje posiłki na zdjęciach.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Fitgram synchronizuje aktywność i wagę z Apple Health.</string>
+	<string>Fitgram odczytuje wagę, treningi i aktywność z Apple Health, aby aktualizować Twój plan.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Fitgram zapisuje posiłki i kalorie w Apple Health.</string>
+	<string>Fitgram nie zapisuje danych w Apple Health — ta zgoda nie jest obecnie używana.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Fitgram używa mikrofonu do szybkiego dodawania posiłków głosem.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

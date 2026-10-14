@@ -271,6 +271,22 @@ final class FriendsState {
         (try? await postService.posts(by: authorID, viewer: userRemoteID)) ?? AuthorPosts(posts: [], isHidden: false)
     }
 
+    /// Reports one post to moderation. `moderation_reports` is keyed by the
+    /// reported user, so the post id and title travel in the reason.
+    func reportPost(_ post: SocialPost) async -> Bool {
+        do {
+            try await service.report(
+                post.authorID,
+                reason: "post:\(post.id.uuidString.lowercased()) \(post.title)",
+                as: userRemoteID
+            )
+            return true
+        } catch {
+            Logger.persistence.error("Post report failed: \(String(describing: error))")
+            return false
+        }
+    }
+
     func setLiked(_ liked: Bool, postID: UUID) async -> Bool {
         do {
             try await postService.setLiked(liked, postID: postID, viewer: userRemoteID)

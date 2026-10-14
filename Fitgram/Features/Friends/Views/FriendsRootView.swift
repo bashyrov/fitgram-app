@@ -269,7 +269,8 @@ struct FriendsRootView: View {
                             onLike: { Task { await state.toggleLike(post) } },
                             onOpenAuthor: post.authorID == state.userRemoteID
                                 ? nil : { openedProfile = ProfileSheetID(id: post.authorID) },
-                            onDelete: { Task { await state.deletePost(post) } }
+                            onDelete: { Task { await state.deletePost(post) } },
+                            onReport: { Task { await reportPost(post) } }
                         )
                     }
                 }
@@ -290,6 +291,18 @@ struct FriendsRootView: View {
     }
 
     // MARK: - Actions
+
+    private func reportPost(_ post: SocialPost) async {
+        if await state.reportPost(post) {
+            Haptics.success()
+            toastCenter.info(
+                L("Zgłoszenie wysłane"),
+                message: L("Thanks — our moderation team will look into it.")
+            )
+        } else {
+            toastCenter.error(L("Something went wrong. Try again."))
+        }
+    }
 
     private func openComposer() {
         guard isPremium else {

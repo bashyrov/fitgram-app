@@ -3,7 +3,7 @@ import Foundation
 /// Weekly snapshot Ola hands back when the user opens the "How you're doing"
 /// sheet from Today. Combines the same `CoachInsight` engine output with
 /// derived stats so the view doesn't have to do arithmetic.
-enum WeeklyDebriefStatKind: String, Sendable {
+enum WeeklyDebriefStatKind: String, Sendable, Codable {
     case avgCalories
     case proteinDaysHit
     case calorieDaysOnTarget
@@ -13,15 +13,15 @@ enum WeeklyDebriefStatKind: String, Sendable {
     case workoutMinutes
 }
 
-struct WeeklyDebrief: Equatable, Sendable {
-    struct Stat: Equatable, Sendable, Identifiable {
+struct WeeklyDebrief: Equatable, Sendable, Codable {
+    struct Stat: Equatable, Sendable, Identifiable, Codable {
         var id: WeeklyDebriefStatKind { kind }
         let kind: WeeklyDebriefStatKind
         let value: String
         let caption: String
     }
 
-    struct Section: Equatable, Sendable, Identifiable {
+    struct Section: Equatable, Sendable, Identifiable, Codable {
         let id: String
         let title: String
         let body: String
@@ -45,7 +45,11 @@ extension WeeklyDebrief {
         now: Date
     ) async -> WeeklyDebrief {
         let aiResult = await generator.generateWeekly(for: context)
-        return WeeklyDebrief(
+        return from(context: context, aiResult: aiResult, now: now)
+    }
+
+    static func from(context: CoachContext, aiResult: WeeklyDebriefAIResult, now: Date) -> WeeklyDebrief {
+        WeeklyDebrief(
             generatedAt: now,
             rangeStart: context.week.startAt,
             rangeEnd: context.week.endAt,
@@ -55,6 +59,21 @@ extension WeeklyDebrief {
             nextWeekRules: aiResult.nextWeekRules.isEmpty
                 ? nextWeekRules(for: context) : Array(aiResult.nextWeekRules.prefix(3)),
             insights: aiResult.insights
+        )
+    }
+
+    /// A stored debrief with the week range and stat tiles recomputed, so
+    /// the numbers stay live while Ola's text is reused.
+    func refreshingStats(from context: CoachContext) -> WeeklyDebrief {
+        WeeklyDebrief(
+            generatedAt: generatedAt,
+            rangeStart: context.week.startAt,
+            rangeEnd: context.week.endAt,
+            headline: headline,
+            stats: Self.stats(for: context),
+            sections: sections,
+            nextWeekRules: nextWeekRules,
+            insights: insights
         )
     }
 

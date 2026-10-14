@@ -133,8 +133,8 @@ specific features when configured:
 │   ├── Features/              # One folder per product surface
 │   ├── Resources/             # Assets, Localizable.xcstrings, Seeds
 │   └── Supporting/            # Info.plist, entitlements, PrivacyInfo
-├── FitgramTests/             # 129 XCTest unit tests
-├── FitgramUITests/           # 3 XCUITest tests
+├── FitgramTests/             # XCTest unit tests
+├── FitgramUITests/           # XCUITest UI tests
 ├── worker/                    # Cloudflare Worker (TypeScript)
 ├── docs/screenshots/          # PR/marketing imagery
 ├── ARCHITECTURE.md            # decisions + module map + API contracts

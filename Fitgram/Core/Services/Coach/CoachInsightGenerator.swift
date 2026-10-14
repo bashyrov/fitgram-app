@@ -40,16 +40,20 @@ struct WeeklyDebriefAIResult: Sendable, Equatable {
     let sections: [WeeklyDebrief.Section]
     let nextWeekRules: [String]
     let insights: [CoachInsight]
+    /// True only for a successful AI answer — the one result worth caching.
+    let isFromAI: Bool
 
     init(
         headline: String?,
         sections: [WeeklyDebrief.Section] = [],
         nextWeekRules: [String] = [],
-        insights: [CoachInsight]
+        insights: [CoachInsight],
+        isFromAI: Bool = false
     ) {
         self.headline = headline
         self.sections = sections
         self.nextWeekRules = nextWeekRules
         self.insights = insights
+        self.isFromAI = isFromAI
     }
 }

@@ -88,3 +88,40 @@ struct CoachInsightStore {
         "coach.insights.\(userRemoteID.replacingOccurrences(of: ".", with: "_"))"
     }
 }
+
+/// Last AI-written weekly debrief per user. One entry per user, replaced on
+/// each generation; reused only when the day and language match.
+struct WeeklyDebriefStore {
+    private struct Entry: Codable {
+        let dateKey: String
+        let locale: String
+        let debrief: WeeklyDebrief
+    }
+
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
+
+    func load(userRemoteID: String, dateKey: String, locale: String) -> WeeklyDebrief? {
+        guard
+            let data = defaults.data(forKey: key(userRemoteID)),
+            let entry = try? JSONDecoder().decode(Entry.self, from: data),
+            entry.dateKey == dateKey, entry.locale == locale
+        else {
+            return nil
+        }
+        return entry.debrief
+    }
+
+    func save(_ debrief: WeeklyDebrief, userRemoteID: String, dateKey: String, locale: String) {
+        let entry = Entry(dateKey: dateKey, locale: locale, debrief: debrief)
+        guard let data = try? JSONEncoder().encode(entry) else { return }
+        defaults.set(data, forKey: key(userRemoteID))
+    }
+
+    private func key(_ userRemoteID: String) -> String {
+        "coach.weeklyDebrief.\(userRemoteID.replacingOccurrences(of: ".", with: "_"))"
+    }
+}

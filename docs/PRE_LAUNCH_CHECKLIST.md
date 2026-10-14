@@ -2,6 +2,10 @@
 
 Concrete steps in execution order. Tick each box as you go. Total estimated time **2-3 weeks** solo developer.
 
+> Written before the first TestFlight build and kept for reference. The app now uses native StoreKit 2,
+> not RevenueCat, and keys live in `project.yml`, so Phases 4–5 no longer match the code.
+> The current list of open work is in [`TODO.md`](../TODO.md).
+
 ## Phase 0: Money + accounts (1 day calendar, blocked by approvals)
 
 - [ ] Buy [Apple Developer Program](https://developer.apple.com/programs/) ($99/year). **24-72h verification.**
@@ -36,7 +40,7 @@ Concrete steps in execution order. Tick each box as you go. Total estimated time
   - Platform: iOS
   - Name: **Fitgram**
   - Primary Language: **Polish**
-  - Bundle ID: **app.fitgram.ios**
+  - Bundle ID: **app.fitgram.ios.bashyrov**
   - SKU: **fitgram-ios-001**
 - [ ] App Information:
   - Subtitle: **Polski licznik kalorii bez stresu**
@@ -128,9 +132,9 @@ In ASC → your app → App Privacy:
 
 - [ ] [developer.apple.com](https://developer.apple.com/account) → Identifiers → "+" → App IDs → App
   - Description: Fitgram
-  - Bundle ID: **app.fitgram.ios** (explicit)
+  - Bundle ID: **app.fitgram.ios.bashyrov** (explicit)
   - Capabilities enable: ✅ Sign In with Apple, ✅ HealthKit, ✅ Push Notifications, ✅ App Groups
-- [ ] Create App ID for widget: **app.fitgram.ios.widget**
+- [ ] Create App ID for widget: **app.fitgram.ios.bashyrov.widget**
   - Capabilities: ✅ App Groups
 - [ ] Identifiers → App Groups → "+" → `group.app.fitgram.shared`
 - [ ] Attach the App Group to both bundle IDs

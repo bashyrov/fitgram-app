@@ -61,7 +61,8 @@ struct WorkerCoachInsightGenerator: CoachInsightGenerator {
                 headline: cleanedHeadline.isEmpty ? nil : cleanedHeadline,
                 sections: response.cleanedSections,
                 nextWeekRules: response.cleanedRules,
-                insights: insights
+                insights: insights,
+                isFromAI: true
             )
         } catch {
             Logger.coach.error(

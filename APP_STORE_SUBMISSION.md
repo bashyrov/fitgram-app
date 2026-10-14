@@ -106,7 +106,7 @@ Apple review обычно 24-48 ч. На сообщения от Apple отве�
 
 ## 📝 IAP (in-app purchases) — для платных подписок
 
-Fitgram имеет paywall, но StoreKit пока в mock-режиме. Чтобы реально брать платежи:
+Fitgram использует StoreKit 2 (`IS_PAYMENTS_ENABLED: "true"` в `project.yml`). Чтобы покупки работали, в App Store Connect должны существовать продукты:
 
 1. App Store Connect → Apps → Fitgram → **Features** → **In-App Purchases** → "+"
 2. Type: **Auto-Renewable Subscription**

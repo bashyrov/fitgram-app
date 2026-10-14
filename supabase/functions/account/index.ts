@@ -42,6 +42,24 @@ Deno.serve(async (request) => {
     auth: { persistSession: false },
   });
 
+  // Post photos live in a public bucket under "<user_id>/". Rows cascade with
+  // the auth user, files do not — remove them first so a failure can be
+  // retried while the account still exists.
+  const photos = admin.storage.from("post-photos");
+  for (;;) {
+    const { data: files, error: listError } = await photos.list(userID, { limit: 1000 });
+    if (listError) {
+      console.error("Account delete failed listing post photos", listError);
+      return json({ error: "Failed to delete account data" }, 500);
+    }
+    if (!files || files.length === 0) break;
+    const { error: removeError } = await photos.remove(files.map((file) => `${userID}/${file.name}`));
+    if (removeError) {
+      console.error("Account delete failed removing post photos", removeError);
+      return json({ error: "Failed to delete account data" }, 500);
+    }
+  }
+
   const tables = [
     ["moderation_reports", "reporter"],
     ["moderation_reports", "reported"],

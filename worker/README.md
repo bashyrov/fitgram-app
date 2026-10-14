@@ -56,6 +56,7 @@ npx wrangler kv namespace create scan-cache
 # Secrets — repeat for each:
 npx wrangler secret put SUPABASE_JWT_SECRET     # from Supabase → Settings → API
 npx wrangler secret put SUPABASE_URL            # https://<project>.supabase.co
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY  # Supabase → Settings → API; writes public_profiles.premium_until
 npx wrangler secret put GEMINI_API_KEY          # from console.cloud.google.com
 npx wrangler secret put UPSTASH_REDIS_URL       # optional, REST URL
 npx wrangler secret put UPSTASH_REDIS_TOKEN     # optional, REST token

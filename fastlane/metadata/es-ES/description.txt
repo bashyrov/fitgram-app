@@ -5,7 +5,7 @@ LO QUE OBTIENES
 • Escáner de códigos de barras — Open Food Facts directo del envase
 • Añadir por voz — "comí sopa de tomate y un sándwich de queso"
 • Base Rápida — 3000+ comidas con datos nutricionales precisos
-• Coach Ola — IA que recuerda tus objetivos, dieta y hábitos
+• Coach Ola — IA que tiene en cuenta tus objetivos, dieta y hábitos
 • Objetivos y métricas — calorías, macros, agua, peso, IMC
 • Racha diaria — mantén el ritmo, gana insignias, comparte tu progreso
 • Amigos — retos semanales, ranking, perder peso juntos
@@ -13,7 +13,7 @@ LO QUE OBTIENES
 • Seguimiento de agua — objetivo diario + un toque para añadir
 
 PRIVACIDAD
-Tus datos siguen bajo tu control: sincronización con iCloud, sin anuncios, sin venta de datos personales y procesamiento de IA transparente.
+Tus datos siguen bajo tu control: sin anuncios, sin venta de datos personales y procesamiento de IA transparente.
 
 Fitgram está hecho por un pequeño equipo independiente — tu feedback va directo a las personas que escriben el código.
 
