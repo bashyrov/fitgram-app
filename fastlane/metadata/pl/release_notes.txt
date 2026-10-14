@@ -1,7 +1,6 @@
 Pierwsza wersja Fitgrama! Dzięki, że jesteś z nami od dnia 1.
 
 — Skanowanie zdjęć, kodów i głosu
-— AI Coach Ola pamięta Twoje cele
-— iCloud sync między iPhone, iPadem i Apple Watch
+— AI Coach Ola uwzględnia Twoje cele
 — 5 języków: polski, angielski, ukraiński, rosyjski, hiszpański
 — Live Activity z kalorycznym pierścieniem

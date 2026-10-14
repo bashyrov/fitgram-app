@@ -375,7 +375,7 @@ extension OlaTipsView {
             OlaTipsSectionHead(
                 number: number,
                 title: TL(
-                    pl: "Pamięć Oli", en: "Ola memory", uk: "Памʼять Ola", ru: "Память Ola", es: "Memoria de Ola"),
+                    pl: "Plan Oli", en: "Ola's plan", uk: "План Ola", ru: "План Ola", es: "Plan de Ola"),
                 top: top
             )
             VStack(spacing: 0) {

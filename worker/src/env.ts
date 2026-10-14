@@ -4,6 +4,9 @@ export interface Env {
     // Secrets — set via `wrangler secret put`.
     SUPABASE_JWT_SECRET?: string; // legacy HS256 fallback
     SUPABASE_URL?: string; // e.g. https://xyz.supabase.co — required for JWKS verification
+    // Lets the Worker write public_profiles.premium_until, the only Premium
+    // source the social layer trusts. Clients cannot set that column.
+    SUPABASE_SERVICE_ROLE_KEY?: string;
     GEMINI_API_KEY?: string;
     ANTHROPIC_API_KEY?: string;
     ANTHROPIC_BASE_URL?: string;

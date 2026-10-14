@@ -36,7 +36,8 @@ extension FriendProfileView {
                         PostCard(
                             post: post,
                             isMine: post.authorID == state.userRemoteID,
-                            onLike: { Task { await toggleLike(post) } }
+                            onLike: { Task { await toggleLike(post) } },
+                            onReport: { Task { await reportPost(post) } }
                         )
                     }
                 }
@@ -46,6 +47,18 @@ extension FriendProfileView {
                 LoadingShimmer(cornerRadius: 24).frame(height: 160)
                 LoadingShimmer(cornerRadius: 24).frame(height: 120)
             }
+        }
+    }
+
+    private func reportPost(_ post: SocialPost) async {
+        if await state.reportPost(post) {
+            Haptics.success()
+            toasts.info(
+                L("Zgłoszenie wysłane"),
+                message: L("Thanks — our moderation team will look into it.")
+            )
+        } else {
+            toasts.error(L("Something went wrong. Try again."))
         }
     }
 

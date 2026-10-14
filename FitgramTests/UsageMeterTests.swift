@@ -170,7 +170,6 @@ final class EntitlementsTests: XCTestCase {
         XCTAssertNil(free.favoritesCap)
         XCTAssertTrue(free.canUseFavorites)
         XCTAssertTrue(free.canChangeTheme)
-        XCTAssertTrue(free.canUseICloudSync)
         XCTAssertFalse(free.canUseOlaAdvice)
     }
 
@@ -185,7 +184,6 @@ final class EntitlementsTests: XCTestCase {
         XCTAssertEqual(premium.allowedExportFormats, [.json, .csv, .zip])
         XCTAssertTrue(premium.canUseFavorites)
         XCTAssertTrue(premium.canChangeTheme)
-        XCTAssertTrue(premium.canUseICloudSync)
         XCTAssertTrue(premium.canUseOlaAdvice)
     }
 
@@ -234,7 +232,6 @@ final class PaywallCoordinatorTests: XCTestCase {
             .exportCsv,
             .exportZip,
             .themePicker,
-            .iCloudSync,
             .manual,
         ] {
             let copy = trigger.copy

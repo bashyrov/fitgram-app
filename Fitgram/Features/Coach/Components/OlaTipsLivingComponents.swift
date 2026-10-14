@@ -16,7 +16,7 @@ enum OlaAdviceCategory: String, CaseIterable, Identifiable {
         case .protein: return L("Białko")
         case .calories: return L("Kalorie")
         case .habits: return L("Nawyki")
-        case .memory: return L("Pamięć")
+        case .memory: return TL(pl: "Plan", en: "Plan", uk: "План", ru: "План", es: "Plan")
         case .history: return L("Historia")
         }
     }
@@ -27,7 +27,7 @@ enum OlaAdviceCategory: String, CaseIterable, Identifiable {
         case .protein: return "bolt.heart.fill"
         case .calories: return "gauge.with.dots.needle.67percent"
         case .habits: return "checkmark.seal.fill"
-        case .memory: return "brain.head.profile"
+        case .memory: return "target"
         case .history: return "clock.arrow.circlepath"
         }
     }
@@ -87,11 +87,6 @@ struct OlaLivingHero: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            HStack(spacing: 6) {
-                heroPill(symbol: "clock.arrow.circlepath", text: L("Pamięta kontekst"))
-                heroPill(symbol: "hand.thumbsup", text: L("Uczy się z reakcji"))
-            }
-
             if !recommendations.nextSteps.isEmpty {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "arrow.right")
@@ -132,21 +127,6 @@ struct OlaLivingHero: View {
     private var liveText: String {
         guard let lastUpdated else { return L("Na żywo") }
         return L("Na żywo") + " · " + lastUpdated.formatted(.relative(presentation: .named))
-    }
-
-    private func heroPill(symbol: String, text: String) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: symbol)
-                .font(.system(size: 11, weight: .bold))
-            Text(text)
-                .font(Tokens.Font.manrope(12, weight: 700))
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-        }
-        .foregroundStyle(Tokens.Mono.onHero)
-        .padding(.horizontal, 10)
-        .frame(height: 28)
-        .background(Capsule().fill(Tokens.Mono.heroLine))
     }
 }
 
@@ -215,7 +195,7 @@ struct OlaAdviceCard: View {
     }
 }
 
-/// One row of the "Pamięć Oli" card — rendered as a design-D list row (outline icon box).
+/// One row of the "Plan Oli" card — rendered as a design-D list row (outline icon box).
 struct OlaMemoryRow: View {
     let symbol: String
     let title: String

@@ -24,7 +24,6 @@ struct Entitlements: Equatable, Sendable {
 
     let canUseFavorites: Bool
     let canChangeTheme: Bool
-    let canUseICloudSync: Bool
     let canUseOlaAdvice: Bool
 
     static let free = Entitlements(
@@ -41,7 +40,6 @@ struct Entitlements: Equatable, Sendable {
         allowedExportFormats: FreeTierLimits.allowedExportFormats,
         canUseFavorites: FreeTierLimits.canUseFavorites,
         canChangeTheme: FreeTierLimits.canChangeTheme,
-        canUseICloudSync: FreeTierLimits.canUseICloudSync,
         canUseOlaAdvice: FreeTierLimits.canUseOlaAdvice
     )
 
@@ -60,7 +58,6 @@ struct Entitlements: Equatable, Sendable {
         allowedExportFormats: [.json, .csv, .zip],
         canUseFavorites: true,
         canChangeTheme: true,
-        canUseICloudSync: true,
         canUseOlaAdvice: true
     )
 }

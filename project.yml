@@ -21,7 +21,7 @@ settings:
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     DEVELOPMENT_TEAM: "L55G3V9NJ3"
     MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "24"
+    CURRENT_PROJECT_VERSION: "25"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     ENABLE_MODULE_VERIFIER: YES
     GCC_TREAT_WARNINGS_AS_ERRORS: NO
@@ -131,8 +131,7 @@ targets:
         NSPhotoLibraryAddUsageDescription: "Fitgram zapisuje wygenerowane karty (np. seria) do Twojej biblioteki zdjęć."
         NSMicrophoneUsageDescription: "Fitgram używa mikrofonu do szybkiego dodawania posiłków głosem."
         NSSpeechRecognitionUsageDescription: "Fitgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
-        NSHealthShareUsageDescription: "Fitgram synchronizuje aktywność i wagę z Apple Health."
-        NSHealthUpdateUsageDescription: "Fitgram zapisuje posiłki i kalorie w Apple Health."
+        NSHealthShareUsageDescription: "Fitgram odczytuje wagę, treningi i aktywność z Apple Health, aby aktualizować Twój plan."
         NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
         UIAppFonts:
@@ -154,19 +153,12 @@ targets:
         SUPABASE_URL: $(SUPABASE_URL)
         SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
         GOOGLE_OAUTH_CLIENT_ID: $(GOOGLE_OAUTH_CLIENT_ID)
-        REVENUECAT_API_KEY: $(REVENUECAT_API_KEY)
         IS_PAYMENTS_ENABLED: $(IS_PAYMENTS_ENABLED)
     entitlements:
       path: Fitgram/Supporting/Fitgram.entitlements
       properties:
         com.apple.developer.applesignin:
           - Default
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.app.fitgram.ios.bashyrov
-        com.apple.developer.icloud-services:
-          - CloudKit
-        com.apple.developer.ubiquity-container-identifiers:
-          - iCloud.app.fitgram.ios.bashyrov
         com.apple.security.application-groups:
           - group.app.fitgram.shared
         com.apple.developer.healthkit: true
@@ -189,7 +181,6 @@ targets:
         SUPABASE_URL: "https://rrkvandbftozmwwfpfqi.supabase.co"
         SUPABASE_ANON_KEY: "sb_publishable_qVVIG9LKOXpTzIQAN8ve2w_-i26wrMl"
         GOOGLE_OAUTH_CLIENT_ID: "849312185535-mlidbn8lrhfdsro4f9t2a1ruuqmucgi3.apps.googleusercontent.com"
-        REVENUECAT_API_KEY: ""
         IS_PAYMENTS_ENABLED: "true"
 
   FitgramWidget:
@@ -232,40 +223,6 @@ targets:
         CODE_SIGN_ENTITLEMENTS: FitgramWidget/FitgramWidget.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
 
-  FitgramWatch:
-    type: application
-    platform: watchOS
-    deploymentTarget: "10.0"
-    sources:
-      - path: FitgramWatch
-      - path: Shared
-        excludes:
-          - FitgramActivityAttributes.swift
-    resources:
-      - path: FitgramWatch/Assets.xcassets
-    info:
-      path: FitgramWatch/Info.plist
-      properties:
-        CFBundleDisplayName: Fitgram
-        CFBundleShortVersionString: $(MARKETING_VERSION)
-        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        WKApplication: true
-        WKCompanionAppBundleIdentifier: app.fitgram.ios.bashyrov
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.fitgram.ios.bashyrov.watchkitapp
-        PRODUCT_NAME: FitgramWatch
-        SWIFT_VERSION: "5.10"
-        CODE_SIGN_STYLE: Automatic
-        TARGETED_DEVICE_FAMILY: "4"
-        SUPPORTS_MACCATALYST: NO
-        GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: FitgramWatch/Info.plist
-        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: BrandPrimary
-        IPHONEOS_DEPLOYMENT_TARGET: ""
-        WATCHOS_DEPLOYMENT_TARGET: "10.0"
-
   FitgramTests:
     type: bundle.unit-test
     platform: iOS
@@ -293,18 +250,6 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
 
 schemes:
-  FitgramWatch:
-    build:
-      targets:
-        FitgramWatch: all
-    run:
-      config: Debug
-    profile:
-      config: Release
-    analyze:
-      config: Debug
-    archive:
-      config: Release
   Fitgram:
     build:
       targets:

@@ -131,8 +131,11 @@ struct PostCard: View {
     let onLike: () -> Void
     var onOpenAuthor: (() -> Void)?
     var onDelete: (() -> Void)?
+    /// Sends someone else's post to moderation.
+    var onReport: (() -> Void)?
 
     @State private var isDeleteConfirmed = false
+    @State private var isReportConfirmed = false
     @State private var likeBounce = false
 
     var body: some View {
@@ -177,6 +180,33 @@ struct PostCard: View {
     }
 
     private var header: some View {
+        headerRow
+            .confirmationDialog(
+                TL(
+                    pl: "Zgłosić ten post?", en: "Report this post?", uk: "Поскаржитися на цей пост?",
+                    ru: "Пожаловаться на этот пост?", es: "¿Denunciar esta publicación?"),
+                isPresented: $isReportConfirmed,
+                titleVisibility: .visible
+            ) {
+                Button(
+                    TL(pl: "Zgłoś", en: "Report", uk: "Поскаржитися", ru: "Пожаловаться", es: "Denunciar"),
+                    role: .destructive
+                ) {
+                    onReport?()
+                }
+                Button(L("Cancel"), role: .cancel) {}
+            } message: {
+                Text(
+                    TL(
+                        pl: "Sprawdzimy go i usuniemy, jeśli łamie zasady.",
+                        en: "We'll review it and remove it if it breaks the rules.",
+                        uk: "Ми перевіримо його й видалимо, якщо він порушує правила.",
+                        ru: "Мы проверим его и удалим, если он нарушает правила.",
+                        es: "La revisaremos y la eliminaremos si incumple las normas."))
+            }
+    }
+
+    private var headerRow: some View {
         HStack(spacing: 10) {
             Button {
                 onOpenAuthor?()
@@ -206,6 +236,25 @@ struct PostCard: View {
                                 pl: "Usuń post", en: "Delete post", uk: "Видалити пост", ru: "Удалить пост",
                                 es: "Eliminar publicación"),
                             systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(Tokens.Mono.muted)
+                        .frame(width: 36, height: 36)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityLabel(Text(L("More")))
+            } else if !isMine, onReport != nil {
+                Menu {
+                    Button(role: .destructive) {
+                        isReportConfirmed = true
+                    } label: {
+                        Label(
+                            TL(
+                                pl: "Zgłoś post", en: "Report post", uk: "Поскаржитися на пост",
+                                ru: "Пожаловаться на пост", es: "Denunciar publicación"),
+                            systemImage: "flag")
                     }
                 } label: {
                     Image(systemName: "ellipsis")

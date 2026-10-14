@@ -1,7 +1,7 @@
 import Foundation
 
 /// Today's numbers shaped for the surfaces outside the app: the
-/// home-screen widget, the Live Activity and the Watch companion.
+/// home-screen widget and the Live Activity.
 struct TodaySurfacePayloads {
     struct Goals {
         let calories: Int
@@ -63,20 +63,6 @@ struct TodaySurfacePayloads {
             carbsGoal: goals.carbs,
             fatConsumed: Int(totals.fat.rounded()),
             fatGoal: goals.fat,
-            waterMl: waterMl,
-            waterGoalMl: waterGoalMl,
-            updatedAt: updatedAt
-        )
-    }
-
-    /// Sent as WCSession application context — "current state, replace
-    /// previous" — the right primitive for a small idempotent payload.
-    var watch: WatchSnapshot {
-        WatchSnapshot(
-            kcalConsumed: Int(totals.calories.rounded()),
-            kcalGoal: goals.calories,
-            proteinConsumed: Int(totals.protein.rounded()),
-            proteinGoal: goals.protein,
             waterMl: waterMl,
             waterGoalMl: waterGoalMl,
             updatedAt: updatedAt

@@ -1,6 +1,14 @@
 # Fitgram Deploy Readiness
 
-Last checked: 2026-08-11
+Last checked: 2026-08-11 (build 7). Sections below describe that build unless dated otherwise.
+
+## Status on 2026-10-12 (build 24)
+
+Not ready to submit yet. A review found five blockers (friendship and Premium checks in Supabase,
+post photos left behind on account deletion, outdated Terms / Privacy, iCloud sync advertised but
+not shipped). The fixes are in the repo but still have to be deployed and verified — the ordered
+steps are in [`TODO.md`](TODO.md). The full test suite has not been re-run since 2026-09-28,
+before posts and usernames landed.
 
 ## Ready in code
 

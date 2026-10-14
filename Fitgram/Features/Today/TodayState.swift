@@ -50,7 +50,6 @@ final class TodayState {
     let calorieOverrideStore: DailyCalorieOverrideStore
     let macroOverrideStore: DailyMacroOverrideStore
     let activityCaloriePolicyStore: ActivityCaloriePolicyStore
-    private let watchBridge: WatchSessionBridge?
     private let liveActivityService: LiveActivityService?
     private let calendar: Calendar
     let now: () -> Date
@@ -68,7 +67,6 @@ final class TodayState {
         calorieOverrideStore: DailyCalorieOverrideStore = DailyCalorieOverrideStore(),
         macroOverrideStore: DailyMacroOverrideStore = DailyMacroOverrideStore(),
         activityCaloriePolicyStore: ActivityCaloriePolicyStore = ActivityCaloriePolicyStore(),
-        watchBridge: WatchSessionBridge? = nil,
         liveActivityService: LiveActivityService? = nil,
         calendar: Calendar = .current,
         now: @escaping () -> Date = Date.init
@@ -84,7 +82,6 @@ final class TodayState {
         self.calorieOverrideStore = calorieOverrideStore
         self.macroOverrideStore = macroOverrideStore
         self.activityCaloriePolicyStore = activityCaloriePolicyStore
-        self.watchBridge = watchBridge
         self.liveActivityService = liveActivityService
         self.calendar = calendar
         self.now = now
@@ -118,7 +115,6 @@ final class TodayState {
         loadError = nil
         viewingDate = calendar.startOfDay(for: now())
         WidgetSnapshotStore.shared.clear()
-        watchBridge?.publish(.placeholder)
         liveActivityService?.end()
     }
 
@@ -428,7 +424,6 @@ extension TodayState {
         )
         WidgetSnapshotStore.shared.write(payloads.widget)
         WidgetCenter.shared.reloadAllTimelines()
-        watchBridge?.publish(payloads.watch)
         if let liveActivityService {
             // start() is idempotent — a second call within the same day
             // just routes to update() under the hood. Users who haven't

@@ -5,7 +5,7 @@ CO DOSTAJESZ
 • Skaner kodów kreskowych — Open Food Facts prosto z opakowania
 • Dodawanie głosem — „zjadłam zupę pomidorową i kanapkę z serem"
 • Szybka Baza — 3000+ pozycji z dokładnymi wartościami
-• Trener Ola — AI Coach który zapamiętuje Twoje cele, dietę i nawyki
+• Trener Ola — AI Coach, który opiera się na Twoich celach, diecie i nawykach
 • Cele i pomiary — kalorie, makro, woda, waga, BMI
 • Seria dni — utrzymuj rytm, zarabiaj odznaki, dziel się postępem
 • Znajomi — wyzwania tygodniowe, ranking, wspólne odchudzanie
@@ -13,7 +13,7 @@ CO DOSTAJESZ
 • Trackowanie wody — dzienna norma + szybkie tap dodawanie
 
 PRYWATNOŚĆ I BEZPIECZEŃSTWO
-Twoje dane pozostają pod Twoją kontrolą: synchronizacja iCloud, bez reklam, bez sprzedaży danych i z transparentnym przetwarzaniem AI.
+Twoje dane pozostają pod Twoją kontrolą: bez reklam, bez sprzedaży danych i z transparentnym przetwarzaniem AI.
 
 Fitgram jest tworzony przez mały niezależny zespół — feedback trafia bezpośrednio do osób piszących kod.
 

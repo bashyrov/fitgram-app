@@ -245,11 +245,6 @@ final class FriendsState {
     }
 
     func publish(_ draft: PostDraft) async throws {
-        // Make sure the server already knows about Premium — the backend
-        // refuses posts from accounts without the flag.
-        if isPremium {
-            await socialProfile.syncProfile(isPremium: true, displayName: myDisplayName, userID: userRemoteID)
-        }
         let post = try await postService.create(draft, as: me, isPremium: isPremium)
         posts.insert(post, at: 0)
         postsPublishedToday += 1
@@ -269,6 +264,22 @@ final class FriendsState {
 
     func posts(by authorID: String) async -> AuthorPosts {
         (try? await postService.posts(by: authorID, viewer: userRemoteID)) ?? AuthorPosts(posts: [], isHidden: false)
+    }
+
+    /// Reports one post to moderation. `moderation_reports` is keyed by the
+    /// reported user, so the post id and title travel in the reason.
+    func reportPost(_ post: SocialPost) async -> Bool {
+        do {
+            try await service.report(
+                post.authorID,
+                reason: "post:\(post.id.uuidString.lowercased()) \(post.title)",
+                as: userRemoteID
+            )
+            return true
+        } catch {
+            Logger.persistence.error("Post report failed: \(String(describing: error))")
+            return false
+        }
     }
 
     func setLiked(_ liked: Bool, postID: UUID) async -> Bool {

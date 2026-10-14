@@ -11,7 +11,10 @@ protocol SocialProfileServing: Sendable {
     func claimUsername(_ username: String, displayName: String?, userID: String) async throws
     /// The chosen username, or nil while only a placeholder exists.
     func chosenUsername(userID: String) async throws -> String?
-    /// Mirrors the Premium mark and the current display name.
+    /// Mirrors the current display name. The backend ignores `isPremium`:
+    /// the Premium mark comes from `premium_until`, which only the Worker
+    /// writes after verifying the App Store transaction. In-memory demo
+    /// builds still use it.
     func syncProfile(isPremium: Bool, displayName: String?, userID: String) async
     func syncPrivacy(_ settings: PrivacySettings, userID: String) async
     func fetchPrivacy(userID: String) async -> PrivacySettings?
@@ -86,16 +89,17 @@ final class SupabaseSocialProfileService: SocialProfileServing {
     }
 
     func syncProfile(isPremium: Bool, displayName: String?, userID: String) async {
+        guard let displayName = displayName?.nilIfBlank else { return }
         do {
             try await client.request(
                 path: "public_profiles",
                 method: .patch,
                 query: [URLQueryItem(name: "user_id", value: "eq.\(userID)")],
-                body: ProfilePatch(isPremium: isPremium, displayName: displayName?.nilIfBlank),
+                body: ProfilePatch(displayName: displayName),
                 prefer: "return=minimal"
             )
         } catch {
-            Logger.auth.error("Premium flag sync failed: \(String(describing: error))")
+            Logger.auth.error("Display name sync failed: \(String(describing: error))")
         }
     }
 
@@ -184,8 +188,7 @@ private struct UsernameRow: Decodable, Sendable {
 }
 
 private struct ProfilePatch: Encodable {
-    let isPremium: Bool
-    let displayName: String?
+    let displayName: String
 }
 
 struct PrivacyRow: Codable, Sendable {
