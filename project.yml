@@ -132,7 +132,6 @@ targets:
         NSMicrophoneUsageDescription: "Fitgram używa mikrofonu do szybkiego dodawania posiłków głosem."
         NSSpeechRecognitionUsageDescription: "Fitgram używa rozpoznawania mowy, aby zamienić Twoją wypowiedź w wpis posiłku."
         NSHealthShareUsageDescription: "Fitgram odczytuje wagę, treningi i aktywność z Apple Health, aby aktualizować Twój plan."
-        NSHealthUpdateUsageDescription: "Fitgram nie zapisuje danych w Apple Health — ta zgoda nie jest obecnie używana."
         NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
         UIAppFonts:
