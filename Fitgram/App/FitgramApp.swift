@@ -38,7 +38,6 @@ struct FitgramApp: App {
     private let userProfileService: UserProfileService
     private let goalsService: GoalsService
     private let recommendationsService: RecommendationsService
-    private let watchBridge: WatchSessionBridge
     private let liveActivityService: LiveActivityService
     @State private var privacyStore: PrivacyStore
     @State private var subscriptionService: any SubscriptionService
@@ -190,31 +189,19 @@ struct FitgramApp: App {
             dismissalStore: CoachDismissalStore()
         )
         self.coachService = coachService
-        let watchBridge = WatchSessionBridge()
-        self.watchBridge = watchBridge
         let liveActivityService = LiveActivityService()
         self.liveActivityService = liveActivityService
-        let watchWaterService = WaterService(container: persistence.container)
+        let waterService = WaterService(container: persistence.container)
         let todayState = TodayState(
             container: persistence.container,
             streakService: streakService,
             recipeRepository: recipeRepository,
             coachService: coachService,
-            waterService: watchWaterService,
+            waterService: waterService,
             workoutService: workoutService,
-            watchBridge: watchBridge,
             liveActivityService: liveActivityService
         )
         self.todayState = todayState
-        // Watch → iPhone: pressing the +1 szklanka button on the Watch
-        // funnels into TodayState.logWaterGlass(...), which both logs
-        // via WaterService AND republishes a fresh WatchSnapshot so
-        // the Watch face's rings update immediately.
-        watchBridge.onAddWaterGlass = { [todayState, sessionRef = session] in
-            guard let remoteID = sessionRef.currentRemoteID else { return }
-            await todayState.refresh(for: remoteID)
-            _ = await todayState.logWaterGlass(for: remoteID)
-        }
         // Profile + Goals + AI Coach surfaces. session.currentRemoteID is
         // read on every call so post-auth swap doesn't need re-wiring.
         let sessionRef = session

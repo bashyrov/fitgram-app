@@ -94,7 +94,8 @@
       поэтому stale помечены и используемые строки.
 - [ ] Apple Watch отложен: папка `FitgramWatch/` осталась в репозитории, но в проект не входит.
       Чтобы вернуть — восстановить таргет и схему `FitgramWatch` в `project.yml` из истории git
-      и встроить его в таргет `Fitgram`.
+      и встроить его в таргет `Fitgram`. Связку на iPhone (`WatchSessionBridge` и
+      `TodaySurfacePayloads.watch`) тоже вернуть из истории git.
 - [ ] iCloud sync отложен: при возврате добавить entitlement обратно и включить `cloudKitDatabase`.
 
 ## 6. Мелкие замечания из ревью (низкий приоритет)
