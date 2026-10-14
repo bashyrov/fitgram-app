@@ -156,8 +156,8 @@ enum WhatsNewCatalog {
                 .init(
                     symbol: "square.grid.2x2",
                     tint: Tokens.Palette.success,
-                    title: "Widżety, Live Activity, Apple Watch",
-                    body: "Kalorie na lock screenie, w Dynamic Island i na nadgarstku."
+                    title: "Widżety i Live Activity",
+                    body: "Kalorie na lock screenie i w Dynamic Island."
                 ),
             ]
         )

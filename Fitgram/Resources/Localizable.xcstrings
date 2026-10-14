@@ -35162,36 +35162,36 @@
         }
       }
     },
-    "Kalorie na lock screenie, w Dynamic Island i na nadgarstku." : {
+    "Kalorie na lock screenie i w Dynamic Island." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calories on the lock screen, in the Dynamic Island, and on your wrist."
+            "value" : "Calories on the lock screen and in the Dynamic Island."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calorías en la pantalla de bloqueo, en la Dynamic Island y en la muñeca."
+            "value" : "Calorías en la pantalla de bloqueo y en la Dynamic Island."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kalorie na lock screenie, w Dynamic Island i na nadgarstku."
+            "value" : "Kalorie na lock screenie i w Dynamic Island."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Калории на lock screen, в Dynamic Island и на запястье."
+            "value" : "Калории на lock screen и в Dynamic Island."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Калорії на lock screen, у Dynamic Island і на зап'ястку."
+            "value" : "Калорії на lock screen і в Dynamic Island."
           }
         }
       }
@@ -81110,36 +81110,36 @@
         }
       }
     },
-    "Widżety, Live Activity, Apple Watch" : {
+    "Widżety i Live Activity" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Widgets, Live Activity, Apple Watch"
+            "value" : "Widgets and Live Activity"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Widgets, Live Activity, Apple Watch"
+            "value" : "Widgets and Live Activity"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Widżety, Live Activity, Apple Watch"
+            "value" : "Widżety i Live Activity"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виджеты, Live Activity, Apple Watch"
+            "value" : "Виджеты и Live Activity"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Віджети, Live Activity, Apple Watch"
+            "value" : "Віджети і Live Activity"
           }
         }
       }
