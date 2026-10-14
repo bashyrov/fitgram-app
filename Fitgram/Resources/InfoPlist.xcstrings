@@ -113,31 +113,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram syncs your activity and weight with Apple Health."
+            "value" : "Fitgram reads your weight, workouts and activity from Apple Health to keep your plan up to date."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram sincroniza tu actividad y peso con Apple Health."
+            "value" : "Fitgram lee tu peso, entrenamientos y actividad de Apple Health para mantener tu plan al día."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram synchronizuje aktywność i wagę z Apple Health."
+            "value" : "Fitgram odczytuje wagę, treningi i aktywność z Apple Health, aby aktualizować Twój plan."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram синхронизирует активность и вес с Apple Health."
+            "value" : "Fitgram читает вес, тренировки и активность из Apple Health, чтобы обновлять твой план."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram синхронізує активність і вагу з Apple Health."
+            "value" : "Fitgram зчитує вагу, тренування й активність з Apple Health, щоб оновлювати твій план."
           }
         }
       }
@@ -148,31 +148,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram saves meals and calories to Apple Health."
+            "value" : "Fitgram only reads from Apple Health and never writes your data there."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram guarda comidas y calorías en Apple Health."
+            "value" : "Fitgram solo lee de Apple Health y nunca escribe tus datos allí."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram zapisuje posiłki i kalorie w Apple Health."
+            "value" : "Fitgram tylko odczytuje dane z Apple Health i nigdy ich tam nie zapisuje."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram сохраняет приёмы пищи и калории в Apple Health."
+            "value" : "Fitgram только читает данные из Apple Health и никогда не записывает их туда."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fitgram зберігає страви та калорії в Apple Health."
+            "value" : "Fitgram лише зчитує дані з Apple Health і ніколи не записує їх туди."
           }
         }
       }
