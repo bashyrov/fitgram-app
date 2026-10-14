@@ -30,7 +30,7 @@ struct ConnectionsView: View {
             .monoNavigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    MonoNavText(title: closeTitle, action: onDismiss)
+                    MonoNavIcon(systemName: "xmark", accessibilityLabel: closeTitle, action: onDismiss)
                 }
             }
         }
@@ -39,55 +39,35 @@ struct ConnectionsView: View {
     private var providerRows: some View {
         VStack(spacing: 0) {
             providerRow(.appleHealth)
-            MonoRowDivider()
-            providerRow(.strava)
-            MonoRowDivider()
-            providerRow(.oura)
-            MonoRowDivider()
-            providerRow(.garmin)
-            MonoRowDivider()
-            providerRow(.whoop)
         }
         .monoRowsCard()
     }
 
-    @ViewBuilder
     private func providerRow(_ provider: Provider) -> some View {
-        if provider == .appleHealth {
-            MonoRow(
-                icon: provider.symbol,
-                iconStyle: .track,
-                title: provider.title,
-                sub: healthWorkoutsEnabled ? provider.subtitle + "\n" + autoSyncHint : provider.subtitle
-            ) {
-                Button {
-                    Task { await importHealth() }
-                } label: {
-                    HStack(spacing: 6) {
-                        if isImportingHealth {
-                            ProgressView()
-                                .controlSize(.small)
-                                .tint(Tokens.Mono.onHero)
-                        }
-                        Text(isImportingHealth ? importingLabel : connectHealthLabel)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.center)
-                            .minimumScaleFactor(0.8)
+        MonoRow(
+            icon: provider.symbol,
+            iconStyle: .track,
+            title: provider.title,
+            sub: healthWorkoutsEnabled ? provider.subtitle + "\n" + autoSyncHint : provider.subtitle
+        ) {
+            Button {
+                Task { await importHealth() }
+            } label: {
+                HStack(spacing: 6) {
+                    if isImportingHealth {
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(Tokens.Mono.onHero)
                     }
+                    Text(isImportingHealth ? importingLabel : connectHealthLabel)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.8)
                 }
-                .buttonStyle(MonoButtonStyle(kind: .dark, height: 38, fullWidth: false))
-                .frame(maxWidth: 150)
-                .disabled(isImportingHealth || user == nil || (weightService == nil && workoutService == nil))
             }
-        } else {
-            MonoRow(icon: provider.symbol, iconStyle: .track, title: provider.title, sub: provider.subtitle) {
-                Text(soonLabel)
-                    .font(Tokens.Font.manrope(11, weight: 800))
-                    .foregroundStyle(Tokens.Palette.ink)
-                    .padding(.horizontal, 9)
-                    .frame(height: 26)
-                    .background(Capsule().fill(Tokens.Mono.track))
-            }
+            .buttonStyle(MonoButtonStyle(kind: .dark, height: 38, fullWidth: false))
+            .frame(maxWidth: 150)
+            .disabled(isImportingHealth || user == nil || (weightService == nil && workoutService == nil))
         }
     }
 
@@ -147,38 +127,16 @@ struct ConnectionsView: View {
 extension ConnectionsView {
     fileprivate enum Provider: CaseIterable {
         case appleHealth
-        case strava
-        case oura
-        case garmin
-        case whoop
 
         var title: String {
             switch self {
             case .appleHealth: "Apple Health"
-            case .strava: "Strava"
-            case .oura: "Oura"
-            case .garmin: "Garmin"
-            case .whoop: "Whoop"
             }
         }
 
         var symbol: String {
             switch self {
             case .appleHealth: "heart"
-            case .strava: "figure.run"
-            case .oura: "waveform.path.ecg"
-            case .garmin: "clock"
-            case .whoop: "bolt"
-            }
-        }
-
-        var tint: Color {
-            switch self {
-            case .appleHealth: Tokens.Palette.error
-            case .strava: Tokens.Palette.warning
-            case .oura: Tokens.Palette.primary
-            case .garmin: Tokens.Palette.accent
-            case .whoop: Tokens.Palette.primary
             }
         }
 
@@ -191,12 +149,6 @@ extension ConnectionsView {
                     uk: "Автоматично імпортує тренування, активні ккал, дистанцію і вагу з Health.",
                     ru: "Автоматически импортирует тренировки, активные ккал, дистанцию и вес из Health.",
                     es: "Importa entrenamientos, kcal activas, distancia y peso desde Health.")
-            case .strava, .oura, .garmin, .whoop:
-                return TL(
-                    pl: "Wymaga OAuth i backend callback. UI jest gotowe.",
-                    en: "Requires OAuth and backend callback. UI is ready.",
-                    uk: "Потрібні OAuth і backend callback. UI готовий.",
-                    ru: "Нужны OAuth и backend callback. UI готов.", es: "Requiere OAuth y backend callback. UI listo.")
             }
         }
     }
@@ -218,12 +170,6 @@ extension ConnectionsView {
             ru: "Тренировки увеличивают дневной бюджет калорий и появляются на главной.",
             es: "Los entrenamientos aumentan el presupuesto diario y aparecen en Hoy.")
     }
-    fileprivate var appleHealthBadge: String {
-        healthWorkoutsEnabled
-            ? TL(pl: "Auto", en: "Auto", uk: "Авто", ru: "Авто", es: "Auto")
-            : TL(pl: "Gotowe", en: "Ready", uk: "Готово", ru: "Готово", es: "Listo")
-    }
-    fileprivate var soonLabel: String { TL(pl: "Backend", en: "Backend", uk: "Backend", ru: "Backend", es: "Backend") }
     fileprivate var connectHealthLabel: String {
         TL(
             pl: "Połącz i zaimportuj", en: "Connect and import", uk: "Підключити й імпортувати",
@@ -232,9 +178,6 @@ extension ConnectionsView {
     }
     fileprivate var importingLabel: String {
         TL(pl: "Import…", en: "Importing…", uk: "Імпорт…", ru: "Импорт…", es: "Importando…")
-    }
-    fileprivate var connectLabel: String {
-        TL(pl: "Połącz", en: "Connect", uk: "Підключити", ru: "Подключить", es: "Conectar")
     }
     fileprivate var autoSyncHint: String {
         TL(

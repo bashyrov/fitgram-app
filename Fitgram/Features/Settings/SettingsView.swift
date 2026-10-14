@@ -296,7 +296,7 @@ struct SettingsView: View {
                         title: connectionsShortTitle,
                         role: nil,
                         action: { isConnectionsPresented = true },
-                        subtitle: "Health, Strava, Oura, Garmin, Whoop"
+                        subtitle: "Apple Health"
                     )
                     MonoRowDivider()
                     NavigationLink {
@@ -698,15 +698,6 @@ struct SettingsView: View {
 
     private var integrationsTitle: String {
         TL(pl: "Integracje", en: "Integrations", uk: "Інтеграції", ru: "Интеграции", es: "Integraciones")
-    }
-
-    private var connectionsRowTitle: String {
-        TL(
-            pl: "Połączenia: Health, Strava, Oura, Garmin, Whoop",
-            en: "Connections: Health, Strava, Oura, Garmin, Whoop",
-            uk: "Підключення: Health, Strava, Oura, Garmin, Whoop",
-            ru: "Подключения: Health, Strava, Oura, Garmin, Whoop",
-            es: "Conexiones: Health, Strava, Oura, Garmin, Whoop")
     }
 
     private var connectionsHint: String {
