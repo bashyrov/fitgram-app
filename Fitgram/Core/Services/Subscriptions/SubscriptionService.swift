@@ -58,7 +58,7 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     let priceLabel: String
     let periodLabel: String
     let isFeatured: Bool
-    let trialDays: Int?
+    var trialDays: Int?
     /// Annual plans: the price spread per month (e.g. "16,67 zł").
     var monthlyEquivalentLabel: String?
     /// Annual plans: percent saved versus paying monthly for a year.
