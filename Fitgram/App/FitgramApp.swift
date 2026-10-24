@@ -12,7 +12,6 @@ struct FitgramApp: App {
     private let mealSaver: any MealSaving
     private let streakService: StreakService
     private let achievementService: AchievementService
-    private let calibrationService: CalibrationService
     private let todayState: TodayState
     private let progressState: ProgressState
     private let accountDeletionService: AccountDeletionService
@@ -95,7 +94,6 @@ struct FitgramApp: App {
         let streakService = StreakService(container: persistence.container)
         self.streakService = streakService
         self.achievementService = AchievementService(container: persistence.container)
-        self.calibrationService = CalibrationService(container: persistence.container)
         self.progressState = ProgressState(container: persistence.container)
         self.accountDeletionService = AccountDeletionService(
             authService: authService,
@@ -350,7 +348,6 @@ extension FitgramApp {
             mealSearchService: mealSearchService,
             streakCalendarService: streakCalendarService,
             achievementService: achievementService,
-            calibrationService: calibrationService,
             foodCatalog: foodCatalog,
             progressState: progressState,
             recipeRepository: recipeRepository,

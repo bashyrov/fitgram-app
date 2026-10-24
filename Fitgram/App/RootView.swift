@@ -17,7 +17,6 @@ struct RootView: View {
     let mealSearchService: MealSearchService
     let streakCalendarService: StreakCalendarService
     let achievementService: AchievementService
-    let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
     let progressState: ProgressState
     let recipeRepository: RecipeRepository
@@ -60,7 +59,6 @@ struct RootView: View {
         mealSearchService: MealSearchService,
         streakCalendarService: StreakCalendarService,
         achievementService: AchievementService,
-        calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
         progressState: ProgressState,
         recipeRepository: RecipeRepository,
@@ -99,7 +97,6 @@ struct RootView: View {
         self.mealSearchService = mealSearchService
         self.streakCalendarService = streakCalendarService
         self.achievementService = achievementService
-        self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
         self.progressState = progressState
         self.recipeRepository = recipeRepository
@@ -205,7 +202,6 @@ struct RootView: View {
                         underlying: mealSaver,
                         streakService: streakService,
                         achievementService: achievementService,
-                        calibrationService: calibrationService,
                         notificationCoordinator: notificationCoordinator,
                         unlockBus: unlockBus,
                         userRemoteID: authUser.id,
@@ -218,7 +214,6 @@ struct RootView: View {
                     mealSearchService: mealSearchService,
                     streakCalendarService: streakCalendarService,
                     achievementService: achievementService,
-                    calibrationService: calibrationService,
                     foodCatalog: foodCatalog,
                     recipeRepository: recipeRepository,
                     mealRepository: mealRepository,
@@ -341,15 +336,13 @@ struct RootView: View {
     }
 }
 
-/// Wraps a `MealSaving` with the streak + achievement + calibration
-/// side-effects. Keeps `SwiftDataMealSaver` pure while still letting one
-/// save propagate the streak counter, any newly-unlocked achievement
-/// banners, and the user's manual calibration factor.
+/// Wraps a `MealSaving` with the streak + achievement side-effects. Keeps
+/// `SwiftDataMealSaver` pure while still letting one save propagate the
+/// streak counter and any newly-unlocked achievement banners.
 private struct ChainedMealSaver: MealSaving {
     let underlying: any MealSaving
     let streakService: StreakService
     let achievementService: AchievementService
-    let calibrationService: CalibrationService
     let notificationCoordinator: NotificationCoordinator
     let unlockBus: AchievementUnlockBus
     let userRemoteID: String
@@ -357,21 +350,9 @@ private struct ChainedMealSaver: MealSaving {
     let entitlementsStore: EntitlementsStore
 
     func save(meal: MealEntry) throws {
-        // Apply the user-set calibration factor only to AI-derived
-        // estimates — barcode + quick-database + voice entries are
-        // user-controlled and shouldn't be silently scaled.
-        if meal.source == .photoScan {
-            let calibration = try? calibrationService.current(forUser: userRemoteID)
-            if let factor = calibration?.portionAdjustmentFactor, factor != 1 {
-                meal.portionMultiplier *= factor
-            }
-        }
         try underlying.save(meal: meal)
         Haptics.success()
         recordQuotaUsage(for: meal.source)
-        if meal.source == .photoScan {
-            try? calibrationService.recordSample(forUser: userRemoteID)
-        }
         try? streakService.registerLog(for: userRemoteID)
         // Badges are checked after the save returns so the sheet closes
         // right away; the banner follows a moment later.

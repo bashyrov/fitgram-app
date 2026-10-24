@@ -16,7 +16,6 @@ struct MainTabView: View {
     let mealSearchService: MealSearchService
     let streakCalendarService: StreakCalendarService
     let achievementService: AchievementService
-    let calibrationService: CalibrationService
     let foodCatalog: any FoodCatalog
     let recipeRepository: RecipeRepository
     let mealRepository: MealRepository
@@ -121,7 +120,6 @@ struct MainTabView: View {
         mealSearchService: MealSearchService,
         streakCalendarService: StreakCalendarService,
         achievementService: AchievementService,
-        calibrationService: CalibrationService,
         foodCatalog: any FoodCatalog,
         recipeRepository: RecipeRepository,
         mealRepository: MealRepository,
@@ -158,7 +156,6 @@ struct MainTabView: View {
         self.mealSearchService = mealSearchService
         self.streakCalendarService = streakCalendarService
         self.achievementService = achievementService
-        self.calibrationService = calibrationService
         self.foodCatalog = foodCatalog
         self.recipeRepository = recipeRepository
         self.mealRepository = mealRepository
@@ -354,7 +351,6 @@ struct MainTabView: View {
                 photoStore: photoStore,
                 streakCalendarService: streakCalendarService,
                 achievementService: achievementService,
-                calibrationService: calibrationService,
                 weightService: weightService,
                 workoutService: workoutService,
                 heatmapService: heatmapService,
