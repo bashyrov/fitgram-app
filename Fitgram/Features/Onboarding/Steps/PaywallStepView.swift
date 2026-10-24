@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// Onboarding paywall: the same selling hero, benefit list, plan picker and
-/// trial timeline as `PaywallView`, with the trial CTA, price caption and
-/// "continue without Premium" in the bottom bar. Purchase and restore
-/// go through the same StoreKit-backed `SubscriptionService` as
-/// `PaywallView`, so the trial flow behaves like every in-app upgrade
-/// surface (offerings, purchase, restore, legal disclosure).
+/// Onboarding paywall, sized to fit one screen: a short header, four
+/// one-line benefits and the plan picker, with the trial CTA, price caption
+/// and "continue without Premium" pinned in the bottom bar. Purchase and
+/// restore go through the same StoreKit-backed `SubscriptionService` as
+/// `PaywallView`.
 struct PaywallStepView: View {
     let subscriptionService: any SubscriptionService
     let onPurchased: () -> Void
@@ -19,30 +18,92 @@ struct PaywallStepView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                PaywallHero(trialDays: selectedOffering?.trialDays)
-                    .padding(.top, 6)
-                PaywallBenefitList()
+            VStack(alignment: .leading, spacing: 18) {
+                header
+                benefits
                 planSection
                 if let errorMessage {
                     PaywallErrorCard(message: errorMessage)
-                        .padding(.top, 12)
-                }
-                if let trialDays = selectedOffering?.trialDays, let selectedOffering {
-                    PaywallTrialTimeline(trialDays: trialDays, offering: selectedOffering)
                 }
                 legalNote
-                    .padding(.top, 16)
             }
             .padding(.horizontal, Tokens.Space.screenPadding)
+            .padding(.top, 6)
             .padding(.bottom, Tokens.Space.lg)
         }
+        .scrollBounceBehavior(.basedOnSize)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Tokens.Palette.background)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             ctaBar
         }
+        // Picking a plan only moves the selection ring; nothing slides in.
+        .transaction { $0.animation = nil }
         .task { await load() }
+    }
+
+    // MARK: - Header + benefits
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Tokens.Mono.onHi)
+                    .frame(width: 28, height: 28)
+                    .background(Circle().fill(Tokens.Mono.hi))
+                MonoLabel(text: L("FITGRAM PRO"))
+            }
+            Text(headline)
+                .font(Tokens.Font.monoDisplay(30))
+                .textCase(.uppercase)
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+            Text(L("Bez opłat dziś. Anulujesz jednym kliknięciem."))
+                .font(Tokens.Font.manrope(13, weight: 600))
+                .foregroundStyle(Tokens.Mono.muted)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, 6)
+    }
+
+    private var headline: String {
+        let days = selectedOffering?.trialDays ?? offerings.compactMap(\.trialDays).first
+        guard let days else { return L("Jedz normalnie. Chudnij mądrze.") }
+        return String.localizedStringWithFormat(L("%lld dni za darmo"), days)
+    }
+
+    private var benefits: some View {
+        VStack(alignment: .leading, spacing: 11) {
+            benefit("camera.viewfinder", L("Skanowanie zdjęć bez dziennego limitu"))
+            benefit("sparkles", L("Ola — Twój osobisty coach AI"))
+            benefit("book", L("Przepisy i Kuchnia Oli"))
+            benefit(
+                "text.bubble",
+                TL(
+                    pl: "Posty dla znajomych", en: "Posts for friends", uk: "Пости для друзів",
+                    ru: "Посты для друзей", es: "Publicaciones para amigos"))
+        }
+        .monoCard(padding: 16)
+    }
+
+    private func benefit(_ symbol: String, _ title: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(Tokens.Palette.ink)
+                .frame(width: 22)
+            Text(title)
+                .font(Tokens.Font.manrope(14, weight: 700))
+                .foregroundStyle(Tokens.Palette.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: 0)
+            Image(systemName: "checkmark")
+                .font(.system(size: 12, weight: .heavy))
+                .foregroundStyle(Tokens.Mono.accent)
+        }
     }
 
     private var selectedOffering: SubscriptionOffering? {
@@ -55,7 +116,6 @@ struct PaywallStepView: View {
     @ViewBuilder
     private var planSection: some View {
         VStack(alignment: .leading, spacing: 0) {
-            PaywallSectionTitle(title: L("Wybierz plan"))
             if isLoading {
                 VStack(spacing: 12) {
                     ProgressView()
