@@ -20,6 +20,7 @@ struct ProfileView: View {
     let photoStore: MealPhotoStore?
     let streakCalendarService: StreakCalendarService
     let achievementService: AchievementService
+    let calibrationService: CalibrationService
     let weightService: WeightService
     let workoutService: WorkoutService
     let heatmapService: ActivityHeatmapService
@@ -218,6 +219,7 @@ struct ProfileView: View {
             mealRepository: mealRepository,
             photoStore: photoStore,
             streakCalendarService: streakCalendarService,
+            calibrationService: calibrationService,
             privacyStore: privacyStore,
             weightService: weightService,
             workoutService: workoutService,
