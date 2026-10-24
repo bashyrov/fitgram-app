@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Dedicated Settings hub raised from Profile. Holds everything that
 /// used to live inline on Profile but is "infrequent" — reminders,
-/// privacy, streak history, onboarding replay, data
+/// privacy, AI calibration, streak history, onboarding replay, data
 /// export, legal pages, and account actions.
 ///
 /// Profile keeps the "everyday" surfaces (goals, stats, achievements,
@@ -20,6 +20,7 @@ struct SettingsView: View {
     let mealRepository: MealRepository
     let photoStore: MealPhotoStore?
     let streakCalendarService: StreakCalendarService
+    let calibrationService: CalibrationService
     let privacyStore: PrivacyStore
     var weightService: WeightService?
     var workoutService: WorkoutService?
@@ -45,6 +46,7 @@ struct SettingsView: View {
     @State private var isPreparingBundle = false
     @State private var isEditingPreferences = false
     @State private var isPrivacyPresented = false
+    @State private var isCalibrating = false
     @State private var isStreakCalendarPresented = false
     @State private var isRestartOnboardingConfirmed = false
     @State private var isSearchPresented = false
@@ -88,6 +90,15 @@ struct SettingsView: View {
         .sheet(isPresented: $isEditingPreferences) {
             if let user {
                 PreferencesView(user: user) { isEditingPreferences = false }
+            }
+        }
+        .sheet(isPresented: $isCalibrating) {
+            if let user {
+                CalibrationView(
+                    userRemoteID: user.remoteID,
+                    service: calibrationService,
+                    onDismiss: { isCalibrating = false }
+                )
             }
         }
         .sheet(isPresented: $isStreakCalendarPresented) {
@@ -207,6 +218,14 @@ struct SettingsView: View {
                     MonoRow(icon: "paintpalette", title: appearanceTitle, sub: appearanceSubtitle)
                 }
                 .buttonStyle(.plain)
+                MonoRowDivider()
+                actionRow(
+                    symbol: "camera",
+                    title: aiCalibrationTitle,
+                    role: nil,
+                    action: { isCalibrating = true }
+                )
+                .disabled(user == nil)
                 MonoRowDivider()
                 actionRow(
                     symbol: "flame",
@@ -603,6 +622,12 @@ struct SettingsView: View {
         TL(
             pl: "Język aplikacji", en: "App language", uk: "Мова застосунку", ru: "Язык приложения",
             es: "Idioma de la app")
+    }
+
+    private var aiCalibrationTitle: String {
+        TL(
+            pl: "Kalibracja AI", en: "AI calibration", uk: "Калібрування AI", ru: "Калибровка AI",
+            es: "Calibración de AI")
     }
 
     private var appearanceTitle: String {

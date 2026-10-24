@@ -65,6 +65,7 @@ enum A11yID {
     enum Profile {
         static let editGoals = "profile.row.editGoals"
         static let preferences = "profile.row.preferences"
+        static let calibration = "profile.row.calibration"
         static let weight = "profile.row.weight"
         static let exportData = "profile.row.export"
         static let exportCSV = "profile.row.exportCSV"
