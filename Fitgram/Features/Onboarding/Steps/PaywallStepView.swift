@@ -128,18 +128,7 @@ struct PaywallStepView: View {
                 .padding(.vertical, 24)
                 .monoCard(padding: 16)
             } else if offerings.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(spacing: 10) {
-                        MonoIconBox(systemName: "sparkles", style: .dark, size: 36)
-                        Text("Plany testowe są gotowe")
-                            .font(Tokens.Font.manrope(14, weight: 800))
-                            .foregroundStyle(Tokens.Palette.ink)
-                    }
-                    MonoButton(title: L("Pokaż plany testowe"), kind: .outline, height: 44) {
-                        showStockOfferings()
-                    }
-                }
-                .monoCard(padding: 16)
+                PaywallPlansUnavailableCard { Task { await load() } }
             } else {
                 VStack(spacing: 12) {
                     ForEach(offerings) { offering in
@@ -256,12 +245,6 @@ struct PaywallStepView: View {
 
     // MARK: - Billing
 
-    private func showStockOfferings() {
-        offerings = [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
-        selectedID = offerings.first(where: \.isFeatured)?.id ?? offerings.first?.id
-        errorMessage = nil
-    }
-
     @MainActor
     private func load() async {
         isLoading = true
@@ -272,7 +255,8 @@ struct PaywallStepView: View {
             offerings = result
             selectedID = result.first(where: \.isFeatured)?.id ?? result.first?.id
         } catch {
-            showStockOfferings()
+            offerings = []
+            selectedID = nil
         }
     }
 

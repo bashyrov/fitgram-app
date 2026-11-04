@@ -83,6 +83,57 @@ struct PaywallTrustSection: View {
     }
 }
 
+/// Shown when StoreKit returned no plans. Prices only ever come from the App
+/// Store, so the paywall offers a retry instead of showing hard-coded ones.
+struct PaywallPlansUnavailableCard: View {
+    let onRetry: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                MonoIconBox(systemName: "wifi.exclamationmark", style: .dark, size: 36)
+                Text(
+                    TL(
+                        pl: "Nie udało się załadować planów",
+                        en: "Couldn't load the plans",
+                        uk: "Не вдалося завантажити плани",
+                        ru: "Не удалось загрузить планы",
+                        es: "No se pudieron cargar los planes"
+                    )
+                )
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            Text(
+                TL(
+                    pl: "Sprawdź połączenie z internetem i spróbuj ponownie. Nic nie zostało pobrane.",
+                    en: "Check your internet connection and try again. You haven't been charged.",
+                    uk: "Перевір з'єднання з інтернетом і спробуй ще раз. Кошти не списано.",
+                    ru: "Проверь подключение к интернету и попробуй ещё раз. Деньги не списаны.",
+                    es: "Comprueba tu conexión a internet e inténtalo de nuevo. No se te ha cobrado nada."
+                )
+            )
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .fixedSize(horizontal: false, vertical: true)
+            MonoButton(
+                title: TL(
+                    pl: "Spróbuj ponownie",
+                    en: "Try again",
+                    uk: "Спробувати ще раз",
+                    ru: "Попробовать ещё раз",
+                    es: "Reintentar"
+                ),
+                kind: .outline,
+                height: 44,
+                action: onRetry
+            )
+        }
+        .monoCard(padding: 16)
+    }
+}
+
 struct PaywallErrorCard: View {
     let message: String
 

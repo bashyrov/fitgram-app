@@ -47,8 +47,9 @@ final class StoreKitSubscriptionService: SubscriptionService {
     func offerings() async throws -> [SubscriptionOffering] {
         await loadProductsIfNeeded()
         guard !products.isEmpty else {
-            Logger.persistence.notice("StoreKit: using local fallback offerings")
-            return [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
+            // Never invent prices: an empty list makes the paywall offer a retry.
+            Logger.persistence.notice("StoreKit: no products returned")
+            return []
         }
         let monthlyPrice = products[Self.monthlyProductID]?.price
         // Apple grants one introductory offer per subscription group and

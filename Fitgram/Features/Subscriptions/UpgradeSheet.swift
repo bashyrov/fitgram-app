@@ -108,26 +108,7 @@ struct UpgradeSheet: View {
             .padding(.vertical, 24)
             .monoCard(padding: 16)
         } else if offerings.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 10) {
-                    MonoIconBox(systemName: "sparkles", style: .dark, size: 36)
-                    Text("Plany testowe są gotowe")
-                        .font(Tokens.Font.manrope(14, weight: 800))
-                        .foregroundStyle(Tokens.Palette.ink)
-                }
-                Text(
-                    "Apple może nie zwrócić produktów w lokalnej instalacji. Do testu pokażemy konfigurację z aplikacji."
-                )
-                .font(Tokens.Font.manrope(12, weight: 600))
-                .foregroundStyle(Tokens.Mono.muted)
-                .fixedSize(horizontal: false, vertical: true)
-                MonoButton(title: L("Pokaż plany testowe"), kind: .outline, height: 44) {
-                    offerings = [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
-                    selectedID = offerings.first(where: \.isFeatured)?.id ?? offerings.first?.id
-                    error = nil
-                }
-            }
-            .monoCard(padding: 16)
+            PaywallPlansUnavailableCard { Task { await loadOfferings() } }
         } else {
             VStack(spacing: 12) {
                 ForEach(offerings) { offering in
@@ -224,9 +205,8 @@ struct UpgradeSheet: View {
             offerings = loaded
             selectedID = loaded.first(where: \.isFeatured)?.id ?? loaded.first?.id
         } catch {
-            offerings = [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
-            selectedID = offerings.first(where: \.isFeatured)?.id ?? offerings.first?.id
-            self.error = nil
+            offerings = []
+            selectedID = nil
         }
     }
 
