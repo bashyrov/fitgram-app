@@ -334,12 +334,20 @@ struct AddFlowAIButton: View {
     }
 
     private var quotaLabel: String {
-        guard let remaining else { return "∞" }
+        guard let remaining else { return "Pro" }
         return String.localizedStringWithFormat(L("%lld left"), remaining)
     }
 
     private var quotaAccessibilityLabel: String {
-        guard let remaining else { return L("Unlimited AI requests") }
+        guard let remaining else {
+            return TL(
+                pl: "Pro: duże limity AI",
+                en: "Pro: high AI limits",
+                uk: "Pro: великі ліміти ШІ",
+                ru: "Pro: большие лимиты ИИ",
+                es: "Pro: límites altos de IA"
+            )
+        }
         return String.localizedStringWithFormat(L("%lld AI requests left today"), remaining)
     }
 }

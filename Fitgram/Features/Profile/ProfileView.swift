@@ -512,7 +512,13 @@ struct ProfileView: View {
             subscriptionRow(
                 symbol: "sparkles",
                 title: L("Odblokuj pełną Olę"),
-                subtitle: L("7 dni za darmo · bez limitów · Ola AI"),
+                subtitle: TL(
+                    pl: "7 dni za darmo · duże limity · Ola AI",
+                    en: "7 days free · high limits · Ola AI",
+                    uk: "7 днів безкоштовно · великі ліміти · ШІ-коуч Оля",
+                    ru: "7 дней бесплатно · большие лимиты · ИИ-коуч Оля",
+                    es: "7 días gratis · límites altos · Ola AI"
+                ),
                 showsChevron: true
             )
         }

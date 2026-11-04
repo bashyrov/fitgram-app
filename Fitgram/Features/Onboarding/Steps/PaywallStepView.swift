@@ -76,7 +76,7 @@ struct PaywallStepView: View {
 
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 11) {
-            benefit("camera.viewfinder", L("Skanowanie zdjęć bez dziennego limitu"))
+            benefit("camera.viewfinder", SubscriptionOffering.photoScansBenefit)
             benefit("sparkles", L("Ola — Twój osobisty coach AI"))
             benefit("book", L("Przepisy i Kuchnia Oli"))
             benefit(
