@@ -16,11 +16,9 @@ struct PaywallComparisonSection: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
 
-                comparisonRow(title: "AI dziennie", free: "3", pro: "Duże limity")
-                comparisonRow(title: "Odśwież AI", free: "3 / dzień", pro: "Duże limity")
-                comparisonRow(title: "Produkty z AI", free: "2 / dzień", pro: "Duże limity")
-                comparisonRow(title: "Porady Oli", free: "Nie", pro: "Pełny dostęp")
-                comparisonRow(title: "Przepisy", free: "5", pro: "Duże limity")
+                comparisonRow(title: aiActionsTitle, free: aiActionsFree, pro: L("Duże limity"))
+                comparisonRow(title: L("Porady Oli"), free: L("Nie"), pro: L("Pełny dostęp"))
+                comparisonRow(title: L("Przepisy"), free: "\(FreeTierLimits.savedRecipes ?? 0)", pro: L("Duże limity"))
             }
             .monoRowsCard()
         }
@@ -28,10 +26,22 @@ struct PaywallComparisonSection: View {
 
     private let columnWidth: CGFloat = 84
 
+    private var aiActionsTitle: String {
+        TL(pl: "Działania AI", en: "AI actions", uk: "Дії ШІ", ru: "ИИ-действия", es: "Acciones de IA")
+    }
+
+    /// The free pool is weekly and shared by every AI action.
+    private var aiActionsFree: String {
+        let cap = FreeTierLimits.aiActionsPerWeek ?? 0
+        return TL(
+            pl: "\(cap) / tydzień", en: "\(cap) / week", uk: "\(cap) / тиждень",
+            ru: "\(cap) / неделя", es: "\(cap) / semana")
+    }
+
     private func comparisonRow(
-        title: LocalizedStringKey,
-        free: LocalizedStringKey,
-        pro: LocalizedStringKey
+        title: String,
+        free: String,
+        pro: String
     ) -> some View {
         HStack(spacing: 0) {
             Text(title)
@@ -80,6 +90,57 @@ struct PaywallTrustSection: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
         .background(Capsule().fill(Tokens.Mono.track))
+    }
+}
+
+/// Shown when StoreKit returned no plans. Prices only ever come from the App
+/// Store, so the paywall offers a retry instead of showing hard-coded ones.
+struct PaywallPlansUnavailableCard: View {
+    let onRetry: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                MonoIconBox(systemName: "wifi.exclamationmark", style: .dark, size: 36)
+                Text(
+                    TL(
+                        pl: "Nie udało się załadować planów",
+                        en: "Couldn't load the plans",
+                        uk: "Не вдалося завантажити плани",
+                        ru: "Не удалось загрузить планы",
+                        es: "No se pudieron cargar los planes"
+                    )
+                )
+                .font(Tokens.Font.manrope(14, weight: 800))
+                .foregroundStyle(Tokens.Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            Text(
+                TL(
+                    pl: "Sprawdź połączenie z internetem i spróbuj ponownie. Nic nie zostało pobrane.",
+                    en: "Check your internet connection and try again. You haven't been charged.",
+                    uk: "Перевір з'єднання з інтернетом і спробуй ще раз. Кошти не списано.",
+                    ru: "Проверь подключение к интернету и попробуй ещё раз. Деньги не списаны.",
+                    es: "Comprueba tu conexión a internet e inténtalo de nuevo. No se te ha cobrado nada."
+                )
+            )
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .fixedSize(horizontal: false, vertical: true)
+            MonoButton(
+                title: TL(
+                    pl: "Spróbuj ponownie",
+                    en: "Try again",
+                    uk: "Спробувати ще раз",
+                    ru: "Попробовать ещё раз",
+                    es: "Reintentar"
+                ),
+                kind: .outline,
+                height: 44,
+                action: onRetry
+            )
+        }
+        .monoCard(padding: 16)
     }
 }
 

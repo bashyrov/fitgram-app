@@ -47,10 +47,14 @@ final class StoreKitSubscriptionService: SubscriptionService {
     func offerings() async throws -> [SubscriptionOffering] {
         await loadProductsIfNeeded()
         guard !products.isEmpty else {
-            Logger.persistence.notice("StoreKit: using local fallback offerings")
-            return [SubscriptionOffering.stockAnnual, SubscriptionOffering.stockMonthly]
+            // Never invent prices: an empty list makes the paywall offer a retry.
+            Logger.persistence.notice("StoreKit: no products returned")
+            return []
         }
         let monthlyPrice = products[Self.monthlyProductID]?.price
+        // Apple grants one introductory offer per subscription group and
+        // Apple ID; past trials (even from a deleted Fitgram account) count.
+        let trialEligible = await products.values.first?.subscription?.isEligibleForIntroOffer ?? false
         return products.values
             // Yearly (featured, cheapest per month) first.
             .sorted { lhs, rhs in
@@ -59,6 +63,9 @@ final class StoreKitSubscriptionService: SubscriptionService {
             }
             .map { product in
                 var offering = Self.mapToOffering(product)
+                if !trialEligible {
+                    offering.trialDays = nil
+                }
                 if product.subscription?.subscriptionPeriod.unit == .year {
                     offering.monthlyEquivalentLabel = (product.price / 12).formatted(product.priceFormatStyle)
                     if let monthlyPrice, monthlyPrice > 0 {

@@ -164,23 +164,23 @@ extension PaywallTrigger {
                 TL(
                     pl: """
                         Bezpłatnie masz %lld działań AI tygodniowo — zdjęcia, głos i poprawki. Kody kreskowe, baza \
-                        produktów i ręczne wpisy działają bez limitu. Pro zdejmuje limit AI — 7 dni za darmo.
+                        produktów i ręczne wpisy działają bez limitu. Pro daje duże limity AI — 7 dni za darmo.
                         """,
                     en: """
                         Free includes %lld AI actions a week — photos, voice and fixes. Barcodes, the food database \
-                        and manual entries stay unlimited. Pro removes the AI limit — 7 days free.
+                        and manual entries stay unlimited. Pro gives you high AI limits — 7 days free.
                         """,
                     uk: """
                         Безкоштовно — %lld дій AI на тиждень: фото, голос і правки. Штрихкоди, база продуктів і \
-                        ручні записи без ліміту. Pro знімає ліміт AI — 7 днів безкоштовно.
+                        ручні записи без ліміту. Pro дає великі ліміти AI — 7 днів безкоштовно.
                         """,
                     ru: """
                         Бесплатно — %lld ИИ-действий в неделю: фото, голос и правки. Штрихкоды, база продуктов и \
-                        ручной ввод без лимита. Pro снимает лимит ИИ — 7 дней бесплатно.
+                        ручной ввод без лимита. Pro даёт большие лимиты ИИ — 7 дней бесплатно.
                         """,
                     es: """
                         Gratis tienes %lld acciones de AI por semana: fotos, voz y ajustes. Códigos de barras, la base \
-                        de alimentos y las entradas manuales no tienen límite. Pro quita el límite de AI: 7 días gratis.
+                        de alimentos y las entradas manuales no tienen límite. Pro te da límites altos de AI: 7 días gratis.
                         """
                 ),
                 cap

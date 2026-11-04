@@ -30,7 +30,9 @@ struct PaywallHero: View {
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 6) {
                 pill(symbol: "camera.viewfinder", title: L("Skan w 5 s"))
-                pill(symbol: "infinity", title: L("Bez limitów"))
+                pill(
+                    symbol: "bolt.fill",
+                    title: TL(pl: "Więcej AI", en: "More AI", uk: "Більше ШІ", ru: "Больше ИИ", es: "Más IA"))
                 pill(symbol: "sparkles", title: L("Coach Ola"))
             }
             if let trialDays {
@@ -91,7 +93,7 @@ struct PaywallBenefitList: View {
             VStack(spacing: 14) {
                 row(
                     symbol: "camera.viewfinder",
-                    title: L("Skanowanie zdjęć bez dziennego limitu"),
+                    title: SubscriptionOffering.photoScansBenefit,
                     text: L("Zrób zdjęcie talerza — kalorie i makro w kilka sekund."))
                 row(
                     symbol: "sparkles",
@@ -146,6 +148,17 @@ struct PaywallBenefitList: View {
 }
 
 extension SubscriptionOffering {
+    /// Pro keeps a daily safety cap on AI, so never promise "no limits" here.
+    static var photoScansBenefit: String {
+        TL(
+            pl: "Skanowanie zdjęć z dużym limitem",
+            en: "Photo scans with high limits",
+            uk: "Сканування фото з великими лімітами",
+            ru: "Сканирование фото с большими лимитами",
+            es: "Escaneos de fotos con límites altos"
+        )
+    }
+
     /// "Try 7 days free" when the plan has a trial, otherwise "Go Pro".
     static func paywallCTATitle(for offering: SubscriptionOffering?) -> String {
         if let trialDays = offering?.trialDays {

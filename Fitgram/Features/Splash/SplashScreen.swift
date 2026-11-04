@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Brand splash shown on cold start: the FITGRAM stripes, the full-width
-/// FIT mark drawing itself and filling with the theme accent, then "GRAM"
-/// sliding in underneath — the same lockup as sign-in and onboarding.
+/// Brand splash shown on cold start: just the FIT mark on the plain theme
+/// background, drawing its outline and then filling with the accent.
 struct SplashScreen: View {
     let onComplete: () -> Void
 
@@ -10,38 +9,21 @@ struct SplashScreen: View {
 
     @State private var outlineProgress: CGFloat = 0
     @State private var fillOpacity: Double = 0
-    @State private var gramVisible = false
-    @State private var stripesOpacity: Double = 0
     @State private var contentOpacity: Double = 1
     @State private var contentScale: CGFloat = 1
 
     var body: some View {
         ZStack {
-            WordmarkStripes()
-                .opacity(stripesOpacity)
-                .background(Tokens.Mono.Brand.background)
+            Tokens.Mono.Brand.background
                 .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 4) {
-                FitgramAnimatedLogo(
-                    outlineProgress: outlineProgress,
-                    fillOpacity: fillOpacity,
-                    color: Tokens.Mono.Brand.logo
-                )
-                .aspectRatio(240.0 / 112.0, contentMode: .fit)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                Text(verbatim: "GRAM")
-                    .font(Tokens.Font.monoDisplay(320))
-                    .foregroundStyle(Tokens.Mono.Brand.text)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.05)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .opacity(gramVisible ? 1 : 0)
-                    .offset(x: gramVisible ? 0 : 60)
-                    .accessibilityHidden(true)
-            }
-            .padding(.horizontal, Tokens.Space.screenPadding)
+            FitgramAnimatedLogo(
+                outlineProgress: outlineProgress,
+                fillOpacity: fillOpacity,
+                color: Tokens.Mono.Brand.logo
+            )
+            .aspectRatio(240.0 / 112.0, contentMode: .fit)
+            .frame(width: 220)
             .scaleEffect(contentScale)
             .opacity(contentOpacity)
         }
@@ -50,23 +32,17 @@ struct SplashScreen: View {
     }
 
     private func runAnimation() {
-        withAnimation(.easeOut(duration: 0.5)) {
-            stripesOpacity = 1
-        }
         withAnimation(.easeInOut(duration: 0.85)) {
             outlineProgress = 1
         }
         withAnimation(.easeOut(duration: 0.45).delay(0.7)) {
             fillOpacity = 1
         }
-        withAnimation(.spring(response: 0.55, dampingFraction: 0.8).delay(0.85)) {
-            gramVisible = true
-        }
-        withAnimation(.easeInOut(duration: 0.38).delay(1.75)) {
+        withAnimation(.easeInOut(duration: 0.35).delay(1.45)) {
             contentOpacity = 0
-            contentScale = 1.03
+            contentScale = 1.06
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
             onComplete()
         }
     }

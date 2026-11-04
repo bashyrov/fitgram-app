@@ -58,7 +58,7 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     let priceLabel: String
     let periodLabel: String
     let isFeatured: Bool
-    let trialDays: Int?
+    var trialDays: Int?
     /// Annual plans: the price spread per month (e.g. "16,67 zł").
     var monthlyEquivalentLabel: String?
     /// Annual plans: percent saved versus paying monthly for a year.
@@ -73,9 +73,9 @@ struct SubscriptionOffering: Identifiable, Equatable, Sendable {
     static let monthlyTitle = "Fitgram Pro Monthly"
     static let yearlyTitle = "Fitgram Pro Yearly"
 
-    /// Fallback plans shown only when StoreKit returns no products (e.g. a
-    /// local build without a StoreKit config). Real prices always come from
-    /// App Store Connect via `Product.displayPrice`; these mirror the USA tier.
+    /// Plans for `MockSubscriptionService` (previews and tests) only. The real
+    /// paywall takes its prices from App Store Connect via
+    /// `Product.displayPrice` and never falls back to these.
     static let stockMonthly = SubscriptionOffering(
         id: "monthly",
         productID: "fitgram_premium_monthly",
