@@ -32,7 +32,7 @@ struct WordmarkStripes: View {
         // fraction of it so word starts never line up between rows.
         return Text(verbatim: String(repeating: "FITGRAM", count: count))
             .font(Tokens.Font.monoDisplay(44))
-            .foregroundStyle(Tokens.Mono.Brand.text.opacity(Tokens.Mono.Brand.isLight ? 0.07 : 0.10))
+            .foregroundStyle(Tokens.Mono.Brand.text.opacity(Tokens.Mono.Brand.isLight ? 0.035 : 0.05))
             .lineLimit(1)
             .fixedSize()
             .offset(x: -CGFloat(offset) * 190 - 30)
