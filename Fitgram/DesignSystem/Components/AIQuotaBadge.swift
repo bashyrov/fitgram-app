@@ -16,7 +16,7 @@ struct AIQuotaBadge: View {
     }
 
     private var label: String {
-        guard let remaining else { return "∞" }
+        guard let remaining else { return "Pro" }
         // "4/10" — what is left of the free weekly AI pool.
         guard let cap = FreeTierLimits.aiActionsPerWeek else {
             return String.localizedStringWithFormat(L("%lld left"), remaining)
@@ -25,7 +25,15 @@ struct AIQuotaBadge: View {
     }
 
     private var accessibilityLabel: String {
-        guard let remaining else { return L("Unlimited AI requests") }
+        guard let remaining else {
+            return TL(
+                pl: "Pro: duże limity AI",
+                en: "Pro: high AI limits",
+                uk: "Pro: великі ліміти ШІ",
+                ru: "Pro: большие лимиты ИИ",
+                es: "Pro: límites altos de IA"
+            )
+        }
         return String.localizedStringWithFormat(
             TL(
                 pl: "Pozostało %lld działań AI w tym tygodniu",

@@ -47,11 +47,11 @@ extension APIError {
             return L("Brak połączenia. Sprawdź internet i spróbuj jeszcze raz.")
         case .http(429, _) where isFreeTierQuota:
             return TL(
-                pl: "Tygodniowy limit AI wykorzystany. Wróci w poniedziałek albo bez limitu w Pro.",
-                en: "Weekly AI limit used up. It resets on Monday, or go unlimited with Pro.",
-                uk: "Тижневий ліміт AI вичерпано. Оновиться в понеділок, або без ліміту в Pro.",
-                ru: "Недельный лимит ИИ исчерпан. Обновится в понедельник, или без лимита в Pro.",
-                es: "Límite semanal de AI agotado. Se renueva el lunes, o sin límite con Pro."
+                pl: "Tygodniowy limit AI wykorzystany. Wróci w poniedziałek albo skorzystaj z dużych limitów w Pro.",
+                en: "Weekly AI limit used up. It resets on Monday, or get high limits with Pro.",
+                uk: "Тижневий ліміт AI вичерпано. Оновиться в понеділок, або отримай великі ліміти в Pro.",
+                ru: "Недельный лимит ИИ исчерпан. Обновится в понедельник, или получи большие лимиты в Pro.",
+                es: "Límite semanal de AI agotado. Se renueva el lunes, o consigue límites altos con Pro."
             )
         case .http(429, _):
             return L("AI odpocznie do jutra. Dzienny limit bezpieczeństwa został wykorzystany.")

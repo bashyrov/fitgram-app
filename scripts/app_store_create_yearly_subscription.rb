@@ -77,19 +77,19 @@ LOCALIZATIONS = {
   },
   "pl" => {
     name: "Fitgram Pro rocznie",
-    description: "Najlepsza cena: AI bez limitu, Ola i premium."
+    description: "Najlepsza cena: duże limity AI, Ola i premium."
   },
   "ru" => {
     name: "Fitgram Pro на год",
-    description: "Лучшее: AI без лимита, Оля и премиум."
+    description: "Лучшее: большие лимиты AI, Оля и премиум."
   },
   "uk" => {
     name: "Fitgram Pro на рік",
-    description: "Найкраще: AI без ліміту, Оля і преміум."
+    description: "Найкраще: великі ліміти AI, Оля і преміум."
   },
   "es-ES" => {
     name: "Fitgram Pro anual",
-    description: "Mejor precio: IA sin límites, Ola y premium."
+    description: "Mejor precio: límites altos de IA, Ola y premium."
   }
 }.freeze
 
@@ -123,7 +123,7 @@ else
           productId: yearly_product_id,
           subscriptionPeriod: "ONE_YEAR",
           familySharable: true,
-          reviewNote: "This subscription unlocks Fitgram Pro for one year: unlimited AI food checks, Ola coach insights, advanced progress tools, activity-aware calorie targets, premium facts, recipes, and saved meals.",
+          reviewNote: "This subscription unlocks Fitgram Pro for one year: high limits on AI food checks, Ola coach insights, advanced progress tools, activity-aware calorie targets, premium facts, recipes, and saved meals.",
           groupLevel: 2
         },
         relationships: {

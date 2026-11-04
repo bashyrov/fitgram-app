@@ -16,11 +16,9 @@ struct PaywallComparisonSection: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
 
-                comparisonRow(title: "AI dziennie", free: "3", pro: "Duże limity")
-                comparisonRow(title: "Odśwież AI", free: "3 / dzień", pro: "Duże limity")
-                comparisonRow(title: "Produkty z AI", free: "2 / dzień", pro: "Duże limity")
-                comparisonRow(title: "Porady Oli", free: "Nie", pro: "Pełny dostęp")
-                comparisonRow(title: "Przepisy", free: "5", pro: "Duże limity")
+                comparisonRow(title: aiActionsTitle, free: aiActionsFree, pro: L("Duże limity"))
+                comparisonRow(title: L("Porady Oli"), free: L("Nie"), pro: L("Pełny dostęp"))
+                comparisonRow(title: L("Przepisy"), free: "\(FreeTierLimits.savedRecipes ?? 0)", pro: L("Duże limity"))
             }
             .monoRowsCard()
         }
@@ -28,10 +26,22 @@ struct PaywallComparisonSection: View {
 
     private let columnWidth: CGFloat = 84
 
+    private var aiActionsTitle: String {
+        TL(pl: "Działania AI", en: "AI actions", uk: "Дії ШІ", ru: "ИИ-действия", es: "Acciones de IA")
+    }
+
+    /// The free pool is weekly and shared by every AI action.
+    private var aiActionsFree: String {
+        let cap = FreeTierLimits.aiActionsPerWeek ?? 0
+        return TL(
+            pl: "\(cap) / tydzień", en: "\(cap) / week", uk: "\(cap) / тиждень",
+            ru: "\(cap) / неделя", es: "\(cap) / semana")
+    }
+
     private func comparisonRow(
-        title: LocalizedStringKey,
-        free: LocalizedStringKey,
-        pro: LocalizedStringKey
+        title: String,
+        free: String,
+        pro: String
     ) -> some View {
         HStack(spacing: 0) {
             Text(title)

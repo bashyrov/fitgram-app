@@ -82,23 +82,23 @@ end
 LOCALIZATIONS = {
   "en-US" => {
     name: "Fitgram Pro Monthly",
-    description: "Unlimited AI checks, Ola coach and premium tools."
+    description: "High AI limits, Ola coach and premium tools."
   },
   "pl" => {
     name: "Fitgram Pro miesięcznie",
-    description: "AI bez limitu, Ola i narzędzia premium."
+    description: "Duże limity AI, Ola i narzędzia premium."
   },
   "ru" => {
     name: "Fitgram Pro на месяц",
-    description: "AI без лимита, Оля и премиум-инструменты."
+    description: "Большие лимиты AI, Оля и премиум-инструменты."
   },
   "uk" => {
     name: "Fitgram Pro на місяць",
-    description: "AI без ліміту, Оля і преміум-інструменти."
+    description: "Великі ліміти AI, Оля і преміум-інструменти."
   },
   "es-ES" => {
     name: "Fitgram Pro mensual",
-    description: "IA sin límites, Ola y herramientas premium."
+    description: "Límites altos de IA, Ola y herramientas premium."
   }
 }.freeze
 
