@@ -1,22 +1,22 @@
-Fitgram es un contador de calorías inteligente sin fricciones. Sin báscula, sin contar gramos — solo haz una foto del plato, escanea un código de barras o di lo que comiste.
+Fitgram es un contador de calorías inteligente pensado para ser rápido y sencillo. Sin báscula y sin contar gramos: haz una foto de tu plato, escanea un código de barras o di lo que has comido.
 
-LO QUE OBTIENES
-• Escaneo de comidas por foto — la IA reconoce pierogi, schnitzel, sushi, pasta, ensaladas y más de 3000 platos del mundo
-• Escáner de códigos de barras — Open Food Facts directo del envase
-• Añadir por voz — "comí sopa de tomate y un sándwich de queso"
-• Base Rápida — 3000+ comidas con datos nutricionales precisos
-• Coach Ola — IA que tiene en cuenta tus objetivos, dieta y hábitos
-• Objetivos y métricas — calorías, macros, agua, peso, IMC
-• Racha diaria — mantén el ritmo, gana insignias, comparte tu progreso
-• Amigos — retos semanales, ranking, perder peso juntos
-• Libro de recetas — cocina, planifica, importa desde URL
-• Seguimiento de agua — objetivo diario + un toque para añadir
+QUÉ INCLUYE
+• Escaneo de comidas por foto: la IA reconoce pierogi, schnitzel, kasha, sopas, pasta, sushi, ensaladas y más de 3000 platos de todo el mundo
+• Escáner de códigos de barras: datos de Open Food Facts directamente del envase
+• Añadir por voz: «he comido sopa de tomate y un sándwich de queso»
+• Base rápida: más de 3000 alimentos con datos nutricionales precisos
+• Coach Ola: coach con IA que se basa en tus objetivos, tu dieta y tus hábitos
+• Objetivos y métricas: calorías, macros, agua, peso, IMC
+• Racha diaria: mantén el ritmo, gana insignias y comparte tu progreso
+• Amigos: retos semanales, clasificación y perder peso en compañía
+• Libro de recetas: cocina, planifica e importa desde cualquier URL
+• Seguimiento del agua: objetivo diario y añadir con un toque
 
-PRIVACIDAD
-Tus datos siguen bajo tu control: sin anuncios, sin venta de datos personales y procesamiento de IA transparente.
+PRIVACIDAD Y SEGURIDAD
+Tus datos siguen bajo tu control: sin anuncios, sin venta de datos personales y con un procesamiento de IA transparente.
 
-Fitgram está hecho por un pequeño equipo independiente — tu feedback va directo a las personas que escriben el código.
+Fitgram lo crea un pequeño equipo independiente: tus comentarios llegan directamente a quienes escriben el código.
 
-LEGAL
+INFORMACIÓN LEGAL
 Términos de uso: https://fitgram.space/terms
 Política de privacidad: https://fitgram.space/privacy

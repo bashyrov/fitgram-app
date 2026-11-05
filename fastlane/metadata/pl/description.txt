@@ -1,22 +1,22 @@
-Fitgram to inteligentny licznik kalorii bez tarcia. Bez wagi, bez liczenia gramów — wystarczy zdjęcie talerza, kod kreskowy z półki lub krótka komenda głosowa.
+Fitgram to inteligentny licznik kalorii zbudowany wokół szybkości i prostoty. Bez wagi, bez liczenia gramów — po prostu zrób zdjęcie talerza, zeskanuj kod kreskowy albo powiedz, co zjadłeś.
 
 CO DOSTAJESZ
-• Skanowanie posiłków zdjęciem — AI rozpoznaje pierogi, schabowy, sushi, pastę, sałatki i 3000+ innych dań z całego świata
-• Skaner kodów kreskowych — Open Food Facts prosto z opakowania
-• Dodawanie głosem — „zjadłam zupę pomidorową i kanapkę z serem"
-• Szybka Baza — 3000+ pozycji z dokładnymi wartościami
-• Trener Ola — AI Coach, który opiera się na Twoich celach, diecie i nawykach
+• Skanowanie posiłków ze zdjęcia — AI rozpoznaje pierogi, schabowego, kaszę, zupy, makaron, sushi, sałatki i ponad 3000 innych dań z całego świata
+• Skaner kodów kreskowych — dane z Open Food Facts prosto z opakowania
+• Dodawanie głosem — „zjadłem zupę pomidorową i kanapkę z serem”
+• Szybka Baza — ponad 3000 produktów z dokładnymi wartościami odżywczymi
+• Coach Ola — AI coach, który opiera się na Twoich celach, diecie i nawykach
 • Cele i pomiary — kalorie, makro, woda, waga, BMI
-• Seria dni — utrzymuj rytm, zarabiaj odznaki, dziel się postępem
+• Seria dni — utrzymuj rytm, zdobywaj odznaki, dziel się postępami
 • Znajomi — wyzwania tygodniowe, ranking, wspólne odchudzanie
-• Książka przepisów — gotuj, planuj, importuj z URL
-• Trackowanie wody — dzienna norma + szybkie tap dodawanie
+• Książka przepisów — gotuj, planuj, importuj z dowolnego adresu URL
+• Śledzenie wody — dzienny cel i dodawanie jednym dotknięciem
 
 PRYWATNOŚĆ I BEZPIECZEŃSTWO
-Twoje dane pozostają pod Twoją kontrolą: bez reklam, bez sprzedaży danych i z transparentnym przetwarzaniem AI.
+Twoje dane pozostają pod Twoją kontrolą: bez reklam, bez sprzedaży danych osobowych, z przejrzystym przetwarzaniem przez AI.
 
-Fitgram jest tworzony przez mały niezależny zespół — feedback trafia bezpośrednio do osób piszących kod.
+Fitgram tworzy mały, niezależny zespół — Twoje opinie trafiają bezpośrednio do osób, które piszą kod.
 
-LINKI PRAWNE
-Regulamin / Terms of Use: https://fitgram.space/terms
+INFORMACJE PRAWNE
+Warunki korzystania: https://fitgram.space/terms
 Polityka prywatności: https://fitgram.space/privacy
