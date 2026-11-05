@@ -37,15 +37,21 @@ struct MonoSectionHeader<Trailing: View>: View {
                 Text(number)
                     .font(Tokens.Font.archivo(size: 12, weight: 800, width: 112))
                     .foregroundStyle(Tokens.Mono.muted)
+                    .fixedSize()
             }
             Text(title)
                 .font(Tokens.Font.monoDisplay(20))
                 .textCase(.uppercase)
                 .foregroundStyle(Tokens.Palette.ink)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .lineLimit(2)
+                .minimumScaleFactor(0.6)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
+            // Trailing labels are short ("Cel: 1870 kcal"); the title wraps
+            // to a second line instead of cutting them off.
             trailing()
+                .lineLimit(1)
+                .fixedSize()
         }
         .padding(.bottom, 8)
         .overlay(alignment: .bottom) {

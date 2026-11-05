@@ -112,5 +112,10 @@ struct OnboardingView: View {
             )
         )
         .animation(Tokens.Motion.gentle, value: flow.currentStep)
+        .onChange(of: flow.currentStep) { _, _ in
+            // The name step's keyboard would otherwise stay up over the next step.
+            UIApplication.shared.sendAction(
+                #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
 }

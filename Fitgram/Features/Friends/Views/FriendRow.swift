@@ -48,7 +48,7 @@ struct FriendRow: View {
 
     private var subtitle: String {
         if let count = profile.achievementCount, profile.sharesAchievements {
-            return String.localizedStringWithFormat(L("%lld badges"), count)
+            return Plural.badges(count)
         }
         return "Fitgram"
     }

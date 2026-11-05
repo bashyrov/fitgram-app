@@ -378,9 +378,11 @@ enum AchievementTracks {
                 "friends", .friends, [1, 3, 5, 10, 20, 50], "person.2.fill", .social, 1000,
                 TL(pl: "Znajomi", en: "Friends", uk: "Друзі", ru: "Друзья", es: "Amigos")
             ) {
-                TL(
-                    pl: "\($0) znajomych w Fitgram.", en: "\($0) friends on Fitgram.", uk: "\($0) друзів у Fitgram.",
-                    ru: "\($0) друзей в Fitgram.", es: "\($0) amigos en Fitgram.")
+                let friends = Plural.friendWord(Int($0.filter(\.isNumber)) ?? 0)
+                return TL(
+                    pl: "\($0) \(friends) w Fitgram.", en: "\($0) \(friends) on Fitgram.",
+                    uk: "\($0) \(friends) у Fitgram.", ru: "\($0) \(friends) в Fitgram.",
+                    es: "\($0) \(friends) en Fitgram.")
             },
             track(
                 "cheer", .reactionsGiven, [1, 10, 25, 50, 100, 250, 500], "hands.clap.fill", .social, 1020,

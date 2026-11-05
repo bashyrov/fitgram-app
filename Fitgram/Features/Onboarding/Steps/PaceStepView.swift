@@ -85,7 +85,7 @@ struct PaceStepView: View {
                 MonoLabel(text: L("Docelowa waga"))
                 Spacer(minLength: 8)
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(String(format: "%.1f", targetWeightKg))
+                    Text(OnboardingNumberFormat.oneDecimal(targetWeightKg))
                         .font(Tokens.Font.monoNumber(30))
                         .foregroundStyle(Tokens.Palette.ink)
                         .contentTransition(.numericText())

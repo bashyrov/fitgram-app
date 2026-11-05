@@ -261,6 +261,8 @@ struct MonoNavText: View {
             Text(title)
                 .font(Tokens.Font.manrope(15, weight: emphasized ? 800 : 700))
                 .foregroundStyle(emphasized ? Tokens.Palette.ink : Tokens.Mono.muted)
+                .lineLimit(1)
+                .fixedSize()
         }
         .buttonStyle(.plain)
     }

@@ -39,7 +39,7 @@ final class TodayState {
     /// without leaving the Today tab.
     private(set) var viewingDate: Date = Calendar.current.startOfDay(for: Date())
 
-    private let container: ModelContainer
+    let container: ModelContainer
     private let streakService: StreakService
     private let recipeRepository: RecipeRepository?
     private let culturalEvents: CulturalEventService

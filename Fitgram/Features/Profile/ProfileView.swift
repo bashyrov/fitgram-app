@@ -292,7 +292,9 @@ struct ProfileView: View {
 
     private var profileHeroStats: some View {
         HStack(alignment: .top, spacing: 10) {
-            MonoStat(label: L("Seria"), value: "\(streak?.currentLength ?? 0)", unit: L("dni"), dark: true)
+            MonoStat(
+                label: L("Seria"), value: "\(streak?.currentLength ?? 0)",
+                unit: Plural.dayWord(streak?.currentLength ?? 0), dark: true)
             MonoStat(
                 label: L("Odznaki"),
                 value: "\(earnedAchievements.count)",
@@ -385,7 +387,7 @@ struct ProfileView: View {
                 if (streak?.currentLength ?? 0) > 0 {
                     pulseTile(
                         title: L("Seria"),
-                        value: String.localizedStringWithFormat(L("%lld dni"), streak?.currentLength ?? 0),
+                        value: Plural.days(streak?.currentLength ?? 0),
                         symbol: "square.and.arrow.up",
                         action: { isShareStreakPresented = true }
                     )

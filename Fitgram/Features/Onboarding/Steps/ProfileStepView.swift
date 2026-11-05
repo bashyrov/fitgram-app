@@ -130,8 +130,7 @@ struct ProfileStepView: View {
         if integer {
             return "\(Int(value))"
         }
-        return String(format: "%.1f", value)
-            .replacingOccurrences(of: ".", with: ",")
+        return OnboardingNumberFormat.oneDecimal(value)
     }
 
     // MARK: - State

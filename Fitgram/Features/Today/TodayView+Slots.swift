@@ -351,7 +351,7 @@ extension TodayView {
                             .font(Tokens.Font.monoDisplay(20))
                             .textCase(.uppercase)
                             .foregroundStyle(Tokens.Palette.ink)
-                        Text(String.localizedStringWithFormat(L("%lld posiłków"), state.meals.count))
+                        Text(Plural.meals(state.meals.count))
                             .font(Tokens.Font.footnote)
                             .foregroundStyle(Tokens.Palette.inkMuted)
                     }

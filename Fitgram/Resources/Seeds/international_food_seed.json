@@ -70,10 +70,10 @@
       "fat_100g": 18.0,
       "default_portion_g": 150,
       "localized_names": {
-        "uk": "3-яйце омлет (сир)",
-        "ru": "3-яйцо омлет (сыр)",
-        "es": "3-huevo tortilla (queso)",
-        "pl": "3-jajko omlet (ser)",
+        "uk": "Омлет з 3 яєць із сиром",
+        "ru": "Омлет из 3 яиц с сыром",
+        "es": "Tortilla de 3 huevos con queso",
+        "pl": "Omlet z 3 jajek z serem",
         "en": "3-egg omelette (cheese)"
       }
     },
@@ -89,10 +89,10 @@
       "fat_100g": 16.0,
       "default_portion_g": 150,
       "localized_names": {
-        "uk": "3-яйце омлет (шинка)",
-        "ru": "3-яйцо омлет (ветчина)",
-        "es": "3-huevo tortilla (jamón)",
-        "pl": "3-jajko omlet (szynka)",
+        "uk": "Омлет з 3 яєць із шинкою",
+        "ru": "Омлет из 3 яиц с ветчиной",
+        "es": "Tortilla de 3 huevos con jamón",
+        "pl": "Omlet z 3 jajek z szynką",
         "en": "3-egg omelette (ham)"
       }
     },
@@ -108,10 +108,10 @@
       "fat_100g": 12.0,
       "default_portion_g": 150,
       "localized_names": {
-        "uk": "3-яйце омлет (гриб)",
-        "ru": "3-яйцо омлет (гриб)",
-        "es": "3-huevo tortilla (champiñón)",
-        "pl": "3-jajko omlet (grzyb)",
+        "uk": "Омлет з 3 яєць із грибами",
+        "ru": "Омлет из 3 яиц с грибами",
+        "es": "Tortilla de 3 huevos con champiñones",
+        "pl": "Omlet z 3 jajek z grzybami",
         "en": "3-egg omelette (mushroom)"
       }
     },
@@ -146,10 +146,10 @@
       "fat_100g": 0.0,
       "default_portion_g": 17,
       "localized_names": {
-        "uk": "A1 стейк sauce",
-        "ru": "A1 стейк sauce",
-        "es": "A1 filete sauce",
-        "pl": "A1 stek sauce",
+        "uk": "Соус для стейка A1",
+        "ru": "Соус для стейка A1",
+        "es": "Salsa para carne A1",
+        "pl": "Sos do steków A1",
         "en": "A1 steak sauce"
       }
     },
