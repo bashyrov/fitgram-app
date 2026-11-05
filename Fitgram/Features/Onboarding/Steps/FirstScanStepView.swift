@@ -208,6 +208,9 @@ struct FirstScanStepView: View {
             withAnimation(Tokens.Motion.gentle) {
                 stage = .result(result)
             }
+        } catch let error as APIError {
+            // Quota, sign-in and server errors each have their own message.
+            stage = .failed(error.userMessage)
         } catch {
             stage = .failed("The scanner isn't responding. Try again.")
         }

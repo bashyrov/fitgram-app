@@ -188,7 +188,7 @@ extension WeekProgressView {
 
     var breakdownSectionHeader: some View {
         weekSection("03", L("Dni tygodnia")) {
-            MonoLabel(text: String.localizedStringWithFormat(L("%lld wpisów"), totalMealCount))
+            MonoLabel(text: Plural.entries(totalMealCount))
         }
     }
 
@@ -221,9 +221,7 @@ extension WeekProgressView {
                         .foregroundStyle(day.calories > 0 ? Tokens.Palette.ink : Tokens.Mono.muted)
                     Spacer(minLength: 6)
                     Text(
-                        day.mealCount == 1
-                            ? L("1 posiłek")
-                            : String.localizedStringWithFormat(L("%lld posiłków"), day.mealCount)
+                        Plural.meals(day.mealCount)
                     )
                     .foregroundStyle(Tokens.Mono.muted)
                 }
@@ -304,9 +302,11 @@ extension WeekProgressView {
             return L("Tu zobaczysz kalorie, makro i rytm posiłków z ostatnich siedmiu dni.")
         }
         return String.localizedStringWithFormat(
-            L("%lld kcal łącznie · %lld posiłków zapisanych"),
+            TL(
+                pl: "%lld kcal łącznie · %@", en: "%lld kcal total · %@", uk: "%lld ккал загалом · %@",
+                ru: "%lld ккал всего · %@", es: "%lld kcal en total · %@"),
             safeWhole(state.totalKcalThisWeek),
-            totalMealCount
+            Plural.meals(totalMealCount)
         )
     }
 

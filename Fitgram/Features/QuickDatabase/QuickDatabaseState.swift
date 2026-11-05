@@ -37,10 +37,11 @@ final class QuickDatabaseState {
         do {
             // Sort by the name the user actually sees (translations differ
             // from the English storage name); compute each once.
-            let all = try catalog.all()
-                .map { ($0, $0.localizedName) }
-                .sorted { $0.1.localizedStandardCompare($1.1) == .orderedAscending }
-                .map(\.0)
+            let all = Self.removingDuplicateNames(
+                try catalog.all()
+                    .map { ($0, $0.localizedName) }
+                    .sorted { $0.1.localizedStandardCompare($1.1) == .orderedAscending }
+            )
             allFoods = all
             searchKeys = Dictionary(
                 all.map { ($0.id, Self.searchKey(for: $0)) },
@@ -116,6 +117,33 @@ final class QuickDatabaseState {
             base = base.filter { searchKeys[$0.id]?.contains(needle) ?? false }
         }
         foods = base
+    }
+
+    /// The Polish and international seeds overlap ("Pierogi ruskie" is in
+    /// both), and several English variants share one translation. Show one
+    /// row per visible name; the most-picked copy wins, and the user's own
+    /// foods are always kept.
+    static func removingDuplicateNames(_ sorted: [(Food, String)]) -> [Food] {
+        var kept: [Food] = []
+        var indexByKey: [String: Int] = [:]
+        for (food, name) in sorted {
+            guard food.verified else {
+                kept.append(food)
+                continue
+            }
+            let key = [
+                name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil),
+                food.brand ?? "",
+                food.restaurantName ?? "",
+            ].joined(separator: "|")
+            if let index = indexByKey[key] {
+                if food.pickCount > kept[index].pickCount { kept[index] = food }
+            } else {
+                indexByKey[key] = kept.count
+                kept.append(food)
+            }
+        }
+        return kept
     }
 
     private static func searchKey(for food: Food) -> String {

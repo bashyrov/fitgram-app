@@ -68,7 +68,7 @@ struct DayMealsSheet: View {
 
     private var summaryText: String {
         let totalKcal = Int(meals.reduce(0.0) { $0 + $1.totalCaloriesKcal }.rounded())
-        return String.localizedStringWithFormat(L("%lld posiłków"), meals.count)
+        return Plural.meals(meals.count)
             + " · "
             + String.localizedStringWithFormat(L("%lld kcal"), totalKcal)
     }

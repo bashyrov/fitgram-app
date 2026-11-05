@@ -40,7 +40,17 @@ struct TodayView: View {
     @State var hasStagedContent = false
     @State var selectedWorkout: WorkoutEntry?
 
-    @AppStorage("water.dailyGoalMl") private var waterGoalStored = WaterService.defaultDailyGoalMilliliters
+    /// The goal onboarding and the profile editor write to the user row, so
+    /// Today reads it from there instead of keeping its own copy.
+    private var waterGoal: Int {
+        let stored = state.user?.waterGoalMl ?? 0
+        return stored > 0 ? stored : WaterService.defaultDailyGoalMilliliters
+    }
+
+    private var recommendedWaterGoal: Int {
+        state.user?.weightKg.map { GoalCalculator.waterTarget(weightKg: $0) }
+            ?? WaterService.defaultDailyGoalMilliliters
+    }
     @AppStorage(AppAccentPalette.storageKey) private var accentRaw = AppAccentPalette.rose.rawValue
 
     /// Day-rotating fact picker for the "Porady od Oli" sheet. The
@@ -81,7 +91,7 @@ struct TodayView: View {
                             carbsGoal: state.carbsGoal,
                             fatGoal: state.fatGoal,
                             waterTotalMilliliters: state.waterTotalMl,
-                            waterGoalMilliliters: waterGoalStored,
+                            waterGoalMilliliters: waterGoal,
                             showsWater: state.isViewingToday,
                             onTapProfile: onOpenProfile,
                             onPreviousDay: {
@@ -111,7 +121,7 @@ struct TodayView: View {
                                 Task { await state.undoLastWater(for: userRemoteID) }
                             },
                             onEditWaterGoal: {
-                                waterGoalDraft = waterGoalStored
+                                waterGoalDraft = waterGoal
                                 setGoalDialog(water: true)
                             },
                             onEditMacroGoals: {
@@ -234,17 +244,27 @@ struct TodayView: View {
             TodayGoalDialog(
                 icon: "drop",
                 title: L("Dzienny cel wody"),
-                message: L("250–8000 ml. Standard to 2000 ml."),
+                message: String.localizedStringWithFormat(
+                    TL(
+                        pl: "500–8000 ml. Twoja norma: %lld ml.",
+                        en: "500–8000 ml. Your recommended goal: %lld ml.",
+                        uk: "500–8000 мл. Твоя норма: %lld мл.",
+                        ru: "500–8000 мл. Твоя норма: %lld мл.",
+                        es: "500–8000 ml. Tu objetivo recomendado: %lld ml."
+                    ),
+                    recommendedWaterGoal
+                ),
                 value: $waterGoalDraft,
                 unit: L("ml"),
                 layout: .stacked,
                 onSave: {
-                    waterGoalStored = max(250, min(8000, waterGoalDraft))
+                    let goal = max(500, min(8000, waterGoalDraft))
+                    Task { await state.overrideWaterGoal(goal, userRemoteID: userRemoteID) }
                     Haptics.light()
                     setGoalDialog(water: false)
                 },
                 onDefault: {
-                    waterGoalStored = WaterService.defaultDailyGoalMilliliters
+                    Task { await state.resetWaterGoal(userRemoteID: userRemoteID) }
                     setGoalDialog(water: false)
                 },
                 onCancel: { setGoalDialog(water: false) }

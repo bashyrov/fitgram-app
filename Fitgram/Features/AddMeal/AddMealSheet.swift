@@ -188,7 +188,8 @@ extension AddMealSheet {
                             .textCase(.uppercase)
                             .foregroundStyle(Tokens.Mono.onHero)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.7)
+                            .minimumScaleFactor(0.5)
+                            .layoutPriority(1)
                         HStack(spacing: 4) {
                             Image(systemName: "sparkles")
                                 .font(.system(size: 10, weight: .bold))
@@ -199,6 +200,7 @@ extension AddMealSheet {
                         .padding(.horizontal, 8)
                         .frame(height: 22)
                         .background(Capsule().fill(Tokens.Mono.hi))
+                        .fixedSize()
                     }
                     Text(L("AI rozpozna danie i pokaże tryb ogólny albo detale"))
                         .font(Tokens.Font.manrope(13, weight: 600))

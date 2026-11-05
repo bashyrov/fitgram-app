@@ -5224,7 +5224,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🎯 Сбросить \\(amount)"
+            "value" : "🎯 Похудеть на \\(amount)"
           }
         },
         "uk" : {
@@ -5259,7 +5259,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🎯 Сбросить \\(amount) к \\(date)"
+            "value" : "🎯 Похудеть на \\(amount) к \\(date)"
           }
         },
         "uk" : {
@@ -5294,7 +5294,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🎯 Сбросить %@"
+            "value" : "🎯 Похудеть на %@"
           }
         },
         "uk" : {
@@ -5329,7 +5329,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🎯 Сбросить %@ к %@"
+            "value" : "🎯 Похудеть на %@ к %@"
           }
         },
         "uk" : {
@@ -18141,7 +18141,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cele i targety"
+            "value" : "Cele i normy"
           }
         },
         "ru" : {
@@ -42924,7 +42924,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Najważniejsze skróty i status konta"
+            "value" : "Skróty"
           }
         },
         "ru" : {
