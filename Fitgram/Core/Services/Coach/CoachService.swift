@@ -272,8 +272,9 @@ final class CoachService {
                 entryCount: 0, lastLoggedAt: nil
             )
         }
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= dayStart && $0.consumedAt < dayEnd },
+            predicate: #Predicate { $0.userRemoteID == owner && $0.consumedAt >= dayStart && $0.consumedAt < dayEnd },
             sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
         )
         let entries = (try? context.fetch(descriptor)) ?? []

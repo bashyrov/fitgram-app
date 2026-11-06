@@ -29,8 +29,9 @@ final class ChallengeService {
     func currentProgress(calorieGoal: Int, proteinGoal: Int) -> [ChallengeProgress] {
         let (weekStart, weekEnd) = currentWeekBounds()
         let context = ModelContext(container)
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= weekStart && $0.consumedAt < weekEnd }
+            predicate: #Predicate { $0.userRemoteID == owner && $0.consumedAt >= weekStart && $0.consumedAt < weekEnd }
         )
         let meals = (try? context.fetch(descriptor)) ?? []
         return ChallengeEvaluator.evaluate(

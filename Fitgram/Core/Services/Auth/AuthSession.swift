@@ -17,8 +17,17 @@ final class AuthSession {
     /// soon as the user takes another action.
     private(set) var lastError: AuthError?
     private(set) var isWorking: Bool = false
+    /// Called with the account id each time someone signs in, before the
+    /// UI reroutes. The composition root uses it to claim legacy rows.
+    @ObservationIgnored var onSignedIn: ((String) -> Void)?
 
     func update(phase: Phase) {
+        if case .authenticated(let user) = phase {
+            AccountScope.activate(user.id)
+            onSignedIn?(user.id)
+        } else {
+            AccountScope.activate(nil)
+        }
         self.phase = phase
         self.lastError = nil
     }

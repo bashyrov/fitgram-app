@@ -26,9 +26,10 @@ final class StreakCalendarService {
             return StreakCalendar.Snapshot(monthStart: monthStart, weeks: [])
         }
         let context = ModelContext(container)
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
             predicate: #Predicate {
-                $0.consumedAt >= monthStart && $0.consumedAt < monthEnd
+                $0.userRemoteID == owner && $0.consumedAt >= monthStart && $0.consumedAt < monthEnd
             }
         )
         let meals = (try? context.fetch(descriptor)) ?? []

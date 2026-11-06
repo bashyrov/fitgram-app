@@ -80,6 +80,9 @@ struct FitgramApp: App {
             EmailAuthProvider(),
         ]
         let persistence = PersistenceController.shared
+        session.onSignedIn = { [container = persistence.container] userID in
+            AccountSwitcher.activate(userID, container: container, spotlight: RecipeSpotlightIndexer())
+        }
         #if DEBUG
         if DebugBypass.resetData {
             Self.performDebugReset(persistence: persistence)

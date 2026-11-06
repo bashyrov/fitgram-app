@@ -66,6 +66,7 @@ final class UsageMeter {
     private(set) var counts: [Kind: Int] = [:]
     private var cachedDayToken: String
     private var cachedWeekToken: String
+    @ObservationIgnored private var accountObserver: NSObjectProtocol?
 
     init(
         defaults: UserDefaults = .standard,
@@ -78,6 +79,12 @@ final class UsageMeter {
         self.cachedDayToken = UsageMeter.dayToken(for: now(), calendar: calendar)
         self.cachedWeekToken = UsageMeter.weekToken(for: now(), calendar: calendar)
         refreshCounts()
+        // Counters are per account (see AccountDefaults).
+        accountObserver = NotificationCenter.default.addObserver(
+            forName: .fitgramAccountDidChange, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.reloadAfterAccountDeletion() }
+        }
     }
 
     /// Returns the number of uses already consumed in the current period

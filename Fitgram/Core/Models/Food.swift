@@ -41,6 +41,9 @@ final class Food {
     /// Most recent pick. Nil until the user has touched the row at least
     /// once.
     var lastPickedAt: Date?
+    /// Account that created this row in "my kitchen". Empty for the shared
+    /// catalogue (seeded, AI-inferred) that every account sees.
+    var ownerRemoteID: String = ""
 
     init(
         id: UUID = UUID(),

@@ -27,7 +27,9 @@ final class RecipeRepository {
         } else {
             sortDescriptors = [SortDescriptor(\Recipe.createdAt, order: .reverse)]
         }
-        return try context.fetch(FetchDescriptor<Recipe>(sortBy: sortDescriptors))
+        let owner = AccountScope.currentUserID
+        return try context.fetch(
+            FetchDescriptor<Recipe>(predicate: #Predicate { $0.userRemoteID == owner }, sortBy: sortDescriptors))
     }
 
     /// Inserts a brand-new recipe.

@@ -62,8 +62,9 @@ final class MealRepository {
         let context = ModelContext(container)
         let lower = range.lowerBound
         let upper = range.upperBound
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= lower && $0.consumedAt < upper },
+            predicate: #Predicate { $0.userRemoteID == owner && $0.consumedAt >= lower && $0.consumedAt < upper },
             sortBy: [SortDescriptor(\MealEntry.consumedAt)]
         )
         return (try? context.fetch(descriptor)) ?? []
@@ -73,7 +74,9 @@ final class MealRepository {
     /// user can repeat the last real meal through the same portion screen.
     func latestRepeatableMeal() -> MealEntry? {
         let context = ModelContext(container)
+        let owner = AccountScope.currentUserID
         var descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.userRemoteID == owner },
             sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
         )
         descriptor.fetchLimit = 12
@@ -90,6 +93,8 @@ final class MealRepository {
     @discardableResult
     func cleanupOrphanedPhotos(in store: MealPhotoStore) -> Int {
         let context = ModelContext(container)
+        // Every account's meals on the device: a photo still used by
+        // another account's meal is not an orphan.
         let allMeals = (try? context.fetch(FetchDescriptor<MealEntry>())) ?? []
         let inUse = Set(allMeals.compactMap(\.photoFilename))
         let orphans = store.allFilenames().filter { !inUse.contains($0) }
@@ -175,7 +180,8 @@ final class MealRepository {
     /// tag-autocomplete strip on MealDetailSheet.
     func knownTags() throws -> [String] {
         let context = ModelContext(container)
-        let meals = try context.fetch(FetchDescriptor<MealEntry>())
+        let owner = AccountScope.currentUserID
+        let meals = try context.fetch(FetchDescriptor<MealEntry>(predicate: #Predicate { $0.userRemoteID == owner }))
         var counts: [String: Int] = [:]
         for meal in meals {
             for tag in meal.tags {

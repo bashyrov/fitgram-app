@@ -21,7 +21,9 @@ final class MealSearchService {
         // Swift land. The catalog stays small (months of meals,
         // typically < 5000 entries) so this is fast enough not to need
         // SQL FTS yet.
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.userRemoteID == owner },
             sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
         )
         let all = try context.fetch(descriptor)

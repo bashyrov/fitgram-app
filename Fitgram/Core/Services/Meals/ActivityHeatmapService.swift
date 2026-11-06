@@ -29,8 +29,9 @@ final class ActivityHeatmapService {
             return ActivityHeatmap.Snapshot(cells: [], generatedAt: now())
         }
         let context = ModelContext(container)
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= windowStart }
+            predicate: #Predicate { $0.userRemoteID == owner && $0.consumedAt >= windowStart }
         )
         let entries = (try? context.fetch(descriptor)) ?? []
         var byDay: [Date: Double] = [:]

@@ -41,9 +41,23 @@ final class FoodCatalogService: FoodCatalog {
     /// invalidated whenever this service writes to the catalogue.
     private var cachedAll: [Food]?
     private var cacheContext: ModelContext?
+    private var accountObserver: NSObjectProtocol?
 
     init(container: ModelContainer) {
         self.container = container
+        // Picks and "my kitchen" rows differ per account.
+        accountObserver = NotificationCenter.default.addObserver(
+            forName: .fitgramAccountDidChange, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.invalidateCache() }
+        }
+    }
+
+    /// Shared catalogue rows plus the signed-in account's own foods.
+    private static func visible() -> Predicate<Food> {
+        let owner = AccountScope.currentUserID
+        let shared = String()
+        return #Predicate { $0.ownerRemoteID == shared || $0.ownerRemoteID == owner }
     }
 
     func categories() throws -> [FoodCategory] {
@@ -57,6 +71,7 @@ final class FoodCatalogService: FoodCatalog {
         let context = ModelContext(container)
         let foods = try context.fetch(
             FetchDescriptor<Food>(
+                predicate: Self.visible(),
                 sortBy: [SortDescriptor(\Food.name)]
             ))
         cacheContext = context
@@ -80,33 +95,18 @@ final class FoodCatalogService: FoodCatalog {
     }
 
     func byCategory(_ category: FoodCategory) throws -> [Food] {
-        let rawValue = category.rawValue
-        let context = ModelContext(container)
-        return try context.fetch(
-            FetchDescriptor<Food>(
-                predicate: #Predicate { $0.categoryRaw == rawValue },
-                sortBy: [SortDescriptor(\Food.name)]
-            ))
+        try all().filter { $0.category == category }
     }
 
     func recent(limit: Int) throws -> [Food] {
-        let context = ModelContext(container)
-        var descriptor = FetchDescriptor<Food>(
-            predicate: #Predicate { $0.lastPickedAt != nil },
-            sortBy: [SortDescriptor(\Food.lastPickedAt, order: .reverse)]
-        )
-        descriptor.fetchLimit = limit
-        return try context.fetch(descriptor)
+        let picked = try all().filter { $0.lastPickedAt != nil }
+        return Array(
+            picked.sorted { ($0.lastPickedAt ?? .distantPast) > ($1.lastPickedAt ?? .distantPast) }.prefix(limit))
     }
 
     func popular(limit: Int) throws -> [Food] {
-        let context = ModelContext(container)
-        var descriptor = FetchDescriptor<Food>(
-            predicate: #Predicate { $0.pickCount > 0 },
-            sortBy: [SortDescriptor(\Food.pickCount, order: .reverse)]
-        )
-        descriptor.fetchLimit = limit
-        return try context.fetch(descriptor)
+        let picked = try all().filter { $0.pickCount > 0 }
+        return Array(picked.sorted { $0.pickCount > $1.pickCount }.prefix(limit))
     }
 
     func recordPick(_ food: Food) throws {
@@ -122,6 +122,9 @@ final class FoodCatalogService: FoodCatalog {
 
     @discardableResult
     func create(_ food: Food) throws -> Food {
+        if food.remoteID == nil && !food.verified {
+            food.ownerRemoteID = AccountScope.currentUserID
+        }
         let context = ModelContext(container)
         context.insert(food)
         try context.save()

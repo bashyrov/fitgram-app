@@ -232,6 +232,12 @@ SwiftData store  (M1.2 schema v1.0)
 **Rationale:** Renaming would churn every screen for no behavioral gain, and the uppercase shorthand mirrors `NSLocalizedString`-style helpers.  
 **Consequences:** No other function may rely on these exemptions.
 
+### 2026-11-06: Several accounts on one iPhone stay fully separate
+**Context:** Meals, recipes, custom foods, Quick DB picks and `UserDefaults` settings had no owner, so a second account signed in on the same iPhone saw the first account's history, and account deletion wiped every account's local data.  
+**Decision:** `MealEntry`, `Recipe` and custom `Food` rows carry the owner's id (`AccountScope`), and every read filters on it. State that cannot be filtered (per-account `UserDefaults` keys listed in `AccountDefaults`, Quick DB pick counters) is stashed per account and swapped by `AccountSwitcher` at sign-in. Account deletion removes only that account's rows, photos and settings. Data stays on the device; server sync is a later step.  
+**Rationale:** Smallest change that makes accounts independent without a sync backend or per-account SwiftData stores.  
+**Consequences:** New account-owned models need a `userRemoteID` and a filter; new per-account `UserDefaults` keys need a prefix in `AccountDefaults.prefixes`. Rows saved before this change are claimed by the next account that signs in.
+
 ## API Contracts
 
 ### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)
