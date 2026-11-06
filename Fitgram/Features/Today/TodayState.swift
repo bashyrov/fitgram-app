@@ -200,15 +200,6 @@ final class TodayState {
             let upcomingEvent = nextEvent.flatMap { event in
                 culturalDismissals.isDismissed(event) ? nil : event
             }
-            let coachInsights: [CoachInsight]
-            let dailyOlaPlan: DailyOlaPlan?
-            if let coachService {
-                coachInsights = await coachService.insights(for: userRemoteID)
-                dailyOlaPlan = await coachService.dailyPlan(for: userRemoteID)
-            } else {
-                coachInsights = []
-                dailyOlaPlan = nil
-            }
             let waterTotalMl = waterService?.totalToday(for: userRemoteID) ?? 0
             let workouts = (try? workoutService?.workouts(for: userRemoteID, on: viewingDate)) ?? []
             let workoutCalories = workouts.reduce(0) { $0 + $1.caloriesBurnedKcal }
@@ -223,8 +214,10 @@ final class TodayState {
                 streak: streak,
                 suggestedRecipe: suggestedRecipe,
                 upcomingEvent: upcomingEvent,
-                coachInsights: coachInsights,
-                dailyOlaPlan: dailyOlaPlan,
+                // Ola's tips can wait on the Worker (AI) for seconds; show the
+                // meal right away with the current tips and swap them below.
+                coachInsights: coachService == nil ? [] : self.coachInsights,
+                dailyOlaPlan: coachService == nil ? nil : self.dailyOlaPlan,
                 waterTotalMl: waterTotalMl,
                 workouts: workouts,
                 workoutCaloriesBurned: workoutCalories,
@@ -235,6 +228,10 @@ final class TodayState {
             // historical day to the home-screen widget or Watch face.
             if isViewingToday {
                 publishTodaySurfaces()
+            }
+            if let coachService {
+                coachInsights = await coachService.insights(for: userRemoteID)
+                dailyOlaPlan = await coachService.dailyPlan(for: userRemoteID)
             }
         } catch {
             Logger.persistence.error("Today refresh failed: \(String(describing: error))")
