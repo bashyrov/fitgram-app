@@ -221,6 +221,8 @@ struct ProfileView: View {
             streakCalendarService: streakCalendarService,
             calibrationService: calibrationService,
             privacyStore: privacyStore,
+            entitlementsStore: entitlementsStore,
+            paywallCoordinator: paywallCoordinator,
             weightService: weightService,
             workoutService: workoutService,
             onSignOut: onSignOut,

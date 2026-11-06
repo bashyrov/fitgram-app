@@ -22,6 +22,8 @@ struct SettingsView: View {
     let streakCalendarService: StreakCalendarService
     let calibrationService: CalibrationService
     let privacyStore: PrivacyStore
+    let entitlementsStore: EntitlementsStore
+    let paywallCoordinator: PaywallCoordinator
     var weightService: WeightService?
     var workoutService: WorkoutService?
     let onSignOut: () -> Void
@@ -154,11 +156,6 @@ struct SettingsView: View {
         }
         .alert(deleteAccountQuestion, isPresented: $deleteConfirmation) {
             Button(cancelTitle, role: .cancel) {}
-            Button(manageSubscriptionTitle) {
-                if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
-                    openURL(url)
-                }
-            }
             Button(deleteTitle, role: .destructive) {
                 Task { await runDeleteAccount() }
             }
@@ -196,6 +193,18 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 0) {
             groupHeader(number: "01", title: preferencesTitle)
             VStack(spacing: 0) {
+                if AppConfig.isPaymentsEnabled {
+                    NavigationLink {
+                        SubscriptionSettingsView(
+                            entitlementsStore: entitlementsStore, paywallCoordinator: paywallCoordinator)
+                    } label: {
+                        MonoRow(
+                            icon: "star", title: SubscriptionSettingsView.screenTitle,
+                            sub: entitlementsStore.current.isPremium ? "Fitgram Premium" : freePlanRowSubtitle)
+                    }
+                    .buttonStyle(.plain)
+                    MonoRowDivider()
+                }
                 actionRow(
                     symbol: "bell",
                     title: preferencesTitle,
@@ -885,14 +894,8 @@ struct SettingsView: View {
         TL(pl: "Usuń", en: "Delete", uk: "Видалити", ru: "Удалить", es: "Eliminar")
     }
 
-    private var manageSubscriptionTitle: String {
-        TL(
-            pl: "Zarządzaj subskrypcją Apple",
-            en: "Manage Apple subscription",
-            uk: "Керувати підпискою Apple",
-            ru: "Управлять подпиской Apple",
-            es: "Gestionar suscripción de Apple"
-        )
+    private var freePlanRowSubtitle: String {
+        TL(pl: "Plan darmowy", en: "Free plan", uk: "Безкоштовний план", ru: "Бесплатный план", es: "Plan gratuito")
     }
 
     private var repeatTitle: String {
@@ -909,19 +912,19 @@ struct SettingsView: View {
         TL(
             pl:
                 "Operacja usuwa wszystkie Twoje dane lokalne i serwerowe. Nie można cofnąć. "
-                + "Jeśli masz aktywną subskrypcję, anuluj ją osobno w Apple ID.",
+                + "Jeśli masz aktywną subskrypcję, anuluj ją osobno: Ustawienia → Subskrypcja.",
             en:
                 "This removes all your local and server data. It cannot be undone. "
-                + "If you have an active subscription, cancel it separately in Apple ID.",
+                + "If you have an active subscription, cancel it separately: Settings → Subscription.",
             uk:
                 "Ця дія видалить усі локальні та серверні дані. Її не можна скасувати. "
-                + "Якщо у вас є активна підписка, скасуйте її окремо в Apple ID.",
+                + "Якщо у вас є активна підписка, скасуйте її окремо: Налаштування → Підписка.",
             ru:
                 "Это удалит все ваши локальные и серверные данные. Действие нельзя отменить. "
-                + "Если у вас есть активная подписка, отмените её отдельно в Apple ID.",
+                + "Если у вас есть активная подписка, отмените её отдельно: Настройки → Подписка.",
             es:
                 "Esto elimina todos tus datos locales y del servidor. No se puede deshacer. "
-                + "Si tienes una suscripción activa, cancélala por separado en Apple ID."
+                + "Si tienes una suscripción activa, cancélala por separado: Ajustes → Suscripción."
         )
     }
 
