@@ -81,7 +81,7 @@ struct FitgramApp: App {
         ]
         let persistence = PersistenceController.shared
         session.onSignedIn = { [container = persistence.container] userID in
-            AccountScope.claimUnownedRows(for: userID, in: container)
+            AccountSwitcher.activate(userID, container: container, spotlight: RecipeSpotlightIndexer())
         }
         #if DEBUG
         if DebugBypass.resetData {

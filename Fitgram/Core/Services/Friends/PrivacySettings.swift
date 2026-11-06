@@ -69,17 +69,28 @@ final class PrivacyStore {
     private(set) var current: PrivacySettings
     /// Fired after a user-initiated change so the backend copy follows.
     var onChange: (@MainActor (PrivacySettings) -> Void)?
+    @ObservationIgnored private var accountObserver: NSObjectProtocol?
 
     init(defaults: UserDefaults = .standard, storageKey: String = "privacy.settings") {
         self.defaults = defaults
         self.storageKey = storageKey
-        if let data = defaults.data(forKey: storageKey),
-            let decoded = try? JSONDecoder().decode(PrivacySettings.self, from: data)
-        {
-            self.current = decoded
-        } else {
-            self.current = .default
+        self.current = Self.load(from: defaults, key: storageKey)
+        // Settings are per account (see AccountDefaults).
+        accountObserver = NotificationCenter.default.addObserver(
+            forName: .fitgramAccountDidChange, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.current = Self.load(from: self.defaults, key: self.storageKey)
+            }
         }
+    }
+
+    private static func load(from defaults: UserDefaults, key: String) -> PrivacySettings {
+        guard let data = defaults.data(forKey: key),
+            let decoded = try? JSONDecoder().decode(PrivacySettings.self, from: data)
+        else { return .default }
+        return decoded
     }
 
     func update(_ block: (inout PrivacySettings) -> Void) {

@@ -27,7 +27,7 @@ enum AccountScope {
         lock.unlock()
     }
 
-    /// Hands rows saved before meals and recipes carried an owner to the
+    /// Hands rows saved before meals, recipes and custom foods carried an owner to the
     /// account signed in now. Runs on every sign-in; once the legacy rows
     /// are claimed there is nothing left to match.
     @MainActor
@@ -40,9 +40,14 @@ enum AccountScope {
                 FetchDescriptor<MealEntry>(predicate: #Predicate { $0.userRemoteID == unowned }))
             let recipes = try context.fetch(
                 FetchDescriptor<Recipe>(predicate: #Predicate { $0.userRemoteID == unowned }))
-            guard !meals.isEmpty || !recipes.isEmpty else { return }
+            // "My kitchen" foods: not verified catalogue rows, not AI cache.
+            let customFoods = try context.fetch(
+                FetchDescriptor<Food>(
+                    predicate: #Predicate { $0.ownerRemoteID == unowned && !$0.verified && $0.remoteID == nil }))
+            guard !meals.isEmpty || !recipes.isEmpty || !customFoods.isEmpty else { return }
             meals.forEach { $0.userRemoteID = userID }
             recipes.forEach { $0.userRemoteID = userID }
+            customFoods.forEach { $0.ownerRemoteID = userID }
             try context.save()
             Logger.persistence.notice("Claimed \(meals.count) meals and \(recipes.count) recipes for the account")
         } catch {

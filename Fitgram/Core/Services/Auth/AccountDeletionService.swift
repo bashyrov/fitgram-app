@@ -10,8 +10,9 @@ import WidgetKit
 /// 2. The Worker deletes its rows (subscription status, AI usage).
 /// 3. The Supabase `account` Edge Function deletes profile / social rows and
 ///    the auth user.
-/// 4. Local SwiftData rows, files, caches, notifications and keychain are
-///    cleared and the user is signed out.
+/// 4. This account's local rows, photos and settings are deleted (other
+///    accounts on the iPhone are kept), caches, notifications and the
+///    keychain are cleared and the user is signed out.
 ///
 /// Server steps run only when the Worker / Supabase are configured; local
 /// cleanup is always real so the device never keeps stale personal data.
@@ -21,7 +22,6 @@ final class AccountDeletionService {
     private let tokenStore: TokenStore
     private let persistence: PersistenceController?
     private let defaults: UserDefaults
-    private let appGroupDefaults: UserDefaults?
     private let notificationService: NotificationService
     private let spotlightIndexer: any RecipeSpotlightIndexing
     private let session: URLSession
@@ -31,7 +31,6 @@ final class AccountDeletionService {
         tokenStore: TokenStore = TokenStore(),
         persistence: PersistenceController? = nil,
         defaults: UserDefaults = .standard,
-        appGroupDefaults: UserDefaults? = UserDefaults(suiteName: WidgetSnapshotStore.appGroupID),
         notificationService: NotificationService = NotificationService(),
         spotlightIndexer: any RecipeSpotlightIndexing = RecipeSpotlightIndexer(),
         session: URLSession = .shared
@@ -40,7 +39,6 @@ final class AccountDeletionService {
         self.tokenStore = tokenStore
         self.persistence = persistence
         self.defaults = defaults
-        self.appGroupDefaults = appGroupDefaults
         self.notificationService = notificationService
         self.spotlightIndexer = spotlightIndexer
         self.session = session
@@ -124,58 +122,33 @@ final class AccountDeletionService {
         }
     }
 
+    /// Removes only the deleted account's data. Other accounts that signed
+    /// in on this iPhone keep their meals, recipes, photos and settings.
     private func clearLocalStores() async {
-        do {
-            try persistence?.wipeAccountData()
-        } catch {
-            Logger.persistence.error("Account local SwiftData wipe failed: \(String(describing: error))")
+        let userID = (try? tokenStore.userID).flatMap { $0 } ?? AccountScope.currentUserID
+        if let persistence, !userID.isEmpty {
+            do {
+                try AccountSwitcher.deleteAccountData(
+                    userID,
+                    container: persistence.container,
+                    defaults: defaults,
+                    photoStore: try? MealPhotoStore(),
+                    avatarDirectory: AvatarStore().directory
+                )
+            } catch {
+                Logger.persistence.error("Account local data deletion failed: \(String(describing: error))")
+            }
         }
         do {
             try tokenStore.clear()
         } catch {
             Logger.auth.error("Account token clear failed: \(String(describing: error))")
         }
-        (try? MealPhotoStore())?.removeAll()
-        AvatarStore().removeAll()
+        // Spotlight and the widget show the signed-in account only; the next
+        // sign-in fills them again for that account.
         spotlightIndexer.removeAll()
         WidgetSnapshotStore.shared.clear()
-        clearAccountDefaults(defaults)
-        if let appGroupDefaults {
-            clearAccountDefaults(appGroupDefaults)
-        }
         await notificationService.clearAllFitgramNotifications()
         WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    private func clearAccountDefaults(_ defaults: UserDefaults) {
-        let preservedKeys = Set([
-            "app.language",
-            "AppleLanguages",
-            "preferences.theme",
-            AppAccentPalette.storageKey,
-            "preferences.appIcon",
-            "preferences.didMigrateDefaultAccentToCitrus",
-        ])
-        let prefixes = [
-            "usage.",
-            "water.",
-            "weight.",
-            "privacy.",
-            "coach.",
-            "cultural.",
-            "debug.",
-            "whatsnew.",
-            "preferences.friend.",
-            "preferences.morningReminder",
-            "preferences.streakRisk",
-            "preferences.eveningReminder",
-            "preferences.goalWeight",
-        ]
-        for key in defaults.dictionaryRepresentation().keys {
-            guard !preservedKeys.contains(key),
-                prefixes.contains(where: { key.hasPrefix($0) })
-            else { continue }
-            defaults.removeObject(forKey: key)
-        }
     }
 }

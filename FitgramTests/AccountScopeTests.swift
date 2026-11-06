@@ -54,4 +54,87 @@ final class AccountScopeTests: XCTestCase {
         session.update(phase: .anonymous)
         XCTAssertEqual(AccountScope.currentUserID, "")
     }
+
+    // MARK: - Switching and deleting accounts
+
+    private func makeDefaults() -> UserDefaults {
+        let name = "AccountScopeTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name) ?? .standard
+        defaults.removePersistentDomain(forName: name)
+        return defaults
+    }
+
+    func testSettingsAndPicksFollowTheAccount() throws {
+        let container = try PersistenceController.makeInMemory().container
+        let defaults = makeDefaults()
+        let context = ModelContext(container)
+        let banana = Food(name: "Banan", caloriesKcalPer100g: 89, verified: true)
+        context.insert(banana)
+        try context.save()
+        let catalog = FoodCatalogService(container: container)
+
+        AccountScope.activate("apple-user")
+        AccountSwitcher.activate("apple-user", container: container, defaults: defaults)
+        defaults.set(7, forKey: "usage.aiWeekly.test")
+        defaults.set("pl", forKey: "app.language")
+        try catalog.recordPick(banana)
+
+        AccountScope.activate("google-user")
+        AccountSwitcher.activate("google-user", container: container, defaults: defaults)
+        XCTAssertNil(defaults.object(forKey: "usage.aiWeekly.test"))
+        XCTAssertEqual(defaults.string(forKey: "app.language"), "pl", "Device settings stay shared")
+        XCTAssertTrue(try catalog.recent(limit: 5).isEmpty)
+
+        AccountScope.activate("apple-user")
+        AccountSwitcher.activate("apple-user", container: container, defaults: defaults)
+        XCTAssertEqual(defaults.integer(forKey: "usage.aiWeekly.test"), 7)
+        XCTAssertEqual(try catalog.recent(limit: 5).map(\.name), ["Banan"])
+    }
+
+    func testCustomFoodsAreVisibleOnlyToTheirAccount() throws {
+        let container = try PersistenceController.makeInMemory().container
+        let catalog = FoodCatalogService(container: container)
+        AccountScope.activate("apple-user")
+        try catalog.create(Food(name: "Moja owsianka", caloriesKcalPer100g: 150))
+
+        AccountScope.activate("google-user")
+        NotificationCenter.default.post(name: .fitgramAccountDidChange, object: nil)
+        XCTAssertFalse(try catalog.all().contains { $0.name == "Moja owsianka" })
+
+        AccountScope.activate("apple-user")
+        NotificationCenter.default.post(name: .fitgramAccountDidChange, object: nil)
+        XCTAssertTrue(try catalog.all().contains { $0.name == "Moja owsianka" })
+    }
+
+    func testDeletingOneAccountKeepsTheOther() throws {
+        let container = try PersistenceController.makeInMemory().container
+        let defaults = makeDefaults()
+        let context = ModelContext(container)
+        let saver = SwiftDataMealSaver(container: container)
+
+        AccountScope.activate("apple-user")
+        AccountSwitcher.activate("apple-user", container: container, defaults: defaults)
+        try saver.save(meal: MealEntry(mealType: .lunch, source: .manual))
+        context.insert(User(remoteID: "apple-user", providerKind: .apple))
+        context.insert(WaterEntry(userRemoteID: "apple-user", recordedAt: Date(), milliliters: 250))
+        defaults.set(3, forKey: "usage.aiWeekly.test")
+
+        AccountScope.activate("google-user")
+        AccountSwitcher.activate("google-user", container: container, defaults: defaults)
+        try saver.save(meal: MealEntry(mealType: .dinner, source: .manual))
+        context.insert(User(remoteID: "google-user", providerKind: .google))
+        context.insert(WaterEntry(userRemoteID: "google-user", recordedAt: Date(), milliliters: 500))
+        try context.save()
+
+        try AccountSwitcher.deleteAccountData("google-user", container: container, defaults: defaults)
+
+        let check = ModelContext(container)
+        XCTAssertEqual(try check.fetch(FetchDescriptor<MealEntry>()).map(\.userRemoteID), ["apple-user"])
+        XCTAssertEqual(try check.fetch(FetchDescriptor<User>()).map(\.remoteID), ["apple-user"])
+        XCTAssertEqual(try check.fetch(FetchDescriptor<WaterEntry>()).map(\.userRemoteID), ["apple-user"])
+
+        AccountScope.activate("apple-user")
+        AccountSwitcher.activate("apple-user", container: container, defaults: defaults)
+        XCTAssertEqual(defaults.integer(forKey: "usage.aiWeekly.test"), 3)
+    }
 }
