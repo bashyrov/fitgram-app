@@ -196,13 +196,17 @@ struct PrivacySettingsSheet: View {
         .monoRowsCard()
     }
 
-    /// `toggle_row(title)` — Mono switch as trailing view.
+    /// `toggle_row(title)` — Mono switch as trailing view. The switch gets
+    /// an empty label: `MonoToggleStyle` draws `configuration.label`, so a
+    /// titled toggle repeated the title beside the switch and squeezed the
+    /// row's text column.
     private func toggle(title: String, detail: String, bind: Binding<Bool>) -> some View {
         MonoRow(title: title, sub: detail) {
-            Toggle(title, isOn: bind)
+            Toggle("", isOn: bind)
                 .labelsHidden()
                 .toggleStyle(MonoToggleStyle())
                 .fixedSize()
+                .accessibilityLabel(title)
         }
     }
 }
