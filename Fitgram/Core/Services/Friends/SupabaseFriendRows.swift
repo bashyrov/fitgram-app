@@ -198,3 +198,7 @@ private enum SupabaseDateParser {
 
     nonisolated(unsafe) private static let plain = ISO8601DateFormatter()
 }
+
+struct SharedProfileRow: Decodable, Sendable {
+    let payload: String
+}

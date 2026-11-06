@@ -213,23 +213,23 @@ final class SupabaseFriendService: FriendService {
             ]
         )
         return FriendProfileSnapshot(
-            id: profile.id,
-            displayName: profile.displayName,
-            username: profileRow.username.isEmpty ? nil : "@\(profileRow.username)",
-            avatarURL: profile.avatarURL,
-            bio: profileRow.bio?.nilIfBlank,
-            memberSinceDate: profileRow.createdAt?.supabaseDate,
-            currentStreak: profile.currentStreak,
-            level: nil,
-            goalLabel: nil,
-            achievements: nil,
-            weeklyStats: nil,
-            topRecipes: nil,
-            recentEvents: try await hydrateEvents(eventRows, viewerID: viewer),
-            weightKg: nil,
-            heightCm: nil,
-            isPremium: profile.isPremium
+            profile: profile, row: profileRow, shared: await sharedProfile(of: userID),
+            recentEvents: try await hydrateEvents(eventRows, viewerID: viewer))
+    }
+
+    /// What the owner shares (Privacy toggles); nil when they share nothing
+    /// or the server hides it from this viewer.
+    private func sharedProfile(of userID: String) async -> SharedProfile? {
+        let rows: [SharedProfileRow]? = try? await client.request(
+            path: "profile_shares",
+            query: [
+                URLQueryItem(name: "select", value: "payload"),
+                URLQueryItem(name: "user_id", value: "eq.\(userID)"),
+                URLQueryItem(name: "limit", value: "1"),
+            ]
         )
+        guard let payload = rows?.first?.payload else { return nil }
+        return try? SharedProfile.coder.decoder.decode(SharedProfile.self, from: Data(payload.utf8))
     }
 
     func sendPositiveReaction(to userID: String, from viewer: String, intent: PositiveReactionIntent) async throws {

@@ -104,6 +104,8 @@ struct MainTabView: View {
     @State private var undoDismissTask: Task<Void, Never>?
     @State private var selectedTab: Tab = Self.initialTab()
     @State private var friendsState: FriendsState
+    /// Uploads what Privacy lets friends see (streak, badges, goal, ...).
+    private let sharedProfilePublisher: SharedProfilePublisher
     @State private var lastAchievementCheck = Date.distantPast
     @State private var goalTrackingState: GoalTrackingState
     @State private var isGoalTrackingPresented = false
@@ -213,8 +215,15 @@ struct MainTabView: View {
         self._friendsState = State(initialValue: friendsState)
         let socialProfile = friendsState.socialProfile
         let userID = authUser.id
+        let publisher = SharedProfilePublisher(
+            container: PersistenceController.shared.container, privacy: { [privacyStore] in privacyStore.current })
+        self.sharedProfilePublisher = publisher
         privacyStore.onChange = { settings in
-            Task { await socialProfile.syncPrivacy(settings, userID: userID) }
+            Task {
+                // Privacy first: the server checks it before showing the data.
+                await socialProfile.syncPrivacy(settings, userID: userID)
+                await publisher.publish(owner: userID)
+            }
         }
         self._goalTrackingState = State(
             initialValue: GoalTrackingState(
@@ -414,6 +423,7 @@ struct MainTabView: View {
             if let remote = await friendsState.socialProfile.fetchPrivacy(userID: authUser.id) {
                 privacyStore.replace(remote, notify: false)
             }
+            sharedProfilePublisher.requestPublish(owner: authUser.id, after: .seconds(1))
         }
         .onChange(of: selectedTab) { _, newValue in
             checkAchievements()
@@ -472,6 +482,7 @@ struct MainTabView: View {
             NotificationCenter.default.publisher(for: Notification.Name("FitgramMealSaved"))
         ) { _ in
             refreshAfterSave()
+            sharedProfilePublisher.requestPublish(owner: authUser.id)
         }
         .onReceive(
             NotificationCenter.default.publisher(for: Notification.Name("FitgramWorkoutSaved"))

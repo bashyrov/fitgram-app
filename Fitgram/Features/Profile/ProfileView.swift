@@ -441,42 +441,9 @@ struct ProfileView: View {
         guard let user else {
             return L("✨ Witaj w Fitgram")
         }
-        switch user.goalKind {
-        case .lose:
-            if let target = user.goalTargetWeightKg {
-                let start = user.goalStartWeightKg ?? user.weightKg ?? target
-                let diff = start - target
-                guard diff > 0 else { return L("🎯 Goal: lose weight") }
-                let amount = String(format: "%.1f kg", diff)
-                    .replacingOccurrences(of: ".", with: ",")
-                if let end = user.goalEstimatedEndDate {
-                    let date = end.formatted(.dateTime.day().month(.wide))
-                    return String.localizedStringWithFormat(L("🎯 Lose %@ by %@"), amount, date)
-                }
-                return String.localizedStringWithFormat(L("🎯 Lose %@"), amount)
-            }
-            return L("🎯 Goal: lose weight")
-        case .gain:
-            if let target = user.goalTargetWeightKg {
-                let start = user.goalStartWeightKg ?? user.weightKg ?? target
-                let diff = target - start
-                guard diff > 0 else { return L("💪 Goal: gain mass") }
-                let amount = String(format: "%.1f kg", diff)
-                    .replacingOccurrences(of: ".", with: ",")
-                if let end = user.goalEstimatedEndDate {
-                    let date = end.formatted(.dateTime.day().month(.wide))
-                    return String.localizedStringWithFormat(L("💪 Gain %@ by %@"), amount, date)
-                }
-                return String.localizedStringWithFormat(L("💪 Gain %@"), amount)
-            }
-            return L("💪 Goal: gain mass")
-        case .maintain:
-            return L("⚖️ Maintain weight")
-        case .healthCondition:
-            return L("❤️ Cel zdrowotny")
-        case .justTracking:
-            return L("🔍 Śledzę bez celu")
-        }
+        return ProfileGoalLabel.text(
+            kind: user.goalKind, targetKg: user.goalTargetWeightKg,
+            startKg: user.goalStartWeightKg ?? user.weightKg, endDate: user.goalEstimatedEndDate)
     }
 
     // MARK: - Subscription card
