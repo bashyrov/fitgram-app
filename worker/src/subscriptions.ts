@@ -15,6 +15,7 @@ interface SyncRequest {
 }
 
 interface AppleTransactionPayload {
+  appAccountToken?: string;
   bundleId?: string;
   environment?: string;
   expiresDate?: number;
@@ -56,6 +57,16 @@ export async function handleSubscriptionSync(
     const payload = decodeJwt(signedInfo) as AppleTransactionPayload;
     const verified = validateTransaction(payload, config.bundleID);
     if (!verified.ok) return problemResponse(403, verified.reason);
+    // Purchases made by a newer app carry the buyer's Fitgram account id.
+    if (
+      payload.appAccountToken &&
+      payload.appAccountToken.toLowerCase() !== auth.userID.toLowerCase()
+    ) {
+      return problemResponse(
+        403,
+        "Subscription was bought for another account",
+      );
+    }
 
     const result = await env.USAGE_DB.prepare(
       `INSERT INTO subscription_entitlements (

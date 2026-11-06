@@ -18,6 +18,7 @@ final class StoreKitSubscriptionService: SubscriptionService {
     private(set) var snapshot: SubscriptionSnapshot = .free
     private var products: [String: Product] = [:]
     private let entitlementSyncClient: (any APIClient)?
+    @ObservationIgnored private var accountObserver: NSObjectProtocol?
 
     init() {
         if let baseURL = AppConfig.workerBaseURL {
@@ -37,6 +38,12 @@ final class StoreKitSubscriptionService: SubscriptionService {
             }
         }
         Task { await refresh() }
+        // Another account signed in: its entitlement may differ.
+        accountObserver = NotificationCenter.default.addObserver(
+            forName: .fitgramAccountDidChange, object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in await self?.refresh() }
+        }
     }
 
     func refresh() async {
@@ -85,7 +92,11 @@ final class StoreKitSubscriptionService: SubscriptionService {
             Logger.persistence.error("StoreKit: product unavailable \(offering.productID, privacy: .public)")
             throw PurchaseError.productNotFound(offering.productID)
         }
-        let result = try await product.purchase()
+        var options: Set<Product.PurchaseOption> = []
+        if let token = Self.currentAccountToken {
+            options.insert(.appAccountToken(token))
+        }
+        let result = try await product.purchase(options: options)
         switch result {
         case .success(let verification):
             let transaction = try Self.checkVerified(verification)
@@ -127,8 +138,14 @@ final class StoreKitSubscriptionService: SubscriptionService {
                 transaction.productType == .autoRenewable,
                 transaction.revocationDate == nil
             else { continue }
-            let willRenew = transaction.expirationDate.map { $0 > Date() } ?? true
-            await syncVerifiedEntitlement(transaction)
+            // StoreKit entitlements belong to the Apple ID, not to the
+            // Fitgram account: every account signed in on this iPhone would
+            // see the same purchase. Purchases carry the buyer's account id
+            // (appAccountToken); older ones are claimed by the first account
+            // the server links them to.
+            if let token = transaction.appAccountToken, token != Self.currentAccountToken { continue }
+            guard await syncVerifiedEntitlement(transaction) != .linkedToAnotherAccount else { continue }
+            let willRenew = await Self.willAutoRenew(transaction, product: products[transaction.productID])
             return SubscriptionSnapshot(
                 isPremium: true,
                 activeProductID: transaction.productID,
@@ -140,8 +157,33 @@ final class StoreKitSubscriptionService: SubscriptionService {
         return .free
     }
 
-    private func syncVerifiedEntitlement(_ transaction: Transaction) async {
-        guard let entitlementSyncClient else { return }
+    private enum SyncOutcome {
+        case linked
+        case linkedToAnotherAccount
+        case unknown
+    }
+
+    /// The signed-in Fitgram account as an App Store `appAccountToken`
+    /// (Supabase user ids are UUIDs).
+    private static var currentAccountToken: UUID? {
+        UUID(uuidString: AccountScope.currentUserID)
+    }
+
+    private static func willAutoRenew(_ transaction: Transaction, product: Product?) async -> Bool {
+        let statuses = (try? await product?.subscription?.status) ?? []
+        for status in statuses {
+            guard case .verified(let current) = status.transaction,
+                current.originalID == transaction.originalID,
+                case .verified(let renewal) = status.renewalInfo
+            else { continue }
+            return renewal.willAutoRenew
+        }
+        return true
+    }
+
+    @discardableResult
+    private func syncVerifiedEntitlement(_ transaction: Transaction) async -> SyncOutcome {
+        guard let entitlementSyncClient else { return .unknown }
         struct Payload: Encodable { let transactionID: String }
         // Decoded with convertFromSnakeCase: "product_id" becomes
         // "productId", so the property must be spelled that way.
@@ -156,12 +198,18 @@ final class StoreKitSubscriptionService: SubscriptionService {
                 payload: Payload(transactionID: String(transaction.id))
             )
             _ = try await entitlementSyncClient.send(endpoint, expecting: Response.self)
+            return .linked
+        } catch APIError.http(let status, _) where status == 409 || status == 403 {
+            // 409: this purchase already belongs to another Fitgram account.
+            // 403: it was bought for another account (appAccountToken).
+            return .linkedToAnotherAccount
         } catch {
             // StoreKit remains the local source of truth. Server sync is
             // retried on every refresh, purchase, restore, and renewal.
             Logger.networking.notice(
                 "Subscription entitlement sync deferred: \(String(describing: error), privacy: .public)"
             )
+            return .unknown
         }
     }
 
