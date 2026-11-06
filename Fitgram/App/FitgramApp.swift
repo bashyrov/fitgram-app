@@ -82,6 +82,7 @@ struct FitgramApp: App {
             EmailAuthProvider(),
         ]
         let persistence = PersistenceController.shared
+        Self.forgetSessionFromPreviousInstall(container: persistence.container)
         let cloudSync = CloudSyncService(container: persistence.container)
         self.cloudSync = cloudSync
         session.onSignedIn = { [container = persistence.container] userID in
@@ -282,6 +283,29 @@ struct FitgramApp: App {
 
 // MARK: - Launch helpers
 extension FitgramApp {
+    static let installMarkerKey = "install.launchedBefore"
+
+    /// The keychain survives deleting the app, so a reinstall found the old
+    /// tokens and skipped sign-in, dropping the user into onboarding for the
+    /// previous account. UserDefaults and the SwiftData store do not survive:
+    /// on the first launch of an install with no local account, forget the
+    /// stored session so the sign-in options show. An update keeps its
+    /// session because its local account is still there.
+    static func forgetSessionFromPreviousInstall(
+        container: ModelContainer, defaults: UserDefaults = .standard, tokenStore: TokenStore = TokenStore()
+    ) {
+        guard !defaults.bool(forKey: installMarkerKey) else { return }
+        defaults.set(true, forKey: installMarkerKey)
+        let hasLocalAccount = ((try? ModelContext(container).fetchCount(FetchDescriptor<User>())) ?? 0) > 0
+        guard !hasLocalAccount else { return }
+        do {
+            try tokenStore.clear()
+            Logger.auth.notice("Fresh install: cleared a session left in the keychain")
+        } catch {
+            Logger.auth.error("Clearing a previous install's session failed: \(String(describing: error))")
+        }
+    }
+
     #if DEBUG
     private static func performDebugReset(persistence: PersistenceController) {
         do {
