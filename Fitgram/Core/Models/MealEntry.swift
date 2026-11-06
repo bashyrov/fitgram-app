@@ -9,6 +9,9 @@ import SwiftData
 final class MealEntry {
     var id: UUID = UUID()
     var remoteID: String?
+    /// Owning account (see `AccountScope`). Empty only on rows saved
+    /// before meals carried an owner; those are claimed at sign-in.
+    var userRemoteID: String = ""
 
     var consumedAt: Date = Date()
     var mealTypeRaw: String = ""
@@ -43,6 +46,7 @@ final class MealEntry {
         tags: [String] = [],
         items: [FoodItem] = []
     ) {
+        self.userRemoteID = AccountScope.currentUserID
         let now = Date()
         self.id = id
         self.consumedAt = consumedAt

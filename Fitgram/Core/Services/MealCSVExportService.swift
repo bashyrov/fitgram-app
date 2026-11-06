@@ -46,16 +46,17 @@ final class MealCSVExportService {
             let dayStart = calendar.startOfDay(for: date)
             return calendar.date(byAdding: .day, value: 1, to: dayStart)
         }
-        let predicate: Predicate<MealEntry>?
+        let owner = AccountScope.currentUserID
+        let predicate: Predicate<MealEntry>
         switch (lowerBound, upperBound) {
         case (let low?, let high?):
-            predicate = #Predicate { $0.consumedAt >= low && $0.consumedAt < high }
+            predicate = #Predicate { $0.userRemoteID == owner && $0.consumedAt >= low && $0.consumedAt < high }
         case (let low?, nil):
-            predicate = #Predicate { $0.consumedAt >= low }
+            predicate = #Predicate { $0.userRemoteID == owner && $0.consumedAt >= low }
         case (nil, let high?):
-            predicate = #Predicate { $0.consumedAt < high }
+            predicate = #Predicate { $0.userRemoteID == owner && $0.consumedAt < high }
         case (nil, nil):
-            predicate = nil
+            predicate = #Predicate { $0.userRemoteID == owner }
         }
         let descriptor = FetchDescriptor<MealEntry>(
             predicate: predicate,

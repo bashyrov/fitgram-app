@@ -60,8 +60,9 @@ final class ProgressState {
                 lastThirtyDays = []
                 return
             }
+            let owner = AccountScope.currentUserID
             let descriptor = FetchDescriptor<MealEntry>(
-                predicate: #Predicate { $0.consumedAt >= monthAgo },
+                predicate: #Predicate { $0.userRemoteID == owner && $0.consumedAt >= monthAgo },
                 sortBy: [SortDescriptor(\MealEntry.consumedAt)]
             )
             let entries = try context.fetch(descriptor)

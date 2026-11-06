@@ -16,6 +16,7 @@ final class DataExportServiceTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        AccountScope.activate(nil)
         controller = nil
         context = nil
         service = nil
@@ -32,6 +33,7 @@ final class DataExportServiceTests: XCTestCase {
     }
 
     func testFullBundleIncludesEverything() throws {
+        AccountScope.activate("u-42")
         let user = User(remoteID: "u-42", email: "a@b.pl", displayName: "Anka")
         user.dailyCalorieGoalKcal = 1900
         user.heightCm = 170

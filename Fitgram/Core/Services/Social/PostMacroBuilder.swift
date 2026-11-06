@@ -62,8 +62,9 @@ enum PostMacroBuilder {
     static func meals(on day: Date, in context: ModelContext, calendar: Calendar = .current) -> [MealEntry] {
         let start = calendar.startOfDay(for: day)
         guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return [] }
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= start && $0.consumedAt < end },
+            predicate: #Predicate { $0.userRemoteID == owner && $0.consumedAt >= start && $0.consumedAt < end },
             sortBy: [SortDescriptor(\MealEntry.consumedAt)]
         )
         return (try? context.fetch(descriptor)) ?? []

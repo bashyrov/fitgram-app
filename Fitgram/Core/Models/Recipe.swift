@@ -8,6 +8,9 @@ import SwiftData
 final class Recipe {
     var id: UUID = UUID()
     var remoteID: String?
+    /// Owning account (see `AccountScope`). Empty only on rows saved
+    /// before recipes carried an owner; those are claimed at sign-in.
+    var userRemoteID: String = ""
 
     var title: String = ""
     var summary: String?
@@ -50,6 +53,7 @@ final class Recipe {
         instructions: [String] = [],
         ingredients: [RecipeIngredient] = []
     ) {
+        self.userRemoteID = AccountScope.currentUserID
         let now = Date()
         self.id = id
         self.title = title

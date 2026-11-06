@@ -9,9 +9,12 @@ final class ProfileStatsServiceTests: XCTestCase {
 
     override func setUp() async throws {
         controller = try PersistenceController.makeInMemory()
+        // Meals and recipes are stamped with the signed-in account.
+        AccountScope.activate("u-x")
     }
 
     override func tearDown() async throws {
+        AccountScope.activate(nil)
         controller = nil
     }
 

@@ -29,10 +29,9 @@ struct CoachWeekAggregator {
                 bestCalorieDayOffset: nil, weakestProteinDayOffset: nil
             )
         }
-        let descriptor = FetchDescriptor<MealEntry>(
-            predicate: #Predicate { $0.consumedAt >= weekStart && $0.consumedAt < windowEnd }
-        )
-        let meals = MealTotals(entries: (try? context.fetch(descriptor)) ?? [], calendar: calendar)
+        let meals = MealTotals(
+            entries: fetchMeals(context: context, userRemoteID: userRemoteID, from: weekStart, to: windowEnd),
+            calendar: calendar)
         let water = fetchWaterEntries(context: context, userRemoteID: userRemoteID, from: weekStart, to: windowEnd)
         let workouts = WorkoutTotals(
             workouts: fetchWorkouts(context: context, userRemoteID: userRemoteID, from: weekStart, to: windowEnd),
@@ -84,6 +83,15 @@ struct CoachWeekAggregator {
         let days = calendar.dateComponents([.day], from: anchor, to: today).day ?? 0
         let cycleOffset = max(0, days) / 7 * 7
         return calendar.date(byAdding: .day, value: cycleOffset, to: anchor) ?? today
+    }
+
+    private func fetchMeals(
+        context: ModelContext, userRemoteID: String, from start: Date, to end: Date
+    ) -> [MealEntry] {
+        let descriptor = FetchDescriptor<MealEntry>(
+            predicate: #Predicate { $0.userRemoteID == userRemoteID && $0.consumedAt >= start && $0.consumedAt < end }
+        )
+        return (try? context.fetch(descriptor)) ?? []
     }
 
     private func fetchWaterEntries(

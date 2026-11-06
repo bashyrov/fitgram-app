@@ -115,9 +115,10 @@ final class StreakService {
     private func hasLoggedToday(context: ModelContext, on date: Date) -> Bool {
         let dayStart = calendar.startOfDay(for: date)
         guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return false }
+        let owner = AccountScope.currentUserID
         let descriptor = FetchDescriptor<MealEntry>(
             predicate: #Predicate { entry in
-                entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
+                entry.userRemoteID == owner && entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
             }
         )
         let count = (try? context.fetchCount(descriptor)) ?? 0

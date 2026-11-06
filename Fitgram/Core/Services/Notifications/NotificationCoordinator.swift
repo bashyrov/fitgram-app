@@ -199,7 +199,7 @@ final class NotificationCoordinator {
         guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return false }
         let descriptor = FetchDescriptor<MealEntry>(
             predicate: #Predicate { entry in
-                entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
+                entry.userRemoteID == userRemoteID && entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
             }
         )
         let count = (try? context.fetchCount(descriptor)) ?? 0
@@ -220,7 +220,7 @@ final class NotificationCoordinator {
         let user = try? context.fetch(userDescriptor).first
         let mealDescriptor = FetchDescriptor<MealEntry>(
             predicate: #Predicate { entry in
-                entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
+                entry.userRemoteID == userRemoteID && entry.consumedAt >= dayStart && entry.consumedAt < dayEnd
             }
         )
         let meals = (try? context.fetch(mealDescriptor)) ?? []

@@ -64,10 +64,13 @@ final class AchievementService {
         try evaluate(forUser: userRemoteID, afterSavingMealID: savedMeal.id)
     }
 
-    /// Every meal on the device as snapshots, oldest first.
+    /// Every meal of the signed-in account as snapshots, oldest first.
     private func mealFacts(in context: ModelContext) throws -> [MealFacts] {
+        let owner = AccountScope.currentUserID
         let meals = try context.fetch(
-            FetchDescriptor<MealEntry>(sortBy: [SortDescriptor(\MealEntry.consumedAt)])
+            FetchDescriptor<MealEntry>(
+                predicate: #Predicate { $0.userRemoteID == owner },
+                sortBy: [SortDescriptor(\MealEntry.consumedAt)])
         )
         var fresh: [UUID: CachedFacts] = [:]
         fresh.reserveCapacity(meals.count)
@@ -102,7 +105,9 @@ final class AchievementService {
         )
         let weightCount = (try? context.fetchCount(weightDescriptor)) ?? 0
 
-        let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
+        let recipes =
+            (try? context.fetch(FetchDescriptor<Recipe>(predicate: #Predicate { $0.userRemoteID == userRemoteID })))
+            ?? []
         let totalCooks = recipes.reduce(0) { $0 + $1.cookCount }
         var counters = counterStore.counters(forUser: userRemoteID)
         counters.merge(activityCounters(for: userRemoteID, in: context)) { _, new in new }

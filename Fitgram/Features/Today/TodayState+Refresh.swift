@@ -12,8 +12,11 @@ extension TodayState {
             guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 return MealSnapshot(meals: [], totals: Totals())
             }
+            let owner = AccountScope.currentUserID
             let descriptor = FetchDescriptor<MealEntry>(
-                predicate: #Predicate { $0.consumedAt >= dayStart && $0.consumedAt < dayEnd },
+                predicate: #Predicate {
+                    $0.userRemoteID == owner && $0.consumedAt >= dayStart && $0.consumedAt < dayEnd
+                },
                 sortBy: [SortDescriptor(\MealEntry.consumedAt, order: .reverse)]
             )
             let meals = try context.fetch(descriptor)

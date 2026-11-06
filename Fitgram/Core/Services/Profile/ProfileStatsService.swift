@@ -28,8 +28,12 @@ final class ProfileStatsService {
 
     func summary(for userRemoteID: String) -> Summary {
         let context = ModelContext(container)
-        let meals = (try? context.fetch(FetchDescriptor<MealEntry>())) ?? []
-        let recipes = (try? context.fetch(FetchDescriptor<Recipe>())) ?? []
+        let meals =
+            (try? context.fetch(FetchDescriptor<MealEntry>(predicate: #Predicate { $0.userRemoteID == userRemoteID })))
+            ?? []
+        let recipes =
+            (try? context.fetch(FetchDescriptor<Recipe>(predicate: #Predicate { $0.userRemoteID == userRemoteID })))
+            ?? []
         let recipeCount = recipes.count
         let totalRecipeCooks = recipes.reduce(0) { $0 + $1.cookCount }
         let weightCount =

@@ -42,16 +42,16 @@ final class DataExportService {
         )
         let user = try context.fetch(userFetch).first.map(UserExport.init)
 
-        // MealEntry doesn't currently store a userRemoteID — Phase 1 ships
-        // single-user installs — so we export every entry on the device.
         let meals = try context.fetch(
             FetchDescriptor<MealEntry>(
+                predicate: #Predicate { $0.userRemoteID == userRemoteID },
                 sortBy: [SortDescriptor(\MealEntry.consumedAt)]
             )
         ).map(MealExport.init)
 
         let recipes = try context.fetch(
             FetchDescriptor<Recipe>(
+                predicate: #Predicate { $0.userRemoteID == userRemoteID },
                 sortBy: [SortDescriptor(\Recipe.createdAt)]
             )
         ).map(RecipeExport.init)
