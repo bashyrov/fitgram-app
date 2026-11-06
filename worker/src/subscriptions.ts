@@ -5,54 +5,60 @@ import type { Env } from "./env";
 import type { Logger } from "./log";
 import { jsonResponse, problemResponse } from "./responses";
 
-const ALLOWED_PRODUCTS = new Set(["fitgram_premium_monthly", "fitgram_premium_yearly"]);
+const ALLOWED_PRODUCTS = new Set([
+  "fitgram_premium_monthly",
+  "fitgram_premium_yearly",
+]);
 
 interface SyncRequest {
-    transaction_id?: string;
+  transaction_id?: string;
 }
 
 interface AppleTransactionPayload {
-    bundleId?: string;
-    environment?: string;
-    expiresDate?: number;
-    originalTransactionId?: string;
-    productId?: string;
-    revocationDate?: number;
-    transactionId?: string;
+  bundleId?: string;
+  environment?: string;
+  expiresDate?: number;
+  originalTransactionId?: string;
+  productId?: string;
+  revocationDate?: number;
+  transactionId?: string;
 }
 
 export async function handleSubscriptionSync(
-    request: Request,
-    env: Env,
-    log: Logger,
-    auth: AuthContext
+  request: Request,
+  env: Env,
+  log: Logger,
+  auth: AuthContext,
 ): Promise<Response> {
-    if (request.method !== "POST") return problemResponse(405, "Method not allowed");
-    if (!env.USAGE_DB) return problemResponse(503, "Subscription storage is unavailable");
+  if (request.method !== "POST")
+    return problemResponse(405, "Method not allowed");
+  if (!env.USAGE_DB)
+    return problemResponse(503, "Subscription storage is unavailable");
 
-    const config = appStoreConfig(env);
-    if (!config) return problemResponse(503, "App Store verification is not configured");
+  const config = appStoreConfig(env);
+  if (!config)
+    return problemResponse(503, "App Store verification is not configured");
 
-    let body: SyncRequest;
-    try {
-        body = await request.json<SyncRequest>();
-    } catch {
-        return problemResponse(400, "Invalid JSON body");
-    }
-    const transactionID = body.transaction_id?.trim();
-    if (!transactionID || !/^\d{6,30}$/.test(transactionID)) {
-        return problemResponse(400, "Invalid transaction identifier");
-    }
+  let body: SyncRequest;
+  try {
+    body = await request.json<SyncRequest>();
+  } catch {
+    return problemResponse(400, "Invalid JSON body");
+  }
+  const transactionID = body.transaction_id?.trim();
+  if (!transactionID || !/^\d{6,30}$/.test(transactionID)) {
+    return problemResponse(400, "Invalid transaction identifier");
+  }
 
-    try {
-        const token = await makeAppStoreToken(config);
-        const signedInfo = await fetchSignedTransaction(transactionID, token);
-        const payload = decodeJwt(signedInfo) as AppleTransactionPayload;
-        const verified = validateTransaction(payload, config.bundleID);
-        if (!verified.ok) return problemResponse(403, verified.reason);
+  try {
+    const token = await makeAppStoreToken(config);
+    const signedInfo = await fetchSignedTransaction(transactionID, token);
+    const payload = decodeJwt(signedInfo) as AppleTransactionPayload;
+    const verified = validateTransaction(payload, config.bundleID);
+    if (!verified.ok) return problemResponse(403, verified.reason);
 
-        const result = await env.USAGE_DB.prepare(
-            `INSERT INTO subscription_entitlements (
+    const result = await env.USAGE_DB.prepare(
+      `INSERT INTO subscription_entitlements (
                 user_id, original_transaction_id, latest_transaction_id,
                 product_id, environment, expires_at_ms, revoked_at_ms, updated_at_ms
              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -63,44 +69,51 @@ export async function handleSubscriptionSync(
                 expires_at_ms = excluded.expires_at_ms,
                 revoked_at_ms = excluded.revoked_at_ms,
                 updated_at_ms = excluded.updated_at_ms
-             WHERE subscription_entitlements.user_id = excluded.user_id`
-        )
-            .bind(
-                auth.userID,
-                verified.originalTransactionID,
-                verified.transactionID,
-                verified.productID,
-                verified.environment,
-                verified.expiresAt,
-                verified.revokedAt,
-                Date.now()
-            )
-            .run();
+             WHERE subscription_entitlements.user_id = excluded.user_id`,
+    )
+      .bind(
+        auth.userID,
+        verified.originalTransactionID,
+        verified.transactionID,
+        verified.productID,
+        verified.environment,
+        verified.expiresAt,
+        verified.revokedAt,
+        Date.now(),
+      )
+      .run();
 
-        if ((result.meta.changes ?? 0) !== 1) {
-            log.warn("subscription already belongs to another user", {
-                user: auth.userID,
-                originalTransactionID: verified.originalTransactionID,
-            });
-            return problemResponse(409, "Subscription is linked to another account");
-        }
-
-        await mirrorPremiumToSupabase(
-            env,
-            log,
-            auth.userID,
-            verified.revokedAt === null ? verified.expiresAt : null
-        );
-
-        return jsonResponse({
-            is_premium: verified.revokedAt === null && verified.expiresAt > Date.now(),
-            product_id: verified.productID,
-            expires_at_ms: verified.expiresAt,
-        });
-    } catch (error) {
-        log.error("App Store subscription sync failed", { user: auth.userID, error: String(error) });
-        return problemResponse(502, "App Store verification is temporarily unavailable");
+    if ((result.meta.changes ?? 0) !== 1) {
+      log.warn("subscription already belongs to another user", {
+        user: auth.userID,
+        originalTransactionID: verified.originalTransactionID,
+      });
+      return problemResponse(409, "Subscription is linked to another account");
     }
+
+    await mirrorPremiumToSupabase(
+      env,
+      log,
+      auth.userID,
+      verified.revokedAt === null ? verified.expiresAt : null,
+    );
+
+    return jsonResponse({
+      is_premium:
+        verified.revokedAt === null && verified.expiresAt > Date.now(),
+      product_id: verified.productID,
+      expires_at_ms: verified.expiresAt,
+    });
+  } catch (error) {
+    log.error("App Store subscription sync failed", {
+      user: auth.userID,
+      error: String(error),
+    });
+    return problemResponse(
+      502,
+      "App Store verification is temporarily unavailable",
+    );
+  }
 }
 
 /**
@@ -109,114 +122,146 @@ export async function handleSubscriptionSync(
  * re-syncs on every launch, purchase, restore and renewal.
  */
 export async function mirrorPremiumToSupabase(
-    env: Env,
-    log: Logger,
-    userID: string,
-    premiumUntilMs: number | null,
-    fetcher: typeof fetch = fetch
+  env: Env,
+  log: Logger,
+  userID: string,
+  premiumUntilMs: number | null,
+  fetcher: typeof fetch = fetch,
 ): Promise<boolean> {
-    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
-        log.warn("Premium mirror skipped: SUPABASE_SERVICE_ROLE_KEY not configured");
-        return false;
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    log.warn(
+      "Premium mirror skipped: SUPABASE_SERVICE_ROLE_KEY not configured",
+    );
+    return false;
+  }
+  const base = env.SUPABASE_URL.replace(/\/$/, "");
+  try {
+    const response = await fetcher(
+      `${base}/rest/v1/public_profiles?user_id=eq.${encodeURIComponent(userID)}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          premium_until:
+            premiumUntilMs === null
+              ? null
+              : new Date(premiumUntilMs).toISOString(),
+        }),
+      },
+    );
+    if (!response.ok) {
+      log.warn("Premium mirror failed", {
+        user: userID,
+        status: response.status,
+      });
+      return false;
     }
-    const base = env.SUPABASE_URL.replace(/\/$/, "");
-    try {
-        const response = await fetcher(
-            `${base}/rest/v1/public_profiles?user_id=eq.${encodeURIComponent(userID)}`,
-            {
-                method: "PATCH",
-                headers: {
-                    apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-                    Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
-                    "Content-Type": "application/json",
-                    Prefer: "return=minimal",
-                },
-                body: JSON.stringify({
-                    premium_until: premiumUntilMs === null ? null : new Date(premiumUntilMs).toISOString(),
-                }),
-            }
-        );
-        if (!response.ok) {
-            log.warn("Premium mirror failed", { user: userID, status: response.status });
-            return false;
-        }
-        return true;
-    } catch (error) {
-        log.warn("Premium mirror error", { user: userID, error: String(error) });
-        return false;
-    }
+    return true;
+  } catch (error) {
+    log.warn("Premium mirror error", { user: userID, error: String(error) });
+    return false;
+  }
 }
 
 function appStoreConfig(env: Env): {
-    issuerID: string;
-    keyID: string;
-    privateKey: string;
-    bundleID: string;
+  issuerID: string;
+  keyID: string;
+  privateKey: string;
+  bundleID: string;
 } | null {
-    if (!env.APPLE_ISSUER_ID || !env.APPLE_KEY_ID || !env.APPLE_PRIVATE_KEY) return null;
-    return {
-        issuerID: env.APPLE_ISSUER_ID,
-        keyID: env.APPLE_KEY_ID,
-        privateKey: env.APPLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-        bundleID: env.APPLE_BUNDLE_ID ?? "app.fitgram.ios.bashyrov",
-    };
+  if (!env.APPLE_ISSUER_ID || !env.APPLE_KEY_ID || !env.APPLE_PRIVATE_KEY)
+    return null;
+  return {
+    issuerID: env.APPLE_ISSUER_ID,
+    keyID: env.APPLE_KEY_ID,
+    privateKey: env.APPLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    bundleID: env.APPLE_BUNDLE_ID ?? "app.fitgram.ios.bashyrov",
+  };
 }
 
-async function makeAppStoreToken(config: NonNullable<ReturnType<typeof appStoreConfig>>): Promise<string> {
-    const key = await importPKCS8(config.privateKey, "ES256");
-    return new SignJWT({ bid: config.bundleID })
-        .setProtectedHeader({ alg: "ES256", kid: config.keyID, typ: "JWT" })
-        .setIssuer(config.issuerID)
-        .setAudience("appstoreconnect-v1")
-        .setIssuedAt()
-        .setExpirationTime("5m")
-        .sign(key);
+async function makeAppStoreToken(
+  config: NonNullable<ReturnType<typeof appStoreConfig>>,
+): Promise<string> {
+  const key = await importPKCS8(config.privateKey, "ES256");
+  return new SignJWT({ bid: config.bundleID })
+    .setProtectedHeader({ alg: "ES256", kid: config.keyID, typ: "JWT" })
+    .setIssuer(config.issuerID)
+    .setAudience("appstoreconnect-v1")
+    .setIssuedAt()
+    .setExpirationTime("5m")
+    .sign(key);
 }
 
-async function fetchSignedTransaction(transactionID: string, token: string): Promise<string> {
-    const path = `/inApps/v1/transactions/${encodeURIComponent(transactionID)}`;
-    for (const origin of ["https://api.storekit.apple.com", "https://api.storekit-sandbox.apple.com"]) {
-        const response = await fetch(`${origin}${path}`, {
-            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-        });
-        if (response.ok) {
-            const body = await response.json<{ signedTransactionInfo?: string }>();
-            if (!body.signedTransactionInfo) throw new Error("Apple response omitted transaction info");
-            return body.signedTransactionInfo;
-        }
-        if (response.status !== 404) throw new Error(`Apple transaction API returned ${response.status}`);
+async function fetchSignedTransaction(
+  transactionID: string,
+  token: string,
+): Promise<string> {
+  const path = `/inApps/v1/transactions/${encodeURIComponent(transactionID)}`;
+  let lastStatus = 0;
+  for (const origin of [
+    "https://api.storekit.itunes.apple.com",
+    "https://api.storekit-sandbox.itunes.apple.com",
+  ]) {
+    const response = await fetch(`${origin}${path}`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+    });
+    if (response.ok) {
+      const body = await response.json<{ signedTransactionInfo?: string }>();
+      if (!body.signedTransactionInfo)
+        throw new Error("Apple response omitted transaction info");
+      return body.signedTransactionInfo;
     }
-    throw new Error("Transaction not found in production or sandbox");
+    // TestFlight and App Review purchases live in the sandbox. Production
+    // answers 404 for them, or 401 while the app is not yet on the store,
+    // so both fall through to the sandbox lookup.
+    if (response.status !== 404 && response.status !== 401) {
+      throw new Error(`Apple transaction API returned ${response.status}`);
+    }
+    lastStatus = response.status;
+  }
+  throw new Error(
+    `Transaction not found in production or sandbox (last status ${lastStatus})`,
+  );
 }
 
 export function validateTransaction(
-    payload: AppleTransactionPayload,
-    bundleID: string
+  payload: AppleTransactionPayload,
+  bundleID: string,
 ):
-    | { ok: false; reason: string }
-    | {
-          ok: true;
-          transactionID: string;
-          originalTransactionID: string;
-          productID: string;
-          environment: string;
-          expiresAt: number;
-          revokedAt: number | null;
-      } {
-    if (payload.bundleId !== bundleID) return { ok: false, reason: "Transaction belongs to another app" };
-    if (!payload.productId || !ALLOWED_PRODUCTS.has(payload.productId)) {
-        return { ok: false, reason: "Unknown subscription product" };
-    }
-    if (!payload.transactionId || !payload.originalTransactionId || !payload.expiresDate) {
-        return { ok: false, reason: "Incomplete transaction information" };
-    }
-    return {
-        ok: true,
-        transactionID: payload.transactionId,
-        originalTransactionID: payload.originalTransactionId,
-        productID: payload.productId,
-        environment: payload.environment ?? "Unknown",
-        expiresAt: payload.expiresDate,
-        revokedAt: payload.revocationDate ?? null,
-    };
+  | { ok: false; reason: string }
+  | {
+      ok: true;
+      transactionID: string;
+      originalTransactionID: string;
+      productID: string;
+      environment: string;
+      expiresAt: number;
+      revokedAt: number | null;
+    } {
+  if (payload.bundleId !== bundleID)
+    return { ok: false, reason: "Transaction belongs to another app" };
+  if (!payload.productId || !ALLOWED_PRODUCTS.has(payload.productId)) {
+    return { ok: false, reason: "Unknown subscription product" };
+  }
+  if (
+    !payload.transactionId ||
+    !payload.originalTransactionId ||
+    !payload.expiresDate
+  ) {
+    return { ok: false, reason: "Incomplete transaction information" };
+  }
+  return {
+    ok: true,
+    transactionID: payload.transactionId,
+    originalTransactionID: payload.originalTransactionId,
+    productID: payload.productId,
+    environment: payload.environment ?? "Unknown",
+    expiresAt: payload.expiresDate,
+    revokedAt: payload.revocationDate ?? null,
+  };
 }
