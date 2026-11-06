@@ -49,7 +49,8 @@ enum AccountSwitcher {
         container: ModelContainer,
         defaults: UserDefaults = .standard,
         photoStore: MealPhotoStore? = nil,
-        avatarDirectory: URL? = nil
+        avatarDirectory: URL? = nil,
+        syncState: CloudSyncStateStore? = nil
     ) throws {
         guard !userID.isEmpty else { return }
         let context = ModelContext(container)
@@ -77,6 +78,7 @@ enum AccountSwitcher {
             }
         }
         AccountDefaults.forget(userID, in: defaults)
+        syncState?.remove(userID)
     }
 
     private static func deleteOwnedRows(of userID: String, in context: ModelContext) throws {

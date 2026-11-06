@@ -7,6 +7,8 @@ struct FitgramApp: App {
     @State private var session: AuthSession
     @State private var unlockBus: AchievementUnlockBus
     private let authService: AuthService
+    private let cloudSync: CloudSyncService
+    @Environment(\.scenePhase) private var scenePhase
     private let persistenceController: PersistenceController
     private let userRepository: UserRepository
     private let mealSaver: any MealSaving
@@ -80,8 +82,11 @@ struct FitgramApp: App {
             EmailAuthProvider(),
         ]
         let persistence = PersistenceController.shared
+        let cloudSync = CloudSyncService(container: persistence.container)
+        self.cloudSync = cloudSync
         session.onSignedIn = { [container = persistence.container] userID in
             AccountSwitcher.activate(userID, container: container, spotlight: RecipeSpotlightIndexer())
+            cloudSync.requestSync(after: .milliseconds(500))
         }
         #if DEBUG
         if DebugBypass.resetData {
@@ -91,6 +96,9 @@ struct FitgramApp: App {
         self._session = State(initialValue: session)
         self._unlockBus = State(initialValue: AchievementUnlockBus())
         let authService = AuthService(providers: providers, session: session)
+        authService.prepareAccount = { userID in
+            await cloudSync.syncBeforeShowing(userID)
+        }
         self.authService = authService
         self.persistenceController = persistence
         self.userRepository = UserRepository(container: persistence.container)
@@ -332,6 +340,13 @@ extension FitgramApp {
             .animation(.easeInOut(duration: 0.48), value: isSplashing)
             .preferredColorScheme(AppAccentPalette.current.preferredColorScheme)
             .background(AppLaunchThemeBackground().ignoresSafeArea())
+            .onChange(of: scenePhase) { _, phase in
+                switch phase {
+                case .background: cloudSync.syncBeforeBackground()
+                case .active: cloudSync.requestSync(after: .seconds(1))
+                default: break
+                }
+            }
         }
     }
 }
