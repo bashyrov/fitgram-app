@@ -115,6 +115,17 @@ final class EntitlementsStore {
         }
     }
 
+    /// The provider's snapshot: plan, renewal and expiry for Settings.
+    var subscription: SubscriptionSnapshot { subscriptionService.snapshot }
+
+    /// "Restore purchases": asks the App Store for the account's
+    /// subscriptions and applies the result. True when Premium is active.
+    func restorePurchases() async throws -> Bool {
+        let snapshot = try await subscriptionService.restore()
+        reconcile()
+        return snapshot.isPremium
+    }
+
     /// Test-only override — flip entitlements without touching the
     /// underlying service.
     func overrideForTesting(_ entitlements: Entitlements) {

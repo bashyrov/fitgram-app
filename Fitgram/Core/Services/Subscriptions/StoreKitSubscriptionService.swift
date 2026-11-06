@@ -143,9 +143,11 @@ final class StoreKitSubscriptionService: SubscriptionService {
     private func syncVerifiedEntitlement(_ transaction: Transaction) async {
         guard let entitlementSyncClient else { return }
         struct Payload: Encodable { let transactionID: String }
+        // Decoded with convertFromSnakeCase: "product_id" becomes
+        // "productId", so the property must be spelled that way.
         struct Response: Decodable, Sendable {
             let isPremium: Bool
-            let productID: String
+            let productId: String
             let expiresAtMs: Int64
         }
         do {
