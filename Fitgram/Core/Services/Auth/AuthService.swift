@@ -14,6 +14,10 @@ final class AuthService {
     private let tokenStore: TokenStore
     private let session: AuthSession
     private let profileProvisioner: SupabaseProfileProvisioner
+    /// Awaited after a successful sign-in and before the account is shown;
+    /// the composition root uses it to pull the account's data from the
+    /// server so a new install doesn't start empty.
+    var prepareAccount: ((String) async -> Void)?
 
     init(
         providers: [any AuthProvider],
@@ -68,6 +72,7 @@ final class AuthService {
                 provider: credentials.provider
             )
             await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
+            await prepareAccount?(credentials.userID)
             session.update(phase: .authenticated(user))
             Logger.auth.info("Signed in via \(kind.rawValue, privacy: .public)")
         } catch let error as AuthError {
@@ -94,6 +99,7 @@ final class AuthService {
             id: credentials.userID, email: JWTClaims.email(in: credentials.accessToken) ?? email,
             displayName: nil, provider: .email)
         await profileProvisioner.ensureProfile(userID: credentials.userID, displayName: user.displayName)
+        await prepareAccount?(credentials.userID)
         session.update(phase: .authenticated(user))
         Logger.auth.info("Signed in via email (\(createAccount ? "sign-up" : "sign-in", privacy: .public))")
     }

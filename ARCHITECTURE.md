@@ -238,6 +238,12 @@ SwiftData store  (M1.2 schema v1.0)
 **Rationale:** Smallest change that makes accounts independent without a sync backend or per-account SwiftData stores.  
 **Consequences:** New account-owned models need a `userRemoteID` and a filter; new per-account `UserDefaults` keys need a prefix in `AccountDefaults.prefixes`. Rows saved before this change are claimed by the next account that signs in.
 
+### 2026-11-06: Account data mirrored to Supabase through one generic table
+**Context:** Meals, recipes, weight, water and the rest lived only in the on-device SwiftData store, so a reinstall or a new iPhone started empty.  
+**Decision:** `public.user_records (user_id, kind, id, payload text, deleted, updated_at)` with owner-only RLS. `CloudSyncService` pulls rows changed since a server-time cursor, then pushes local records whose payload hash changed, plus tombstones for records deleted locally. Each `SyncedRecord` maps one model to a JSON payload; singletons (profile, streak, calibration) and achievements use fixed ids. Sign-in awaits a first pull (12 s cap) so a new install opens with its history; later passes run after meal saves, on foreground and on background.  
+**Rationale:** One table and one RLS policy instead of a table per model; the payload can evolve without server migrations. Last write wins per record is enough for one person's data.  
+**Consequences:** A new synced model needs a `SyncedRecord` and an entry in `CloudSyncService.tables`. Meal photos and avatars stay on the device for now. Rows are removed with the auth user (`on delete cascade`).
+
 ## API Contracts
 
 ### POST `/api/v1/scan-food` (Cloudflare Worker, M1.6)

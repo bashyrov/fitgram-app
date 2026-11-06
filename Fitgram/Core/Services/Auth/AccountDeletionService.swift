@@ -133,7 +133,8 @@ final class AccountDeletionService {
                     container: persistence.container,
                     defaults: defaults,
                     photoStore: try? MealPhotoStore(),
-                    avatarDirectory: AvatarStore().directory
+                    avatarDirectory: AvatarStore().directory,
+                    syncState: CloudSyncStateStore()
                 )
             } catch {
                 Logger.persistence.error("Account local data deletion failed: \(String(describing: error))")
