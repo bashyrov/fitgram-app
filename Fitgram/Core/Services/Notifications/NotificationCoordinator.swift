@@ -147,6 +147,16 @@ final class NotificationCoordinator {
         }
     }
 
+    /// Asks for notification permission if the user was never asked. The
+    /// onboarding step was the only place that asked, so "Maybe later" or
+    /// an install that skipped onboarding (history restored from the
+    /// server) left every reminder silently unscheduled. iOS shows the
+    /// system prompt only once; later calls are no-ops.
+    func requestPermissionIfNeverAsked() async {
+        guard await scheduler.currentStatus() == .notDetermined else { return }
+        _ = await scheduler.requestAuthorization()
+    }
+
     func rescheduleAll(for userRemoteID: String) async {
         let currentDate = now()
         let streakSnapshot = streakSnapshot(for: userRemoteID, now: currentDate)

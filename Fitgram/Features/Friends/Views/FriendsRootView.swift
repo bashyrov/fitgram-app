@@ -59,6 +59,13 @@ struct FriendsRootView: View {
                     await state.refreshPosts()
                 }
             }
+            .onChange(of: state.pendingFriendCode, initial: true) { _, code in
+                guard let code else { return }
+                state.pendingFriendCode = nil
+                state.searchQuery = code
+                isHubPresented = true
+                Task { await state.runSearch() }
+            }
             .sheet(isPresented: $isHubPresented) {
                 FriendsHubSheet(state: state, onDismiss: { isHubPresented = false })
             }
