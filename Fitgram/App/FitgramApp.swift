@@ -452,7 +452,7 @@ extension FitgramApp {
     /// channel so MainTabView (which holds the live `authUser.id`) can
     /// fan out to the right service. Currently handles:
     ///   - fitgram://add-water           (Live Activity button)
-    ///   - fitgram://auth/google?…       (Google OAuth callback)
+    ///   - fitgram://auth/google?…, fitgram://friend/<id> (OAuth, friend QR)
     private func handleDeepLink(_ url: URL) {
         guard url.scheme == FitgramActivityDeepLink.scheme else { return }
         if url.host == "tab" {
@@ -468,6 +468,11 @@ extension FitgramApp {
             NotificationCenter.default.post(
                 name: AppShortcutAction.addWaterFromActivity, object: nil
             )
+            return
+        }
+        if url.host == "friend" {
+            PendingFriendLink.code = url.absoluteString
+            NotificationCenter.default.post(name: PendingFriendLink.notification, object: nil)
             return
         }
         if url.host == "auth", url.path == "/google" {

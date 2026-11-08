@@ -19,6 +19,9 @@ final class FriendsState {
     private(set) var postsLoaded = false
     private(set) var searchResults: [PublicProfile] = []
     var searchQuery: String = ""
+    /// A friend link (QR code / shared link) waiting to be shown in the
+    /// friends window as a search result with "Add".
+    var pendingFriendCode: String?
     private(set) var isLoading = false
     private(set) var errorMessage: String?
 

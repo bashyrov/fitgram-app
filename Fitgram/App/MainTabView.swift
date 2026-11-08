@@ -423,6 +423,7 @@ struct MainTabView: View {
             if let remote = await friendsState.socialProfile.fetchPrivacy(userID: authUser.id) {
                 privacyStore.replace(remote, notify: false)
             }
+            openPendingFriendLink()
             sharedProfilePublisher.requestPublish(owner: authUser.id, after: .seconds(1))
         }
         .onChange(of: selectedTab) { _, newValue in
@@ -483,6 +484,9 @@ struct MainTabView: View {
         ) { _ in
             refreshAfterSave()
             sharedProfilePublisher.requestPublish(owner: authUser.id)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: PendingFriendLink.notification)) { _ in
+            openPendingFriendLink()
         }
         .onReceive(
             NotificationCenter.default.publisher(for: Notification.Name("FitgramWorkoutSaved"))
@@ -1007,6 +1011,13 @@ struct MainTabView: View {
         } else {
             paywallCoordinator.present(trigger)
         }
+    }
+
+    /// Shows the person from a scanned friend QR code / link in Znajomi.
+    private func openPendingFriendLink() {
+        guard let code = PendingFriendLink.take() else { return }
+        selectedTab = .friends
+        friendsState.pendingFriendCode = code
     }
 
     /// Every way into the photo scanner goes through the free-tier check,

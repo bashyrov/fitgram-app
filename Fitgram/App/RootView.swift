@@ -256,6 +256,7 @@ struct RootView: View {
                 )
                 .transition(.opacity)
                 .task(id: authUser.id) {
+                    await notificationCoordinator.requestPermissionIfNeverAsked()
                     await notificationCoordinator.rescheduleAll(for: authUser.id)
                 }
             }
