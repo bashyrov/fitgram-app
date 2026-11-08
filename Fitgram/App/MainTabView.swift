@@ -291,7 +291,7 @@ struct MainTabView: View {
                 paywallCoordinator: paywallCoordinator,
                 goalTrackingState: goalTrackingState,
                 onOpenProfile: { selectedTab = .profile },
-                onOpenScanner: { isScanPresented = true },
+                onOpenScanner: { openScanner() },
                 onOpenAddOptions: { addOptionsVisible = true },
                 onAddWorkout: { isAddWorkoutPresented = true },
                 onOpenGoalTracking: {
@@ -539,12 +539,7 @@ struct MainTabView: View {
                 onPhotoScan: {
                     addOptionsVisible = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
-                        gatedPresent(
-                            kind: .photoScan,
-                            cap: entitlementsStore.current.aiActionsPerWeek,
-                            trigger: .photoScanQuota,
-                            onAllowed: { isScanPresented = true }
-                        )
+                        openScanner()
                     }
                 },
                 onBarcode: {
@@ -1014,9 +1009,20 @@ struct MainTabView: View {
         }
     }
 
+    /// Every way into the photo scanner goes through the free-tier check,
+    /// so the paywall shows on tap, before any photo is taken or sent.
+    private func openScanner() {
+        gatedPresent(
+            kind: .photoScan,
+            cap: entitlementsStore.current.aiActionsPerWeek,
+            trigger: .photoScanQuota,
+            onAllowed: { isScanPresented = true }
+        )
+    }
+
     private func handleCoachAction(_ kind: CoachInsight.ActionKind) {
         switch kind {
-        case .openScanner: isScanPresented = true
+        case .openScanner: openScanner()
         case .openQuickDB: isQuickDBPresented = true
         case .openRecipes: isRecipesPresented = true
         case .openWeightLog: selectedTab = .profile
