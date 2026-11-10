@@ -12,6 +12,9 @@ const ALLOWED_PRODUCTS = new Set([
 
 interface SyncRequest {
   transaction_id?: string;
+  /** Set by "Restore purchases": move the Apple ID's subscription to the
+   *  account that asked, even if another account had it. */
+  transfer?: boolean;
 }
 
 interface AppleTransactionPayload {
@@ -57,30 +60,47 @@ export async function handleSubscriptionSync(
     const payload = decodeJwt(signedInfo) as AppleTransactionPayload;
     const verified = validateTransaction(payload, config.bundleID);
     if (!verified.ok) return problemResponse(403, verified.reason);
-    // Purchases made by a newer app carry the buyer's Fitgram account id.
-    if (
-      payload.appAccountToken &&
-      payload.appAccountToken.toLowerCase() !== auth.userID.toLowerCase()
-    ) {
+    // Who owns the subscription: an Apple subscription follows the Apple ID,
+    // not the Fitgram account. Purchases from newer builds carry the buyer's
+    // account id (appAccountToken); "Restore purchases" moves it explicitly.
+    const buyer = payload.appAccountToken?.toLowerCase();
+    const me = auth.userID.toLowerCase();
+    const transfer = body.transfer === true;
+    if (buyer && buyer !== me && !transfer) {
       return problemResponse(
         403,
         "Subscription was bought for another account",
       );
     }
+    const claims = transfer || buyer === me;
 
-    const result = await env.USAGE_DB.prepare(
+    const existing = await env.USAGE_DB.prepare(
+      "SELECT user_id FROM subscription_entitlements WHERE original_transaction_id = ?",
+    )
+      .bind(verified.originalTransactionID)
+      .first<{ user_id: string }>();
+    const previousOwner = existing?.user_id;
+    if (previousOwner && previousOwner.toLowerCase() !== me && !claims) {
+      log.warn("subscription already belongs to another user", {
+        user: auth.userID,
+        originalTransactionID: verified.originalTransactionID,
+      });
+      return problemResponse(409, "Subscription is linked to another account");
+    }
+
+    await env.USAGE_DB.prepare(
       `INSERT INTO subscription_entitlements (
                 user_id, original_transaction_id, latest_transaction_id,
                 product_id, environment, expires_at_ms, revoked_at_ms, updated_at_ms
              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
              ON CONFLICT(original_transaction_id) DO UPDATE SET
+                user_id = excluded.user_id,
                 latest_transaction_id = excluded.latest_transaction_id,
                 product_id = excluded.product_id,
                 environment = excluded.environment,
                 expires_at_ms = excluded.expires_at_ms,
                 revoked_at_ms = excluded.revoked_at_ms,
-                updated_at_ms = excluded.updated_at_ms
-             WHERE subscription_entitlements.user_id = excluded.user_id`,
+                updated_at_ms = excluded.updated_at_ms`,
     )
       .bind(
         auth.userID,
@@ -94,12 +114,13 @@ export async function handleSubscriptionSync(
       )
       .run();
 
-    if ((result.meta.changes ?? 0) !== 1) {
-      log.warn("subscription already belongs to another user", {
-        user: auth.userID,
+    if (previousOwner && previousOwner.toLowerCase() !== me) {
+      log.info("subscription moved to another account", {
+        from: previousOwner,
+        to: auth.userID,
         originalTransactionID: verified.originalTransactionID,
       });
-      return problemResponse(409, "Subscription is linked to another account");
+      await mirrorPremiumToSupabase(env, log, previousOwner, null);
     }
 
     await mirrorPremiumToSupabase(
