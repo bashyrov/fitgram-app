@@ -47,8 +47,12 @@ final class StoreKitSubscriptionService: SubscriptionService {
     }
 
     func refresh() async {
+        await refresh(claimingForThisAccount: false)
+    }
+
+    private func refresh(claimingForThisAccount claim: Bool) async {
         await loadProductsIfNeeded()
-        snapshot = await computeSnapshot()
+        snapshot = await computeSnapshot(claimingForThisAccount: claim)
     }
 
     func offerings() async throws -> [SubscriptionOffering] {
@@ -101,9 +105,16 @@ final class StoreKitSubscriptionService: SubscriptionService {
         case .success(let verification):
             let transaction = try Self.checkVerified(verification)
             await transaction.finish()
-            await refresh()
+            // Bought (or re-confirmed, when the Apple ID already had it)
+            // from this account: the subscription belongs here now.
+            await refresh(claimingForThisAccount: true)
             return snapshot
         case .userCancelled:
+            // Apple answers "You're already subscribed" when this Apple ID
+            // has the plan (maybe used by another Fitgram account); that
+            // sheet closes as a cancel. Claim the existing one instead.
+            await refresh(claimingForThisAccount: true)
+            if snapshot.isPremium { return snapshot }
             throw PurchaseError.userCancelled
         case .pending:
             throw PurchaseError.pendingApproval
@@ -114,7 +125,9 @@ final class StoreKitSubscriptionService: SubscriptionService {
 
     func restore() async throws -> SubscriptionSnapshot {
         try await AppStore.sync()
-        await refresh()
+        // "Restore" moves the Apple ID's subscription to this account, even
+        // if another Fitgram account used it before.
+        await refresh(claimingForThisAccount: true)
         return snapshot
     }
 
@@ -132,7 +145,7 @@ final class StoreKitSubscriptionService: SubscriptionService {
         }
     }
 
-    private func computeSnapshot() async -> SubscriptionSnapshot {
+    private func computeSnapshot(claimingForThisAccount claim: Bool) async -> SubscriptionSnapshot {
         for await result in Transaction.currentEntitlements {
             guard case .verified(let transaction) = result,
                 transaction.productType == .autoRenewable,
@@ -143,8 +156,10 @@ final class StoreKitSubscriptionService: SubscriptionService {
             // see the same purchase. Purchases carry the buyer's account id
             // (appAccountToken); older ones are claimed by the first account
             // the server links them to.
-            if let token = transaction.appAccountToken, token != Self.currentAccountToken { continue }
-            guard await syncVerifiedEntitlement(transaction) != .linkedToAnotherAccount else { continue }
+            if !claim, let token = transaction.appAccountToken, token != Self.currentAccountToken { continue }
+            guard await syncVerifiedEntitlement(transaction, transfer: claim) != .linkedToAnotherAccount else {
+                continue
+            }
             let willRenew = await Self.willAutoRenew(transaction, product: products[transaction.productID])
             return SubscriptionSnapshot(
                 isPremium: true,
@@ -182,9 +197,12 @@ final class StoreKitSubscriptionService: SubscriptionService {
     }
 
     @discardableResult
-    private func syncVerifiedEntitlement(_ transaction: Transaction) async -> SyncOutcome {
+    private func syncVerifiedEntitlement(_ transaction: Transaction, transfer: Bool) async -> SyncOutcome {
         guard let entitlementSyncClient else { return .unknown }
-        struct Payload: Encodable { let transactionID: String }
+        struct Payload: Encodable {
+            let transactionID: String
+            let transfer: Bool
+        }
         // Decoded with convertFromSnakeCase: "product_id" becomes
         // "productId", so the property must be spelled that way.
         struct Response: Decodable, Sendable {
@@ -195,7 +213,7 @@ final class StoreKitSubscriptionService: SubscriptionService {
         do {
             let endpoint = try Endpoint.json(
                 path: "/api/v1/subscription/sync",
-                payload: Payload(transactionID: String(transaction.id))
+                payload: Payload(transactionID: String(transaction.id), transfer: transfer)
             )
             _ = try await entitlementSyncClient.send(endpoint, expecting: Response.self)
             return .linked
