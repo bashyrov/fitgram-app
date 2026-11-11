@@ -27,7 +27,7 @@ struct EmailSignInSheet: View {
 
     private var canSubmit: Bool {
         !isSubmitting && !email.trimmingCharacters(in: .whitespaces).isEmpty
-            && (mode == .signIn ? !password.isEmpty : password.count >= EmailAuthProvider.minimumPasswordLength)
+            && (mode == .signIn ? !password.isEmpty : EmailAuthProvider.meetsRequirements(password))
     }
 
     var body: some View {
@@ -118,7 +118,7 @@ struct EmailSignInSheet: View {
                 }
 
                 if mode == .createAccount {
-                    Text(L("Hasło musi mieć co najmniej 8 znaków."))
+                    Text(L("Hasło: min. 8 znaków, mała i wielka litera oraz cyfra."))
                         .font(Tokens.Font.manrope(12, weight: 600))
                         .foregroundStyle(Tokens.Mono.muted)
                 }

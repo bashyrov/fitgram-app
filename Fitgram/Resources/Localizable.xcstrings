@@ -93007,37 +93007,37 @@
         }
       }
     },
-    "Hasło musi mieć co najmniej 8 znaków." : {
+    "Hasło: min. 8 znaków, mała i wielka litera oraz cyfra." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Password must be at least 8 characters."
+            "value" : "Password: at least 8 characters, a lowercase and an uppercase letter, and a digit."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La contraseña debe tener al menos 8 caracteres."
+            "value" : "Contraseña: al menos 8 caracteres, una minúscula, una mayúscula y un número."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hasło musi mieć co najmniej 8 znaków."
+            "value" : "Hasło: min. 8 znaków, mała i wielka litera oraz cyfra."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пароль должен содержать не менее 8 символов."
+            "value" : "Пароль: минимум 8 символов, строчная и заглавная латинская буква и цифра."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пароль має містити щонайменше 8 символів."
+            "value" : "Пароль: щонайменше 8 символів, мала й велика латинська літера та цифра."
           }
         }
       }
