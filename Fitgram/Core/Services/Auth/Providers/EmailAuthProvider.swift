@@ -10,7 +10,7 @@ final class EmailAuthProvider: AuthProvider {
     let kind: AuthProviderKind = .email
 
     /// Supabase's default minimum password length.
-    static let minimumPasswordLength = 6
+    static let minimumPasswordLength = 8
 
     private let supabase: SupabaseAuthExchange
 
@@ -31,7 +31,10 @@ final class EmailAuthProvider: AuthProvider {
         guard Self.isPlausibleEmail(email) else {
             throw EmailAuthError.invalidEmail
         }
-        guard password.count >= Self.minimumPasswordLength else {
+        // Only new accounts need the minimum length; an account made under an
+        // older, shorter rule must still be able to sign in.
+        let isLongEnough = createAccount ? password.count >= Self.minimumPasswordLength : !password.isEmpty
+        guard isLongEnough else {
             throw EmailAuthError.passwordTooShort
         }
         do {
@@ -96,7 +99,7 @@ enum EmailAuthError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .invalidEmail: return L("Wpisz poprawny adres e-mail.")
-        case .passwordTooShort: return L("Hasło musi mieć co najmniej 6 znaków.")
+        case .passwordTooShort: return L("Hasło musi mieć co najmniej 8 znaków.")
         case .invalidCredentials: return L("Nieprawidłowy e-mail lub hasło.")
         case .accountExists: return L("Konto z tym adresem już istnieje. Zaloguj się.")
         case .confirmationRequired: return L("Konto wymaga potwierdzenia e-mail. Spróbuj ponownie później.")
