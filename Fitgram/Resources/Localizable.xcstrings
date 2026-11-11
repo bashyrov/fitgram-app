@@ -93007,37 +93007,37 @@
         }
       }
     },
-    "Hasło musi mieć co najmniej 6 znaków." : {
+    "Hasło musi mieć co najmniej 8 znaków." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Password must be at least 6 characters."
+            "value" : "Password must be at least 8 characters."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La contraseña debe tener al menos 6 caracteres."
+            "value" : "La contraseña debe tener al menos 8 caracteres."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hasło musi mieć co najmniej 6 znaków."
+            "value" : "Hasło musi mieć co najmniej 8 znaków."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пароль должен содержать не менее 6 символов."
+            "value" : "Пароль должен содержать не менее 8 символов."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пароль має містити щонайменше 6 символів."
+            "value" : "Пароль має містити щонайменше 8 символів."
           }
         }
       }

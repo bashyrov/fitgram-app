@@ -28,6 +28,23 @@ final class EmailAuthProviderTests: XCTestCase {
         }
     }
 
+    func testNewAccountsNeedEightCharacters() async {
+        XCTAssertEqual(EmailAuthProvider.minimumPasswordLength, 8)
+        let provider = EmailAuthProvider()
+        do {
+            _ = try await provider.signIn(email: "anna@fitgram.space", password: "1234567", createAccount: true)
+            XCTFail("Expected passwordTooShort")
+        } catch {
+            XCTAssertEqual(error as? EmailAuthError, .passwordTooShort)
+        }
+        do {
+            _ = try await provider.signIn(email: "anna@fitgram.space", password: "", createAccount: false)
+            XCTFail("Expected passwordTooShort")
+        } catch {
+            XCTAssertEqual(error as? EmailAuthError, .passwordTooShort)
+        }
+    }
+
     func testMapsSupabaseErrors() {
         typealias Exchange = SupabaseAuthExchange.ExchangeError
         XCTAssertEqual(
