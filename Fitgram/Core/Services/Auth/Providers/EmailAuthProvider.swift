@@ -31,11 +31,11 @@ final class EmailAuthProvider: AuthProvider {
         guard Self.isPlausibleEmail(email) else {
             throw EmailAuthError.invalidEmail
         }
-        // Only new accounts need the minimum length; an account made under an
-        // older, shorter rule must still be able to sign in.
-        let isLongEnough = createAccount ? password.count >= Self.minimumPasswordLength : !password.isEmpty
-        guard isLongEnough else {
-            throw EmailAuthError.passwordTooShort
+        // Only new accounts must meet the password rules; an account made
+        // under an older, looser rule must still be able to sign in.
+        let isAcceptable = createAccount ? Self.meetsRequirements(password) : !password.isEmpty
+        guard isAcceptable else {
+            throw EmailAuthError.weakPassword
         }
         do {
             return createAccount
@@ -47,6 +47,15 @@ final class EmailAuthProvider: AuthProvider {
             Logger.auth.error("Email auth network error: \(error.code.rawValue)")
             throw EmailAuthError.network
         }
+    }
+
+    /// Mirrors the Supabase rule for new passwords: the minimum length plus
+    /// at least one ASCII lowercase letter, uppercase letter and digit.
+    static func meetsRequirements(_ password: String) -> Bool {
+        password.count >= minimumPasswordLength
+            && password.contains { ("a"..."z").contains($0) }
+            && password.contains { ("A"..."Z").contains($0) }
+            && password.contains { ("0"..."9").contains($0) }
     }
 
     static func isPlausibleEmail(_ email: String) -> Bool {
@@ -69,7 +78,7 @@ final class EmailAuthProvider: AuthProvider {
                 return .accountExists
             }
             if lowered.contains("weak_password") || lowered.contains("password should be") {
-                return .passwordTooShort
+                return .weakPassword
             }
             if lowered.contains("email_not_confirmed") {
                 return .confirmationRequired
@@ -87,7 +96,7 @@ final class EmailAuthProvider: AuthProvider {
 
 enum EmailAuthError: LocalizedError, Equatable {
     case invalidEmail
-    case passwordTooShort
+    case weakPassword
     case invalidCredentials
     case accountExists
     case confirmationRequired
@@ -99,7 +108,7 @@ enum EmailAuthError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .invalidEmail: return L("Wpisz poprawny adres e-mail.")
-        case .passwordTooShort: return L("Hasło musi mieć co najmniej 8 znaków.")
+        case .weakPassword: return L("Hasło: min. 8 znaków, mała i wielka litera oraz cyfra.")
         case .invalidCredentials: return L("Nieprawidłowy e-mail lub hasło.")
         case .accountExists: return L("Konto z tym adresem już istnieje. Zaloguj się.")
         case .confirmationRequired: return L("Konto wymaga potwierdzenia e-mail. Spróbuj ponownie później.")

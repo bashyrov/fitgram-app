@@ -22,26 +22,35 @@ final class EmailAuthProviderTests: XCTestCase {
         }
         do {
             _ = try await provider.signIn(email: "anna@fitgram.space", password: "123", createAccount: true)
-            XCTFail("Expected passwordTooShort")
+            XCTFail("Expected weakPassword")
         } catch {
-            XCTAssertEqual(error as? EmailAuthError, .passwordTooShort)
+            XCTAssertEqual(error as? EmailAuthError, .weakPassword)
         }
     }
 
-    func testNewAccountsNeedEightCharacters() async {
+    func testPasswordRequirements() {
+        XCTAssertTrue(EmailAuthProvider.meetsRequirements("Fitgram2026"))
+        XCTAssertFalse(EmailAuthProvider.meetsRequirements("Fitgr4m"), "7 characters")
+        XCTAssertFalse(EmailAuthProvider.meetsRequirements("fitgram2026"), "no uppercase")
+        XCTAssertFalse(EmailAuthProvider.meetsRequirements("FITGRAM2026"), "no lowercase")
+        XCTAssertFalse(EmailAuthProvider.meetsRequirements("Fitgramowo"), "no digit")
+        XCTAssertFalse(EmailAuthProvider.meetsRequirements("ŁÓŹŻ1234a"), "Polish capitals do not count as uppercase")
+    }
+
+    func testNewAccountsNeedStrongPassword() async {
         XCTAssertEqual(EmailAuthProvider.minimumPasswordLength, 8)
         let provider = EmailAuthProvider()
         do {
-            _ = try await provider.signIn(email: "anna@fitgram.space", password: "1234567", createAccount: true)
-            XCTFail("Expected passwordTooShort")
+            _ = try await provider.signIn(email: "anna@fitgram.space", password: "fitgram2026", createAccount: true)
+            XCTFail("Expected weakPassword")
         } catch {
-            XCTAssertEqual(error as? EmailAuthError, .passwordTooShort)
+            XCTAssertEqual(error as? EmailAuthError, .weakPassword)
         }
         do {
             _ = try await provider.signIn(email: "anna@fitgram.space", password: "", createAccount: false)
-            XCTFail("Expected passwordTooShort")
+            XCTFail("Expected weakPassword")
         } catch {
-            XCTAssertEqual(error as? EmailAuthError, .passwordTooShort)
+            XCTAssertEqual(error as? EmailAuthError, .weakPassword)
         }
     }
 
@@ -60,7 +69,7 @@ final class EmailAuthProviderTests: XCTestCase {
         XCTAssertEqual(
             EmailAuthProvider.map(
                 Exchange.http(status: 422, body: #"{"error_code":"weak_password"}"#), createAccount: true),
-            .passwordTooShort
+            .weakPassword
         )
         XCTAssertEqual(
             EmailAuthProvider.map(Exchange.http(status: 429, body: ""), createAccount: true),
@@ -73,7 +82,7 @@ final class EmailAuthProviderTests: XCTestCase {
 
     func testEveryErrorHasAMessage() {
         let all: [EmailAuthError] = [
-            .invalidEmail, .passwordTooShort, .invalidCredentials, .accountExists,
+            .invalidEmail, .weakPassword, .invalidCredentials, .accountExists,
             .confirmationRequired, .rateLimited, .network, .notConfigured, .unknown,
         ]
         for error in all {
