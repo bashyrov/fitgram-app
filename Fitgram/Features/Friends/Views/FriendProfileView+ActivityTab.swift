@@ -30,7 +30,8 @@ extension FriendProfileView {
             icon: eventSymbol(event.kind),
             iconStyle: .dark,
             title: event.payload,
-            sub: "\(eventTitle(event.kind)) · \(event.createdAt.formatted(.relative(presentation: .named)))"
+            sub: eventTitle(event.kind) + " · "
+                + event.createdAt.formatted(.relative(presentation: .named).locale(.app))
         ) {
             EmptyView()
         }

@@ -72,7 +72,7 @@ struct OlaInsightsHero: View {
                         Circle()
                             .fill(Tokens.Palette.success)
                             .frame(width: 5, height: 5)
-                        Text("Aktualne · \(lastUpdated.formatted(.relative(presentation: .named)))")
+                        Text("Aktualne · \(lastUpdated.formatted(.relative(presentation: .named).locale(.app)))")
                             .font(Tokens.Font.caption)
                             .foregroundStyle(Tokens.Palette.inkMuted)
                     }

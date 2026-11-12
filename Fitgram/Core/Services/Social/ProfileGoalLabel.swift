@@ -35,6 +35,6 @@ enum ProfileGoalLabel {
     }
 
     private static func day(_ date: Date) -> String {
-        date.formatted(.dateTime.day().month(.wide))
+        date.formatted(.dateTime.day().month(.wide).locale(.app))
     }
 }

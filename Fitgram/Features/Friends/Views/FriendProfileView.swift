@@ -251,7 +251,7 @@ struct FriendProfileView: View {
     private func heroSubtitle(_ snapshot: FriendProfileSnapshot) -> String? {
         var parts: [String] = []
         if let since = snapshot.memberSinceDate {
-            let formatted = since.formatted(.dateTime.month(.wide).year())
+            let formatted = since.formatted(.dateTime.month(.wide).year().locale(.app))
             parts.append(String.localizedStringWithFormat(L("Fitgram-er since %@"), formatted))
         }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")

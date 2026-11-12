@@ -411,7 +411,7 @@ extension OlaTipsView {
                 OlaMemoryRow(
                     symbol: "clock",
                     title: L("Last update"),
-                    value: lastUpdated?.formatted(date: .abbreviated, time: .shortened)
+                    value: lastUpdated?.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened).locale(.app))
                         ?? TL(
                             pl: "Po pierwszych posiłkach", en: "After the first meals", uk: "Після перших прийомів їжі",
                             ru: "После первых приемов пищи", es: "Después de las primeras comidas"),

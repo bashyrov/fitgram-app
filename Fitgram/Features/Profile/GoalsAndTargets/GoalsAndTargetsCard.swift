@@ -123,7 +123,7 @@ struct GoalsAndTargetsCard: View {
             parts.append(String(format: startWeightFormat, current).replacingOccurrences(of: ".", with: ","))
         }
         if user.goalKind.requiresPaceAndTarget, let end = user.goalEstimatedEndDate {
-            parts.append(end.formatted(.dateTime.day().month(.abbreviated).year()))
+            parts.append(end.formatted(.dateTime.day().month(.abbreviated).year().locale(.app)))
         }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
