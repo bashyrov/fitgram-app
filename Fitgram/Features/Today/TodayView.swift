@@ -219,6 +219,10 @@ struct TodayView: View {
                 try? await Task.sleep(nanoseconds: 800_000_000)
                 isOlaTipsPresented = true
             }
+            if DebugBypass.initialSheet == "add-workout" {
+                try? await Task.sleep(nanoseconds: 800_000_000)
+                onAddWorkout()
+            }
             #endif
         }
         .sheet(isPresented: $isDatePickerPresented) {
