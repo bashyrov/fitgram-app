@@ -95,7 +95,7 @@ struct SubscriptionSettingsView: View {
 
     private var statusLine: String {
         guard isPremium else { return Self.freePlanSubtitle }
-        guard let date = snapshot.expirationDate?.formatted(.dateTime.day().month(.wide).year()) else {
+        guard let date = snapshot.expirationDate?.formatted(.dateTime.day().month(.wide).year().locale(.app)) else {
             return Self.activeLine
         }
         if snapshot.isTrial {

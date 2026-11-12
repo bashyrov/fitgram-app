@@ -161,7 +161,7 @@ struct FriendsHubSheet: View {
                     VStack(alignment: .leading, spacing: 1) {
                         SocialNameLabel(name: name, isPremium: profile?.isPremium ?? false)
                         Text(
-                            request.createdAt.formatted(.relative(presentation: .named))
+                            request.createdAt.formatted(.relative(presentation: .named).locale(.app))
                         )
                         .font(Tokens.Font.manrope(12, weight: 600))
                         .foregroundStyle(Tokens.Mono.muted)

@@ -1599,7 +1599,7 @@ extension EditMainGoalSheet {
                     Text(estimatedEndPrefix)
                         .font(Tokens.Font.manrope(12, weight: 600))
                         .foregroundStyle(Tokens.Mono.muted)
-                        + Text(estimatedEnd.formatted(.dateTime.day().month(.wide).year()))
+                        + Text(estimatedEnd.formatted(.dateTime.day().month(.wide).year().locale(.app)))
                         .font(Tokens.Font.manrope(12, weight: 800))
                         .foregroundStyle(Tokens.Palette.ink)
                 }

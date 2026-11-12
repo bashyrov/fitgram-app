@@ -46,7 +46,7 @@ struct OlaSummaryHero: View {
 
     private var subtitle: String {
         guard let lastUpdated else { return L("Twoje spersonalizowane porady") }
-        return L("Aktualne · ") + lastUpdated.formatted(.relative(presentation: .named))
+        return L("Aktualne · ") + lastUpdated.formatted(.relative(presentation: .named).locale(.app))
     }
 
     private var nextStep: some View {

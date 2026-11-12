@@ -118,7 +118,7 @@ struct PostMacroCard: View {
     }
 
     private var dateLine: String {
-        let date = macros.consumedAt.formatted(.dateTime.day().month(.abbreviated).year())
+        let date = macros.consumedAt.formatted(.dateTime.day().month(.abbreviated).year().locale(.app))
         guard macros.scope == .meal else { return date }
         return "\(date) · \(macros.consumedAt.formatted(.dateTime.hour().minute()))"
     }
@@ -269,7 +269,7 @@ struct PostCard: View {
     }
 
     private var subtitle: String {
-        post.createdAt.formatted(.relative(presentation: .named))
+        post.createdAt.formatted(.relative(presentation: .named).locale(.app))
     }
 
     private func photo(_ url: URL) -> some View {

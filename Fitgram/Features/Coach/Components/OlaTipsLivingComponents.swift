@@ -126,7 +126,7 @@ struct OlaLivingHero: View {
 
     private var liveText: String {
         guard let lastUpdated else { return L("Na żywo") }
-        return L("Na żywo") + " · " + lastUpdated.formatted(.relative(presentation: .named))
+        return L("Na żywo") + " · " + lastUpdated.formatted(.relative(presentation: .named).locale(.app))
     }
 }
 

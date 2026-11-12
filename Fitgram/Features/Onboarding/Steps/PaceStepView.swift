@@ -65,7 +65,7 @@ struct PaceStepView: View {
                     if let estimatedDate {
                         VStack(alignment: .leading, spacing: 6) {
                             MonoLabel(text: L("Reach your goal"))
-                            Text(estimatedDate.formatted(date: .long, time: .omitted))
+                            Text(estimatedDate.formatted(Date.FormatStyle(date: .long, time: .omitted).locale(.app)))
                                 .font(Tokens.Font.manrope(15, weight: 800))
                                 .foregroundStyle(Tokens.Palette.ink)
                         }

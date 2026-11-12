@@ -102,7 +102,7 @@ struct PostActivityCard: View {
     }
 
     private var dateLine: String {
-        activity.startedAt.formatted(.dateTime.day().month(.abbreviated).year()) + " · "
+        activity.startedAt.formatted(.dateTime.day().month(.abbreviated).year().locale(.app)) + " · "
             + activity.startedAt.formatted(.dateTime.hour().minute())
     }
 }
