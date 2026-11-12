@@ -162,7 +162,10 @@ struct AddWorkoutSheet: View {
             HStack(alignment: .center) {
                 MonoLabel(text: manualCaloriesTitle)
                 Spacer(minLength: 8)
+                // The stepper keeps its natural width; a long title wraps
+                // instead of squeezing "kcal" into one letter per line.
                 manualCaloriesStepper
+                    .fixedSize()
             }
             Text(manualCaloriesHint)
                 .font(Tokens.Font.manrope(12, weight: 600))
@@ -198,6 +201,8 @@ struct AddWorkoutSheet: View {
                 Text("kcal")
                     .font(Tokens.Font.manrope(12, weight: 700))
                     .foregroundStyle(Tokens.Mono.muted)
+                    .lineLimit(1)
+                    .fixedSize()
             }
             stepperButton("plus") {
                 let base = manualCalories.map { Int($0.rounded()) } ?? metCalories
