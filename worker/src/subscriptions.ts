@@ -72,7 +72,6 @@ export async function handleSubscriptionSync(
         "Subscription was bought for another account",
       );
     }
-    const claims = transfer || buyer === me;
 
     const existing = await env.USAGE_DB.prepare(
       "SELECT user_id FROM subscription_entitlements WHERE original_transaction_id = ?",
@@ -80,12 +79,17 @@ export async function handleSubscriptionSync(
       .bind(verified.originalTransactionID)
       .first<{ user_id: string }>();
     const previousOwner = existing?.user_id;
-    if (previousOwner && previousOwner.toLowerCase() !== me && !claims) {
-      log.warn("subscription already belongs to another user", {
+    if (
+      ownershipDecision({ buyer, me, transfer, previousOwner }) === "linkedElsewhere"
+    ) {
+      log.warn("subscription not linked to this user", {
         user: auth.userID,
         originalTransactionID: verified.originalTransactionID,
       });
-      return problemResponse(409, "Subscription is linked to another account");
+      return problemResponse(
+        409,
+        "Subscription is not linked to this account; restore purchases to move it",
+      );
     }
 
     await env.USAGE_DB.prepare(
@@ -296,4 +300,25 @@ export function validateTransaction(
     expiresAt: payload.expiresDate,
     revokedAt: payload.revocationDate ?? null,
   };
+}
+
+/**
+ * Whether the signed-in account may take this subscription.
+ *
+ * An Apple subscription follows the Apple ID, so every Fitgram account on
+ * the iPhone sees it. The account that bought it (appAccountToken) owns it;
+ * "Restore purchases" (transfer) moves it. A purchase without a token, made
+ * by builds before 1.0, is never taken silently: it stays with its current
+ * owner, and with no owner it waits for a restore.
+ */
+export function ownershipDecision(input: {
+  buyer: string | undefined;
+  me: string;
+  transfer: boolean;
+  previousOwner: string | undefined;
+}): "link" | "linkedElsewhere" {
+  const { buyer, me, transfer, previousOwner } = input;
+  if (transfer || buyer === me) return "link";
+  if (previousOwner?.toLowerCase() === me) return "link";
+  return "linkedElsewhere";
 }
