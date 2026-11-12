@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Env } from "./env";
 import { makeLogger } from "./log";
-import { mirrorPremiumToSupabase, validateTransaction } from "./subscriptions";
+import { mirrorPremiumToSupabase, ownershipDecision, validateTransaction } from "./subscriptions";
 
 const valid = {
     bundleId: "app.fitgram.ios.bashyrov",
@@ -75,5 +75,35 @@ describe("Premium mirror to Supabase", () => {
             .toBe(false);
         expect(called).toBe(false);
         expect(await mirrorPremiumToSupabase(env, log, userID, 1, fetcher)).toBe(false);
+    });
+});
+
+describe("Subscription ownership", () => {
+    const me = "aaaaaaaa-0000-0000-0000-000000000001";
+    const other = "bbbbbbbb-0000-0000-0000-000000000002";
+
+    it("links a purchase made by this account", () => {
+        expect(ownershipDecision({ buyer: me, me, transfer: false, previousOwner: undefined })).toBe("link");
+        expect(ownershipDecision({ buyer: me, me, transfer: false, previousOwner: other })).toBe("link");
+    });
+
+    it("never takes a purchase without a token silently", () => {
+        expect(ownershipDecision({ buyer: undefined, me, transfer: false, previousOwner: undefined })).toBe(
+            "linkedElsewhere",
+        );
+        expect(ownershipDecision({ buyer: undefined, me, transfer: false, previousOwner: other })).toBe(
+            "linkedElsewhere",
+        );
+    });
+
+    it("keeps a tokenless purchase with its owner", () => {
+        expect(ownershipDecision({ buyer: undefined, me, transfer: false, previousOwner: me.toUpperCase() })).toBe(
+            "link",
+        );
+    });
+
+    it("moves any purchase on restore", () => {
+        expect(ownershipDecision({ buyer: undefined, me, transfer: true, previousOwner: other })).toBe("link");
+        expect(ownershipDecision({ buyer: other, me, transfer: true, previousOwner: other })).toBe("link");
     });
 });
