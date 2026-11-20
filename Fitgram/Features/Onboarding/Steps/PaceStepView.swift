@@ -74,6 +74,8 @@ struct PaceStepView: View {
                     if pace.severity == .danger {
                         warningCard
                     }
+                    HealthSourcesLink(topics: [.weightLossPace, .energy])
+                        .padding(.horizontal, 6)
                 }
             }
         )

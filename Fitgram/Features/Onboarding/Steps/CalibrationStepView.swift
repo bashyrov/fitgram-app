@@ -23,6 +23,9 @@ struct CalibrationStepView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     if let computedTargets {
                         DailyTargetHeroCard(targets: computedTargets)
+                        HealthSourcesLink(topics: [.energy, .macros, .hydrationFiber])
+                            .padding(.horizontal, 6)
+                            .padding(.top, 8)
                     }
                     referenceSection
                     recommendationsCard

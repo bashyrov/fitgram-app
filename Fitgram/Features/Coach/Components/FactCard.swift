@@ -25,15 +25,14 @@ struct FactCard: View {
                 .foregroundStyle(highlighted ? Tokens.Mono.heroMuted : Tokens.Mono.muted)
                 .lineSpacing(5)
                 .fixedSize(horizontal: false, vertical: true)
-            if let source = fact.source {
-                HStack(spacing: 4) {
-                    Image(systemName: "book")
-                        .font(.system(size: 10, weight: .semibold))
-                    Text(source)
-                        .font(Tokens.Font.manrope(11, weight: 700))
-                }
-                .foregroundStyle(highlighted ? Tokens.Mono.heroMuted : Tokens.Mono.muted)
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Image(systemName: "book")
+                    .font(.system(size: 10, weight: .semibold))
+                Text("\(HealthSourcesSheet.navigationTitle): \(citations)")
+                    .font(Tokens.Font.manrope(11, weight: 700))
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .foregroundStyle(highlighted ? Tokens.Mono.heroMuted : Tokens.Mono.muted)
         }
         .padding(highlighted ? 18 : 16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,6 +50,18 @@ struct FactCard: View {
             )
             .stroke(highlighted ? Color.clear : Tokens.Mono.line, lineWidth: 1)
         )
+    }
+
+    /// Published sources behind the fact's category (guideline 1.4.1); the
+    /// full list with links is in the library's "Źródła" sheet.
+    private var citations: String {
+        var seen = Set<String>()
+        return HealthSourceCatalog.topics(for: fact.category)
+            .flatMap(\.sources)
+            .filter { seen.insert($0.shortName).inserted }
+            .prefix(3)
+            .map(\.shortName)
+            .joined(separator: " · ")
     }
 
     @ViewBuilder

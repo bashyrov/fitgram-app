@@ -79,6 +79,7 @@ struct GoalsAndTargetsCard: View {
                 .frame(height: 1)
             heroGoalBlock
             planExplanationStrip
+            HealthSourcesLink(topics: [.energy, .macros, .weightLossPace])
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .monoCard(padding: 16)
@@ -231,6 +232,7 @@ struct GoalsAndTargetsCard: View {
             kcalBlock
             macroBlock
             secondaryLine
+            HealthSourcesLink(topics: [.energy, .macros, .hydrationFiber])
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .monoCard(padding: 16)

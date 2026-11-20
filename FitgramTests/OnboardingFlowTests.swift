@@ -18,10 +18,11 @@ final class OnboardingFlowTests: XCTestCase {
     }
 
     private func makeFlow(
+        provider: AuthProviderKind = .email,
         onFinished: @escaping @MainActor (OnboardingFlow.CompletionOutcome) -> Void = { _ in }
     ) -> OnboardingFlow {
         OnboardingFlow(
-            authUser: AuthUser(id: "u-1", email: "a@b.pl", displayName: "Anka", provider: .apple),
+            authUser: AuthUser(id: "u-1", email: "a@b.pl", displayName: "Anka", provider: provider),
             userRepository: repository,
             recommendationsService: RuleBasedRecommendationsService(),
             userProfileService: nil,
@@ -49,6 +50,17 @@ final class OnboardingFlowTests: XCTestCase {
             flow.advance()
             XCTAssertEqual(flow.currentStep, expected)
         }
+    }
+
+    /// App Review guideline 4: after Sign in with Apple the app must not ask
+    /// for the name again, so the name/username step is skipped.
+    func testSignInWithAppleSkipsNameStep() {
+        let flow = makeFlow(provider: .apple)
+        XCTAssertEqual(flow.profile.displayName, "Anka")
+        flow.advance()
+        XCTAssertEqual(flow.currentStep, .goal)
+        flow.goBack()
+        XCTAssertEqual(flow.currentStep, .welcome)
     }
 
     func testPaceStepShownForLoseGoal() {

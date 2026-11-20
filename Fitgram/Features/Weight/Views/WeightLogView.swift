@@ -319,6 +319,10 @@ struct WeightLogView: View {
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
+            if currentBMI != nil {
+                HealthSourcesLink(topics: [.bodyWeight])
+                    .padding(.horizontal, 6)
+            }
         }
     }
 

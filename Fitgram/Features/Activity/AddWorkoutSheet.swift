@@ -153,6 +153,7 @@ struct AddWorkoutSheet: View {
             Text(String.localizedStringWithFormat(heroSubtitleFormat, selected.met, currentWeightKg))
                 .font(Tokens.Font.manrope(12, weight: 600))
                 .foregroundStyle(Tokens.Mono.muted)
+            HealthSourcesLink(topics: [.activity])
         }
         .monoCard(padding: 16)
     }

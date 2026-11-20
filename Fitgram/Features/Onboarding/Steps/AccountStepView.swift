@@ -21,9 +21,10 @@ struct AccountStepView: View {
         case displayName
     }
 
+    /// The name is optional: the account already exists, and Ola falls
+    /// back to a neutral greeting without one.
     private var canProceed: Bool {
-        !profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && usernameStatus.isReady && !isClaiming
+        usernameStatus.isReady && !isClaiming
     }
 
     var body: some View {
@@ -98,7 +99,9 @@ struct AccountStepView: View {
         isClaiming = true
         defer { isClaiming = false }
         do {
-            try await socialProfile.claimUsername(profile.username, displayName: profile.displayName, userID: userID)
+            let name = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+            try await socialProfile.claimUsername(
+                profile.username, displayName: name.isEmpty ? nil : name, userID: userID)
             onContinue()
         } catch UsernameClaimError.taken {
             usernameStatus = .taken
