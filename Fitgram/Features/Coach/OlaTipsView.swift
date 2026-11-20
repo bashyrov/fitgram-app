@@ -43,6 +43,26 @@ struct OlaTipsView: View {
 
 // MARK: - Tips
 extension OlaTipsView {
+    /// Ola's tips are general guidance; the sources behind the numbers she
+    /// works from are one tap away (guideline 1.4.1).
+    private var tipsSourcesFooter: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(
+                TL(
+                    pl: "Porady Oli mają charakter ogólny i nie zastępują porady lekarza ani dietetyka.",
+                    en: "Ola's tips are general guidance and don't replace advice from a doctor or dietitian.",
+                    uk: "Поради Ola мають загальний характер і не замінюють консультації лікаря чи дієтолога.",
+                    ru: "Советы Ola носят общий характер и не заменяют консультацию врача или диетолога.",
+                    es: "Los consejos de Ola son orientativos y no sustituyen el consejo de un médico o dietista.")
+            )
+            .font(Tokens.Font.manrope(12, weight: 600))
+            .foregroundStyle(Tokens.Mono.muted)
+            .fixedSize(horizontal: false, vertical: true)
+            HealthSourcesLink(topics: [.energy, .macros, .hydrationFiber, .activity])
+        }
+        .padding(.horizontal, 6)
+    }
+
     private var tipsTab: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -59,6 +79,9 @@ extension OlaTipsView {
                     .padding(.top, 12)
                 selectedCategoryContent(recommendations)
                     .padding(.horizontal, Tokens.Space.screenPadding)
+                tipsSourcesFooter
+                    .padding(.horizontal, Tokens.Space.screenPadding)
+                    .padding(.top, 22)
             }
             .padding(.bottom, 34)
         }

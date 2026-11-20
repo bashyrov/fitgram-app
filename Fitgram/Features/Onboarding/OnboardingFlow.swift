@@ -10,8 +10,10 @@ import Observation
 final class OnboardingFlow {
     enum Step: Int, CaseIterable, Identifiable {
         case welcome
-        /// Name capture. Lives right after Welcome so the rest
-        /// of the flow can address the user by name.
+        /// Name + username capture. Lives right after Welcome so the rest
+        /// of the flow can address the user by name. Skipped after Sign in
+        /// with Apple: Apple already shares the name, and App Review
+        /// (guideline 4) rejects asking for it again.
         case account
         case goal
         case profile
@@ -178,6 +180,8 @@ final class OnboardingFlow {
     /// "Next" / "Back" tap.
     private func shouldSkip(step: Step) -> Bool {
         switch step {
+        case .account:
+            return authUser.provider == .apple
         case .pace:
             return !profile.goal.requiresPaceAndTarget
         default:

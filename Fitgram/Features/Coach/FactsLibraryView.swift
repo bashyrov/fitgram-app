@@ -29,6 +29,9 @@ struct FactsLibraryView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     OlaFactsHeader(count: filteredFacts.count)
+                    HealthSourcesLink(topics: sourceTopics)
+                        .padding(.horizontal, 6)
+                        .padding(.top, 10)
                     categoryFilterStrip
                         .padding(.top, 14)
                     VStack(spacing: 8) {
@@ -83,6 +86,10 @@ struct FactsLibraryView: View {
     private var filteredFacts: [NutritionFact] {
         guard let categoryFilter else { return NutritionFactCatalog.all }
         return NutritionFactCatalog.all.filter { $0.category == categoryFilter }
+    }
+
+    private var sourceTopics: [HealthTopic] {
+        categoryFilter.map(HealthSourceCatalog.topics(for:)) ?? HealthTopic.allCases
     }
 
     private var factsTitle: String {

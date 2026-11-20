@@ -55,6 +55,7 @@ struct SettingsView: View {
     @State private var searchSelectedMeal: MealEntry?
     @State private var isHelpPresented = false
     @State private var isLegalPresented = false
+    @State private var isSourcesPresented = false
     @State private var isConnectionsPresented = false
     @State private var deleteConfirmation = false
     @State private var isDeletingAccount = false
@@ -142,6 +143,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $isHelpPresented) {
             HelpFAQSheet(onDismiss: { isHelpPresented = false })
+        }
+        .sheet(isPresented: $isSourcesPresented) {
+            HealthSourcesSheet(onDismiss: { isSourcesPresented = false })
         }
         .sheet(isPresented: $isLegalPresented) {
             LegalSheet(onDismiss: { isLegalPresented = false })
@@ -542,6 +546,13 @@ struct SettingsView: View {
                     isLegalPresented = true
                 } label: {
                     legalRow(symbol: "shield", title: legalPrivacyTitle)
+                }
+                .buttonStyle(.plain)
+                MonoRowDivider()
+                Button {
+                    isSourcesPresented = true
+                } label: {
+                    legalRow(symbol: "book.closed", title: HealthSourcesSheet.screenTitle)
                 }
                 .buttonStyle(.plain)
             }
